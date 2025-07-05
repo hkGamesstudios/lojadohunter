@@ -1,0 +1,3957 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOJA DO HUNTER - Celulares e Acessórios</title>
+    
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome - Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    
+    <!-- Chart.js - Biblioteca de Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* CSS Reset e Variáveis de Cor */
+        :root {
+            --primary-color: #FF6B00; /* Laranja vibrante */
+            --secondary-color: #333; /* Cinza escuro para textos */
+            --background-color: #f4f4f4; /* Cinza claro para o fundo */
+            --card-bg-color: #FFFFFF; /* Branco para os cards */
+            --text-light: #666;
+            --white: #FFFFFF;
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* Curva para animação com "overshoot" */
+        }
+
+        /* --- ESTILOS DO TEMA NOTURNO --- */
+        body.dark-theme {
+            /* O gradiente principal do corpo é substituído por um mais escuro */
+            background: linear-gradient(160deg, #1d1a2c 0%, #252044 30%, #1a4f6d 100%);
+        }
+
+        /* Sobrescreve o fundo do cabeçalho para o tema escuro */
+        .dark-theme header {
+            background-color: rgba(29, 26, 44, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- ANIMAÇÕES E CONTROLE DE VISIBILIDADE --- */
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pageExit {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.98);
+            }
+        }
+
+        @keyframes modalContentEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes staggerItem {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page, .modal-overlay {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .page.visible, .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+            animation: pageEnter 0.4s ease-out forwards;
+        }
+        
+        .page.is-exiting, .modal-overlay.is-exiting {
+            pointer-events: none;
+            animation: pageExit 0.4s ease-in forwards;
+        }
+
+        /* Animações específicas para o modal */
+        .modal-overlay.visible:not(.is-exiting) {
+            animation: none; /* O overlay em si só faz fade */
+            transition: background-color 0.4s, backdrop-filter 0.4s;
+        }
+        .modal-overlay.visible .modal-content {
+            animation: modalContentEnter 0.4s var(--ease-out-back) forwards;
+        }
+
+        
+        /* Preparação para animações de lista escalonada (stagger) */
+        .brand-button, .tool-item, .device-card, .modal-btn, .action-button, .employee-meta-card {
+            opacity: 0; /* Começam invisíveis */
+        }
+        .visible .brand-button, .visible .tool-item, .visible .device-card, .visible .modal-btn, .visible .action-button, .visible .employee-meta-card {
+            animation: staggerItem 0.5s var(--ease-out-back) forwards;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(160deg, #372b62 0%, #453880 30%, #2980b9 100%);
+            color: var(--white);
+            min-height: 100vh;
+        }
+
+        /* --- Estrutura Principal (Simula o Celular no PC) --- */
+        .mobile-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background-color: transparent; /* O fundo agora é o do body */
+        }
+        
+        /* --- Cabeçalho --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            background-color: transparent; /* Cabeçalho transparente */
+            border-bottom: none;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            /* Efeito de vidro para o cabeçalho ao rolar a página */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background-color: rgba(55, 43, 98, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white); /* Logo branco */
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: var(--primary-color); /* Ícone da logo laranja */
+        }
+
+        .header-icons a {
+            font-size: 1.2rem;
+            color: var(--white); /* Ícones do cabeçalho brancos */
+            margin-left: 1rem;
+            text-decoration: none;
+        }
+        
+        /* --- Seções --- */
+        section {
+            padding: 2rem 1.5rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 2px;
+        }
+
+        /* --- Grade de Marcas (Aparelhos) --- */
+        .brand-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 quadrados por linha */
+            gap: 0.75rem; /* Espaçamento entre os quadrados */
+        }
+
+        .brand-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1; /* Garante que o item seja sempre um quadrado */
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--white);
+            text-decoration: none;
+            /* Efeito de Vidro Fosco */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .brand-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* --- Grade de Ferramentas --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            /* Efeito de Vidro Fosco */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 0.75rem;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .tool-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tool-icon-wrapper {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-item i {
+            font-size: 1.6rem;
+            color: var(--white);
+        }
+
+        .tool-item span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.3;
+        }
+        
+        /* --- Estilos da Seção de Ranking --- */
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem; /* Espaçamento entre os itens reduzido */
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem; /* Padding reduzido */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px; /* Bordas um pouco menores */
+            border-left: 4px solid transparent; /* Borda lateral mais fina */
+            gap: 0.75rem; /* Espaçamento entre medalha e detalhes reduzido */
+        }
+
+        .rank-item.rank-1 { border-left-color: #FFD700; /* Ouro */ }
+        .rank-item.rank-2 { border-left-color: #C0C0C0; /* Prata */ }
+        .rank-item.rank-3 { border-left-color: #CD7F32; /* Bronze */ }
+
+        .rank-medal {
+            font-size: 1.5rem; /* Medalha menor */
+            width: 30px; /* Largura da medalha reduzida */
+            text-align: center;
+        }
+        .rank-1 .rank-medal { color: #FFD700; }
+        .rank-2 .rank-medal { color: #C0C0C0; }
+        .rank-3 .rank-medal { color: #CD7F32; }
+
+        .rank-details {
+            flex-grow: 1;
+        }
+
+        .rank-name {
+            font-weight: 700;
+            font-size: 1rem; /* Fonte do nome reduzida */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank-prize {
+            font-size: 0.8rem; /* Fonte do prêmio reduzida */
+            font-weight: 600;
+            color: #4CAF50; /* Verde para o prêmio */
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            height: 14px; /* Altura da barra reduzida */
+            margin-top: 0.4rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%; /* Inicia com 0, o JS vai definir a largura */
+            background: var(--primary-color);
+            border-radius: 6px;
+            transition: width 0.8s var(--ease-out-back);
+        }
+
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem; /* Fonte da porcentagem reduzida */
+            font-weight: 700;
+            color: var(--white);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        /* Estilo específico para o ranking de lojas */
+        .store-rank-item {
+            padding: 0.6rem 0.75rem; /* Deixa o card da loja mais baixo */
+        }
+        .store-rank-item .rank-name {
+            font-size: 1.1rem; /* Nome da loja menor */
+            justify-content: center; /* Centraliza o nome da loja */
+        }
+
+
+                /* --- Estilos da Janela Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: none; /* Inicia escondido */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: rgba(55, 43, 98, 0.8); /* Fundo da modal um pouco mais escuro */
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2.5rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .modal-button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--white);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        /* --- Rodapé (REMOVIDO) --- */
+
+        /* =================================================================== */
+        /* OBSERVAÇÃO IMPORTANTE: PROBLEMA DE ROLAGEM EM NOVAS PÁGINAS */
+        /* Se uma nova tela (como uma nova calculadora) apresentar uma rolagem */
+        /* desnecessária ou um layout quebrado, o problema provavelmente é que */
+        /* o seu ID não foi adicionado a esta lista abaixo. Esta regra define */
+        /* o comportamento base de todas as páginas sobrepostas. */
+        /* =================================================================== */
+        /* --- Tela do Colaborador (e outras páginas internas) --- */
+        #collaborator-page, #metas-config-page, #gerencia-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(160deg, #372b62 0%, #453880 30%, #2980b9 100%);
+            z-index: 3000;
+            display: none; /* Inicia escondida */
+            flex-direction: column;
+            justify-content: flex-start; /* Garante que o conteúdo comece no topo */
+            overflow-y: auto; /* Permite que a PÁGINA INTEIRA role */
+        }
+
+                /* ================================================= */
+        /* == ESTILOS PARA A SEÇÃO MT (MOSTRUÁRIO)        == */
+        /* ================================================= */
+        .mt-item-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 1rem;
+            width: 100%;
+        }
+        .mt-item-card pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: var(--white);
+        }
+        .mt-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+        .mt-list-item-text {
+            flex-grow: 1;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .mt-list-item .delete-button-small {
+            flex-shrink: 0;
+            margin-left: 1rem;
+            background-color: rgba(231, 76, 60, 0.7);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .mt-list-item .delete-button-small:hover {
+             background-color: rgba(192, 57, 43, 1.0);
+        }
+
+        .collaborator-header {
+            padding: 1rem 1.5rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+                /* ================================================= */
+        /* == ESTILOS PARA A CALCULADORA DE LOJA          == */
+        /* ================================================= */
+        #loja-calculator-page {
+             background: #2c2640; /* Fundo roxo escuro */
+        }
+        #loja-calculator-page .collaborator-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            width: 100%;
+        }
+        #loja-form-container {
+            width: 100%;
+            max-width: 350px;
+            padding: 1.5rem;
+            background: rgba(25, 20, 35, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(142, 68, 173, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        #loja-calculator-page .data-input {
+            background-color: rgba(0,0,0,0.4);
+            border: 1px solid rgba(142, 68, 173, 0.4);
+            color: #E0E0E0;
+        }
+        #loja-calculator-page .data-input:focus {
+            border-color: #8e44ad; /* Roxo */
+        }
+        #loja-calculator-page .slider-group label {
+            color: #8e44ad;
+            font-weight: 700;
+        }
+        #loja-calculator-page .slider-input {
+            -webkit-appearance: none;
+            width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 5px; outline: none; margin-top: 0.5rem;
+        }
+        #loja-calculator-page .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: #8e44ad; cursor: pointer; border-radius: 50%; border: 3px solid #2c2640;
+        }
+        #loja-result-container {
+            background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1rem; border-top: 2px solid #8e44ad;
+        }
+        #loja-result-container h4 {
+            text-align: center; margin-bottom: 1rem; color: #FFFFFF;
+        }
+        #loja-calculator-page .action-button {
+            background-color: rgba(142, 68, 173, 0.7);
+        }
+        #loja-calculator-page .action-button:hover {
+            background-color: rgba(142, 68, 173, 1);
+        }
+        
+        #collaborator-name-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 50%;
+            left: 1.5rem;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+                              .collaborator-content {
+            flex-grow: 1; /* Permite que o conteúdo ocupe o espaço vertical */
+            display: flex;
+            flex-direction: column; /* Define a direção vertical como padrão */
+            align-items: center; /* Centraliza os itens na horizontal */
+            justify-content: flex-start; /* Alinha os itens no TOPO */
+            padding: 1.5rem;
+            width: 100%; 
+        }
+
+        /* --- Correção para o conteúdo da página de metas --- */
+        #metas-config-page .collaborator-content {
+            flex-grow: 0; /* Impede que o container das metas cresça e empurre o rodapé */
+            flex-shrink: 0;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            padding: 1.25rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--white);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .action-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+                /* --- Estilos da Página de Gerência --- */
+        .input-group {
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .data-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: var(--white);
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .data-input:focus {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .status-message {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+                /* --- Estilos da Página de Metas --- */
+        .employee-meta-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .employee-meta-card h4 {
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .meta-group-title {
+            font-weight: 700;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.9);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 0.25rem;
+        }
+
+        #metas-content-container {
+            /* Esta regra não é mais necessária, pode ser removida ou deixada em branco */
+        }
+        
+        .save-footer {
+            /* Removemos o posicionamento absoluto para que o footer flua com o conteúdo */
+            width: 100%;
+            padding: 2rem 1.5rem; /* Aumentamos o padding para dar mais espaço */
+            text-align: center;
+            background: transparent; /* O fundo agora é o padrão da página */
+        }
+
+        .save-footer .action-button {
+            max-width: none; /* Remove a limitação de largura para este botão específico */
+        }
+
+        /* Estilos da tela de visualização de metas */
+        #metas-display-content {
+            padding: 1.5rem;
+            font-size: 1rem;
+            width: 100%;
+        }
+        #metas-display-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+        #metas-display-content p {
+            margin-bottom: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+                /* Estilos da página de envio e detalhes - ESTA REGRA PODE SER REMOVIDA */
+        /* #send-device-page, #device-detail-page { ... } */
+
+        #send-device-page .collaborator-content {
+             padding-bottom: 2rem;
+        }
+        
+        textarea.data-input {
+            height: auto;
+            min-height: 120px;
+            font-family: monospace;
+        }
+
+        /* Grade de Dispositivos por Marca */
+        .device-card {
+            width: calc(50% - 0.5rem); /* Dois cards por linha com um gap */
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        .device-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .device-card img {
+            width: 100%;
+            height: 120px; /* Reduzida a altura */
+            object-fit: contain; /* Alterado para 'contain' para não cortar */
+            background-color: #fff; /* Fundo branco para imagens com transparência */
+        }
+        .device-card span {
+            display: block;
+            padding: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Página de Detalhes do Dispositivo */
+        #device-detail-content img {
+            width: 100%;
+            max-width: 200px; /* Reduzido o tamanho máximo */
+            max-height: 200px; /* Reduzido o tamanho máximo */
+            object-fit: contain;
+            border-radius: 16px;
+            background-color: #fff;
+            align-self: center;
+            margin-bottom: 1.5rem;
+        }
+        #device-detail-content h3 {
+             color: var(--primary-color);
+             margin: 1.5rem 0 0.5rem 0;
+             width: 100%;
+        }
+        #device-detail-content pre {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap; /* Garante que o texto quebre a linha */
+            word-wrap: break-word;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+        #device-detail-content a {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .delete-button {
+            background-color: rgba(231, 76, 60, 0.7) !important; /* Vermelho para perigo */
+            margin-top: 2rem;
+        }
+        .delete-button:hover {
+             background-color: rgba(192, 57, 43, 1.0) !important;
+        }
+
+        /* Estilos para os painéis de vendas */
+        .sales-data-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 100%;
+        }
+
+        .sales-data-card h4 {
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .sales-data-card p {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* --- Estilos do Dashboard --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        .kpi-card, .performance-card {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .kpi-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .charts-section {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 16px;
+        }
+        .chart-container h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        #monthly-sales-list-container p {
+            padding: 0.5rem 0.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-weight: 600;
+        }
+         #monthly-sales-list-container p:last-child {
+            border-bottom: none;
+        }
+
+        .os-warning {
+            color: #e74c3c;
+            font-weight: 700;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e74c3c;
+        }
+
+        /* Estilos da página de Solicitação de Estoque */
+        .stock-brand-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            width: 100%;
+            text-align: center;
+            margin-top: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 0.5rem;
+        }
+        .stock-product-card {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .stock-product-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .stock-product-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            background: white;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+        .stock-product-card span {
+            font-weight: 600;
+        }
+        #stock-selection-footer h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        #stock-selection-list {
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        #stock-selection-list div {
+            padding: 0.25rem 0;
+        }
+        .date-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .date-input-group input {
+            text-align: center;
+        }
+
+        /* Estilos para o Quiz */
+        .quiz-question-group {
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 1.5rem;
+            background: rgba(0,0,0,0.1);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        .quiz-question-group > label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .radio-option input[type="radio"] {
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+        .radio-option label {
+             font-weight: 400;
+        }
+
+
+                /* ================================================= */
+        /* == ESTILOS PARA A CALCULADORA DE CREDIÁRIO     == */
+        /* ================================================= */
+        #crediario-calculator-page {
+             background: #1a1a2e; /* Fundo azul escuro, quase preto */
+        }
+        #crediario-calculator-page .collaborator-content {
+            flex-grow: 1; /* Garante que a área de conteúdo ocupe todo o espaço vertical */
+            justify-content: center; /* Centraliza o formulário verticalmente */
+        }
+        #crediario-form-container {
+            width: 100%;
+            max-width: 350px;
+            padding: 1.5rem;
+            background: rgba(16, 16, 32, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 191, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        #crediario-calculator-page .data-input {
+            background-color: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0, 191, 255, 0.4);
+            color: #E0E0E0;
+        }
+        #crediario-calculator-page .data-input:focus {
+            border-color: #00BFFF; /* DeepSkyBlue */
+        }
+        #crediario-calculator-page .slider-group label {
+            color: #00BFFF;
+            font-weight: 700;
+        }
+        #crediario-calculator-page .slider-input {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 5px;
+            outline: none;
+            margin-top: 0.5rem;
+        }
+        #crediario-calculator-page .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #00BFFF;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid #1a1a2e;
+        }
+        #crediario-result-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            border-top: 2px solid #00BFFF;
+        }
+        #crediario-result-container h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #FFFFFF;
+        }
+        #crediario-calculator-page .result-item span:last-child {
+            color: #00BFFF; /* Cor do resultado */
+        }
+        #crediario-calculator-page .action-button {
+            background-color: rgba(0, 191, 255, 0.7);
+        }
+        #crediario-calculator-page .action-button:hover {
+            background-color: rgba(0, 191, 255, 1);
+        }
+
+                /* ================================================= */
+        /* == ESTILOS PARA A CALCULADORA DE SITE          == */
+        /* ================================================= */
+        #site-calculator-page {
+             background: #1e2a24; /* Fundo verde escuro */
+        }
+        #site-calculator-page .collaborator-content {
+            flex-grow: 1; /* Garante que ocupe o espaço vertical */
+            display: flex; /* Ativa o layout flexbox */
+            flex-direction: column; /* Empilha os itens verticalmente */
+            align-items: center; /* Centraliza o formulário horizontalmente */
+            justify-content: center; /* Centraliza o formulário verticalmente */
+            padding: 1.5rem;
+            width: 100%;
+        }
+        #site-form-container {
+            width: 100%;
+            max-width: 350px;
+            padding: 1.5rem;
+            background: rgba(15, 25, 20, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        #site-calculator-page .data-input {
+            background-color: rgba(0,0,0,0.4);
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            color: #E0E0E0;
+        }
+        #site-calculator-page .data-input:focus {
+            border-color: #2ecc71; /* Verde esmeralda */
+        }
+        #site-calculator-page .slider-group label {
+            color: #2ecc71;
+            font-weight: 700;
+        }
+        #site-calculator-page .slider-input {
+            -webkit-appearance: none;
+            width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 5px; outline: none; margin-top: 0.5rem;
+        }
+        #site-calculator-page .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: #2ecc71; cursor: pointer; border-radius: 50%; border: 3px solid #1e2a24;
+        }
+        #site-result-container {
+            background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1rem; border-top: 2px solid #2ecc71;
+        }
+        #site-result-container h4 {
+            text-align: center; margin-bottom: 1rem; color: #FFFFFF;
+        }
+        #site-calculator-page .action-button {
+            background-color: rgba(46, 204, 113, 0.7);
+        }
+        #site-calculator-page .action-button:hover {
+            background-color: rgba(46, 204, 113, 1);
+        }
+
+                /* --- Estilos da Página de Bater Ponto (Câmera) --- */
+        #ponto-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 4000; /* Z-index alto para ficar sobre tudo */
+            display: none; 
+            flex-direction: column;
+        }
+        .ponto-camera-container {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #ponto-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .ponto-camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        .ponto-camera-overlay p {
+            background: rgba(0,0,0,0.5);
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .ponto-circle-guide {
+            width: 80vw;
+            height: 80vw;
+            max-width: 300px;
+            max-height: 300px;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5); /* Efeito de "buraco" */
+        }
+        .ponto-controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .ponto-capture-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: white;
+            border: 5px solid rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ponto-capture-button i {
+            font-size: 2rem;
+            color: #333;
+        }
+        
+        /* Estilos da Página de Histórico de Ponto */
+        .ponto-history-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            align-items: center;
+        }
+        .ponto-history-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background-color: #333;
+        }
+        .ponto-history-details p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .ponto-history-details p strong {
+            color: var(--primary-color);
+        }
+
+        /* Estilo para a foto no histórico, indicando que é clicável */
+        .ponto-history-photo:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+
+        /* Estilos para o Visualizador de Imagem Ampliada */
+        #image-viewer-overlay {
+            align-items: center;
+            justify-content: center;
+            z-index: 5000; /* Z-index muito alto para ficar sobre tudo */
+        }
+        #viewer-image {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            /* Animação de entrada para a imagem */
+            animation: modalContentEnter 0.4s var(--ease-out-back);
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+    <body>
+
+    <!-- TELA DE PESQUISA (OVERLAY) -->
+    <div id="search-overlay" class="page">
+        <div class="search-container">
+            <input type="text" id="search-input" class="data-input" placeholder="Pesquisar funcionalidade...">
+            <button id="search-close-btn" class="modal-close-btn" style="top: 20px; right: 25px;">×</button>
+            <div id="search-results-container">
+                <!-- Resultados da pesquisa aparecerão aqui -->
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-container page">
+
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                LOJA DO HUNTER
+            </div>
+            <nav class="header-icons">
+                <a href="#" id="search-icon-btn"><i class="fa-solid fa-search"></i></a>
+                <a href="#" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Seção de Aparelhos por Marca -->
+            <section id="aparelhos">
+                <h2 class="section-title">Aparelhos</h2>
+                <div class="brand-list">
+                    <div class="brand-button" data-brand="xiaomi">Xiaomi</div>
+                    <div class="brand-button" data-brand="poco">Poco</div>
+                    <div class="brand-button" data-brand="realme">Realme</div>
+                    <div class="brand-button" data-brand="umidigi">Umidigi</div>
+                    <div class="brand-button" data-brand="itel">Itel</div>
+                    <div class="brand-button" data-brand="tecno">Tecno</div>
+                    <div class="brand-button" data-brand="infinix">Infinix</div>
+                    <div class="brand-button" data-brand="honor">Honor</div>
+                </div>
+            </section>
+
+            <!-- Seção do Ranking Mensal de Colaboradores -->
+            <section id="ranking">
+                <h2 class="section-title">Ranking do Mês</h2>
+                <div id="ranking-container" class="ranking-list">
+                    <!-- O JavaScript irá popular este container -->
+                    <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
+                </div>
+            </section>
+            
+            <!-- Seção do Ranking de Lojas -->
+            <section id="store-ranking">
+                <h2 class="section-title">Ranking de Lojas</h2>
+                <div id="store-ranking-container" class="ranking-list">
+                    <!-- O JavaScript irá popular este container -->
+                     <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
+                </div>
+            </section>
+            
+            <!-- Seção de Ferramentas -->
+            <section id="ferramentas">
+                <h2 class="section-title">Aplicativos</h2>
+                
+                <!-- Grade de Ferramentas Principais -->
+                <div class="tools-grid">
+                    <a href="https://www.brasilcard.net/bca/lojista/login?f=login_lojista?b=m" target="_blank" class="tool-item">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-id-card"></i></div>
+                        <span>Hunter Card</span>
+                    </a>
+                    <div id="open-colaborador-modal" class="tool-item">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-users"></i></div>
+                        <span>Colaborador</span>
+                    </div>
+                    <div id="previsao-btn" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-truck-fast"></i></div>
+                        <span>Previsão</span>
+                    </div>
+                    <div id="open-os-modal" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                        <span>Assistência Técnica (OS)</span>
+                    </div>
+                    <div id="open-suporte-modal" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-headset"></i></div>
+                        <span>Suporte</span>
+                    </div>
+                    <div id="open-request-stock-page" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-boxes-stacked"></i></div>
+                        <span>Solicitar Estoque</span>
+                    </div>
+                    <div id="open-quiz-page" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-comment-dots"></i></div>
+                        <span>Quiz</span>
+                    </div>
+                    <div id="open-recibos-page" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                        <span>Recibos</span>
+                    </div>
+                    <div id="open-gerencia-page" class="tool-item">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
+                        <span>Gerencia</span>
+                    </div>
+                    <div id="open-send-device-page" class="tool-item">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-paper-plane"></i></div>
+                        <span>Enviar Dispositivo</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Calculadoras -->
+            <section id="calculadoras">
+                <h2 class="section-title">Calculadoras</h2>
+                <div class="tools-grid">
+                    <div id="open-crediario-calculator" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-sliders"></i></div>
+                        <span>Crediário</span>
+                    </div>
+                    <div id="open-site-calculator" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-code"></i></div>
+                        <span>Parcelar Site</span>
+                    </div>
+                     <div id="open-loja-calculator" class="tool-item" style="cursor: pointer;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-store"></i></div>
+                        <span>Parcelamento de Loja</span>
+                    </div>
+                    <div id="open-mt-display-page" class="tool-item">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-gem"></i></div>
+                        <span>MT</span>
+                    </div>
+                </div>
+            </section>
+
+            </main>
+
+        <!-- A seção do rodapé foi removida -->
+
+    </div>
+
+        <!-- TELA DA CALCULADORA DE CREDIÁRIO (ESTILO NOVO) -->
+    <div id="crediario-calculator-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-crediario" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Calculadora de Crediário</h2>
+        </div>
+        <div class="collaborator-content">
+            
+            <div id="crediario-form-container">
+                <div class="input-group">
+                    <label for="crediario-valor-produto">Valor do Produto (R$)</label>
+                    <input type="number" id="crediario-valor-produto" class="data-input" placeholder="1500.00">
+                </div>
+                <div class="input-group">
+                    <label for="crediario-entrada">Entrada (R$)</label>
+                    <input type="number" id="crediario-entrada" class="data-input" placeholder="0.00">
+                </div>
+                <div class="input-group slider-group">
+                    <label for="crediario-parcelas">Parcelas: <span id="parcelas-value">12</span>x</label>
+                    <input type="range" id="crediario-parcelas" min="1" max="12" value="12" step="1" class="slider-input">
+                </div>
+                
+                <div id="crediario-result-container">
+                    <h4>Resultado em Tempo Real</h4>
+                    <div class="result-item">
+                        <span>Valor da Parcela</span>
+                        <span id="result-parcela">R$ 0,00</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Total a Prazo</span>
+                        <span id="result-total-prazo">R$ 0,00</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Total de Juros</span>
+                        <span id="result-juros">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <button id="clear-crediario-btn" class="action-button">Limpar</button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+        <!-- TELA DA CALCULADORA DE PARCELAMENTO DE LOJA -->
+    <div id="loja-calculator-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-loja" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Parcelamento de Loja</h2>
+        </div>
+        <div class="collaborator-content">
+            <div id="loja-form-container">
+                <div class="input-group">
+                    <label for="loja-valor-produto">Valor do Produto (R$)</label>
+                    <input type="number" id="loja-valor-produto" class="data-input" placeholder="1000.00">
+                </div>
+                <div class="input-group">
+                    <label for="loja-entrada">Entrada (R$)</label>
+                    <input type="number" id="loja-entrada" class="data-input" placeholder="100.00">
+                </div>
+                <div class="input-group">
+                    <label for="loja-seguro">Seguro (R$)</label>
+                    <input type="number" id="loja-seguro" class="data-input" placeholder="50.00">
+                </div>
+                <div class="input-group slider-group">
+                    <label for="loja-parcelas">Parcelas: <span id="loja-parcelas-value">10</span>x</label>
+                    <input type="range" id="loja-parcelas" min="1" max="18" value="10" step="1" class="slider-input">
+                </div>
+                
+                <div id="loja-result-container">
+                    <h4>Resultado do Parcelamento</h4>
+                    <div class="result-item">
+                        <span>Valor da Parcela</span>
+                        <span id="loja-result-parcela">R$ 0,00</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Valor Total (com seguro)</span>
+                        <span id="loja-result-total-prazo">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <button id="clear-loja-btn" class="action-button">Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DA CALCULADORA DE PARCELAMENTO DE SITE -->
+    <div id="site-calculator-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-site" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Parcelamento de Site</h2>
+        </div>
+        <div class="collaborator-content">
+            <div id="site-form-container">
+                <div class="input-group">
+                    <label for="site-valor-produto">Valor do Site (R$)</label>
+                    <input type="number" id="site-valor-produto" class="data-input" placeholder="3000.00">
+                </div>
+                <div class="input-group">
+                    <label for="site-entrada">Entrada (R$)</label>
+                    <input type="number" id="site-entrada" class="data-input" placeholder="500.00">
+                </div>
+                <div class="input-group slider-group">
+                    <label for="site-parcelas">Parcelas: <span id="site-parcelas-value">6</span>x</label>
+                    <input type="range" id="site-parcelas" min="1" max="12" value="6" step="1" class="slider-input">
+                </div>
+                
+                <div id="site-result-container">
+                    <h4>Resultado do Parcelamento</h4>
+                    <div class="result-item">
+                        <span>Valor da Parcela</span>
+                        <span id="site-result-parcela">R$ 0,00</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Valor Total (com juros)</span>
+                        <span id="site-result-total-prazo">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <button id="clear-site-btn" class="action-button">Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- HTML DAS TELAS ESCONDIDAS E MODAIS -->
+    <!-- =================================================================== -->
+
+            
+
+    <!-- Janela Modal para Colaboradores -->
+    <div id="colaborador-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="modal-close-btn">×</button>
+            <div id="colaborador-cidades" class="modal-view">
+                <h3 class="modal-title">Escolha a Cidade</h3>
+                <div class="modal-button-container">
+                    <button id="btn-pinheiro" class="modal-btn">Pinheiro</button>
+                    <button id="btn-bacabal" class="modal-btn">Bacabal</button>
+                </div>
+            </div>
+            <div id="colaborador-pinheiro" class="modal-view" style="display: none;">
+                <h3 class="modal-title">Colaboradores - Pinheiro</h3>
+                <div class="modal-button-container">
+                    <a href="#" class="modal-btn collaborator-link" data-name="Beatriz">Beatriz</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Marcio">Marcio</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Eliseu">Eliseu</a>
+                </div>
+            </div>
+            <div id="colaborador-bacabal" class="modal-view" style="display: none;">
+                <h3 class="modal-title">Colaboradores - Bacabal</h3>
+                <div class="modal-button-container">
+                    <a href="#" class="modal-btn collaborator-link" data-name="Natalia">Natalia</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Tacilio">Tacilio</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Denilson">Denilson</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela do Colaborador (escondida por padrão) -->
+    <div id="collaborator-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="collaborator-name-display">Nome do Colaborador</h2>
+        </div>
+        <!-- O conteúdo agora tem um container para melhor organização -->
+        <div class="collaborator-content" style="flex-direction: column; gap: 1rem; padding-top: 2rem;">
+            <!-- Painel de vendas individuais que será preenchido pelo JS -->
+            <div id="individual-sales-data" style="width: 100%; max-width: 350px;"></div>
+            
+            <a href="#" id="view-metas-btn" class="action-button">Metas e Premiações</a>
+            
+            <!-- Botão da gerente, escondido por padrão -->
+            <a href="#" id="manager-panel-btn" class="action-button" style="display: none; background-color: rgba(26, 188, 156, 0.7);">Painel da Gerente</a>
+            <!-- Novo Botão de Fechamento -->
+            <a href="#" id="closing-btn" class="action-button" style="display: none; background-color: rgba(41, 128, 185, 0.8);">Fechamento</a>
+            <!-- Novo Botão de Bater Ponto -->
+            <a href="#" id="bater-ponto-btn" class="action-button" style="background-color: rgba(52, 152, 219, 0.8);">Bater Ponto</a>
+            <!-- Botão de Alterar Senha -->
+            <a href="#" id="change-password-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(142, 68, 173, 0.7);">Alterar Senha</a>
+        </div>
+    </div>
+
+    <!-- Tela da Gerencia (Dashboard) -->
+    <div id="gerencia-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-gerencia" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Dashboard Geral</h2>
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; gap: 1.5rem; padding-top: 1.5rem; overflow-y: auto;">
+            
+            <!-- KPIs principais -->
+            <div class="dashboard-grid">
+                <div class="kpi-card"><span class="kpi-title">VENDAS TOTAIS</span><span id="total-vendas-kpi" class="kpi-value">---</span></div>
+                <div class="kpi-card"><span class="kpi-title">VALOR DO MÊS</span><span id="mes-total-kpi" class="kpi-value">---</span></div>
+            </div>
+
+             <!-- KPIs por Loja -->
+            <div class="dashboard-grid">
+                <div class="kpi-card"><span class="kpi-title">VENDAS PINHEIRO</span><span id="pinheiro-vendas-kpi" class="kpi-value">---</span></div>
+                <div class="kpi-card"><span class="kpi-title">VENDAS BACABAL</span><span id="bacabal-vendas-kpi" class="kpi-value">---</span></div>
+            </div>
+
+            <!-- Rankings de Performance -->
+            <div class="dashboard-grid">
+                 <div class="performance-card"><span class="kpi-title">MELHOR LOJA (Vendas)</span><span id="melhor-loja-kpi" class="kpi-value" style="font-size: 1.5rem;">---</span></div>
+                 <div class="performance-card"><span class="kpi-title">MELHOR VENDEDOR</span><span id="melhor-vendedor-kpi" class="kpi-value" style="font-size: 1.5rem;">---</span></div>
+            </div>
+
+            <!-- Seção de Vendas Mensais -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h4>Vendas Mensais (Histórico)</h4>
+                    <canvas id="monthly-sales-chart"></canvas>
+                </div>
+                 <div id="monthly-sales-list-container" class="chart-container">
+                    <h4>Lista de Vendas por Mês</h4>
+                    <!-- JS vai popular aqui -->
+                </div>
+            </div>
+
+            <!-- Seção de Gráficos de Vendas Atuais -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h4>Vendas Atuais por Loja</h4>
+                    <canvas id="store-sales-chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>Vendas Atuais por Funcionário</h4>
+                    <canvas id="employee-sales-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Botões de Ação -->
+            <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
+                <button id="open-settings-page" class="action-button">Metas e Premiações</button>
+                <button id="open-correction-page" class="action-button" style="margin-top: 1rem;">Correção de Números</button>
+                <button id="open-mt-management-page" class="action-button" style="margin-top: 1rem; background-color: rgba(230, 126, 34, 0.8);">Adicionar/Excluir MT</button>
+                <button id="verificar-ponto-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(52, 152, 219, 0.8);">Verificar Ponto</button>
+                <p id="status-message" class="status-message"></p>
+            </div>
+        </div>
+    </div>
+
+        <!-- TELA DE VISUALIZAÇÃO DO MOSTRUÁRIO (MT) -->
+    <div id="mt-display-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-mt-display" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Mostruário (MT)</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <div class="input-group" style="max-width: none; margin-bottom: 0;">
+                <label for="mt-brand-filter">Filtrar por Marca</label>
+                <select id="mt-brand-filter" class="data-input">
+                    <option value="" selected>Selecione uma marca...</option>
+                    <option value="xiaomi">Xiaomi</option>
+                    <option value="poco">Poco</option>
+                    <option value="realme">Realme</option>
+                    <option value="umidigi">Umidigi</option>
+                    <option value="itel">Itel</option>
+                    <option value="tecno">Tecno</option>
+                    <option value="infinix">Infinix</option>
+                    <option value="honor">Honor</option>
+                </select>
+            </div>
+            <div id="mt-content-area" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Conteúdo do MT será carregado aqui pelo JS -->
+                <p style="text-align: center;">Selecione uma marca para ver os itens.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE GERENCIAMENTO DO MOSTRUÁRIO (MT) -->
+    <div id="mt-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gerencia-from-mt-management" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gerenciar MT</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+
+            <!-- Seção para Adicionar Novo Item -->
+            <div class="employee-meta-card">
+                <h4>Adicionar Novo Item ao MT</h4>
+                <div class="input-group">
+                    <label for="mt-add-brand">Marca</label>
+                    <select id="mt-add-brand" class="data-input">
+                        <option value="" disabled selected>Selecione a marca...</option>
+                        <option value="xiaomi">Xiaomi</option>
+                        <option value="poco">Poco</option>
+                        <option value="realme">Realme</option>
+                        <option value="umidigi">Umidigi</option>
+                        <option value="itel">Itel</option>
+                        <option value="tecno">Tecno</option>
+                        <option value="infinix">Infinix</option>
+                        <option value="honor">Honor</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="mt-add-text">Texto do Item</label>
+                    <textarea id="mt-add-text" class="data-input" rows="4" placeholder="REALME Note 50 – 64GB / 3GB
+💰 Entrada a partir de R$ 570,00
+⚫ Preto | 🔵 Azul"></textarea>
+                </div>
+                <button id="save-mt-item-btn" class="action-button" style="max-width: none;">Salvar Item</button>
+                <p id="mt-add-status" class="status-message"></p>
+            </div>
+
+            <!-- Seção para Listar e Excluir Itens -->
+            <div class="employee-meta-card">
+                <h4>Itens Cadastrados</h4>
+                <div id="mt-list-container">
+                    <!-- Lista de itens será carregada aqui -->
+                    <p style="text-align:center;">Carregando...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+<!-- Tela de Configuração de Metas e Premiações -->
+    <div id="metas-config-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gerencia-from-metas" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Metas e Premiações</h2>
+        </div>
+        <div id="metas-content-container" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <!-- O JavaScript vai popular esta área -->
+        </div>
+        <div class="save-footer">
+            <button id="save-all-metas" class="action-button">Salvar Todas as Metas</button>
+            <p id="metas-status-message" class="status-message"></p>
+        </div>
+    </div>
+
+    <!-- Tela de Visualização de Metas (Para o Colaborador) -->
+    <div id="metas-display-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-collab-from-metas" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Metas e Premiações</h2>
+        </div>
+        <div id="metas-display-content" class="collaborator-content" style="flex-direction: column; align-items: flex-start; justify-content: flex-start;">
+            <!-- O JavaScript vai popular esta área -->
+        </div>
+    </div>
+
+    <!-- Tela para Enviar um Novo Dispositivo -->
+    <div id="send-device-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-send" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Enviar Novo Dispositivo</h2>
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <div class="input-group">
+                <label for="device-brand">Marca</label>
+                <select id="device-brand" class="data-input">
+                    <option value="" disabled selected>Selecione a marca...</option>
+                    <option value="xiaomi">Xiaomi</option>
+                    <option value="poco">Poco</option>
+                    <option value="realme">Realme</option>
+                    <option value="umidigi">Umidigi</option>
+                    <option value="itel">Itel</option>
+                    <option value="tecno">Tecno</option>
+                    <option value="infinix">Infinix</option>
+                    <option value="honor">Honor</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="device-name">Nome do Dispositivo</label>
+                <input type="text" id="device-name" class="data-input" placeholder="Ex: Infinix Hot 60i">
+            </div>
+            <div class="input-group">
+                <label for="device-image-url">URL da Imagem Principal</label>
+                <input type="text" id="device-image-url" class="data-input" placeholder="Cole o link da imagem aqui">
+            </div>
+            <div class="input-group">
+                <label for="device-tudocelular-url">Link do TudoCelular</label>
+                <input type="text" id="device-tudocelular-url" class="data-input" placeholder="Cole o link da ficha técnica">
+            </div>
+            <div class="input-group">
+                <label for="device-price-table">💰 Tabela de Preços</label>
+                <textarea id="device-price-table" class="data-input" rows="4" placeholder="P1 ✅ R$ 1.399,00
+P2 ⚠️ R$ 1.319,00
+P3 🚨 R$ 1.249,00"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="device-insurance-table">🔧 Tabela de Seguro</label>
+                <textarea id="device-insurance-table" class="data-input" rows="4" placeholder="P1: R$ 339,00
+P2: R$ 309,00
+P3: R$ 299,00"></textarea>
+            </div>
+            <button id="save-device-btn" class="action-button" style="margin-top: 1rem;">Salvar Dispositivo</button>
+            <p id="send-device-status" class="status-message"></p>
+        </div>
+    </div>
+
+    <!-- Tela para Listar Dispositivos de uma Marca -->
+    <div id="brand-devices-page" style="display: none;">
+         <div class="collaborator-header">
+            <button id="back-to-main-from-brand" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="brand-page-title">Marca</h2>
+        </div>
+        <div id="brand-devices-grid" class="collaborator-content" style="flex-wrap: wrap; justify-content: flex-start; align-items: flex-start; gap: 1rem; overflow-y: auto;">
+            <!-- O JavaScript vai popular esta área -->
+        </div>
+    </div>
+    
+    <!-- Tela para Ver os Detalhes de um Dispositivo -->
+    <div id="device-detail-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-brand-from-detail" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="device-detail-title">Nome do Dispositivo</h2>
+        </div>
+        <div id="device-detail-content" class="collaborator-content" style="flex-direction: column; align-items: flex-start; justify-content: flex-start; overflow-y: auto; padding: 1.5rem;">
+            <!-- O JavaScript vai popular esta área -->
+        </div>
+    </div>
+
+    <!-- Tela do Painel de Vendas da Gerente -->
+    <div id="manager-sales-panel-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-collab-from-panel" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Painel de Vendas da Gerente</h2>
+        </div>
+        <div id="manager-sales-panel-content" class="collaborator-content" style="flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 1.5rem; padding-top: 1rem; overflow-y: auto;">
+            <!-- O JavaScript vai popular esta área com os cards de cada vendedor -->
+        </div>
+    </div>
+
+    <!-- TELA DE FECHAMENTO -->
+    <div id="closing-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-collab-from-closing" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Lançamento de Fechamento</h2>
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 1rem; padding-top: 1rem; overflow-y: auto;">
+            
+            <!-- Seleção da Loja -->
+            <div id="closing-store-selection" class="modal-button-container" style="padding: 0 1rem;">
+                 <h3 class="modal-title" style="font-size: 1.2rem;">Selecione a Loja</h3>
+                 <button id="closing-btn-pinheiro" class="modal-btn">Pinheiro</button>
+                 <button id="closing-btn-bacabal" class="modal-btn">Bacabal</button>
+            </div>
+
+            <!-- Formulário Pinheiro -->
+            <div id="closing-form-pinheiro" style="display: none; padding: 0 1rem;">
+                <h3 class="modal-title">Fechamento - Pinheiro</h3>
+                <div class="input-group"><label for="closing-venda-beatriz">VENDA DE BEATRIZ 📈</label><input type="number" id="closing-venda-beatriz" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-beatriz">CARTOES BEATRIZ (DIARIO) 💳</label><input type="number" id="closing-cartao-beatriz" class="data-input"></div>
+                <div class="input-group"><label for="closing-venda-marcio">VENDA DE MARCIO 📈</label><input type="number" id="closing-venda-marcio" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-marcio">CARTOES MARCIO (DIARIO) 💳</label><input type="number" id="closing-cartao-marcio" class="data-input"></div>
+                <div class="input-group"><label for="closing-venda-eliseu">VENDA DE ELISEU 📈</label><input type="number" id="closing-venda-eliseu" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-eliseu">CARTOES ELISEU (DIARIO) 💳</label><input type="number" id="closing-cartao-eliseu" class="data-input"></div>
+                <div class="meta-group-title">Geral</div>
+                <div class="input-group"><label for="closing-seguro-beatriz">SEGURO DE BEATRIZ (GERAL) 📝</label><input type="number" id="closing-seguro-beatriz" class="data-input"></div>
+                <div class="input-group"><label for="closing-seguro-marcio">SEGURO DE MARCIO (GERAL) 📝</label><input type="number" id="closing-seguro-marcio" class="data-input"></div>
+                <div class="input-group"><label for="closing-seguro-eliseu">SEGURO DE ELISEU (GERAL) 📝</label><input type="number" id="closing-seguro-eliseu" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-beatriz">PN/PP DE BEATRIZ 🔱</label><input type="number" id="closing-p1p2-beatriz" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-marcio">PN/PP DE MARCIO 🔱</label><input type="number" id="closing-p1p2-marcio" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-eliseu">PN/PP DE ELISEU 🔱</label><input type="number" id="closing-p1p2-eliseu" class="data-input"></div>
+            </div>
+            
+            <!-- Formulário Bacabal -->
+            <div id="closing-form-bacabal" style="display: none; padding: 0 1rem;">
+                <h3 class="modal-title">Fechamento - Bacabal</h3>
+                <div class="input-group"><label for="closing-venda-natalia">VENDA DE NATALIA 📈</label><input type="number" id="closing-venda-natalia" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-natalia">CARTOES NATALIA (DIARIO) 💳</label><input type="number" id="closing-cartao-natalia" class="data-input"></div>
+                <div class="input-group"><label for="closing-venda-tacilio">VENDA DE TACILIO 📈</label><input type="number" id="closing-venda-tacilio" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-tacilio">CARTOES TACILIO (DIARIO) 💳</label><input type="number" id="closing-cartao-tacilio" class="data-input"></div>
+                <div class="input-group"><label for="closing-venda-denilson">VENDA DE DENILSON 📈</label><input type="number" id="closing-venda-denilson" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-denilson">CARTOES DENILSON (DIARIO) 💳</label><input type="number" id="closing-cartao-denilson" class="data-input"></div>
+                 <div class="meta-group-title">Geral</div>
+                <div class="input-group"><label for="closing-seguro-natalia">SEGURO DE NATALIA (GERAL) 📝</label><input type="number" id="closing-seguro-natalia" class="data-input"></div>
+                <div class="input-group"><label for="closing-seguro-tacilio">SEGURO DE TACILIO (GERAL) 📝</label><input type="number" id="closing-seguro-tacilio" class="data-input"></div>
+                <div class="input-group"><label for="closing-seguro-denilson">SEGURO DE DENILSON (GERAL) 📝</label><input type="number" id="closing-seguro-denilson" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-natalia">PN/PP DE NATALIA 🔱</label><input type="number" id="closing-p1p2-natalia" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-tacilio">PN/PP DE TACILO 🔱</label><input type="number" id="closing-p1p2-tacilio" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-denilson">PN/PP DE DENILSON 🔱</label><input type="number" id="closing-p1p2-denilson" class="data-input"></div>
+            </div>
+            
+             <!-- Botão de Envio (comum aos dois forms) -->
+            <div id="closing-submit-container" style="display: none; padding: 1.5rem 1rem;">
+                <button id="submit-closing-data-btn" class="action-button">Enviar Fechamento</button>
+                <p id="closing-status-message" class="status-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE CORREÇÃO DE DADOS DE FUNCIONÁRIOS -->
+    <div id="correction-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gerencia-from-correction" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Corrigir Dados de Vendas</h2>
+        </div>
+        <div id="correction-content-container" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <!-- O JavaScript vai popular esta área com os cards de cada funcionário -->
+        </div>
+        <div class="save-footer">
+            <button id="save-all-corrections-btn" class="action-button">Salvar Correções</button>
+            <p id="correction-status-message" class="status-message"></p>
+        </div>
+    </div>
+
+    <!-- Janela Modal para Suporte -->
+    <div id="suporte-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-suporte-modal-btn" class="modal-close-btn">×</button>
+            <h3 class="modal-title">Contato do Suporte</h3>
+            <div class="modal-button-container">
+                <a href="https://wa.me/553535732600?text=CNPJ%20PHO%2052524851000137%0ACNPJ%20BAC%2057269647000130" target="_blank" class="modal-btn">Brasil Card</a>
+                <a href="https://wa.me/5511963568037?text=CNPJ%20PHO%2052524851000137%0ACNPJ%20BAC%2057269647000130" target="_blank" class="modal-btn">Pay Mobi</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Janela Modal para Ordem de Serviço (OS) -->
+    <div id="os-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-os-modal-btn" class="modal-close-btn">×</button>
+            <h3 class="modal-title">Assistência Técnica</h3>
+            <div class="modal-button-container">
+                <button id="open-os-form-btn" class="modal-btn">Todas as Marcas</button>
+                <a href="https://w.app/gkesxd" target="_blank" class="modal-btn">Realme</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE SOLICITAÇÃO DE ESTOQUE -->
+    <div id="request-stock-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-stock" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Solicitar Estoque</h2>
+        </div>
+        <!-- Container principal com padding para não encostar no rodapé fixo -->
+        <div id="stock-product-list" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 1rem; padding-bottom: 150px;">
+            <!-- O JavaScript vai popular esta área -->
+        </div>
+        <!-- Rodapé fixo para o "carrinho" -->
+        <div id="stock-selection-footer" class="save-footer" style="position: sticky; bottom: 0; background: rgba(30,30,60,0.9); backdrop-filter: blur(5px); display: none;">
+            <h4>Itens Selecionados</h4>
+            <div id="stock-selection-list"></div>
+            <button id="send-stock-request-btn" class="action-button" style="margin-top: 1rem;">Enviar Solicitação</button>
+        </div>
+    </div>
+
+    <!-- TELA DE FORMULÁRIO DE ORDEM DE SERVIÇO (OS) -->
+    <div id="os-form-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-os" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Ordem de Serviço</h2>
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <p class="os-warning">ATENÇÃO: REMOVA A SENHA DO APARELHO!</p>
+            <div class="input-group"><label for="os-colaborador">COLABORADOR (Obrigatório)</label><input type="text" id="os-colaborador" class="data-input"></div>
+            <div class="input-group"><label for="os-cidade">CIDADE REMETENTE (Obrigatório)</label><input type="text" id="os-cidade" class="data-input"></div>
+            <div class="input-group"><label for="os-data">DATA DE ENVIO (Obrigatório)</label><input type="date" id="os-data" class="data-input"></div>
+
+            <div class="employee-meta-card"><h4>Aparelho 1</h4>
+                <div class="input-group"><label for="os-cliente-1">CLIENTE E TELEFONE</label><textarea id="os-cliente-1" class="data-input" rows="2"></textarea></div>
+                <div class="input-group"><label for="os-modelo-1">MODELO, DEFEITO E IMEI</label><textarea id="os-modelo-1" class="data-input" rows="3"></textarea></div>
+            </div>
+            <div class="employee-meta-card"><h4>Aparelho 2</h4>
+                <div class="input-group"><label for="os-cliente-2">CLIENTE E TELEFONE</label><textarea id="os-cliente-2" class="data-input" rows="2"></textarea></div>
+                <div class="input-group"><label for="os-modelo-2">MODELO, DEFEITO E IMEI</label><textarea id="os-modelo-2" class="data-input" rows="3"></textarea></div>
+            </div>
+            <div class="employee-meta-card"><h4>Aparelho 3</h4>
+                <div class="input-group"><label for="os-cliente-3">CLIENTE E TELEFONE</label><textarea id="os-cliente-3" class="data-input" rows="2"></textarea></div>
+                <div class="input-group"><label for="os-modelo-3">MODELO, DEFEITO E IMEI</label><textarea id="os-modelo-3" class="data-input" rows="3"></textarea></div>
+            </div>
+            <div class="employee-meta-card"><h4>Aparelho 4</h4>
+                <div class="input-group"><label for="os-cliente-4">CLIENTE E TELEFONE</label><textarea id="os-cliente-4" class="data-input" rows="2"></textarea></div>
+                <div class="input-group"><label for="os-modelo-4">MODELO, DEFEITO E IMEI</label><textarea id="os-modelo-4" class="data-input" rows="3"></textarea></div>
+            </div>
+            <div class="employee-meta-card"><h4>Aparelho 5</h4>
+                <div class="input-group"><label for="os-cliente-5">CLIENTE E TELEFONE</label><textarea id="os-cliente-5" class="data-input" rows="2"></textarea></div>
+                <div class="input-group"><label for="os-modelo-5">MODELO, DEFEITO E IMEI</label><textarea id="os-modelo-5" class="data-input" rows="3"></textarea></div>
+            </div>
+            
+            <div class="save-footer">
+                <button id="submit-os-form-btn" class="action-button">Enviar OS por Email</button>
+                <p id="os-form-status" class="status-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE RECIBOS -->
+    <div id="recibos-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-recibos" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Lançar Recibo de Gastos</h2>
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1.5rem; align-items: stretch; overflow-y: auto;">
+            
+            <div class="input-group"><label for="recibo-nome">NOME (Obrigatório)</label><input type="text" id="recibo-nome" class="data-input" placeholder="Seu nome"></div>
+            <div class="input-group"><label for="recibo-loja">LOJA (Obrigatório)</label><input type="text" id="recibo-loja" class="data-input" placeholder="Pinheiro ou Bacabal"></div>
+
+            <div class="input-group">
+                <label for="recibo-data">DATA DO GASTO (Obrigatório)</label>
+                <div class="date-input-group">
+                    <input type="number" id="recibo-dia" class="data-input" placeholder="DD" min="1" max="31">
+                    <input type="number" id="recibo-mes" class="data-input" placeholder="MM" min="1" max="12">
+                    <input type="number" id="recibo-ano" class="data-input" placeholder="AAAA" min="2023">
+                </div>
+            </div>
+            
+            <div class="input-group"><label for="recibo-gastos">GASTOS (Descrição e Valor - Obrigatório)</label><textarea id="recibo-gastos" class="data-input" rows="4" placeholder="Ex: Almoço - R$ 15,00
+Transporte - R$ 5,00"></textarea></div>
+            <div class="input-group"><label for="recibo-nota">NOTA/CUPOM (Opcional)</label><textarea id="recibo-nota" class="data-input" rows="2" placeholder="Se houver, descreva ou cole o texto aqui."></textarea></div>
+            
+            <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
+                <button id="submit-recibo-btn" class="action-button">Enviar Recibo</button>
+                <p id="recibo-status-message" class="status-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE QUIZ (FEEDBACK) -->
+    <div id="quiz-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-main-from-quiz" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Feedback de Clima</h2>
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1.5rem; align-items: stretch; overflow-y: auto;">
+            
+            <div class="input-group"><label for="quiz-nome">NOME (Obrigatório)</label><input type="text" id="quiz-nome" class="data-input" placeholder="Seu nome"></div>
+
+            <div class="quiz-question-group">
+                <label>1. Como você se sente no seu trabalho atualmente? (Obrigatório)</label>
+                <div class="radio-option"><input type="radio" id="sentimento-motivado" name="sentimento" value="Motivado(a)"><label for="sentimento-motivado">Motivado(a)</label></div>
+                <div class="radio-option"><input type="radio" id="sentimento-neutro" name="sentimento" value="Neutro(a)"><label for="sentimento-neutro">Neutro(a)</label></div>
+                <div class="radio-option"><input type="radio" id="sentimento-desmotivado" name="sentimento" value="Desmotivado(a)"><label for="sentimento-desmotivado">Desmotivado(a)</label></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>2. Você sente que tem voz dentro da empresa? (Obrigatório)</label>
+                <div class="radio-option"><input type="radio" id="voz-sempre" name="voz" value="Sempre posso me expressar"><label for="voz-sempre">Sempre posso me expressar</label></div>
+                <div class="radio-option"><input type="radio" id="voz-asvezes" name="voz" value="Às vezes sim, às vezes não"><label for="voz-asvezes">Às vezes sim, às vezes não</label></div>
+                <div class="radio-option"><input type="radio" id="voz-nao" name="voz" value="Sinto que não sou ouvido(a)"><label for="voz-nao">Sinto que não sou ouvido(a)</label></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>3. Como você avalia a liderança da equipe? (Obrigatório)</label>
+                <div class="radio-option"><input type="radio" id="lideranca-apoiado" name="lideranca" value="Me sinto apoiado(a) e guiado(a)"><label for="lideranca-apoiado">Me sinto apoiado(a) e guiado(a)</label></div>
+                <div class="radio-option"><input type="radio" id="lideranca-falta" name="lideranca" value="Faço o que é preciso, mas falta mais presença/liderança"><label for="lideranca-falta">Faço o que é preciso, mas falta mais presença/liderança</label></div>
+                <div class="radio-option"><input type="radio" id="lideranca-semapoio" name="lideranca" value="Sinto falta de apoio ou clareza na liderança"><label for="lideranca-semapoio">Sinto falta de apoio ou clareza na liderança</label></div>
+            </div>
+
+            <div class="input-group"><label for="quiz-melhorar">4. O que você acha que a empresa poderia melhorar para o time se sentir mais valorizado e motivado? (Obrigatório)</label><textarea id="quiz-melhorar" class="data-input" rows="4"></textarea></div>
+            <div class="input-group"><label for="quiz-precisando">5. Tem algo que você está precisando agora (apoio, estrutura, etc.) que gostaria de compartilhar? (Obrigatório)</label><textarea id="quiz-precisando" class="data-input" rows="4"></textarea></div>
+            
+            <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
+                <button id="submit-quiz-btn" class="action-button">Enviar Feedback</button>
+                <p id="quiz-status-message" class="status-message"></p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- TELA PARA BATER PONTO (CÂMERA) -->
+    <div id="ponto-page" style="display: none; background-color: #000;">
+        <div class="collaborator-header" style="background: #000;">
+            <button id="back-to-collab-from-ponto" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Bater Ponto</h2>
+        </div>
+        <div class="ponto-camera-container">
+            <video id="ponto-video" playsinline autoplay muted></video>
+            <canvas id="ponto-canvas" style="display: none;"></canvas>
+            <div class="ponto-camera-overlay">
+                <p>Centralize seu rosto no círculo</p>
+                <div class="ponto-circle-guide"></div>
+            </div>
+            <div id="ponto-status-message" class="status-message" style="position: absolute; bottom: 100px; width: 100%; color: white; background: rgba(0,0,0,0.5); padding: 0.5rem 0;"></div>
+            <div class="ponto-controls">
+                <button id="capture-ponto-btn" class="ponto-capture-button">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE VERIFICAÇÃO DE PONTO (LISTA DE FUNCIONÁRIOS) -->
+    <div id="ponto-verification-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gerencia-from-ponto-verify" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Verificar Ponto</h2>
+        </div>
+        <div id="ponto-employee-list" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- JS vai popular a lista de funcionários aqui -->
+        </div>
+    </div>
+
+    <!-- TELA DE HISTÓRICO DE PONTO DE UM FUNCIONÁRIO -->
+    <div id="ponto-history-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-ponto-verify-from-history" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="ponto-history-title">Histórico de Ponto</h2>
+        </div>
+        <div id="ponto-history-container" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- JS vai popular o histórico aqui -->
+        </div>
+    </div>
+
+
+    <!-- TELA DE VISUALIZAÇÃO DE IMAGEM (NOVA) -->
+    <div id="image-viewer-overlay" class="modal-overlay">
+        <button id="close-viewer-btn" class="modal-close-btn" style="z-index: 10;">×</button>
+        <img id="viewer-image" src="" alt="Imagem ampliada">
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- SCRIPTS (CARREGADOS NA ORDEM CORRETA) -->
+    <!-- =================================================================== -->
+
+    <!-- 1. Scripts da biblioteca do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script> <!-- ADICIONADO -->
+
+    <!-- 2. Seu script principal -->
+            <script>
+    // Sua configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxZ041My0mTu8CP9bDvEQ4K3p_wHBIF_c",
+      authDomain: "loja-do-hunter-painel.firebaseapp.com",
+      databaseURL: "https://loja-do-hunter-painel-default-rtdb.firebaseio.com",
+      projectId: "loja-do-hunter-painel",
+      storageBucket: "loja-do-hunter-painel.firebasestorage.app",
+      messagingSenderId: "794925486853",
+      appId: "1:794925486853:web:7b136eefd4a5d337605d6c"
+    };
+
+    // Inicializa o Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const storage = firebase.storage(); // INICIALIZA O STORAGE
+
+    // --- CONSTANTE DE SENHA ---
+    const PASSWORD = '123789';
+
+    // Variáveis para guardar as instâncias dos gráficos e evitar duplicação
+    let storeChartInstance = null;
+    let employeeChartInstance = null;
+    let monthlySalesChartInstance = null;
+
+    // --- ESTADO DA APLICAÇÃO ---
+    const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Denilson'];
+    const managers = ['Beatriz', 'Natalia'];
+    const storeMapping = {
+        pinheiro: ['Beatriz', 'Marcio', 'Eliseu'],
+        bacabal: ['Natalia', 'Tacilio', 'Denilson']
+    };
+    let currentCollaboratorName = '';
+    let currentBrand = '';
+    let isNavigating = false; // Flag para prevenir cliques duplos durante animações
+    let stockRequestSelection = []; // Array para guardar os itens solicitados
+    let cameraStream = null; // Para controlar o stream da câmera
+
+    // --- ELEMENTOS DO DOM ---
+    const mainContainer = document.querySelector('.mobile-container');
+    const allPages = document.querySelectorAll('.page, .modal-overlay'); // Pega todas as "telas"
+
+    // Adiciona a classe 'page' onde for necessário
+    document.getElementById('ponto-page').classList.add('page');
+    document.getElementById('ponto-verification-page').classList.add('page');
+    document.getElementById('ponto-history-page').classList.add('page');
+    document.getElementById('collaborator-page').classList.add('page');
+    document.getElementById('gerencia-page').classList.add('page');
+    document.getElementById('metas-config-page').classList.add('page');
+    document.getElementById('metas-display-page').classList.add('page');
+    document.getElementById('send-device-page').classList.add('page');
+    document.getElementById('brand-devices-page').classList.add('page');
+    document.getElementById('device-detail-page').classList.add('page');
+    document.getElementById('manager-sales-panel-page').classList.add('page');
+    document.getElementById('closing-page').classList.add('page');
+    document.getElementById('correction-page').classList.add('page');
+    document.getElementById('os-form-page').classList.add('page');
+    document.getElementById('request-stock-page').classList.add('page');
+    document.getElementById('recibos-page').classList.add('page');
+    document.getElementById('quiz-page').classList.add('page');
+    document.getElementById('crediario-calculator-page').classList.add('page');
+    document.getElementById('site-calculator-page').classList.add('page');
+    document.getElementById('loja-calculator-page').classList.add('page');
+    document.getElementById('mt-display-page').classList.add('page');
+    document.getElementById('mt-management-page').classList.add('page');
+
+    // Mapeia os elementos para fácil acesso
+    const elements = {
+        mainContainer: mainContainer,
+        modal: document.getElementById('colaborador-modal'),
+        collaboratorPage: document.getElementById('collaborator-page'),
+        gerenciaPage: document.getElementById('gerencia-page'),
+        metasConfigPage: document.getElementById('metas-config-page'),
+        metasDisplayPage: document.getElementById('metas-display-page'),
+        sendDevicePage: document.getElementById('send-device-page'),
+        brandDevicesPage: document.getElementById('brand-devices-page'),
+        deviceDetailPage: document.getElementById('device-detail-page'),
+        managerSalesPanelPage: document.getElementById('manager-sales-panel-page'),
+        closingPage: document.getElementById('closing-page'),
+        correctionPage: document.getElementById('correction-page'),
+        suporteModal: document.getElementById('suporte-modal'),
+        osModal: document.getElementById('os-modal'),
+        osFormPage: document.getElementById('os-form-page'),
+        requestStockPage: document.getElementById('request-stock-page'),
+        recibosPage: document.getElementById('recibos-page'),
+       quizPage: document.getElementById('quiz-page'), // Nova página
+        crediarioCalculatorPage: document.getElementById('crediario-calculator-page'),
+        siteCalculatorPage: document.getElementById('site-calculator-page'),
+        lojaCalculatorPage: document.getElementById('loja-calculator-page'),
+        mtDisplayPage: document.getElementById('mt-display-page'),
+        mtManagementPage: document.getElementById('mt-management-page'),mtManagementPage: document.getElementById('mt-management-page'),
+        pontoPage: document.getElementById('ponto-page'),
+        pontoVerificationPage: document.getElementById('ponto-verification-page'),
+        pontoHistoryPage: document.getElementById('ponto-history-page'),
+        searchOverlay: document.getElementById('search-overlay'),
+    };    
+    // --- LÓGICA DE NAVEGAÇÃO E ANIMAÇÃO (REFEITA DO ZERO) ---
+    function staggerAnimate(container) {
+        const items = container.querySelectorAll('.brand-button, .tool-item, .device-card, .modal-btn, .action-button');
+        items.forEach((item, index) => {
+            item.style.animationDelay = `${index * 40}ms`;
+        });
+    }
+
+    function showScreen(screenElement) {
+        if (isNavigating) return;
+        isNavigating = true;
+
+        const currentScreen = document.querySelector('.visible');
+
+        const transitionEnd = () => {
+            isNavigating = false;
+        };
+
+        if (currentScreen) {
+            currentScreen.classList.add('is-exiting');
+            currentScreen.addEventListener('animationend', () => {
+                currentScreen.classList.remove('visible', 'is-exiting');
+                screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
+                requestAnimationFrame(() => {
+                    screenElement.classList.add('visible');
+                    staggerAnimate(screenElement);
+                    transitionEnd();
+                });
+            }, { once: true });
+        } else {
+            // Nenhuma tela visível, apenas mostra a nova
+            screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
+            requestAnimationFrame(() => {
+                screenElement.classList.add('visible');
+                staggerAnimate(screenElement);
+                transitionEnd();
+            });
+        }
+    }
+    
+    // Funções de atalho para a navegação
+    const showPage = (pageKey) => showScreen(elements[pageKey]);
+    const showMainPage = () => showScreen(mainContainer);
+
+    // --- FUNÇÕES DA MODAL (ADAPTADAS PARA A NOVA NAVEGAÇÃO) ---
+    const openModal = () => {
+        const modal = elements.modal;
+        if(isNavigating) return;
+        isNavigating = true;
+        
+        document.getElementById('colaborador-cidades').style.display = 'block';
+        document.getElementById('colaborador-pinheiro').style.display = 'none';
+        document.getElementById('colaborador-bacabal').style.display = 'none';
+        
+        modal.style.display = 'flex';
+        requestAnimationFrame(() => {
+            modal.classList.add('visible');
+            staggerAnimate(modal);
+            isNavigating = false;
+        });
+    };
+
+        const closeModal = (onClosedCallback) => {
+        const modal = elements.modal;
+        if (isNavigating || !modal.classList.contains('visible')) return;
+        isNavigating = true;
+
+        // Adiciona a classe que dispara a animação de SAÍDA.
+        modal.classList.add('is-exiting');
+
+        // Escuta o fim da ANIMAÇÃO no próprio modal-overlay. Esta é a animação principal.
+        modal.addEventListener('animationend', (e) => {
+            // ESSA VERIFICAÇÃO É CRUCIAL.
+            // Garante que estamos reagindo ao fim da animação do 'modal-overlay'
+            // e não de alguma outra animação interna que possa ter acontecido.
+            if (e.target === modal) {
+                // Esconde o modal completamente e limpa todas as classes.
+                modal.style.display = 'none';
+                modal.classList.remove('visible', 'is-exiting');
+                isNavigating = false;
+
+                // Executa a função de callback, que irá abrir a página do colaborador.
+                if (typeof onClosedCallback === 'function') {
+                    onClosedCallback();
+                }
+            }
+        }, { once: true });
+    };
+
+    // --- FUNÇÃO DE VERIFICAÇÃO DE SENHA ---
+    const checkPassword = () => {
+        const userInput = prompt("Por favor, digite a senha de acesso:");
+        if (userInput === null) return false;
+        if (userInput === PASSWORD) return true;
+        alert("Senha incorreta!");
+        return false;
+    };
+    
+    // --- DEMAIS FUNÇÕES (SEM ALTERAÇÃO NA LÓGICA INTERNA) ---
+    // As funções loadGerenciaData e saveGerenciaData foram removidas pois se tornaram obsoletas
+    // com a implementação do novo Dashboard e da página de Configurações Gerais.
+            const buildAndLoadMetasPage = () => {
+        const container = document.getElementById('metas-content-container');
+        container.innerHTML = `<p style="text-align: center;">Carregando dados...</p>`;
+
+        database.ref('metas').get().then(metasSnapshot => {
+            const allMetas = metasSnapshot.exists() ? metasSnapshot.val() : {};
+            container.innerHTML = '';
+
+            allCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const metasData = allMetas[key] || {};
+                
+                // Cards para Metas e Premiações por funcionário
+                container.innerHTML += `
+                    <div class="employee-meta-card">
+                        <h4>Metas e Prêmios: ${name}</h4>
+                        <div class="meta-group-title">Metas</div>
+                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="number" id="venda-${key}" class="data-input" value="${metasData.venda || ''}"></div>
+                        <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
+                        <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="number" id="p1-${key}" class="data-input" value="${metasData.p1 || ''}"></div>
+                        <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
+                        <div class="meta-group-title">Premiações 💰</div>
+                        <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="number" id="premio-p1p2-${key}" class="data-input" value="${metasData.premioP1P2 || ''}"></div>
+                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (R$)</label><input type="number" id="premio-seguro-${key}" class="data-input" value="${metasData.premioSeguro || ''}"></div>
+                        <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="number" id="premio-cartao-${key}" class="data-input" value="${metasData.premioCartao || ''}"></div>
+                    </div>`;
+            });
+        });
+    };
+        const saveAllMetas = () => {
+        const statusMessage = document.getElementById('metas-status-message');
+        statusMessage.textContent = 'Salvando dados...';
+        const metasDataToSave = {};
+
+        allCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            metasDataToSave[key] = {
+                venda: document.getElementById(`venda-${key}`).value,
+                seguro: document.getElementById(`seguro-${key}`).value,
+                p1: document.getElementById(`p1-${key}`).value,
+                cartao: document.getElementById(`cartao-${key}`).value,
+                premioP1P2: document.getElementById(`premio-p1p2-${key}`).value,
+                premioSeguro: document.getElementById(`premio-seguro-${key}`).value,
+                premioCartao: document.getElementById(`premio-cartao-${key}`).value,
+            };
+        });
+
+        database.ref('metas').set(metasDataToSave).then(() => {
+            statusMessage.textContent = 'Todos os dados foram salvos!';
+        }).catch((error) => {
+            statusMessage.textContent = 'Erro ao salvar os dados!';
+            console.error(error);
+        });
+    };
+    const loadAndDisplayCollaboratorMetas = () => {
+        const container = document.getElementById('metas-display-content');
+        const key = currentCollaboratorName.toLowerCase();
+        container.innerHTML = `<p>Carregando suas metas...</p>`;
+        database.ref(`metas/${key}`).get().then(snapshot => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                container.innerHTML = `<h3>METAS</h3><p><strong>📈 VENDA:</strong> R$ ${data.venda || '0,00'}</p><p><strong>🔧 SEGURO:</strong> ${data.seguro || 0}</p><p><strong>🔱 P1 50%:</strong> R$ ${data.p1 || '0,00'}</p><p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p><br><h3>PREMIAÇÕES 💰💰💰</h3><p><strong>1% SOBRE A VENDA</strong></p><p><strong>P1/P2 50%:</strong> R$ ${data.premioP1P2 || '0,00'}</p><p><strong>SEGURO:</strong> R$ ${data.premioSeguro || '0,00'}</p><p><strong>CARTÃO 2%+:</strong> R$ ${data.premioCartao || '0,00'}</p>`;
+            } else {
+                container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
+            }
+        });
+    };
+    const saveDevice = () => {
+        const statusEl = document.getElementById('send-device-status');
+        const brand = document.getElementById('device-brand').value;
+        const name = document.getElementById('device-name').value.trim();
+        const imageUrl = document.getElementById('device-image-url').value.trim();
+        const tudocelularUrl = document.getElementById('device-tudocelular-url').value.trim();
+        if (!brand || !name || !imageUrl || !tudocelularUrl) {
+            statusEl.textContent = 'Preencha os campos obrigatórios!'; return;
+        }
+        statusEl.textContent = 'Salvando...';
+        const newDevice = { name, imageUrl, tudocelularUrl, priceTable: document.getElementById('device-price-table').value.trim(), insuranceTable: document.getElementById('device-insurance-table').value.trim() };
+        database.ref(`devices/${brand}`).push(newDevice).then(() => {
+            statusEl.textContent = 'Dispositivo salvo!';
+            document.getElementById('send-device-page').querySelectorAll('input, textarea, select').forEach(el => { if(el.tagName !== 'SELECT') el.value = ''; else el.selectedIndex = 0; });
+        }).catch(() => { statusEl.textContent = 'Erro ao salvar!'; });
+    };
+    const loadBrandDevices = (brand) => {
+        currentBrand = brand;
+        document.getElementById('brand-page-title').textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
+        const grid = document.getElementById('brand-devices-grid');
+        grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Carregando dispositivos...</p>';
+        showPage('brandDevicesPage');
+        database.ref(`devices/${brand}`).once('value', snapshot => {
+            grid.innerHTML = '';
+            if (snapshot.exists()) {
+                const devices = snapshot.val();
+                Object.keys(devices).forEach(key => {
+                    const device = devices[key];
+                    const card = document.createElement('div');
+                    card.className = 'device-card';
+                    card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
+                    card.addEventListener('click', () => loadDeviceDetails(key));
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Nenhum dispositivo cadastrado para esta marca.</p>';
+            }
+            staggerAnimate(grid.parentElement);
+        });
+    };
+    const loadDeviceDetails = (key) => {
+        database.ref(`devices/${currentBrand}/${key}`).once('value', snapshot => {
+            const device = snapshot.val();
+            document.getElementById('device-detail-title').textContent = device.name;
+            const contentContainer = document.getElementById('device-detail-content');
+            
+            contentContainer.innerHTML = `
+                <img src="${device.imageUrl}" alt="${device.name}">
+                <h3>💰 Tabela de Preços</h3><pre>${device.priceTable || 'Não informado.'}</pre>
+                <h3>🔧 Seguro Opcional</h3><pre>${device.insuranceTable || 'Não informado.'}</pre>
+                <h3>⚙️ Ficha Técnica Completa</h3><a href="${device.tudocelularUrl}" target="_blank">Ver no TudoCelular.com</a>
+                <button id="delete-device-btn" class="action-button delete-button"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
+            `;
+            
+            showPage('deviceDetailPage');
+            
+            // Adiciona os listeners DEPOIS que a página é mostrada e o conteúdo existe
+            document.getElementById('delete-device-btn').addEventListener('click', () => deleteDevice(key));
+            // O botão de voltar da página de detalhes também é configurado aqui
+            document.getElementById('back-to-brand-from-detail').addEventListener('click', () => showPage('brandDevicesPage'));
+        });
+    };
+    const deleteDevice = (key) => {
+        if (!checkPassword()) return;
+        if (!confirm('Tem certeza?')) return;
+        database.ref(`devices/${currentBrand}/${key}`).remove()
+            .then(() => { alert('Deletado!'); loadBrandDevices(currentBrand); })
+            .catch(() => { alert('Erro ao deletar.'); });
+    };
+
+    const loadDashboardData = () => {
+        const statusEl = document.getElementById('status-message');
+        statusEl.textContent = 'Carregando dashboard...';
+
+        Promise.all([
+            database.ref('salesData').get(),
+            database.ref('monthlySales').get()
+        ]).then(([salesSnapshot, monthlySnapshot]) => {
+            const salesData = salesSnapshot.exists() ? salesSnapshot.val() : {};
+            const monthlyData = monthlySnapshot.exists() ? monthlySnapshot.val() : {};
+            
+            // --- Cálculos de Vendas Gerais e por Loja ---
+            let totalVendas = 0, vendasPinheiro = 0, vendasBacabal = 0;
+            let melhorVendedor = { nome: 'N/A', vendas: 0 };
+
+            allCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const venda = parseFloat(salesData[key]?.vendas || 0);
+                totalVendas += venda;
+
+                if (venda > melhorVendedor.vendas) {
+                    melhorVendedor = { nome: name, vendas: venda };
+                }
+
+                if (storeMapping.pinheiro.includes(name)) {
+                    vendasPinheiro += venda;
+                } else if (storeMapping.bacabal.includes(name)) {
+                    vendasBacabal += venda;
+                }
+            });
+
+            const melhorLoja = vendasPinheiro > vendasBacabal ? 'Pinheiro' : 'Bacabal';
+
+            // --- Cálculo do Valor do Mês Atual ---
+            const now = new Date();
+            const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+            const valorDoMes = monthlyData[currentMonthKey]?.totalVendas || 0;
+
+            // --- Atualização do DOM (KPIs) ---
+            const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('total-vendas-kpi').textContent = formatCurrency(totalVendas);
+            document.getElementById('mes-total-kpi').textContent = formatCurrency(valorDoMes);
+            document.getElementById('pinheiro-vendas-kpi').textContent = formatCurrency(vendasPinheiro);
+            document.getElementById('bacabal-vendas-kpi').textContent = formatCurrency(vendasBacabal);
+            document.getElementById('melhor-loja-kpi').textContent = melhorLoja;
+            document.getElementById('melhor-vendedor-kpi').textContent = melhorVendedor.nome;
+
+            // --- Renderização dos Gráficos e Listas ---
+            renderStoreChart(vendasPinheiro, vendasBacabal);
+            renderEmployeeChart(salesData);
+            renderMonthlySalesList(monthlyData);
+            renderMonthlySalesChart(monthlyData);
+
+            statusEl.textContent = '';
+        });
+    };
+
+    const renderMonthlySalesList = (monthlyData) => {
+        const container = document.getElementById('monthly-sales-list-container');
+        // Mantém o título e limpa só a lista
+        container.innerHTML = '<h4>Lista de Vendas por Mês</h4>';
+
+        const sortedMonths = Object.keys(monthlyData).sort().reverse(); // Mais recente primeiro
+        if (sortedMonths.length === 0) {
+            container.innerHTML += '<p>Nenhum histórico mensal encontrado.</p>';
+            return;
+        }
+
+        sortedMonths.forEach(monthKey => {
+            const value = monthlyData[monthKey].totalVendas;
+            const formattedValue = value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            container.innerHTML += `<p>${monthKey}: <strong>${formattedValue}</strong></p>`;
+        });
+    };
+
+    const renderMonthlySalesChart = (monthlyData) => {
+        const ctx = document.getElementById('monthly-sales-chart').getContext('2d');
+        const sortedMonths = Object.keys(monthlyData).sort(); // Ordem cronológica para o gráfico
+
+        const labels = sortedMonths;
+        const data = sortedMonths.map(month => monthlyData[month].totalVendas);
+
+        if (monthlySalesChartInstance) {
+            monthlySalesChartInstance.destroy();
+        }
+        monthlySalesChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Vendas Mensais',
+                    data: data,
+                    fill: true,
+                    backgroundColor: 'rgba(41, 128, 185, 0.2)',
+                    borderColor: 'rgba(41, 128, 185, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { 
+                    x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    y: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    };
+
+    const renderStoreChart = (vendasPinheiro, vendasBacabal) => {
+        const ctx = document.getElementById('store-sales-chart').getContext('2d');
+        if (storeChartInstance) {
+            storeChartInstance.destroy(); // Destroi o gráfico anterior para evitar sobreposição
+        }
+        storeChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pinheiro', 'Bacabal'],
+                datasets: [{
+                    label: 'Vendas por Loja',
+                    data: [vendasPinheiro, vendasBacabal],
+                    backgroundColor: ['rgba(255, 107, 0, 0.8)', 'rgba(41, 128, 185, 0.8)'],
+                    borderColor: ['#FF6B00', '#2980b9'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { labels: { color: 'white' } } }
+            }
+        });
+    };
+
+    const renderEmployeeChart = (salesData) => {
+        const ctx = document.getElementById('employee-sales-chart').getContext('2d');
+        const labels = allCollaborators;
+        const data = labels.map(name => parseFloat(salesData[name.toLowerCase()]?.vendas || 0));
+
+        if (employeeChartInstance) {
+            employeeChartInstance.destroy();
+        }
+        employeeChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Vendas',
+                    data: data,
+                    backgroundColor: 'rgba(255, 107, 0, 0.6)',
+                    borderColor: '#FF6B00',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Deixa as barras na horizontal para melhor leitura
+                responsive: true,
+                scales: { 
+                    x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    y: { ticks: { color: 'white' }, grid: { display: false } } 
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    };
+
+    const loadAndDisplayIndividualSalesData = () => {
+        const container = document.getElementById('individual-sales-data');
+        container.innerHTML = ''; // Limpa antes de carregar
+        const key = currentCollaboratorName.toLowerCase();
+
+        database.ref(`salesData/${key}`).get().then(snapshot => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                container.innerHTML = `
+                    <div class="sales-data-card">
+                        <h4>Resultados Atuais</h4>
+                        <p>📈 VENDAS: R$ ${data.vendas || '0.00'}</p>
+                        <p>🔱 P1/P2: R$ ${data.p1p2 || '0.00'}</p>
+                        <p>🔧 SEGURO: ${data.seguro || '0'}</p>
+                        <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                    </div>
+                `;
+            } else {
+                 container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
+            }
+        });
+    };
+
+    const loadManagerPanel = () => {
+        const container = document.getElementById('manager-sales-panel-content');
+        container.innerHTML = '<p style="text-align:center;">Carregando dados da equipe...</p>';
+        showPage('managerSalesPanelPage');
+
+        const managerKey = currentCollaboratorName.toLowerCase();
+        let storeEmployees = [];
+        if (storeMapping.pinheiro.includes(currentCollaboratorName)) {
+            storeEmployees = storeMapping.pinheiro;
+        } else if (storeMapping.bacabal.includes(currentCollaboratorName)) {
+            storeEmployees = storeMapping.bacabal;
+        }
+
+        database.ref('salesData').get().then(snapshot => {
+            container.innerHTML = ''; // Limpa o "carregando"
+            const allSales = snapshot.exists() ? snapshot.val() : {};
+            
+            storeEmployees.forEach(employeeName => {
+                const employeeKey = employeeName.toLowerCase();
+                const data = allSales[employeeKey] || {};
+                container.innerHTML += `
+                    <div class="sales-data-card">
+                        <h4>${employeeName}</h4>
+                        <p>📈 VENDAS: R$ ${data.vendas || '0.00'}</p>
+                        <p>🔱 P1/P2: R$ ${data.p1p2 || '0.00'}</p>
+                        <p>🔧 SEGURO: ${data.seguro || '0'}</p>
+                        <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                    </div>
+                `;
+            });
+            staggerAnimate(container);
+        });
+    };
+
+    const clearClosingForm = (store) => {
+        const employees = storeMapping[store];
+        employees.forEach(name => {
+            const key = name.toLowerCase();
+            document.getElementById(`closing-venda-${key}`).value = '';
+            document.getElementById(`closing-cartao-${key}`).value = '';
+            document.getElementById(`closing-seguro-${key}`).value = '';
+            document.getElementById(`closing-p1p2-${key}`).value = '';
+        });
+    };
+    
+        const submitClosingData = () => {
+        const statusEl = document.getElementById('closing-status-message');
+        if (!confirm('Tem certeza que deseja enviar esses dados? A ação não pode ser desfeita.')) {
+            return;
+        }
+        statusEl.textContent = 'Salvando...';
+
+        const formPinheiro = document.getElementById('closing-form-pinheiro');
+        const store = formPinheiro.style.display !== 'none' ? 'pinheiro' : 'bacabal';
+        const employeesForStore = storeMapping[store];
+
+        // Obter data atual no formato YYYY-MM
+        const now = new Date();
+        const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+
+        Promise.all([
+            database.ref('salesData').get(),
+            database.ref(`monthlySales/${currentMonthKey}`).get()
+        ]).then(([salesSnapshot, monthlySalesSnapshot]) => {
+            const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
+            let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
+            let totalVendasDoFechamento = 0;
+
+            employeesForStore.forEach(name => {
+                const key = name.toLowerCase();
+                const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 };
+                
+                const newVenda = parseFloat(document.getElementById(`closing-venda-${key}`).value) || 0;
+                totalVendasDoFechamento += newVenda;
+                const newCartao = parseFloat(document.getElementById(`closing-cartao-${key}`).value) || 0;
+                const newSeguro = parseFloat(document.getElementById(`closing-seguro-${key}`).value) || 0;
+                const newP1P2 = parseFloat(document.getElementById(`closing-p1p2-${key}`).value) || 0;
+
+                existingSales[key] = {
+                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda,
+                    p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
+                    seguro: (parseFloat(currentData.seguro) || 0) + newSeguro,
+                    cartao: (parseFloat(currentData.cartao) || 0) + newCartao,
+                };
+            });
+            
+            // Atualiza o total do mês atual
+            monthlyTotalVendas += totalVendasDoFechamento;
+
+            // Prepara um update atômico para salvar em múltiplos locais
+            const updates = {};
+            updates['/salesData'] = existingSales;
+            updates[`/monthlySales/${currentMonthKey}/totalVendas`] = monthlyTotalVendas;
+
+            database.ref().update(updates).then(() => {
+                statusEl.textContent = 'Fechamento salvo com sucesso!';
+                clearClosingForm(store);
+                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
+            }).catch(error => {
+                statusEl.textContent = 'Erro ao salvar os dados!';
+                console.error(error);
+            });
+        });
+    };
+
+    const buildAndLoadCorrectionPage = () => {
+        const container = document.getElementById('correction-content-container');
+        container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
+        
+        database.ref('salesData').get().then(snapshot => {
+            const allSales = snapshot.exists() ? snapshot.val() : {};
+            container.innerHTML = '';
+
+            allCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const salesData = allSales[key] || {};
+                container.innerHTML += `
+                    <div class="employee-meta-card">
+                        <h4>${name}</h4>
+                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="number" id="correction-vendas-${key}" class="data-input" value="${salesData.vendas || ''}"></div>
+                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="number" id="correction-p1p2-${key}" class="data-input" value="${salesData.p1p2 || ''}"></div>
+                        <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
+                        <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
+                    </div>
+                `;
+            });
+        });
+    };
+
+    const saveCorrections = () => {
+        const statusMessage = document.getElementById('correction-status-message');
+        statusMessage.textContent = 'Salvando correções...';
+        const dataToSave = {};
+
+        allCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            // Pega os valores do formulário e os define. Diferente do 'fechamento', aqui nós substituímos.
+            dataToSave[key] = {
+                vendas: document.getElementById(`correction-vendas-${key}`).value || 0,
+                p1p2: document.getElementById(`correction-p1p2-${key}`).value || 0,
+                seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
+                cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
+            };
+        });
+
+        // O método .set() substitui completamente os dados no nó 'salesData'
+        database.ref('salesData').set(dataToSave)
+            .then(() => {
+                statusMessage.textContent = 'Dados corrigidos com sucesso!';
+                setTimeout(() => { statusMessage.textContent = ''; }, 3000);
+            })
+            .catch(() => {
+                statusMessage.textContent = 'Erro ao salvar as correções!';
+            });
+    };
+
+    const changePassword = () => {
+        const newPassword = prompt("Digite sua nova senha. Deixe em branco para remover a senha.");
+        if (newPassword === null) {
+            return; // Usuário cancelou
+        }
+
+        const userKey = currentCollaboratorName.toLowerCase();
+
+        if (newPassword.trim() === "") {
+            // Se o campo for deixado em branco, remove a senha
+            database.ref('userPasswords/' + userKey).remove()
+                .then(() => {
+                    alert('Sua senha pessoal foi removida com sucesso!');
+                })
+                .catch(error => {
+                    alert('Ocorreu um erro ao remover a senha.');
+                    console.error(error);
+                });
+        } else {
+            // Se uma nova senha for digitada, salva ela
+            database.ref('userPasswords/' + userKey).set(newPassword)
+                .then(() => {
+                    alert('Senha alterada com sucesso!');
+                })
+                .catch(error => {
+                    alert('Ocorreu um erro ao salvar a nova senha.');
+                    console.error(error);
+                });
+        }
+    };
+
+    const calculateDeliveryPrediction = () => {
+        // Pega a data de hoje
+        const today = new Date();
+        
+        // Cria uma nova data para a entrega e adiciona 15 dias
+        const deliveryDate = new Date();
+        deliveryDate.setDate(today.getDate() + 15);
+        
+        // Define as opções de formatação (dia numérico e mês por extenso)
+        const options = { day: 'numeric', month: 'long' };
+        
+        // Formata a data para o padrão pt-BR
+        const formattedDate = deliveryDate.toLocaleDateString('pt-BR', options);
+        
+        // Monta e exibe a mensagem em um alerta
+        alert(`Comprando hoje, o produto chegará no máximo em ${formattedDate}`);
+    };
+
+    const openSuporteModal = () => {
+        const modal = elements.suporteModal;
+        if(isNavigating) return;
+        isNavigating = true;
+        
+        modal.style.display = 'flex';
+        requestAnimationFrame(() => {
+            modal.classList.add('visible');
+            staggerAnimate(modal);
+            isNavigating = false;
+        });
+    };
+
+    const closeSuporteModal = () => {
+        const modal = elements.suporteModal;
+        if (isNavigating || !modal.classList.contains('visible')) return;
+        isNavigating = true;
+
+        modal.classList.add('is-exiting');
+
+        modal.addEventListener('animationend', (e) => {
+            modal.style.display = 'none';
+            modal.classList.remove('visible', 'is-exiting');
+            isNavigating = false;
+        }, { once: true });
+    };
+
+    const openOsModal = () => {
+        const modal = elements.osModal;
+        if(isNavigating) return;
+        isNavigating = true;
+        
+        modal.style.display = 'flex';
+        requestAnimationFrame(() => {
+            modal.classList.add('visible');
+            staggerAnimate(modal);
+            isNavigating = false;
+        });
+    };
+
+    const closeOsModal = (callback) => {
+        const modal = elements.osModal;
+        if (isNavigating || !modal.classList.contains('visible')) return;
+        isNavigating = true;
+
+        modal.classList.add('is-exiting');
+        modal.addEventListener('animationend', (e) => {
+            modal.style.display = 'none';
+            modal.classList.remove('visible', 'is-exiting');
+            isNavigating = false;
+            if (typeof callback === 'function') callback();
+        }, { once: true });
+    };
+
+    const sendOsEmail = () => {
+        const statusEl = document.getElementById('os-form-status');
+        const colaborador = document.getElementById('os-colaborador').value.trim();
+        const cidade = document.getElementById('os-cidade').value.trim();
+        const dataEnvio = document.getElementById('os-data').value;
+
+        if (!colaborador || !cidade || !dataEnvio) {
+            statusEl.textContent = 'Preencha todos os campos obrigatórios!';
+            return;
+        }
+
+        let body = `ORDEM DE SERVIÇO\n`;
+        body += `--------------------------------\n`;
+        body += `COLABORADOR: ${colaborador}\n`;
+        body += `CIDADE REMETENTE: ${cidade}\n`;
+        body += `DATA DE ENVIO: ${new Date(dataEnvio + 'T12:00:00').toLocaleDateString('pt-BR')}\n`;
+        body += `--------------------------------\n\n`;
+        body += `ATENÇÃO: REMOVA A SENHA DO APARELHO!\n\n`;
+
+        let hasDevice = false;
+        for (let i = 1; i <= 5; i++) {
+            const cliente = document.getElementById(`os-cliente-${i}`).value.trim();
+            const modelo = document.getElementById(`os-modelo-${i}`).value.trim();
+
+            if (cliente || modelo) {
+                hasDevice = true;
+                body += `--- APARELHO ${i} ---\n`;
+                body += `CLIENTE/TELEFONE:\n${cliente}\n\n`;
+                body += `MODELO/DEFEITO/IMEI:\n${modelo}\n`;
+                body += `---------------------\n\n`;
+            }
+        }
+
+        if (!hasDevice) {
+            statusEl.textContent = 'Adicione pelo menos um aparelho!';
+            return;
+        }
+
+        const recipient = 'paulotrindade700@gmail.com';
+        const subject = `OS - ${cidade} - ${colaborador}`;
+        
+        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        statusEl.textContent = 'Abrindo seu cliente de email...';
+    };
+
+    const renderStockSelectionList = () => {
+        const listContainer = document.getElementById('stock-selection-list');
+        const footer = document.getElementById('stock-selection-footer');
+        
+        if (stockRequestSelection.length === 0) {
+            footer.style.display = 'none';
+            return;
+        }
+
+        listContainer.innerHTML = stockRequestSelection.map(item => 
+            `<div>- ${item.name} | Cor: ${item.color} | Qtd: ${item.quantity}</div>`
+        ).join('');
+        
+        footer.style.display = 'block';
+    };
+
+    const openStockRequestPage = () => {
+        const listContainer = document.getElementById('stock-product-list');
+        listContainer.innerHTML = '<p>Carregando dispositivos...</p>';
+        stockRequestSelection = []; // Limpa a seleção anterior
+        renderStockSelectionList(); // Esconde o footer
+        showPage('requestStockPage');
+
+        database.ref('devices').get().then(snapshot => {
+            if (!snapshot.exists()) {
+                listContainer.innerHTML = '<p>Nenhum dispositivo encontrado no banco de dados.</p>';
+                return;
+            }
+            listContainer.innerHTML = '';
+            const allDevicesByBrand = snapshot.val();
+
+            // Itera sobre cada marca
+            for (const brand in allDevicesByBrand) {
+                const brandHeader = document.createElement('h3');
+                brandHeader.className = 'stock-brand-header';
+                brandHeader.textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
+                listContainer.appendChild(brandHeader);
+
+                const devices = allDevicesByBrand[brand];
+                // Itera sobre cada dispositivo dentro da marca
+                for (const key in devices) {
+                    const device = devices[key];
+                    const card = document.createElement('div');
+                    card.className = 'stock-product-card';
+                    card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
+                    
+                    card.addEventListener('click', () => {
+                        const color = prompt(`Digite a cor para ${device.name}:`);
+                        if (!color) return; // Usuário cancelou
+
+                        const quantityRaw = prompt(`Digite a quantidade:`);
+                        if (!quantityRaw) return; // Usuário cancelou
+
+                        const quantity = parseInt(quantityRaw, 10);
+                        if (isNaN(quantity) || quantity <= 0) {
+                            alert('Por favor, insira uma quantidade válida.');
+                            return;
+                        }
+
+                        stockRequestSelection.push({ name: device.name, color: color, quantity: quantity });
+                        renderStockSelectionList();
+                    });
+
+                    listContainer.appendChild(card);
+                }
+            }
+        });
+    };
+
+    const sendStockRequestEmail = () => {
+        if (stockRequestSelection.length === 0) {
+            alert('Nenhum item selecionado para solicitar.');
+            return;
+        }
+
+        const requester = prompt("Digite seu nome para identificação na solicitação:");
+        if (!requester) {
+            alert("Nome é obrigatório para enviar a solicitação.");
+            return;
+        }
+
+        const city = prompt("Digite sua CIDADE (Pinheiro ou Bacabal):");
+        if (!city) {
+            alert("Cidade é obrigatória para enviar a solicitação.");
+            return;
+        }
+
+        let body = `SOLICITAÇÃO DE ESTOQUE\n`;
+        body += `--------------------------------\n`;
+        body += `SOLICITANTE: ${requester}\n`;
+        body += `CIDADE: ${city.trim()}\n`;
+        body += `DATA: ${new Date().toLocaleDateString('pt-BR')}\n`;
+        body += `--------------------------------\n\n`;
+        body += `ITENS SOLICITADOS:\n\n`;
+
+        stockRequestSelection.forEach(item => {
+            body += `- ${item.name}\n`;
+            body += `  Cor: ${item.color}\n`;
+            body += `  Quantidade: ${item.quantity}\n\n`;
+        });
+
+        const recipient = 'paulotrindade700@gmail.com';
+        const subject = `Solicitação de Estoque - ${requester} (${city.trim()})`;
+        
+        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // Limpa a seleção após gerar o email
+        setTimeout(() => {
+            stockRequestSelection = [];
+            renderStockSelectionList();
+        }, 1000);
+    };
+
+    const sendReciboEmail = () => {
+        const statusEl = document.getElementById('recibo-status-message');
+        const nome = document.getElementById('recibo-nome').value.trim();
+        const loja = document.getElementById('recibo-loja').value.trim();
+        const gastos = document.getElementById('recibo-gastos').value.trim();
+        const nota = document.getElementById('recibo-nota').value.trim();
+        const dia = document.getElementById('recibo-dia').value.trim();
+        const mes = document.getElementById('recibo-mes').value.trim();
+        const ano = document.getElementById('recibo-ano').value.trim();
+
+        if (!nome || !loja || !gastos || !dia || !mes || !ano) {
+            statusEl.textContent = 'Preencha todos os campos obrigatórios!';
+            return;
+        }
+
+        const dataFormatada = `${dia}/${mes}/${ano}`;
+
+        let body = `RECIBO DE GASTOS\n`;
+        body += `===============================\n\n`;
+        body += `NOME: ${nome}\n`;
+        body += `LOJA: ${loja}\n`;
+        body += `DATA: ${dataFormatada}\n\n`;
+        body += `GASTOS (DESCRIÇÃO E VALOR):\n${gastos}\n\n`;
+        
+        if (nota) {
+            body += `NOTA/CUPOM (Opcional):\n${nota}\n`;
+        }
+        
+        body += `\n===============================`;
+
+        const recipient = 'paulotrindade700@gmail.com';
+        const subject = `Recibo de Gastos - ${nome} (${loja})`;
+        
+        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        statusEl.textContent = 'Abrindo seu cliente de email...';
+        
+        // Limpa o formulário após o envio
+        document.getElementById('recibo-nome').value = '';
+        document.getElementById('recibo-loja').value = '';
+        document.getElementById('recibo-gastos').value = '';
+        document.getElementById('recibo-nota').value = '';
+        document.getElementById('recibo-dia').value = '';
+        document.getElementById('recibo-mes').value = '';
+        document.getElementById('recibo-ano').value = '';
+    };
+
+    const sendQuizEmail = () => {
+        const statusEl = document.getElementById('quiz-status-message');
+        const nome = document.getElementById('quiz-nome').value.trim();
+        const sentimento = document.querySelector('input[name="sentimento"]:checked');
+        const voz = document.querySelector('input[name="voz"]:checked');
+        const lideranca = document.querySelector('input[name="lideranca"]:checked');
+        const melhorar = document.getElementById('quiz-melhorar').value.trim();
+        const precisando = document.getElementById('quiz-precisando').value.trim();
+
+        if (!nome || !sentimento || !voz || !lideranca || !melhorar || !precisando) {
+            statusEl.textContent = 'Por favor, preencha todos os campos obrigatórios!';
+            return;
+        }
+
+        let body = `FEEDBACK DE CLIMA ORGANIZACIONAL\n`;
+        body += `=====================================\n\n`;
+        body += `NOME DO COLABORADOR: ${nome}\n\n`;
+        
+        body += `1. Como você se sente no seu trabalho atualmente?\n- ${sentimento.value}\n\n`;
+        body += `2. Você sente que tem voz dentro da empresa?\n- ${voz.value}\n\n`;
+        body += `3. Como você avalia a liderança da equipe?\n- ${lideranca.value}\n\n`;
+        body += `4. O que você acha que a empresa poderia melhorar?\n- ${melhorar}\n\n`;
+        body += `5. Tem algo que você está precisando agora?\n- ${precisando}\n`;
+
+        const recipient = 'paulotrindade700@gmail.com';
+        const subject = `Feedback de Clima Organizacional - ${nome}`;
+        
+        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        statusEl.textContent = 'Abrindo seu cliente de email...';
+        
+        // Limpar formulário
+        document.getElementById('quiz-nome').value = '';
+        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+        document.getElementById('quiz-melhorar').value = '';
+        document.getElementById('quiz-precisando').value = '';
+    };
+
+        const displayMtForBrand = (brand) => {
+        const mtContentArea = document.getElementById('mt-content-area');
+        if (!brand) {
+            mtContentArea.innerHTML = `<p style="text-align: center;">Selecione uma marca para ver os itens.</p>`;
+            return;
+        }
+        mtContentArea.innerHTML = `<p style="text-align: center;">Carregando itens para ${brand}...</p>`;
+
+        database.ref(`mostruario/${brand}`).on('value', snapshot => {
+            mtContentArea.innerHTML = '';
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const item = childSnapshot.val();
+                    const card = document.createElement('div');
+                    card.className = 'mt-item-card';
+                    card.innerHTML = `<pre>${item.text}</pre>`;
+                    mtContentArea.appendChild(card);
+                });
+            } else {
+                mtContentArea.innerHTML = `<p style="text-align: center;">Nenhum item de mostruário encontrado para esta marca.</p>`;
+            }
+        });
+    };
+
+    const loadAndShowMtManagementPage = () => {
+        showPage('mtManagementPage');
+        const mtListContainer = document.getElementById('mt-list-container');
+        mtListContainer.innerHTML = `<p style="text-align:center;">Carregando...</p>`;
+
+        database.ref('mostruario').get().then(snapshot => {
+            mtListContainer.innerHTML = '';
+            if (snapshot.exists()) {
+                snapshot.forEach(brandSnapshot => {
+                    const brand = brandSnapshot.key;
+                    const brandTitle = document.createElement('h4');
+                    brandTitle.className = 'meta-group-title';
+                    brandTitle.textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
+                    mtListContainer.appendChild(brandTitle);
+
+                    brandSnapshot.forEach(itemSnapshot => {
+                        const key = itemSnapshot.key;
+                        const item = itemSnapshot.val();
+                        const listItem = document.createElement('div');
+                        listItem.className = 'mt-list-item';
+                        listItem.innerHTML = `
+                            <div class="mt-list-item-text">${item.text}</div>
+                            <button class="delete-button-small" data-brand="${brand}" data-key="${key}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        `;
+                        mtListContainer.appendChild(listItem);
+                    });
+                });
+            } else {
+                mtListContainer.innerHTML = `<p style="text-align:center;">Nenhum item cadastrado.</p>`;
+            }
+        });
+    };
+
+    const saveMtItem = () => {
+        const mtAddBrandSelect = document.getElementById('mt-add-brand');
+        const mtAddTextarea = document.getElementById('mt-add-text');
+        const mtAddStatus = document.getElementById('mt-add-status');
+        const brand = mtAddBrandSelect.value;
+        const text = mtAddTextarea.value.trim();
+
+        if (!brand || !text) {
+            mtAddStatus.textContent = 'Marca e texto são obrigatórios!';
+            return;
+        }
+        mtAddStatus.textContent = 'Salvando...';
+
+        database.ref(`mostruario/${brand}`).push({ text: text }).then(() => {
+            mtAddStatus.textContent = 'Item salvo com sucesso!';
+            mtAddTextarea.value = '';
+            mtAddBrandSelect.selectedIndex = 0;
+            loadAndShowMtManagementPage(); // Recarrega a lista
+            setTimeout(() => { mtAddStatus.textContent = ''; }, 3000);
+        }).catch(err => {
+            mtAddStatus.textContent = 'Erro ao salvar!';
+            console.error(err);
+        });
+    };
+
+    const deleteMtItem = (brand, key) => {
+        if (confirm('Tem certeza que deseja excluir este item?')) {
+            database.ref(`mostruario/${brand}/${key}`).remove().then(() => {
+                alert('Item excluído!');
+                loadAndShowMtManagementPage(); // Recarrega a lista
+            }).catch(err => {
+                alert('Erro ao excluir!');
+                console.error(err);
+            });
+        }
+    };
+
+        const calculateAndDisplayRanking = () => {
+        const rankingContainer = document.getElementById('ranking-container');
+        rankingContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking...</p>';
+
+        Promise.all([
+            database.ref('salesData').get(),
+            database.ref('metas').get()
+        ]).then(([salesSnapshot, metasSnapshot]) => {
+            if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
+                rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
+                return;
+            }
+
+            const salesData = salesSnapshot.val();
+            const metasData = metasSnapshot.val();
+            const performanceData = [];
+
+            // Lista de colaboradores elegíveis (todos, exceto gerentes)
+            const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
+
+            eligibleCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const actualSales = parseFloat(salesData[key]?.vendas || 0);
+                const salesGoal = parseFloat(metasData[key]?.venda || 0);
+
+                // Só inclui no ranking se a meta de venda for maior que zero
+                if (salesGoal > 0) {
+                    const percentage = (actualSales / salesGoal) * 100;
+                    performanceData.push({
+                        name: name,
+                        percentage: percentage
+                    });
+                }
+            });
+
+            // Ordena os colaboradores pela maior porcentagem
+            performanceData.sort((a, b) => b.percentage - a.percentage);
+
+            // Limpa o container e exibe o top 3
+            rankingContainer.innerHTML = '';
+
+            const top3 = performanceData.slice(0, 3);
+
+            if (top3.length === 0) {
+                rankingContainer.innerHTML = '<p style="text-align: center;">Nenhum colaborador com meta definida para o ranking.</p>';
+                return;
+            }
+
+            top3.forEach((collab, index) => {
+                const rank = index + 1;
+                const prizes = ['R$ 300,00', 'R$ 200,00', 'R$ 100,00'];
+                const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+                
+                const rankItem = document.createElement('div');
+                rankItem.className = `rank-item rank-${rank}`;
+                
+                // Limita a barra de progresso visualmente em 100% para não estourar o layout
+                const progressBarWidth = Math.min(collab.percentage, 100);
+
+                rankItem.innerHTML = `
+                    <div class="rank-medal">${medals[index]}</div>
+                    <div class="rank-details">
+                        <div class="rank-name">
+                            <span>${collab.name}</span>
+                            <span class="rank-prize">${prizes[index]}</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
+                            <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                        </div>
+                    </div>
+                `;
+                rankingContainer.appendChild(rankItem);
+            });
+        }).catch(error => {
+            console.error("Erro ao carregar dados para o ranking:", error);
+            rankingContainer.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
+        });
+    };
+
+    const calculateAndDisplayStoreRanking = () => {
+        const container = document.getElementById('store-ranking-container');
+        container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking das lojas...</p>';
+
+        database.ref('salesData').get().then(salesSnapshot => {
+            if (!salesSnapshot.exists()) {
+                container.innerHTML = '<p>Dados de vendas não encontrados.</p>';
+                return;
+            }
+            const salesData = salesSnapshot.val();
+            let pinheiroTotal = 0;
+            let bacabalTotal = 0;
+
+            // Calcula o total de vendas para cada loja
+            storeMapping.pinheiro.forEach(name => {
+                pinheiroTotal += parseFloat(salesData[name.toLowerCase()]?.vendas || 0);
+            });
+            storeMapping.bacabal.forEach(name => {
+                bacabalTotal += parseFloat(salesData[name.toLowerCase()]?.vendas || 0);
+            });
+
+            const storePerformance = [
+                { name: 'Pinheiro', total: pinheiroTotal },
+                { name: 'Bacabal', total: bacabalTotal }
+            ];
+
+            // Ordena as lojas pelo total de vendas
+            storePerformance.sort((a, b) => b.total - a.total);
+            
+            container.innerHTML = ''; // Limpa o container
+
+            storePerformance.forEach((store, index) => {
+                const rank = index + 1;
+                const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+                
+                const rankItem = document.createElement('div');
+                // Adiciona uma classe específica para o item de loja
+                rankItem.className = `rank-item store-rank-item rank-${rank}`;
+                
+                rankItem.innerHTML = `
+                    <div class="rank-medal">${medals[index]}</div>
+                    <div class="rank-details">
+                        <div class="rank-name">
+                            <span>${store.name}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(rankItem);
+            });
+
+        }).catch(error => {
+            console.error("Erro ao carregar ranking de lojas:", error);
+            container.innerHTML = '<p>Erro ao carregar o ranking das lojas.</p>';
+        });
+    };
+
+    const stopPontoCamera = () => {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+    };
+
+    const initPontoCamera = () => {
+        stopPontoCamera(); // Garante que qualquer câmera anterior seja desligada
+        showPage('pontoPage');
+        const video = document.getElementById('ponto-video');
+        const statusEl = document.getElementById('ponto-status-message');
+        
+        statusEl.textContent = 'Solicitando permissão da câmera...';
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+            .then(stream => {
+                cameraStream = stream;
+                video.srcObject = stream;
+                statusEl.textContent = '';
+            })
+            .catch(err => {
+                console.error("Erro ao acessar a câmera: ", err);
+                statusEl.textContent = 'Erro ao acessar câmera. Verifique as permissões.';
+                alert('Não foi possível acessar a câmera. Por favor, verifique as permissões do seu navegador para este site.');
+            });
+    };
+
+    const captureAndUploadPonto = () => {
+        const video = document.getElementById('ponto-video');
+        const canvas = document.getElementById('ponto-canvas');
+        const statusEl = document.getElementById('ponto-status-message');
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        statusEl.textContent = 'Processando foto...';
+
+        canvas.toBlob(blob => {
+            if (!blob) {
+                statusEl.textContent = 'Erro ao capturar imagem.';
+                return;
+            }
+
+            statusEl.textContent = 'Enviando foto...';
+
+            // ** INÍCIO DA MUDANÇA: USANDO ImgBB **
+            
+            // Sua Chave de API do ImgBB foi inserida aqui.
+            const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40'; 
+
+            const formData = new FormData();
+            formData.append('image', blob); // O 'blob' é a nossa imagem
+
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Se o upload deu certo, 'result.data.url' terá o link da imagem
+                    const imageUrl = result.data.url;
+                    
+                    statusEl.textContent = 'Finalizando registro...';
+                    const city = storeMapping.pinheiro.includes(currentCollaboratorName) ? 'Pinheiro' : 'Bacabal';
+
+                    const pontoData = {
+                        collaborator: currentCollaboratorName,
+                        city: city,
+                        timestamp: new Date().toISOString(),
+                        photoURL: imageUrl // Usamos o novo link do ImgBB
+                    };
+
+                    // Salva os dados no Firebase REALTIME DATABASE (isso continua igual)
+                    database.ref(`pontos/${currentCollaboratorName}`).push(pontoData)
+                        .then(() => {
+                            statusEl.textContent = 'Ponto registrado com sucesso!';
+                            setTimeout(() => {
+                                stopPontoCamera();
+                                showPage('collaboratorPage');
+                            }, 2000);
+                        })
+                        .catch(dbError => {
+                            console.error("Erro ao salvar no banco de dados:", dbError);
+                            statusEl.textContent = 'Erro ao salvar os dados do ponto.';
+                        });
+                } else {
+                    // Se o ImgBB retornou um erro
+                    console.error('Erro no ImgBB:', result);
+                    statusEl.textContent = 'Falha ao enviar a foto.';
+                }
+            })
+            .catch(error => {
+                // Se houve um erro de rede (internet caiu, etc)
+                console.error('Erro de rede ao enviar para ImgBB:', error);
+                statusEl.textContent = 'Erro de conexão ao enviar a foto.';
+            });
+            // ** FIM DA MUDANÇA **
+
+        }, 'image/jpeg', 0.8);
+    };
+
+    const showPontoVerificationList = () => {
+        const listContainer = document.getElementById('ponto-employee-list');
+        listContainer.innerHTML = '';
+        allCollaborators.forEach(name => {
+            const button = document.createElement('button');
+            button.className = 'action-button';
+            button.textContent = name;
+            button.addEventListener('click', () => showPontoHistory(name));
+            listContainer.appendChild(button);
+        });
+        showPage('pontoVerificationPage');
+    };
+
+    const showPontoHistory = (name) => {
+        const historyContainer = document.getElementById('ponto-history-container');
+        document.getElementById('ponto-history-title').textContent = `Histórico de ${name}`;
+        historyContainer.innerHTML = '<p>Carregando histórico...</p>';
+        showPage('pontoHistoryPage');
+
+        database.ref(`pontos/${name}`).orderByChild('timestamp').limitToLast(50).once('value', snapshot => {
+            historyContainer.innerHTML = '';
+            if (!snapshot.exists()) {
+                historyContainer.innerHTML = '<p>Nenhum registro de ponto encontrado.</p>';
+                return;
+            }
+
+            const records = [];
+            snapshot.forEach(child => {
+                records.push(child.val());
+            });
+
+            // Inverte para mostrar o mais recente primeiro
+            records.reverse().forEach(record => {
+                const card = document.createElement('div');
+                card.className = 'ponto-history-card';
+                const date = new Date(record.timestamp);
+                
+                card.innerHTML = `
+                    <img src="${record.photoURL}" class="ponto-history-photo" alt="Foto do ponto">
+                    <div class="ponto-history-details">
+                        <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
+                        <p><strong>Hora:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
+                        <p><strong>Cidade:</strong> ${record.city}</p>
+                    </div>
+                `;
+                historyContainer.appendChild(card);
+            });
+        });
+    };
+
+    // --- FUNÇÕES DAS CALCULADORAS ---
+    const formatBRL = (value) => {
+        if (isNaN(value) || !isFinite(value)) {
+            return "R$ 0,00";
+        }
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
+
+    // --- Calculadora de Crediário ---
+    const calculateCrediario = () => {
+        const valorProduto = parseFloat(document.getElementById('crediario-valor-produto').value) || 0;
+        const entrada = parseFloat(document.getElementById('crediario-entrada').value) || 0;
+        const parcelas = parseInt(document.getElementById('crediario-parcelas').value, 10);
+        document.getElementById('parcelas-value').textContent = parcelas;
+
+        const taxaJurosMensal = 0.0349; // 3.49% a.m.
+        const valorFinanciado = valorProduto - entrada;
+
+        if (valorFinanciado <= 0 || parcelas === 0) {
+            document.getElementById('result-parcela').textContent = formatBRL(0);
+            document.getElementById('result-total-prazo').textContent = formatBRL(valorProduto);
+            document.getElementById('result-juros').textContent = formatBRL(0);
+            return;
+        }
+        
+        const valorParcela = valorFinanciado * (taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -parcelas)));
+        const totalPrazo = valorParcela * parcelas;
+        const totalJuros = totalPrazo - valorFinanciado;
+        const totalFinal = totalPrazo + entrada;
+
+        document.getElementById('result-parcela').textContent = formatBRL(valorParcela);
+        document.getElementById('result-total-prazo').textContent = formatBRL(totalFinal);
+        document.getElementById('result-juros').textContent = formatBRL(totalJuros);
+    };
+
+    const clearCrediario = () => {
+        document.getElementById('crediario-valor-produto').value = '';
+        document.getElementById('crediario-entrada').value = '';
+        document.getElementById('crediario-parcelas').value = 12;
+        calculateCrediario();
+    };
+
+    // --- Calculadora de Parcelamento de Loja ---
+    const calculateLoja = () => {
+        const valorProduto = parseFloat(document.getElementById('loja-valor-produto').value) || 0;
+        const entrada = parseFloat(document.getElementById('loja-entrada').value) || 0;
+        const seguro = parseFloat(document.getElementById('loja-seguro').value) || 0;
+        const parcelas = parseInt(document.getElementById('loja-parcelas').value, 10);
+        document.getElementById('loja-parcelas-value').textContent = parcelas;
+
+        const coeficientes = {1:1.0000, 2:0.5225, 3:0.3535, 4:0.2690, 5:0.2185, 6:0.1846, 7:0.1605, 8:0.1425, 9:0.1284, 10:0.1172, 11:0.1080, 12:0.1005, 13:0.0945, 14:0.0890, 15:0.0845, 16:0.0805, 17:0.0770, 18:0.0740};
+        const coeficiente = coeficientes[parcelas] || coeficientes[18];
+        const valorFinanciado = valorProduto - entrada;
+
+        if (valorFinanciado <= 0 || parcelas === 0) {
+            document.getElementById('loja-result-parcela').textContent = formatBRL(0);
+            document.getElementById('loja-result-total-prazo').textContent = formatBRL(valorProduto + seguro);
+            return;
+        }
+
+        const valorParcela = valorFinanciado * coeficiente;
+        const totalPrazo = (valorParcela * parcelas) + entrada + seguro;
+
+        document.getElementById('loja-result-parcela').textContent = formatBRL(valorParcela);
+        document.getElementById('loja-result-total-prazo').textContent = formatBRL(totalPrazo);
+    };
+
+    const clearLojaCalculator = () => {
+        document.getElementById('loja-valor-produto').value = '';
+        document.getElementById('loja-entrada').value = '';
+        document.getElementById('loja-seguro').value = '';
+        document.getElementById('loja-parcelas').value = 10;
+        calculateLoja();
+    };
+
+    // --- Calculadora de Parcelamento de Site ---
+    const calculateSite = () => {
+        const valorSite = parseFloat(document.getElementById('site-valor-produto').value) || 0;
+        const entrada = parseFloat(document.getElementById('site-entrada').value) || 0;
+        const parcelas = parseInt(document.getElementById('site-parcelas').value, 10);
+        document.getElementById('site-parcelas-value').textContent = parcelas;
+
+        const taxaJurosMensal = 0.0299; // 2.99% a.m.
+        const valorFinanciado = valorSite - entrada;
+
+        if (valorFinanciado <= 0 || parcelas === 0) {
+            document.getElementById('site-result-parcela').textContent = formatBRL(0);
+            document.getElementById('site-result-total-prazo').textContent = formatBRL(valorSite);
+            return;
+        }
+
+        const valorParcela = valorFinanciado * (taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -parcelas)));
+        const totalPrazo = (valorParcela * parcelas) + entrada;
+
+        document.getElementById('site-result-parcela').textContent = formatBRL(valorParcela);
+        document.getElementById('site-result-total-prazo').textContent = formatBRL(totalPrazo);
+    };
+
+    const clearSiteCalculator = () => {
+        document.getElementById('site-valor-produto').value = '';
+        document.getElementById('site-entrada').value = '';
+        document.getElementById('site-parcelas').value = 6;
+        calculateSite();
+    };
+
+        // --- EVENT LISTENERS (USANDO A NOVA NAVEGAÇÃO) ---
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- LÓGICA DE TEMA (MODO ESCURO) ---
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const themeIcon = darkModeToggle.querySelector('i');
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+            darkModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const currentTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+                applyTheme(currentTheme);
+            });
+
+            // --- LÓGICA DE PESQUISA ---
+            const searchIconBtn = document.getElementById('search-icon-btn');
+            const searchOverlay = document.getElementById('search-overlay');
+            const searchInput = document.getElementById('search-input');
+            const searchResultsContainer = document.getElementById('search-results-container');
+            const searchCloseBtn = document.getElementById('search-close-btn');
+            const searchDataSource = [
+                { name: 'Hunter Card', keywords: 'cartao, brasilcard', targetId: null, url: 'https://www.brasilcard.net/bca/lojista/login?f=login_lojista?b=m' },
+                { name: 'Colaborador', keywords: 'vendas, metas, funcionario', targetId: 'open-colaborador-modal' },
+                { name: 'Bater Ponto', keywords: 'ponto, camera, registro', targetId: 'bater-ponto-btn' },
+                { name: 'Verificar Ponto', keywords: 'gerencia, ponto, historico', targetId: 'verificar-ponto-btn' },
+                { name: 'Previsão de Entrega', keywords: 'data, prazo, entrega', targetId: 'previsao-btn' },
+                { name: 'Assistência Técnica (OS)', keywords: 'os, concerto, garantia', targetId: 'open-os-modal' },
+                { name: 'Suporte', keywords: 'ajuda, contato, brasilcard, paymobi', targetId: 'open-suporte-modal' },
+                { name: 'Solicitar Estoque', keywords: 'pedir, produto, celular', targetId: 'open-request-stock-page' },
+                { name: 'Quiz de Feedback', keywords: 'clima, pesquisa, feedback', targetId: 'open-quiz-page' },
+                { name: 'Recibos de Gastos', keywords: 'gasto, despesa', targetId: 'open-recibos-page' },
+                { name: 'Gerencia', keywords: 'dashboard, painel, adm', targetId: 'open-gerencia-page' },
+                { name: 'Enviar Dispositivo', keywords: 'cadastrar, novo, aparelho', targetId: 'open-send-device-page' },
+                { name: 'MT (Mostruário)', keywords: 'mostruario, vitrine', targetId: 'open-mt-display-page' },
+                { name: 'Calculadora de Crediário', keywords: 'juros, parcelamento', targetId: 'open-crediario-calculator' },
+                { name: 'Calculadora para Site', keywords: 'website, sistema', targetId: 'open-site-calculator' },
+                { name: 'Calculadora de Loja', keywords: 'seguro, parcelamento', targetId: 'open-loja-calculator' }
+            ];
+            const performSearch = () => {
+                const query = searchInput.value.toLowerCase();
+                searchResultsContainer.innerHTML = '';
+                if (query.length < 2) return;
+                const results = searchDataSource.filter(item =>
+                    item.name.toLowerCase().includes(query) ||
+                    item.keywords.toLowerCase().includes(query)
+                );
+                results.forEach(item => {
+                    const resultElement = document.createElement('div');
+                    resultElement.className = 'tool-item search-result-item';
+                    resultElement.innerHTML = `<div class="tool-icon-wrapper"><i class="fa-solid fa-star"></i></div><span>${item.name}</span>`;
+                    resultElement.addEventListener('click', () => {
+                        closeSearch();
+                        setTimeout(() => {
+                            // A lógica de clique aqui é mais complexa porque "Bater Ponto" e "Verificar Ponto"
+                            // dependem de estar em uma página específica ou de um login.
+                            // A forma mais segura é simular o clique no botão real, se ele existir.
+                            const targetButton = document.getElementById(item.targetId);
+                            if (targetButton) {
+                                targetButton.click();
+                            } else if (item.url) {
+                                window.open(item.url, '_blank');
+                            }
+                        }, 400);
+                    });
+                    searchResultsContainer.appendChild(resultElement);
+                });
+            };
+            const openSearch = () => {
+                searchInput.value = '';
+                searchResultsContainer.innerHTML = '';
+                searchOverlay.style.display = 'flex';
+                requestAnimationFrame(() => searchOverlay.classList.add('visible'));
+                setTimeout(() => searchInput.focus(), 100);
+            };
+            const closeSearch = () => {
+                searchOverlay.classList.remove('visible');
+                searchOverlay.classList.add('is-exiting');
+                searchOverlay.addEventListener('animationend', () => {
+                    searchOverlay.style.display = 'none';
+                    searchOverlay.classList.remove('is-exiting');
+                }, { once: true });
+            };
+            searchIconBtn.addEventListener('click', (e) => { e.preventDefault(); openSearch(); });
+            searchCloseBtn.addEventListener('click', closeSearch);
+            searchInput.addEventListener('input', performSearch);
+
+            // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
+            document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
+            document.getElementById('open-gerencia-page').addEventListener('click', () => { if (checkPassword()) { loadDashboardData(); showPage('gerenciaPage'); } });
+            document.getElementById('open-send-device-page').addEventListener('click', () => { if (checkPassword()) { showPage('sendDevicePage'); } });
+            document.querySelectorAll('.brand-button').forEach(button => button.addEventListener('click', () => loadBrandDevices(button.dataset.brand)));
+            document.getElementById('previsao-btn').addEventListener('click', calculateDeliveryPrediction);
+            document.getElementById('open-suporte-modal').addEventListener('click', openSuporteModal);
+            document.getElementById('open-os-modal').addEventListener('click', openOsModal);
+            document.getElementById('open-request-stock-page').addEventListener('click', openStockRequestPage);
+            document.getElementById('open-recibos-page').addEventListener('click', () => showPage('recibosPage'));
+            document.getElementById('open-quiz-page').addEventListener('click', () => showPage('quizPage'));
+
+            // --- MODAL DE COLABORADORES ---
+            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+            elements.modal.addEventListener('click', (event) => { if (event.target === elements.modal) closeModal(); });
+            document.getElementById('btn-pinheiro').addEventListener('click', () => { document.getElementById('colaborador-cidades').style.display = 'none'; document.getElementById('colaborador-pinheiro').style.display = 'block'; });
+            document.getElementById('btn-bacabal').addEventListener('click', () => { document.getElementById('colaborador-cidades').style.display = 'none'; document.getElementById('colaborador-bacabal').style.display = 'block'; });
+            document.querySelectorAll('.collaborator-link').forEach(link => link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const selectedCollaboratorName = event.currentTarget.dataset.name;
+                const userKey = selectedCollaboratorName.toLowerCase();
+                const openCollaboratorPanel = () => {
+                    currentCollaboratorName = selectedCollaboratorName;
+                    document.getElementById('collaborator-name-display').textContent = currentCollaboratorName;
+                    closeModal(() => {
+                        const managerBtn = document.getElementById('manager-panel-btn');
+                        const closingBtn = document.getElementById('closing-btn');
+                        if (managers.includes(currentCollaboratorName)) {
+                            managerBtn.style.display = 'block';
+                            closingBtn.style.display = 'block';
+                        } else {
+                            managerBtn.style.display = 'none';
+                            closingBtn.style.display = 'none';
+                        }
+                        loadAndDisplayIndividualSalesData();
+                        showPage('collaboratorPage');
+                    });
+                };
+                database.ref('userPasswords/' + userKey).get().then(snapshot => {
+                    const personalPassword = snapshot.val();
+                    if (!personalPassword) {
+                        openCollaboratorPanel();
+                    } else {
+                        const userInput = prompt("Digite a senha de acesso para " + selectedCollaboratorName + ":");
+                        if (userInput === personalPassword || userInput === PASSWORD) {
+                            openCollaboratorPanel();
+                        } else if (userInput !== null) {
+                            alert("Senha incorreta!");
+                        }
+                    }
+                }).catch(error => { alert("Erro ao verificar a senha. Tente novamente."); console.error(error); });
+            }));
+
+            // --- PÁGINA DO COLABORADOR ---
+            document.getElementById('view-metas-btn').addEventListener('click', () => { loadAndDisplayCollaboratorMetas(); showPage('metasDisplayPage'); });
+            document.getElementById('manager-panel-btn').addEventListener('click', loadManagerPanel);
+            document.getElementById('change-password-btn').addEventListener('click', changePassword);
+            document.getElementById('closing-btn').addEventListener('click', () => {
+                document.getElementById('closing-store-selection').style.display = 'block';
+                document.getElementById('closing-form-pinheiro').style.display = 'none';
+                document.getElementById('closing-form-bacabal').style.display = 'none';
+                document.getElementById('closing-submit-container').style.display = 'none';
+                document.getElementById('closing-status-message').textContent = '';
+                showPage('closingPage');
+            });
+
+            // --- PÁGINA DE GERÊNCIA (DASHBOARD) ---
+            document.getElementById('open-settings-page').addEventListener('click', () => { buildAndLoadMetasPage(); showPage('metasConfigPage'); });
+            document.getElementById('open-correction-page').addEventListener('click', () => { buildAndLoadCorrectionPage(); showPage('correctionPage'); });
+            document.getElementById('open-mt-management-page').addEventListener('click', loadAndShowMtManagementPage);
+
+            // --- PÁGINA DE CONFIGURAÇÕES / CORREÇÃO ---
+            document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
+            document.getElementById('save-all-corrections-btn').addEventListener('click', saveCorrections);
+
+            // --- PÁGINA DE ENVIO DE DISPOSITIVO ---
+            document.getElementById('save-device-btn').addEventListener('click', saveDevice);
+
+            // --- MODAIS DE FERRAMENTAS ---
+            document.getElementById('close-suporte-modal-btn').addEventListener('click', closeSuporteModal);
+            elements.suporteModal.addEventListener('click', (event) => { if (event.target === elements.suporteModal) closeSuporteModal(); });
+            document.getElementById('close-os-modal-btn').addEventListener('click', () => closeOsModal());
+            elements.osModal.addEventListener('click', (e) => { if (e.target === elements.osModal) closeOsModal(); });
+            document.getElementById('open-os-form-btn').addEventListener('click', () => { closeOsModal(() => { showPage('osFormPage'); }); });
+            document.getElementById('submit-os-form-btn').addEventListener('click', sendOsEmail);
+            document.getElementById('send-stock-request-btn').addEventListener('click', sendStockRequestEmail);
+            document.getElementById('submit-recibo-btn').addEventListener('click', sendReciboEmail);
+            document.getElementById('submit-quiz-btn').addEventListener('click', sendQuizEmail);
+
+            // --- FECHAMENTO (seleção de loja) ---
+            const showClosingForm = (store) => {
+                document.getElementById('closing-store-selection').style.display = 'none';
+                document.getElementById('closing-submit-container').style.display = 'block';
+                if (store === 'pinheiro') {
+                    document.getElementById('closing-form-pinheiro').style.display = 'block';
+                    document.getElementById('closing-form-bacabal').style.display = 'none';
+                } else {
+                    document.getElementById('closing-form-pinheiro').style.display = 'none';
+                    document.getElementById('closing-form-bacabal').style.display = 'block';
+                }
+            };
+            document.getElementById('closing-btn-pinheiro').addEventListener('click', () => showClosingForm('pinheiro'));
+            document.getElementById('closing-btn-bacabal').addEventListener('click', () => showClosingForm('bacabal'));
+            document.getElementById('submit-closing-data-btn').addEventListener('click', submitClosingData);
+
+            // --- BOTÕES DE VOLTAR (TODOS CENTRALIZADOS AQUI) ---
+            document.getElementById('back-to-main').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-gerencia').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-send').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-brand').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-os').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-stock').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-recibos').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-quiz').addEventListener('click', showMainPage);
+            document.getElementById('back-to-gerencia-from-metas').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('back-to-gerencia-from-correction').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('back-to-collab-from-metas').addEventListener('click', () => showPage('collaboratorPage'));
+            document.getElementById('back-to-collab-from-panel').addEventListener('click', () => showPage('collaboratorPage'));
+            document.getElementById('back-to-collab-from-closing').addEventListener('click', () => showPage('collaboratorPage'));
+
+            // --- LÓGICA DAS CALCULADORAS ---
+            const valorProdutoInput = document.getElementById('crediario-valor-produto');
+            const entradaInput = document.getElementById('crediario-entrada');
+            const parcelasSlider = document.getElementById('crediario-parcelas');
+            [valorProdutoInput, entradaInput, parcelasSlider].forEach(element => { element.addEventListener('input', calculateCrediario); });
+            document.getElementById('clear-crediario-btn').addEventListener('click', clearCrediario);
+            document.getElementById('open-crediario-calculator').addEventListener('click', () => { clearCrediario(); showPage('crediarioCalculatorPage'); });
+            document.getElementById('back-to-main-from-crediario').addEventListener('click', showMainPage);
+            
+            const siteValorInput = document.getElementById('site-valor-produto');
+            const siteEntradaInput = document.getElementById('site-entrada');
+            const siteParcelasSlider = document.getElementById('site-parcelas');
+            [siteValorInput, siteEntradaInput, siteParcelasSlider].forEach(el => { el.addEventListener('input', calculateSite); });
+            document.getElementById('clear-site-btn').addEventListener('click', clearSiteCalculator);
+            document.getElementById('open-site-calculator').addEventListener('click', () => { clearSiteCalculator(); showPage('siteCalculatorPage'); });
+            document.getElementById('back-to-main-from-site').addEventListener('click', showMainPage);
+            
+            const lojaValorInput = document.getElementById('loja-valor-produto');
+            const lojaEntradaInput = document.getElementById('loja-entrada');
+            const lojaSeguroInput = document.getElementById('loja-seguro');
+            const lojaParcelasSlider = document.getElementById('loja-parcelas');
+            [lojaValorInput, lojaEntradaInput, lojaSeguroInput, lojaParcelasSlider].forEach(el => { el.addEventListener('input', calculateLoja); });
+            document.getElementById('clear-loja-btn').addEventListener('click', clearLojaCalculator);
+            document.getElementById('open-loja-calculator').addEventListener('click', () => { clearLojaCalculator(); showPage('lojaCalculatorPage'); });
+            document.getElementById('back-to-main-from-loja').addEventListener('click', showMainPage);
+            
+            // --- LÓGICA DO MOSTRUÁRIO (MT) ---
+            document.getElementById('open-mt-display-page').addEventListener('click', () => {
+                document.getElementById('mt-brand-filter').value = "";
+                document.getElementById('mt-content-area').innerHTML = `<p style="text-align: center;">Selecione uma marca para ver os itens.</p>`;
+                showPage('mtDisplayPage');
+            });
+            document.getElementById('mt-brand-filter').addEventListener('change', (event) => displayMtForBrand(event.target.value));
+            document.getElementById('back-to-main-from-mt-display').addEventListener('click', showMainPage);
+            document.getElementById('back-to-gerencia-from-mt-management').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('save-mt-item-btn').addEventListener('click', saveMtItem);
+            document.getElementById('mt-list-container').addEventListener('click', (event) => {
+                const deleteButton = event.target.closest('.delete-button-small');
+                if (deleteButton) {
+                    const { brand, key } = deleteButton.dataset;
+                    deleteMtItem(brand, key);
+                }
+            });
+
+            // --- LISTENERS DA FUNÇÃO DE PONTO ---
+            document.getElementById('bater-ponto-btn').addEventListener('click', initPontoCamera);
+            document.getElementById('capture-ponto-btn').addEventListener('click', captureAndUploadPonto);
+            document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
+                stopPontoCamera();
+                showPage('collaboratorPage');
+            });
+            document.getElementById('verificar-ponto-btn').addEventListener('click', showPontoVerificationList);
+            document.getElementById('back-to-gerencia-from-ponto-verify').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('back-to-ponto-verify-from-history').addEventListener('click', () => showPage('pontoVerificationPage'));
+
+            // --- LÓGICA DO VISUALIZADOR DE IMAGEM AMPLIADA ---
+            const imageViewer = document.getElementById('image-viewer-overlay');
+            const viewerImage = document.getElementById('viewer-image');
+            const historyContainer = document.getElementById('ponto-history-container');
+
+            const openImageViewer = (imageUrl) => {
+                viewerImage.src = imageUrl;
+                imageViewer.style.display = 'flex';
+                requestAnimationFrame(() => imageViewer.classList.add('visible'));
+            };
+
+            const closeImageViewer = () => {
+                imageViewer.classList.remove('visible');
+                imageViewer.addEventListener('transitionend', () => {
+                    if (!imageViewer.classList.contains('visible')) {
+                        imageViewer.style.display = 'none';
+                        viewerImage.src = ''; // Limpa para não "piscar" na próxima vez
+                    }
+                }, { once: true });
+            };
+
+            // Listener no container de histórico (event delegation)
+            historyContainer.addEventListener('click', (event) => {
+                if (event.target.classList.contains('ponto-history-photo')) {
+                    openImageViewer(event.target.src);
+                }
+            });
+
+            // Listeners para fechar o visualizador
+            document.getElementById('close-viewer-btn').addEventListener('click', closeImageViewer);
+            imageViewer.addEventListener('click', (event) => {
+                // Fecha somente se o clique for no fundo escuro
+                if (event.target === imageViewer) {
+                    closeImageViewer();
+                }
+            });
+
+
+            // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+            showMainPage();
+            calculateAndDisplayRanking(); // Carrega o ranking de colaboradores
+            calculateAndDisplayStoreRanking(); // Carrega o ranking de lojas
+
+        });
+    </script>
+
+</body>
+</html>
