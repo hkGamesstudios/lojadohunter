@@ -1387,7 +1387,19 @@
 </head>
 <body>
 
-    <body>
+    <!-- TELA DE ATIVAÇÃO INICIAL -->
+    <div id="activation-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">Ativação Necessária</h3>
+            <div class="input-group">
+                <label for="activation-code-input">Código de Acesso</label>
+                <input type="password" id="activation-code-input" class="data-input" placeholder="Digite o código">
+            </div>
+            <button id="submit-activation-code" class="action-button" style="max-width: none;">Ativar Dispositivo</button>
+            <p id="activation-status" class="status-message"></p>
+        </div>
+    </div>
+
 
     <!-- TELA DE PESQUISA (OVERLAY) -->
     <div id="search-overlay" class="page">
@@ -2415,7 +2427,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.2.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.3.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -5000,6 +5012,52 @@ Transporte - R$ 5,00"></textarea></div>
 
         // --- EVENT LISTENERS (USANDO A NOVA NAVEGAÇÃO) ---
         document.addEventListener('DOMContentLoaded', () => {
+
+            // --- LÓGICA DE ATIVAÇÃO INICIAL ---
+            const ACTIVATION_CODE = '48362';
+            const ACTIVATION_KEY = 'deviceActivated_v1';
+            const activationOverlay = document.getElementById('activation-overlay');
+
+            const checkActivation = () => {
+                if (localStorage.getItem(ACTIVATION_KEY) === 'true') {
+                    // Dispositivo já ativado, esconde a tela de ativação e continua
+                    activationOverlay.style.display = 'none';
+                    return true;
+                } else {
+                    // Dispositivo não ativado, mostra a tela
+                    activationOverlay.style.display = 'flex';
+                    activationOverlay.classList.add('visible');
+                    return false;
+                }
+            };
+
+            document.getElementById('submit-activation-code').addEventListener('click', () => {
+                const input = document.getElementById('activation-code-input');
+                const status = document.getElementById('activation-status');
+                if (input.value === ACTIVATION_CODE) {
+                    localStorage.setItem(ACTIVATION_KEY, 'true');
+                    status.textContent = 'Ativado com sucesso!';
+                    status.style.color = '#2ecc71';
+                    // Esconde a tela de ativação após o sucesso
+                    activationOverlay.classList.add('is-exiting');
+                    activationOverlay.addEventListener('animationend', () => {
+                        activationOverlay.style.display = 'none';
+                    }, { once: true });
+                } else {
+                    status.textContent = 'Código incorreto!';
+                    status.style.color = '#e74c3c';
+                    input.value = '';
+                }
+            });
+
+            // Verifica a ativação logo no início
+            if (!checkActivation()) {
+                // Se a verificação retornar false, para a execução do resto do DOMContentLoaded
+                // para garantir que o usuário não possa interagir com o app antes de ativar.
+                return; 
+            }
+            // --- FIM DA LÓGICA DE ATIVAÇÃO ---
+
 
             // --- LÓGICA DE TEMA (MODO ESCURO) ---
             const darkModeToggle = document.getElementById('dark-mode-toggle');
