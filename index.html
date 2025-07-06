@@ -304,6 +304,16 @@
             font-size: 1.5rem; /* Medalha menor */
             width: 30px; /* Largura da medalha reduzida */
             text-align: center;
+            flex-shrink: 0;
+        }
+
+        .rank-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
         .rank-1 .rank-medal { color: #FFD700; }
         .rank-2 .rank-medal { color: #C0C0C0; }
@@ -448,7 +458,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -599,7 +609,29 @@
             margin-right: 0.5rem;
         }
 
-                              .collaborator-content {
+        #collaborator-profile-pic-container {
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+
+        #collaborator-profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #collaborator-profile-pic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .collaborator-content {
             flex-grow: 1; /* Permite que o conteúdo ocupe o espaço vertical */
             display: flex;
             flex-direction: column; /* Define a direção vertical como padrão */
@@ -634,6 +666,10 @@
 
         .action-button:hover {
             background: rgba(255, 255, 255, 0.25);
+        }
+
+        .action-button i {
+            margin-right: 0.75rem;
         }
 
                 /* --- Estilos da Página de Gerência --- */
@@ -1208,6 +1244,28 @@
             border-radius: 12px;
             align-items: center;
         }
+
+        /* Novo Estilo para o Card de Falta */
+        .ponto-history-card.absence-record {
+            background: rgba(192, 57, 43, 0.2); /* Fundo avermelhado */
+            border-left: 4px solid #c0392b; /* Borda vermelha */
+        }
+
+        .ponto-history-absence-icon {
+            flex-shrink: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ponto-history-absence-icon i {
+            font-size: 2.5rem;
+            color: #e74c3c;
+        }
         .ponto-history-photo {
             width: 80px;
             height: 80px;
@@ -1245,6 +1303,16 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             /* Animação de entrada para a imagem */
             animation: modalContentEnter 0.4s var(--ease-out-back);
+        }
+
+        /* Estilo para a Exibição da Versão */
+        #app-version-display {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            width: 100%;
         }
 
     </style>
@@ -1559,7 +1627,12 @@
             <button id="back-to-main" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2 id="collaborator-name-display">Nome do Colaborador</h2>
         </div>
+        <!-- Container para a Foto de Perfil -->
+        <div id="collaborator-profile-pic-container">
+            <img id="collaborator-profile-pic" src="" alt="Foto de Perfil">
+        </div>
         <!-- O conteúdo agora tem um container para melhor organização -->
+                    <!-- O conteúdo agora tem um container para melhor organização -->
         <div class="collaborator-content" style="flex-direction: column; gap: 1rem; padding-top: 2rem;">
             <!-- Área de Notificação do Ponto -->
             <div id="ponto-notification-area" style="width: 100%; max-width: 350px; text-align: center; margin-bottom: 0rem;"></div>
@@ -1567,16 +1640,20 @@
             <!-- Painel de vendas individuais que será preenchido pelo JS -->
             <div id="individual-sales-data" style="width: 100%; max-width: 350px;"></div>
             
-            <a href="#" id="view-metas-btn" class="action-button">Metas e Premiações</a>
+            <a href="#" id="view-metas-btn" class="action-button"><i class="fa-solid fa-trophy"></i>Metas e Premiações</a>
             
             <!-- Botão da gerente, escondido por padrão -->
-            <a href="#" id="manager-panel-btn" class="action-button" style="display: none; background-color: rgba(26, 188, 156, 0.7);">Painel da Gerente</a>
+            <a href="#" id="manager-panel-btn" class="action-button" style="display: none; background-color: rgba(26, 188, 156, 0.7);"><i class="fa-solid fa-user-tie"></i>Painel da Gerente</a>
             <!-- Novo Botão de Fechamento -->
-            <a href="#" id="closing-btn" class="action-button" style="display: none; background-color: rgba(41, 128, 185, 0.8);">Fechamento</a>
+            <a href="#" id="closing-btn" class="action-button" style="display: none; background-color: rgba(41, 128, 185, 0.8);"><i class="fa-solid fa-cash-register"></i>Fechamento</a>
             <!-- Novo Botão de Bater Ponto -->
-            <a href="#" id="bater-ponto-btn" class="action-button" style="background-color: rgba(52, 152, 219, 0.8);">Bater Ponto</a>
+            <a href="#" id="bater-ponto-btn" class="action-button" style="background-color: rgba(52, 152, 219, 0.8);"><i class="fa-solid fa-camera"></i>Bater Ponto</a>
             <!-- Botão de Alterar Senha -->
-            <a href="#" id="change-password-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(142, 68, 173, 0.7);">Alterar Senha</a>
+            <a href="#" id="change-password-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(142, 68, 173, 0.7);"><i class="fa-solid fa-key"></i>Alterar Senha</a>
+            <!-- Novo Botão para Trocar Foto -->
+            <a href="#" id="change-photo-btn" class="action-button" style="background-color: rgba(230, 126, 34, 0.8);"><i class="fa-solid fa-camera-rotate"></i>Trocar Foto de Perfil</a>
+            <input type="file" id="photo-upload-input" accept="image/*" style="display: none;">
+            <p id="photo-upload-status" class="status-message"></p>
         </div>
     </div>
 
@@ -1642,10 +1719,13 @@
 
             <!-- Botões de Ação -->
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
-                <button id="open-settings-page" class="action-button">Metas e Premiações</button>
-                <button id="open-correction-page" class="action-button" style="margin-top: 1rem;">Correção de Números</button>
-                <button id="open-mt-management-page" class="action-button" style="margin-top: 1rem; background-color: rgba(230, 126, 34, 0.8);">Adicionar/Excluir MT</button>
-                <button id="verificar-ponto-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(52, 152, 219, 0.8);">Verificar Ponto</button>
+                <button id="open-settings-page" class="action-button"><i class="fa-solid fa-bullseye"></i>Metas e Premiações</button>
+                <button id="open-correction-page" class="action-button" style="margin-top: 1rem;"><i class="fa-solid fa-eraser"></i>Correção de Números</button>
+                <button id="open-mt-management-page" class="action-button" style="margin-top: 1rem; background-color: rgba(230, 126, 34, 0.8);"><i class="fa-solid fa-gem"></i>Adicionar/Excluir MT</button>
+                <button id="verificar-ponto-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(52, 152, 219, 0.8);"><i class="fa-solid fa-user-check"></i>Verificar Ponto</button>
+                <button id="open-holidays-management-page" class="action-button" style="margin-top: 1rem; background-color: rgba(142, 68, 173, 0.7);"><i class="fa-solid fa-calendar-xmark"></i>Gerenciar Feriados</button>
+                <button id="open-sundays-management-page" class="action-button" style="margin-top: 1rem; background-color: rgba(26, 188, 156, 0.7);"><i class="fa-solid fa-calendar-check"></i>Gerenciar Domingos</button>
+                <button id="open-day-off-management-page" class="action-button" style="margin-top: 1rem; background-color: rgba(243, 156, 18, 0.8);"><i class="fa-solid fa-bed"></i>Gerenciar Folga</button>
                 <p id="status-message" class="status-message"></p>
             </div>
         </div>
@@ -1712,7 +1792,7 @@
 💰 Entrada a partir de R$ 570,00
 ⚫ Preto | 🔵 Azul"></textarea>
                 </div>
-                <button id="save-mt-item-btn" class="action-button" style="max-width: none;">Salvar Item</button>
+                <button id="save-mt-item-btn" class="action-button" style="max-width: none;"><i class="fa-solid fa-save"></i>Salvar Item</button>
                 <p id="mt-add-status" class="status-message"></p>
             </div>
 
@@ -1738,7 +1818,7 @@
             <!-- O JavaScript vai popular esta área -->
         </div>
         <div class="save-footer">
-            <button id="save-all-metas" class="action-button">Salvar Todas as Metas</button>
+            <button id="save-all-metas" class="action-button"><i class="fa-solid fa-save"></i>Salvar Todas as Metas</button>
             <p id="metas-status-message" class="status-message"></p>
         </div>
     </div>
@@ -1802,7 +1882,7 @@ P3 🚨 R$ 1.249,00"></textarea>
 P2: R$ 309,00
 P3: R$ 299,00"></textarea>
             </div>
-            <button id="save-device-btn" class="action-button" style="margin-top: 1rem;">Salvar Dispositivo</button>
+            <button id="save-device-btn" class="action-button" style="margin-top: 1rem;"><i class="fa-solid fa-save"></i>Salvar Dispositivo</button>
             <p id="send-device-status" class="status-message"></p>
         </div>
     </div>
@@ -1893,7 +1973,7 @@ P3: R$ 299,00"></textarea>
             
              <!-- Botão de Envio (comum aos dois forms) -->
             <div id="closing-submit-container" style="display: none; padding: 1.5rem 1rem;">
-                <button id="submit-closing-data-btn" class="action-button">Enviar Fechamento</button>
+                <button id="submit-closing-data-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Fechamento</button>
                 <p id="closing-status-message" class="status-message"></p>
             </div>
         </div>
@@ -1909,7 +1989,7 @@ P3: R$ 299,00"></textarea>
             <!-- O JavaScript vai popular esta área com os cards de cada funcionário -->
         </div>
         <div class="save-footer">
-            <button id="save-all-corrections-btn" class="action-button">Salvar Correções</button>
+            <button id="save-all-corrections-btn" class="action-button"><i class="fa-solid fa-save"></i>Salvar Correções</button>
             <p id="correction-status-message" class="status-message"></p>
         </div>
     </div>
@@ -1952,7 +2032,7 @@ P3: R$ 299,00"></textarea>
         <div id="stock-selection-footer" class="save-footer" style="position: sticky; bottom: 0; background: rgba(30,30,60,0.9); backdrop-filter: blur(5px); display: none;">
             <h4>Itens Selecionados</h4>
             <div id="stock-selection-list"></div>
-            <button id="send-stock-request-btn" class="action-button" style="margin-top: 1rem;">Enviar Solicitação</button>
+            <button id="send-stock-request-btn" class="action-button" style="margin-top: 1rem;"><i class="fa-solid fa-paper-plane"></i>Enviar Solicitação</button>
         </div>
     </div>
 
@@ -1990,7 +2070,7 @@ P3: R$ 299,00"></textarea>
             </div>
             
             <div class="save-footer">
-                <button id="submit-os-form-btn" class="action-button">Enviar OS por Email</button>
+                <button id="submit-os-form-btn" class="action-button"><i class="fa-solid fa-envelope"></i>Enviar OS por Email</button>
                 <p id="os-form-status" class="status-message"></p>
             </div>
         </div>
@@ -2021,7 +2101,7 @@ Transporte - R$ 5,00"></textarea></div>
             <div class="input-group"><label for="recibo-nota">NOTA/CUPOM (Opcional)</label><textarea id="recibo-nota" class="data-input" rows="2" placeholder="Se houver, descreva ou cole o texto aqui."></textarea></div>
             
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
-                <button id="submit-recibo-btn" class="action-button">Enviar Recibo</button>
+                <button id="submit-recibo-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Recibo</button>
                 <p id="recibo-status-message" class="status-message"></p>
             </div>
         </div>
@@ -2062,7 +2142,7 @@ Transporte - R$ 5,00"></textarea></div>
             <div class="input-group"><label for="quiz-precisando">5. Tem algo que você está precisando agora (apoio, estrutura, etc.) que gostaria de compartilhar? (Obrigatório)</label><textarea id="quiz-precisando" class="data-input" rows="4"></textarea></div>
             
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
-                <button id="submit-quiz-btn" class="action-button">Enviar Feedback</button>
+                <button id="submit-quiz-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Feedback</button>
                 <p id="quiz-status-message" class="status-message"></p>
             </div>
         </div>
@@ -2122,6 +2202,92 @@ Transporte - R$ 5,00"></textarea></div>
         <img id="viewer-image" src="" alt="Imagem ampliada">
     </div>
 
+    <!-- Elemento para exibir a versão -->
+    <div id="app-version-display"></div>
+
+    <!-- TELA DE GERENCIAMENTO DE FERIADOS -->
+    <div id="holidays-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-holidays" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gerenciar Feriados</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+            <div class="employee-meta-card">
+                <h4>Adicionar Novo Feriado</h4>
+                <div class="input-group">
+                    <label for="holiday-date-input">Selecione a Data</label>
+                    <input type="date" id="holiday-date-input" class="data-input">
+                </div>
+                <button id="add-holiday-btn" class="action-button" style="max-width: none;"><i class="fa-solid fa-calendar-plus"></i>Adicionar Feriado</button>
+                <p id="holiday-status-message" class="status-message"></p>
+            </div>
+            <div class="employee-meta-card">
+                <h4>Feriados Cadastrados</h4>
+                <div id="holidays-list-container">
+                    <!-- Lista de feriados será carregada aqui -->
+                    <p style="text-align:center;">Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE GERENCIAMENTO DE DOMINGOS DE TRABALHO -->
+    <div id="sundays-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-sundays" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gerenciar Domingos de Trabalho</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+            <div class="employee-meta-card">
+                <h4>Adicionar Domingo de Trabalho</h4>
+                <div class="input-group">
+                    <label for="sunday-date-input">Selecione o Domingo</label>
+                    <input type="date" id="sunday-date-input" class="data-input">
+                </div>
+                <button id="add-sunday-btn" class="action-button" style="max-width: none;"><i class="fa-solid fa-calendar-plus"></i>Adicionar Domingo</button>
+                <p id="sunday-status-message" class="status-message"></p>
+            </div>
+            <div class="employee-meta-card">
+                <h4>Domingos Cadastrados</h4>
+                <div id="sundays-list-container">
+                    <!-- Lista de domingos será carregada aqui -->
+                    <p style="text-align:center;">Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE GERENCIAMENTO DE FOLGAS -->
+    <div id="day-off-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-day-off" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gerenciar Folgas</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+            <div class="employee-meta-card">
+                <h4>Adicionar Folga</h4>
+                 <div class="input-group">
+                    <label for="day-off-employee-select">Selecione o Colaborador</label>
+                    <select id="day-off-employee-select" class="data-input">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="day-off-date-input">Selecione a Data da Folga</label>
+                    <input type="date" id="day-off-date-input" class="data-input">
+                </div>
+                <button id="add-day-off-btn" class="action-button" style="max-width: none;"><i class="fa-solid fa-calendar-plus"></i>Adicionar Folga</button>
+                <p id="day-off-status-message" class="status-message"></p>
+            </div>
+            <div class="employee-meta-card">
+                <h4>Folgas Agendadas</h4>
+                <div id="days-off-list-container">
+                    <p style="text-align:center;">Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- =================================================================== -->
     <!-- SCRIPTS (CARREGADOS NA ORDEM CORRETA) -->
@@ -2134,6 +2300,9 @@ Transporte - R$ 5,00"></textarea></div>
 
     <!-- 2. Seu script principal -->
             <script>
+    // --- VERSÃO DO APLICATIVO ---
+    const APP_VERSION = '1.2.0'; // Altere este número para atualizar a versão
+
     // Sua configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBxZ041My0mTu8CP9bDvEQ4K3p_wHBIF_c",
@@ -2200,6 +2369,9 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('loja-calculator-page').classList.add('page');
     document.getElementById('mt-display-page').classList.add('page');
     document.getElementById('mt-management-page').classList.add('page');
+    document.getElementById('holidays-management-page').classList.add('page');
+    document.getElementById('sundays-management-page').classList.add('page');
+    document.getElementById('day-off-management-page').classList.add('page');
 
     // Mapeia os elementos para fácil acesso
     const elements = {
@@ -2225,7 +2397,10 @@ Transporte - R$ 5,00"></textarea></div>
         siteCalculatorPage: document.getElementById('site-calculator-page'),
         lojaCalculatorPage: document.getElementById('loja-calculator-page'),
         mtDisplayPage: document.getElementById('mt-display-page'),
-        mtManagementPage: document.getElementById('mt-management-page'),mtManagementPage: document.getElementById('mt-management-page'),
+        mtManagementPage: document.getElementById('mt-management-page'),
+        holidaysManagementPage: document.getElementById('holidays-management-page'),
+        sundaysManagementPage: document.getElementById('sundays-management-page'),
+        dayOffManagementPage: document.getElementById('day-off-management-page'),
         pontoPage: document.getElementById('ponto-page'),
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
         pontoHistoryPage: document.getElementById('ponto-history-page'),
@@ -3400,8 +3575,9 @@ Transporte - R$ 5,00"></textarea></div>
 
         Promise.all([
             database.ref('salesData').get(),
-            database.ref('metas').get()
-        ]).then(([salesSnapshot, metasSnapshot]) => {
+            database.ref('metas').get(),
+            database.ref('userProfiles').get() // Adicionado para buscar as fotos
+        ]).then(([salesSnapshot, metasSnapshot, profilesSnapshot]) => {
             if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
                 rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
                 return;
@@ -3409,6 +3585,7 @@ Transporte - R$ 5,00"></textarea></div>
 
             const salesData = salesSnapshot.val();
             const metasData = metasSnapshot.val();
+            const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
             const performanceData = [];
 
             const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
@@ -3450,7 +3627,13 @@ Transporte - R$ 5,00"></textarea></div>
                 
                 const progressBarWidth = collab.percentage;
 
+                // Lógica para buscar a foto do perfil
+                const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+                const collaboratorProfile = profilesData[collab.name.toLowerCase()];
+                const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
+
                 rankItem.innerHTML = `
+                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
                     <div class="rank-medal">${medals[index]}</div>
                     <div class="rank-details">
                         <div class="rank-name">
@@ -3488,16 +3671,56 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const determineNextPontoAction = (dailyPontoData) => {
+    const determineNextPontoAction = async (dailyPontoData) => {
         const now = new Date();
+        const dayOfWeek = now.getDay(); // 0 = Domingo, 6 = Sábado
         const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
+        const todayString = getTodayDateString();
 
-        const windows = {
-            entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, // 7:40 - 8:15
-            saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, // 11:00 - 15:00
-            saida: { start: 17 * 60 + 40, end: 18 * 60 + 15 } // 17:40 - 18:15
-        };
+        // 1. Fetch de feriados, domingos de trabalho e folgas
+        const [holidaySnap, sundaySnap, dayOffSnap] = await Promise.all([
+            database.ref('holidays').get(),
+            database.ref('workingSundays').get(),
+            database.ref(`scheduledDaysOff/${todayString}/${currentCollaboratorName.toLowerCase()}`).get()
+        ]);
 
+        // 2. Verificar se o funcionário está de folga
+        if (dayOffSnap.exists()) {
+            return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.' };
+        }
+
+        // 3. Verificar se hoje é feriado
+        if (holidaySnap.hasChild(todayString)) {
+            return { action: null, status: 'holiday', message: 'Hoje é um feriado. Ponto desativado.' };
+        }
+
+        // 4. Verificar se é um domingo normal (não de trabalho)
+        const isWorkingSunday = sundaySnap.hasChild(todayString);
+        if (dayOfWeek === 0 && !isWorkingSunday) {
+            return { action: null, status: 'closed', message: 'Loja fechada aos domingos. Ponto desativado.' };
+        }
+
+        // 5. Definir as janelas de horário corretas
+        let windows;
+        const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
+
+        if (isWeekendShift) {
+            // Horário de Sábado / Domingo de trabalho
+            windows = {
+                entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, // 7:40 - 8:15
+                saida: { start: 12 * 60 + 40, end: 13 * 60 + 15 } // 12:40 - 13:15
+                // Sem almoço
+            };
+        } else {
+            // Horário normal de dia de semana
+            windows = {
+                entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, // 7:40 - 8:15
+                saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, // 11:00 - 15:00
+                saida: { start: 17 * 60 + 40, end: 18 * 60 + 15 } // 17:40 - 18:15
+            };
+        }
+        
+        // 6. Lógica de ponto com as janelas de horário definidas
         if (!dailyPontoData.entrada) {
             if (currentTimeInMinutes >= windows.entrada.start && currentTimeInMinutes <= windows.entrada.end) {
                 return { action: 'registrar_entrada', status: 'pending', message: 'Você deve bater o ponto de ENTRADA.' };
@@ -3548,17 +3771,45 @@ Transporte - R$ 5,00"></textarea></div>
         try {
             const snapshot = await pontoRef.get();
             const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
-            const nextAction = determineNextPontoAction(dailyPontoData);
+            const nextAction = await determineNextPontoAction(dailyPontoData);
 
             if (nextAction.status === 'pending') {
                 notificationArea.innerHTML = `<div class="os-warning" style="border-color: #f1c40f; color: #f1c40f; margin-bottom: 0;">${nextAction.message}</div>`;
             } else if (nextAction.status === 'late') {
                 notificationArea.innerHTML = `<div class="os-warning" style="margin-bottom: 0;">${nextAction.message}</div>`;
-                // Gera notificação para o gerente apenas uma vez por dia por tipo de atraso
+
+                // --- INÍCIO DA LÓGICA PARA REGISTRAR A FALTA ---
+                const absenceLogRef = database.ref(`absencesLogged/${todayString}/${currentCollaboratorName}/${nextAction.action}`);
+                const absenceLogSnapshot = await absenceLogRef.get();
+
+                // Só registra a falta se ela ainda não foi registrada hoje
+                if (!absenceLogSnapshot.exists()) {
+                    const absenceData = {
+                        collaborator: currentCollaboratorName,
+                        timestamp: new Date().toISOString(),
+                        type: 'falta', // Identificador do tipo de registro
+                        reason: nextAction.message,
+                        photoURL: null // Não há foto para uma falta
+                    };
+                    
+                    const newPontoKey = database.ref().child(`pontos/${currentCollaboratorName}`).push().key;
+                    
+                    const updates = {};
+                    // Adiciona o registro de falta ao histórico geral de pontos
+                    updates[`pontos/${currentCollaboratorName}/${newPontoKey}`] = absenceData;
+                    // Marca que esta falta específica já foi registrada para hoje
+                    updates[`absencesLogged/${todayString}/${currentCollaboratorName}/${nextAction.action}`] = true;
+
+                    // Salva a falta e o log de uma vez só
+                    await database.ref().update(updates);
+                }
+                // --- FIM DA LÓGICA PARA REGISTRAR A FALTA ---
+
+                // Gera notificação para o gerente (lógica existente)
                 const notificationCheckRef = database.ref(`managerNotifications/${todayString}-${currentCollaboratorName}-${nextAction.action}`);
                 const checkSnapshot = await notificationCheckRef.get();
                 if (!checkSnapshot.exists()) {
-                     createManagerNotification(`${currentCollaboratorName}: ${nextAction.message}`);
+                    createManagerNotification(`${currentCollaboratorName}: ${nextAction.message}`);
                 }
             }
         } catch (error) {
@@ -3574,9 +3825,15 @@ Transporte - R$ 5,00"></textarea></div>
         try {
             const snapshot = await pontoRef.get();
             const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
-            const nextAction = determineNextPontoAction(dailyPontoData);
+            const nextAction = await determineNextPontoAction(dailyPontoData);
 
             currentPontoAction = nextAction.action; // Armazena a ação a ser executada
+
+            // Lidar com dias não úteis ou folga primeiro
+            if (nextAction.status === 'holiday' || nextAction.status === 'closed' || nextAction.status === 'day_off') {
+                alert(nextAction.message);
+                return;
+            }
 
             if (currentPontoAction && currentPontoAction.startsWith('registrar_')) {
                 initPontoCamera();
@@ -3622,14 +3879,238 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
+    // --- Funções para Gerenciamento de Feriados e Domingos ---
+    const loadAndRenderList = (dbNode, listContainerId, title) => {
+        const listContainer = document.getElementById(listContainerId);
+        listContainer.innerHTML = `<p style="text-align:center;">Carregando...</p>`;
+
+        database.ref(dbNode).get().then(snapshot => {
+            listContainer.innerHTML = '';
+            if (snapshot.exists()) {
+                snapshot.forEach(itemSnapshot => {
+                    const key = itemSnapshot.key; // A chave é a data YYYY-MM-DD
+                    const [year, month, day] = key.split('-');
+                    const formattedDate = `${day}/${month}/${year}`;
+                    const listItem = document.createElement('div');
+                    listItem.className = 'mt-list-item';
+                    listItem.innerHTML = `
+                        <div class="mt-list-item-text">${formattedDate} - ${title}</div>
+                        <button class="delete-button-small" data-db-node="${dbNode}" data-key="${key}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    listContainer.appendChild(listItem);
+                });
+            } else {
+                listContainer.innerHTML = `<p style="text-align:center;">Nenhuma data cadastrada.</p>`;
+            }
+        });
+    };
+
+    const addDateToList = (inputId, dbNode, statusId, callback) => {
+        const dateInput = document.getElementById(inputId);
+        const statusEl = document.getElementById(statusId);
+        const dateValue = dateInput.value;
+
+        if (!dateValue) {
+            statusEl.textContent = 'Por favor, selecione uma data.';
+            return;
+        }
+
+        statusEl.textContent = 'Salvando...';
+        database.ref(dbNode).child(dateValue).set(true)
+            .then(() => {
+                statusEl.textContent = 'Data adicionada com sucesso!';
+                dateInput.value = '';
+                if (callback) callback();
+                setTimeout(() => { statusEl.textContent = ''; }, 2000);
+            })
+            .catch(err => {
+                statusEl.textContent = 'Erro ao salvar a data!';
+                console.error(err);
+            });
+    };
+
+    const deleteDateFromList = (dbNode, key, callback) => {
+        if (confirm('Tem certeza que deseja remover esta data?')) {
+            database.ref(dbNode).child(key).remove()
+                .then(() => {
+                    alert('Data removida.');
+                    if (callback) callback();
+                })
+                .catch(err => {
+                    alert('Erro ao remover a data.');
+                    console.error(err);
+                });
+        }
+    };
+
+    const loadCollaboratorProfilePicture = () => {
+        const imgElement = document.getElementById('collaborator-profile-pic');
+        const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+        const userKey = currentCollaboratorName.toLowerCase();
+        
+        database.ref(`userProfiles/${userKey}/photoURL`).get().then(snapshot => {
+            if (snapshot.exists()) {
+                imgElement.src = snapshot.val();
+            } else {
+                imgElement.src = defaultPhoto;
+            }
+        }).catch(() => {
+            imgElement.src = defaultPhoto;
+        });
+    };
+
+    const uploadProfilePicture = (file) => {
+        const statusEl = document.getElementById('photo-upload-status');
+        const userKey = currentCollaboratorName.toLowerCase();
+        
+        statusEl.textContent = 'Enviando foto...';
+
+        const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40'; 
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const imageUrl = result.data.url;
+                statusEl.textContent = 'Atualizando perfil...';
+                
+                database.ref(`userProfiles/${userKey}/photoURL`).set(imageUrl)
+                    .then(() => {
+                        statusEl.textContent = 'Foto atualizada com sucesso!';
+                        document.getElementById('collaborator-profile-pic').src = imageUrl; // Atualiza a imagem na tela
+                        // Recarregar os rankings para refletir a nova foto
+                        calculateAndDisplayRanking();
+                        calculateAndDisplayStoreRanking();
+                        setTimeout(() => { statusEl.textContent = ''; }, 3000);
+                    })
+                    .catch(dbError => {
+                        console.error("Erro ao salvar URL no DB:", dbError);
+                        statusEl.textContent = 'Erro ao salvar a foto no perfil.';
+                    });
+            } else {
+                console.error('Erro no ImgBB:', result);
+                statusEl.textContent = 'Falha no servidor ao enviar a foto.';
+            }
+        })
+        .catch(error => {
+            console.error('Erro de rede ao enviar para ImgBB:', error);
+            statusEl.textContent = 'Erro de conexão ao enviar a foto.';
+        });
+    };
+
+
+    // --- Funções para Gerenciamento de Folgas ---
+
+    const populateEmployeeSelect = () => {
+        const select = document.getElementById('day-off-employee-select');
+        select.innerHTML = '<option value="" disabled selected>Selecione...</option>';
+        allCollaborators.forEach(name => {
+            select.innerHTML += `<option value="${name.toLowerCase()}">${name}</option>`;
+        });
+    };
+
+    const loadAndRenderDaysOff = () => {
+        const listContainer = document.getElementById('days-off-list-container');
+        listContainer.innerHTML = `<p style="text-align:center;">Carregando...</p>`;
+
+        database.ref('scheduledDaysOff').get().then(snapshot => {
+            listContainer.innerHTML = '';
+            if (!snapshot.exists() || snapshot.val() === null) {
+                listContainer.innerHTML = `<p style="text-align:center;">Nenhuma folga agendada.</p>`;
+                return;
+            }
+
+            const daysOff = snapshot.val();
+            const items = [];
+            
+            // Coletar e formatar todos os itens antes de exibir
+            for (const date in daysOff) {
+                for (const employeeKey in daysOff[date]) {
+                    const employeeName = allCollaborators.find(name => name.toLowerCase() === employeeKey) || employeeKey;
+                    const [year, month, day] = date.split('-');
+                    const formattedDate = `${day}/${month}/${year}`;
+                    items.push({ date, formattedDate, employeeKey, employeeName });
+                }
+            }
+
+            // Ordenar por data
+            items.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            if (items.length === 0) {
+                 listContainer.innerHTML = `<p style="text-align:center;">Nenhuma folga agendada.</p>`;
+                 return;
+            }
+
+            items.forEach(item => {
+                const listItem = document.createElement('div');
+                listItem.className = 'mt-list-item';
+                listItem.innerHTML = `
+                    <div class="mt-list-item-text">${item.employeeName} - Folga em ${item.formattedDate}</div>
+                    <button class="delete-button-small" data-date="${item.date}" data-employee-key="${item.employeeKey}">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                listContainer.appendChild(listItem);
+            });
+        });
+    };
+
+    const addDayOff = () => {
+        const employeeKey = document.getElementById('day-off-employee-select').value;
+        const dateValue = document.getElementById('day-off-date-input').value;
+        const statusEl = document.getElementById('day-off-status-message');
+
+        if (!employeeKey || !dateValue) {
+            statusEl.textContent = 'Selecione um colaborador e uma data.';
+            return;
+        }
+
+        statusEl.textContent = 'Salvando...';
+        database.ref(`scheduledDaysOff/${dateValue}/${employeeKey}`).set(true)
+            .then(() => {
+                statusEl.textContent = 'Folga agendada com sucesso!';
+                document.getElementById('day-off-employee-select').selectedIndex = 0;
+                document.getElementById('day-off-date-input').value = '';
+                loadAndRenderDaysOff();
+                setTimeout(() => { statusEl.textContent = ''; }, 2000);
+            })
+            .catch(err => {
+                statusEl.textContent = 'Erro ao agendar a folga!';
+                console.error(err);
+            });
+    };
+
+    const deleteDayOff = (date, employeeKey) => {
+        if (confirm('Tem certeza que deseja remover esta folga?')) {
+            database.ref(`scheduledDaysOff/${date}/${employeeKey}`).remove()
+                .then(() => {
+                    alert('Folga removida.');
+                    loadAndRenderDaysOff();
+                })
+                .catch(err => {
+                    alert('Erro ao remover a folga.');
+                    console.error(err);
+                });
+        }
+    };
+
+
     const calculateAndDisplayStoreRanking = () => {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
 
         Promise.all([
             database.ref('salesData').get(),
-            database.ref('metas').get()
-        ]).then(([salesSnapshot, metasSnapshot]) => {
+            database.ref('metas').get(),
+            database.ref('userProfiles').get() // Adicionado para buscar as fotos
+        ]).then(([salesSnapshot, metasSnapshot, profilesSnapshot]) => {
             if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
                 container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
                 return;
@@ -3637,6 +4118,7 @@ Transporte - R$ 5,00"></textarea></div>
 
             const salesData = salesSnapshot.val();
             const metasData = metasSnapshot.val();
+            const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
             const performanceData = [];
             const managersToRank = ['Beatriz', 'Natalia']; // As gerentes que serão comparadas
 
@@ -3677,8 +4159,15 @@ Transporte - R$ 5,00"></textarea></div>
                 rankItem.className = `rank-item rank-${rank}`;
                 
                 const progressBarWidth = collab.percentage;
+                
+                // Lógica para buscar a foto do perfil da gerente
+                const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+                const managerProfile = profilesData[collab.name.toLowerCase()];
+                const photoUrl = managerProfile && managerProfile.photoURL ? managerProfile.photoURL : defaultPhoto;
+
 
                 rankItem.innerHTML = `
+                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
                     <div class="rank-medal">${medals[index]}</div>
                     <div class="rank-details">
                         <div class="rank-name">
@@ -3856,15 +4345,31 @@ Transporte - R$ 5,00"></textarea></div>
                 const card = document.createElement('div');
                 card.className = 'ponto-history-card';
                 const date = new Date(record.timestamp);
-                
-                card.innerHTML = `
-                    <img src="${record.photoURL}" class="ponto-history-photo" alt="Foto do ponto">
-                    <div class="ponto-history-details">
-                        <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
-                        <p><strong>Hora:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
-                        <p><strong>Cidade:</strong> ${record.city}</p>
-                    </div>
-                `;
+
+                if (record.type === 'falta') {
+                    // --- RENDERIZA O CARD DE FALTA ---
+                    card.classList.add('absence-record');
+                    card.innerHTML = `
+                        <div class="ponto-history-absence-icon">
+                           <i class="fa-solid fa-user-clock"></i>
+                        </div>
+                        <div class="ponto-history-details">
+                            <p><strong>${record.reason}</strong></p>
+                            <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
+                            <p><strong>Hora da Ocorrência:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
+                        </div>
+                    `;
+                } else {
+                    // --- RENDERIZA O CARD DE PONTO NORMAL ---
+                    card.innerHTML = `
+                        <img src="${record.photoURL}" class="ponto-history-photo" alt="Foto do ponto">
+                        <div class="ponto-history-details">
+                            <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
+                            <p><strong>Hora:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
+                            <p><strong>Cidade:</strong> ${record.city}</p>
+                        </div>
+                    `;
+                }
                 historyContainer.appendChild(card);
             });
         });
@@ -4123,7 +4628,12 @@ Transporte - R$ 5,00"></textarea></div>
                             managerBtn.style.display = 'none';
                             closingBtn.style.display = 'none';
                         }
+                        
+                        // Limpa o status de upload de foto anterior
+                        document.getElementById('photo-upload-status').textContent = '';
+
                         loadAndDisplayIndividualSalesData();
+                        loadCollaboratorProfilePicture(); // Carrega a foto de perfil
                         checkPontoStatusAndDisplayWarnings(); // Adicionado para verificar o status do ponto
                         showPage('collaboratorPage');
                     });
@@ -4161,6 +4671,19 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('open-settings-page').addEventListener('click', () => { buildAndLoadMetasPage(); showPage('metasConfigPage'); });
             document.getElementById('open-correction-page').addEventListener('click', () => { buildAndLoadCorrectionPage(); showPage('correctionPage'); });
             document.getElementById('open-mt-management-page').addEventListener('click', loadAndShowMtManagementPage);
+            document.getElementById('open-holidays-management-page').addEventListener('click', () => {
+                loadAndRenderList('holidays', 'holidays-list-container', 'Feriado');
+                showPage('holidaysManagementPage');
+            });
+            document.getElementById('open-sundays-management-page').addEventListener('click', () => {
+                loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho');
+                showPage('sundaysManagementPage');
+            });
+            document.getElementById('open-day-off-management-page').addEventListener('click', () => {
+                populateEmployeeSelect();
+                loadAndRenderDaysOff();
+                showPage('dayOffManagementPage');
+            });
 
             // --- PÁGINA DE CONFIGURAÇÕES / CORREÇÃO ---
             document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
@@ -4210,6 +4733,9 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('back-to-main-from-quiz').addEventListener('click', showMainPage);
             document.getElementById('back-to-gs-from-metas').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-correction').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-holidays').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-sundays').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-day-off').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-collab-from-metas').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-panel').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-closing').addEventListener('click', () => showPage('collaboratorPage'));
@@ -4258,9 +4784,50 @@ Transporte - R$ 5,00"></textarea></div>
                 }
             });
 
-            // --- LISTENERS DA FUNÇÃO DE PONTO ---
+            // --- LISTENERS DA FUNÇÃO DE PONTO E GERENCIAMENTO DE DATAS ---
             document.getElementById('bater-ponto-btn').addEventListener('click', handlePontoLogic);
             document.getElementById('capture-ponto-btn').addEventListener('click', captureAndUploadPonto);
+            
+            // Listeners para troca de foto de perfil
+            document.getElementById('change-photo-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('photo-upload-input').click();
+            });
+            document.getElementById('collaborator-profile-pic').addEventListener('click', () => {
+                 document.getElementById('photo-upload-input').click();
+            });
+            document.getElementById('photo-upload-input').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    uploadProfilePicture(file);
+                }
+            });
+            
+            document.getElementById('add-holiday-btn').addEventListener('click', () => addDateToList('holiday-date-input', 'holidays', 'holiday-status-message', () => loadAndRenderList('holidays', 'holidays-list-container', 'Feriado')));
+            document.getElementById('add-sunday-btn').addEventListener('click', () => addDateToList('sunday-date-input', 'workingSundays', 'sunday-status-message', () => loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho')));
+
+            document.getElementById('holidays-list-container').addEventListener('click', (event) => {
+                const deleteButton = event.target.closest('.delete-button-small');
+                if (deleteButton) {
+                    deleteDateFromList(deleteButton.dataset.dbNode, deleteButton.dataset.key, () => loadAndRenderList('holidays', 'holidays-list-container', 'Feriado'));
+                }
+            });
+
+            document.getElementById('sundays-list-container').addEventListener('click', (event) => {
+                const deleteButton = event.target.closest('.delete-button-small');
+                if (deleteButton) {
+                    deleteDateFromList(deleteButton.dataset.dbNode, deleteButton.dataset.key, () => loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho'));
+                }
+            });
+
+            // Listeners para a página de gerenciamento de folgas
+            document.getElementById('add-day-off-btn').addEventListener('click', addDayOff);
+            document.getElementById('days-off-list-container').addEventListener('click', (event) => {
+                const deleteButton = event.target.closest('.delete-button-small');
+                if (deleteButton) {
+                    deleteDayOff(deleteButton.dataset.date, deleteButton.dataset.employeeKey);
+                }
+            });
             document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
                 stopPontoCamera();
                 showPage('collaboratorPage');
@@ -4324,6 +4891,8 @@ Transporte - R$ 5,00"></textarea></div>
             calculateAndDisplayStoreRanking(); // Carrega o ranking de lojas
             loadManagerNotifications(); // Carrega notificações para o gerente na inicialização
 
+            // Exibe a versão do app no rodapé
+            document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
         });
     </script>
 
