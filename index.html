@@ -1769,8 +1769,10 @@
                 <input type="text" id="device-image-url" class="data-input" placeholder="Cole o link da imagem aqui">
             </div>
             <div class="input-group">
-                <label for="device-tudocelular-url">Link do TudoCelular</label>
-                <input type="text" id="device-tudocelular-url" class="data-input" placeholder="Cole o link da ficha técnica">
+                <label for="device-tech-specs">⚙️ Ficha Técnica</label>
+                <textarea id="device-tech-specs" class="data-input" rows="5" placeholder="Processador: Snapdragon 8 Gen 1
+Tela: 6.8 polegadas, AMOLED
+Câmera: 108MP..."></textarea>
             </div>
             <div class="input-group">
                 <label for="device-price-table">💰 Tabela de Preços</label>
@@ -2384,12 +2386,13 @@ Transporte - R$ 5,00"></textarea></div>
         const brand = document.getElementById('device-brand').value;
         const name = document.getElementById('device-name').value.trim();
         const imageUrl = document.getElementById('device-image-url').value.trim();
-        const tudocelularUrl = document.getElementById('device-tudocelular-url').value.trim();
-        if (!brand || !name || !imageUrl || !tudocelularUrl) {
+        const techSpecs = document.getElementById('device-tech-specs').value.trim(); // MUDOU AQUI
+        if (!brand || !name || !imageUrl || !techSpecs) { // E AQUI
             statusEl.textContent = 'Preencha os campos obrigatórios!'; return;
         }
         statusEl.textContent = 'Salvando...';
-        const newDevice = { name, imageUrl, tudocelularUrl, priceTable: document.getElementById('device-price-table').value.trim(), insuranceTable: document.getElementById('device-insurance-table').value.trim() };
+        // E AQUI, salvando 'techSpecs' em vez de 'tudocelularUrl'
+        const newDevice = { name, imageUrl, techSpecs, priceTable: document.getElementById('device-price-table').value.trim(), insuranceTable: document.getElementById('device-insurance-table').value.trim() };
         database.ref(`devices/${brand}`).push(newDevice).then(() => {
             statusEl.textContent = 'Dispositivo salvo!';
             document.getElementById('send-device-page').querySelectorAll('input, textarea, select').forEach(el => { if(el.tagName !== 'SELECT') el.value = ''; else el.selectedIndex = 0; });
@@ -2425,11 +2428,12 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('device-detail-title').textContent = device.name;
             const contentContainer = document.getElementById('device-detail-content');
             
+            // AQUI ESTÁ A MUDANÇA: 'tudocelularUrl' foi trocado por 'techSpecs' em uma tag <pre>
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
                 <h3>💰 Tabela de Preços</h3><pre>${device.priceTable || 'Não informado.'}</pre>
                 <h3>🔧 Seguro Opcional</h3><pre>${device.insuranceTable || 'Não informado.'}</pre>
-                <h3>⚙️ Ficha Técnica Completa</h3><a href="${device.tudocelularUrl}" target="_blank">Ver no TudoCelular.com</a>
+                <h3>⚙️ Ficha Técnica</h3><pre>${device.techSpecs || 'Não informado.'}</pre>
                 <button id="delete-device-btn" class="action-button delete-button"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
             `;
             
