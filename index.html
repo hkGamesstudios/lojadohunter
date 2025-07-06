@@ -1547,7 +1547,7 @@
                 <div class="modal-button-container">
                     <a href="#" class="modal-btn collaborator-link" data-name="Natalia">Natalia</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Tacilio">Tacilio</a>
-                    <a href="#" class="modal-btn collaborator-link" data-name="Denilson">Denilson</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Demilson">Demilson</a>
                 </div>
             </div>
         </div>
@@ -1864,15 +1864,15 @@ P3: R$ 299,00"></textarea>
                 <div class="input-group"><label for="closing-cartao-natalia">CARTOES NATALIA (DIARIO) 💳</label><input type="number" id="closing-cartao-natalia" class="data-input"></div>
                 <div class="input-group"><label for="closing-venda-tacilio">VENDA DE TACILIO 📈</label><input type="number" id="closing-venda-tacilio" class="data-input"></div>
                 <div class="input-group"><label for="closing-cartao-tacilio">CARTOES TACILIO (DIARIO) 💳</label><input type="number" id="closing-cartao-tacilio" class="data-input"></div>
-                <div class="input-group"><label for="closing-venda-denilson">VENDA DE DENILSON 📈</label><input type="number" id="closing-venda-denilson" class="data-input"></div>
-                <div class="input-group"><label for="closing-cartao-denilson">CARTOES DENILSON (DIARIO) 💳</label><input type="number" id="closing-cartao-denilson" class="data-input"></div>
+                <div class="input-group"><label for="closing-venda-demilson">VENDA DE DEMILSON 📈</label><input type="number" id="closing-venda-demilson" class="data-input"></div>
+                <div class="input-group"><label for="closing-cartao-demilson">CARTOES DEMILSON (DIARIO) 💳</label><input type="number" id="closing-cartao-demilson" class="data-input"></div>
                  <div class="meta-group-title">Geral</div>
                 <div class="input-group"><label for="closing-seguro-natalia">SEGURO DE NATALIA (GERAL) 📝</label><input type="number" id="closing-seguro-natalia" class="data-input"></div>
                 <div class="input-group"><label for="closing-seguro-tacilio">SEGURO DE TACILIO (GERAL) 📝</label><input type="number" id="closing-seguro-tacilio" class="data-input"></div>
-                <div class="input-group"><label for="closing-seguro-denilson">SEGURO DE DENILSON (GERAL) 📝</label><input type="number" id="closing-seguro-denilson" class="data-input"></div>
+                <div class="input-group"><label for="closing-seguro-demilson">SEGURO DE DEMILSON (GERAL) 📝</label><input type="number" id="closing-seguro-demilson" class="data-input"></div>
                 <div class="input-group"><label for="closing-p1p2-natalia">PN/PP DE NATALIA 🔱</label><input type="number" id="closing-p1p2-natalia" class="data-input"></div>
                 <div class="input-group"><label for="closing-p1p2-tacilio">PN/PP DE TACILO 🔱</label><input type="number" id="closing-p1p2-tacilio" class="data-input"></div>
-                <div class="input-group"><label for="closing-p1p2-denilson">PN/PP DE DENILSON 🔱</label><input type="number" id="closing-p1p2-denilson" class="data-input"></div>
+                <div class="input-group"><label for="closing-p1p2-demilson">PN/PP DE DEMILSON 🔱</label><input type="number" id="closing-p1p2-demilson" class="data-input"></div>
             </div>
             
              <!-- Botão de Envio (comum aos dois forms) -->
@@ -2143,11 +2143,11 @@ Transporte - R$ 5,00"></textarea></div>
     let monthlySalesChartInstance = null;
 
     // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Denilson'];
+    const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson'];
     const managers = ['Beatriz', 'Natalia'];
     const storeMapping = {
         pinheiro: ['Beatriz', 'Marcio', 'Eliseu'],
-        bacabal: ['Natalia', 'Tacilio', 'Denilson']
+        bacabal: ['Natalia', 'Tacilio', 'Demilson']
     };
     let currentCollaboratorName = '';
     let currentBrand = '';
@@ -2311,6 +2311,19 @@ Transporte - R$ 5,00"></textarea></div>
         return false;
     };
     
+    // --- FUNÇÕES AUXILIARES DE FORMATAÇÃO DE MOEDA ---
+    const formatToBRLInput = (value) => {
+      const num = parseFloat(value) || 0;
+      return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const parseFromBRLInput = (value) => {
+      if (!value || typeof value !== 'string') return 0;
+      const num = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+      return isNaN(num) ? 0 : num;
+    };
+
+
     // --- DEMAIS FUNÇÕES (SEM ALTERAÇÃO NA LÓGICA INTERNA) ---
     // As funções loadGerenciaData e saveGerenciaData foram removidas pois se tornaram obsoletas
     // com a implementação do novo Dashboard e da página de Configurações Gerais.
@@ -2331,14 +2344,14 @@ Transporte - R$ 5,00"></textarea></div>
                     <div class="employee-meta-card">
                         <h4>Metas e Prêmios: ${name}</h4>
                         <div class="meta-group-title">Metas</div>
-                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="number" id="venda-${key}" class="data-input" value="${metasData.venda || ''}"></div>
+                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
                         <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
-                        <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="number" id="p1-${key}" class="data-input" value="${metasData.p1 || ''}"></div>
+                        <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
                         <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
                         <div class="meta-group-title">Premiações 💰</div>
-                        <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="number" id="premio-p1p2-${key}" class="data-input" value="${metasData.premioP1P2 || ''}"></div>
-                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (R$)</label><input type="number" id="premio-seguro-${key}" class="data-input" value="${metasData.premioSeguro || ''}"></div>
-                        <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="number" id="premio-cartao-${key}" class="data-input" value="${metasData.premioCartao || ''}"></div>
+                        <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="text" id="premio-p1p2-${key}" class="data-input" value="${formatToBRLInput(metasData.premioP1P2)}"></div>
+                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (R$)</label><input type="text" id="premio-seguro-${key}" class="data-input" value="${formatToBRLInput(metasData.premioSeguro)}"></div>
+                        <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="text" id="premio-cartao-${key}" class="data-input" value="${formatToBRLInput(metasData.premioCartao)}"></div>
                     </div>`;
             });
         });
@@ -2351,13 +2364,13 @@ Transporte - R$ 5,00"></textarea></div>
         allCollaborators.forEach(name => {
             const key = name.toLowerCase();
             metasDataToSave[key] = {
-                venda: document.getElementById(`venda-${key}`).value,
+                venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
                 seguro: document.getElementById(`seguro-${key}`).value,
-                p1: document.getElementById(`p1-${key}`).value,
+                p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
                 cartao: document.getElementById(`cartao-${key}`).value,
-                premioP1P2: document.getElementById(`premio-p1p2-${key}`).value,
-                premioSeguro: document.getElementById(`premio-seguro-${key}`).value,
-                premioCartao: document.getElementById(`premio-cartao-${key}`).value,
+                premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
+                premioSeguro: parseFromBRLInput(document.getElementById(`premio-seguro-${key}`).value),
+                premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
             };
         });
 
@@ -2375,7 +2388,19 @@ Transporte - R$ 5,00"></textarea></div>
         database.ref(`metas/${key}`).get().then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                container.innerHTML = `<h3>METAS</h3><p><strong>📈 VENDA:</strong> R$ ${data.venda || '0,00'}</p><p><strong>🔧 SEGURO:</strong> ${data.seguro || 0}</p><p><strong>🔱 P1 50%:</strong> R$ ${data.p1 || '0,00'}</p><p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p><br><h3>PREMIAÇÕES 💰💰💰</h3><p><strong>1% SOBRE A VENDA</strong></p><p><strong>P1/P2 50%:</strong> R$ ${data.premioP1P2 || '0,00'}</p><p><strong>SEGURO:</strong> R$ ${data.premioSeguro || '0,00'}</p><p><strong>CARTÃO 2%+:</strong> R$ ${data.premioCartao || '0,00'}</p>`;
+                container.innerHTML = `
+                    <h3>METAS</h3>
+                    <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
+                    <p><strong>🔧 SEGURO:</strong> ${data.seguro || 0}</p>
+                    <p><strong>🔱 P1 50%:</strong> ${formatBRL(data.p1)}</p>
+                    <p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p>
+                    <br>
+                    <h3>PREMIAÇÕES 💰💰💰</h3>
+                    <p><strong>1% SOBRE A VENDA</strong></p>
+                    <p><strong>P1/P2 50%:</strong> ${formatBRL(data.premioP1P2)}</p>
+                    <p><strong>SEGURO:</strong> ${formatBRL(data.premioSeguro)}</p>
+                    <p><strong>CARTÃO 2%+:</strong> ${formatBRL(data.premioCartao)}</p>
+                `;
             } else {
                 container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
             }
@@ -2629,8 +2654,8 @@ Transporte - R$ 5,00"></textarea></div>
                 container.innerHTML = `
                     <div class="sales-data-card">
                         <h4>Resultados Atuais</h4>
-                        <p>📈 VENDAS: R$ ${data.vendas || '0.00'}</p>
-                        <p>🔱 P1/P2: R$ ${data.p1p2 || '0.00'}</p>
+                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
+                        <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
                         <p>🔧 SEGURO: ${data.seguro || '0'}</p>
                         <p>💳 CARTÃO: ${data.cartao || '0'}</p>
                     </div>
@@ -2760,8 +2785,8 @@ Transporte - R$ 5,00"></textarea></div>
                 container.innerHTML += `
                     <div class="employee-meta-card">
                         <h4>${name}</h4>
-                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="number" id="correction-vendas-${key}" class="data-input" value="${salesData.vendas || ''}"></div>
-                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="number" id="correction-p1p2-${key}" class="data-input" value="${salesData.p1p2 || ''}"></div>
+                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
+                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
                         <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
                         <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
                     </div>
@@ -2777,10 +2802,10 @@ Transporte - R$ 5,00"></textarea></div>
 
         allCollaborators.forEach(name => {
             const key = name.toLowerCase();
-            // Pega os valores do formulário e os define. Diferente do 'fechamento', aqui nós substituímos.
+            // Pega os valores do formulário e os define, usando o parser para converter de volta para número.
             dataToSave[key] = {
-                vendas: document.getElementById(`correction-vendas-${key}`).value || 0,
-                p1p2: document.getElementById(`correction-p1p2-${key}`).value || 0,
+                vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
+                p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
                 seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
                 cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
             };
@@ -3284,14 +3309,11 @@ Transporte - R$ 5,00"></textarea></div>
 
             top3.forEach((collab, index) => {
                 const rank = index + 1;
-                // Prêmios atualizados
+                // A linha abaixo já contém a formatação ",00"
                 const prizes = ['R$ 200,00', 'R$ 100,00', 'R$ 50,00'];
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
 
-                // Mostra o prêmio apenas se a meta for atingida, caso contrário não mostra nada
-                const prizeHTML = collab.percentage >= 100
-                    ? `<span class="rank-prize">${prizes[index]}</span>`
-                    : '';
+                const prizeHTML = `<span class="rank-prize">${prizes[index]}</span>`;
                 
                 const rankItem = document.createElement('div');
                 rankItem.className = `rank-item rank-${rank}`;
@@ -3362,11 +3384,11 @@ Transporte - R$ 5,00"></textarea></div>
 
             performanceData.forEach((collab, index) => {
                 const rank = index + 1;
+                // A linha abaixo já contém a formatação ",00"
                 const prize = 'R$ 200,00';
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
 
-                // O prêmio é apenas para o 1º lugar e se a meta de 100% for atingida
-                const prizeHTML = (rank === 1 && collab.percentage >= 100)
+                const prizeHTML = (rank === 1)
                     ? `<span class="rank-prize">${prize}</span>`
                     : '';
                 
