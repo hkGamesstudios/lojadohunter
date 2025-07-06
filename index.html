@@ -1561,6 +1561,9 @@
         </div>
         <!-- O conteúdo agora tem um container para melhor organização -->
         <div class="collaborator-content" style="flex-direction: column; gap: 1rem; padding-top: 2rem;">
+            <!-- Área de Notificação do Ponto -->
+            <div id="ponto-notification-area" style="width: 100%; max-width: 350px; text-align: center; margin-bottom: 0rem;"></div>
+
             <!-- Painel de vendas individuais que será preenchido pelo JS -->
             <div id="individual-sales-data" style="width: 100%; max-width: 350px;"></div>
             
@@ -1627,6 +1630,16 @@
                 </div>
             </div>
             
+            <!-- Seção de Notificações de Ponto -->
+            <div class="charts-section" id="manager-notifications-section" style="display: none;">
+                <div class="chart-container">
+                    <h4>Notificações de Ponto</h4>
+                    <div id="manager-notifications-list" class="ranking-list" style="gap: 0.5rem;">
+                        <!-- Notificações serão carregadas aqui -->
+                    </div>
+                </div>
+            </div>
+
             <!-- Botões de Ação -->
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
                 <button id="open-settings-page" class="action-button">Metas e Premiações</button>
@@ -2144,6 +2157,7 @@ Transporte - R$ 5,00"></textarea></div>
     let storeChartInstance = null;
     let employeeChartInstance = null;
     let monthlySalesChartInstance = null;
+    let currentPontoAction = null; // Variável para controlar a ação de ponto atual
 
     // --- ESTADO DA APLICAÇÃO ---
     const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson'];
@@ -2157,6 +2171,7 @@ Transporte - R$ 5,00"></textarea></div>
     let isNavigating = false; // Flag para prevenir cliques duplos durante animações
     let stockRequestSelection = []; // Array para guardar os itens solicitados
     let cameraStream = null; // Para controlar o stream da câmera
+    let editingDeviceKey = null; // Para controlar se estamos editando ou criando um dispositivo
 
     // --- ELEMENTOS DO DOM ---
     const mainContainer = document.querySelector('.mobile-container');
@@ -2409,22 +2424,62 @@ Transporte - R$ 5,00"></textarea></div>
             }
         });
     };
+    const resetSendDeviceForm = () => {
+        document.querySelector('#send-device-page h2').textContent = 'Enviar Novo Dispositivo';
+        document.getElementById('save-device-btn').textContent = 'Salvar Dispositivo';
+        document.getElementById('send-device-page').querySelectorAll('input, textarea, select').forEach(el => {
+            if (el.tagName !== 'SELECT') el.value = '';
+            else el.selectedIndex = 0;
+        });
+        document.getElementById('send-device-status').textContent = '';
+        editingDeviceKey = null;
+    };
+
     const saveDevice = () => {
         const statusEl = document.getElementById('send-device-status');
         const brand = document.getElementById('device-brand').value;
         const name = document.getElementById('device-name').value.trim();
         const imageUrl = document.getElementById('device-image-url').value.trim();
-        const techSpecs = document.getElementById('device-tech-specs').value.trim(); // MUDOU AQUI
-        if (!brand || !name || !imageUrl || !techSpecs) { // E AQUI
-            statusEl.textContent = 'Preencha os campos obrigatórios!'; return;
+        const techSpecs = document.getElementById('device-tech-specs').value.trim();
+
+        if (!brand || !name || !imageUrl || !techSpecs) {
+            statusEl.textContent = 'Marca, Nome, URL da Imagem e Ficha Técnica são obrigatórios!';
+            return;
         }
         statusEl.textContent = 'Salvando...';
-        // E AQUI, salvando 'techSpecs' em vez de 'tudocelularUrl'
-        const newDevice = { name, imageUrl, techSpecs, priceTable: document.getElementById('device-price-table').value.trim(), insuranceTable: document.getElementById('device-insurance-table').value.trim() };
-        database.ref(`devices/${brand}`).push(newDevice).then(() => {
-            statusEl.textContent = 'Dispositivo salvo!';
-            document.getElementById('send-device-page').querySelectorAll('input, textarea, select').forEach(el => { if(el.tagName !== 'SELECT') el.value = ''; else el.selectedIndex = 0; });
-        }).catch(() => { statusEl.textContent = 'Erro ao salvar!'; });
+
+        const deviceData = {
+            name,
+            imageUrl,
+            techSpecs,
+            priceTable: document.getElementById('device-price-table').value.trim(),
+            insuranceTable: document.getElementById('device-insurance-table').value.trim()
+        };
+
+        if (editingDeviceKey) {
+            // --- MODO DE ATUALIZAÇÃO ---
+            const keyToUpdate = editingDeviceKey;
+            database.ref(`devices/${brand}/${keyToUpdate}`).update(deviceData).then(() => {
+                statusEl.textContent = 'Dispositivo atualizado com sucesso!';
+                setTimeout(() => {
+                    resetSendDeviceForm();
+                    // Retorna para a página de detalhes do dispositivo editado
+                    loadDeviceDetails(keyToUpdate);
+                }, 1500);
+            }).catch((error) => {
+                statusEl.textContent = 'Erro ao atualizar!';
+                console.error(error);
+            });
+        } else {
+            // --- MODO DE CRIAÇÃO ---
+            database.ref(`devices/${brand}`).push(deviceData).then(() => {
+                statusEl.textContent = 'Dispositivo salvo com sucesso!';
+                resetSendDeviceForm();
+            }).catch((error) => {
+                statusEl.textContent = 'Erro ao salvar!';
+                console.error(error);
+            });
+        }
     };
     const loadBrandDevices = (brand) => {
         currentBrand = brand;
@@ -2452,22 +2507,28 @@ Transporte - R$ 5,00"></textarea></div>
     };
     const loadDeviceDetails = (key) => {
         database.ref(`devices/${currentBrand}/${key}`).once('value', snapshot => {
+            if (!snapshot.exists()) {
+                alert('Este dispositivo não foi encontrado. Pode ter sido excluído.');
+                showPage('brandDevicesPage');
+                return;
+            }
             const device = snapshot.val();
             document.getElementById('device-detail-title').textContent = device.name;
             const contentContainer = document.getElementById('device-detail-content');
-            
-            // AQUI ESTÁ A MUDANÇA: 'tudocelularUrl' foi trocado por 'techSpecs' em uma tag <pre>
+
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
                 <h3>💰 Tabela de Preços</h3><pre>${device.priceTable || 'Não informado.'}</pre>
                 <h3>🔧 Seguro Opcional</h3><pre>${device.insuranceTable || 'Não informado.'}</pre>
                 <h3>⚙️ Ficha Técnica</h3><pre>${device.techSpecs || 'Não informado.'}</pre>
+                <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
                 <button id="delete-device-btn" class="action-button delete-button"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
             `;
             
             showPage('deviceDetailPage');
             
             // Adiciona os listeners DEPOIS que a página é mostrada e o conteúdo existe
+            document.getElementById('edit-device-btn').addEventListener('click', () => editDevice(key));
             document.getElementById('delete-device-btn').addEventListener('click', () => deleteDevice(key));
             // O botão de voltar da página de detalhes também é configurado aqui
             document.getElementById('back-to-brand-from-detail').addEventListener('click', () => showPage('brandDevicesPage'));
@@ -2479,6 +2540,32 @@ Transporte - R$ 5,00"></textarea></div>
         database.ref(`devices/${currentBrand}/${key}`).remove()
             .then(() => { alert('Deletado!'); loadBrandDevices(currentBrand); })
             .catch(() => { alert('Erro ao deletar.'); });
+    };
+
+    const editDevice = (key) => {
+        editingDeviceKey = key; // Define a chave global para o modo de edição
+        database.ref(`devices/${currentBrand}/${key}`).once('value', snapshot => {
+            if (snapshot.exists()) {
+                const device = snapshot.val();
+                
+                // Muda a UI para o modo de edição
+                document.querySelector('#send-device-page h2').textContent = 'Editar Dispositivo';
+                document.getElementById('save-device-btn').textContent = 'Salvar Alterações';
+
+                // Preenche o formulário com os dados existentes
+                document.getElementById('device-brand').value = currentBrand;
+                document.getElementById('device-name').value = device.name;
+                document.getElementById('device-image-url').value = device.imageUrl;
+                document.getElementById('device-tech-specs').value = device.techSpecs || '';
+                document.getElementById('device-price-table').value = device.priceTable || '';
+                document.getElementById('device-insurance-table').value = device.insuranceTable || '';
+
+                showPage('sendDevicePage');
+            } else {
+                alert('Dispositivo não encontrado. Pode ter sido deletado.');
+                editingDeviceKey = null; // Reseta caso não encontre
+            }
+        });
     };
 
     const loadDashboardData = () => {
@@ -3384,6 +3471,157 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
+        const getTodayDateString = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const createManagerNotification = (message) => {
+        const notificationId = `${new Date().getTime()}-${currentCollaboratorName.replace(/\s+/g, '')}`;
+        const notificationRef = database.ref(`managerNotifications/${notificationId}`);
+        notificationRef.set({
+            message: message,
+            timestamp: new Date().toISOString()
+        });
+    };
+
+    const determineNextPontoAction = (dailyPontoData) => {
+        const now = new Date();
+        const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const windows = {
+            entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, // 7:40 - 8:15
+            saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, // 11:00 - 15:00
+            saida: { start: 17 * 60 + 40, end: 18 * 60 + 15 } // 17:40 - 18:15
+        };
+
+        if (!dailyPontoData.entrada) {
+            if (currentTimeInMinutes >= windows.entrada.start && currentTimeInMinutes <= windows.entrada.end) {
+                return { action: 'registrar_entrada', status: 'pending', message: 'Você deve bater o ponto de ENTRADA.' };
+            }
+            if (currentTimeInMinutes > windows.entrada.end) {
+                return { action: 'missed_entrada', status: 'late', message: 'Você se atrasou para a ENTRADA.' };
+            }
+            return { action: null, status: 'waiting', message: 'Aguardando horário de entrada.' };
+        }
+
+        if (!dailyPontoData.saida_almoco) {
+            if (currentTimeInMinutes >= windows.saidaAlmoco.start && currentTimeInMinutes <= windows.saidaAlmoco.end) {
+                return { action: 'registrar_saida_almoco', status: 'pending', message: 'Você pode bater o ponto para SAÍDA DE ALMOÇO.' };
+            }
+            return { action: null, status: 'working', message: 'Em horário de trabalho.' };
+        }
+
+        if (!dailyPontoData.volta_almoco) {
+            const saidaAlmocoTime = new Date(dailyPontoData.saida_almoco.timestamp);
+            const expectedReturnTime = new Date(saidaAlmocoTime.getTime() + (2 * 60 * 60 * 1000)); // 2 horas depois
+            const returnToleranceEnd = new Date(expectedReturnTime.getTime() + (15 * 60 * 1000)); // +15 min tolerância
+
+            if (now <= returnToleranceEnd) {
+                return { action: 'registrar_volta_almoco', status: 'pending', message: 'Você deve bater o ponto de VOLTA DO ALMOÇO.' };
+            } else {
+                return { action: 'missed_volta_almoco', status: 'late', message: 'Você se atrasou na VOLTA DO ALMOÇO.' };
+            }
+        }
+
+        if (!dailyPontoData.saida) {
+            if (currentTimeInMinutes >= windows.saida.start) { // Permite bater ponto depois das 18:15
+                return { action: 'registrar_saida', status: 'pending', message: 'Você pode bater o ponto de SAÍDA.' };
+            }
+            return { action: null, status: 'working', message: 'Em horário de trabalho.' };
+        }
+
+        return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.' };
+    };
+
+    const checkPontoStatusAndDisplayWarnings = async () => {
+        const notificationArea = document.getElementById('ponto-notification-area');
+        if (!notificationArea || !currentCollaboratorName) return;
+        notificationArea.innerHTML = '';
+
+        const todayString = getTodayDateString();
+        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentCollaboratorName}`);
+        
+        try {
+            const snapshot = await pontoRef.get();
+            const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
+            const nextAction = determineNextPontoAction(dailyPontoData);
+
+            if (nextAction.status === 'pending') {
+                notificationArea.innerHTML = `<div class="os-warning" style="border-color: #f1c40f; color: #f1c40f; margin-bottom: 0;">${nextAction.message}</div>`;
+            } else if (nextAction.status === 'late') {
+                notificationArea.innerHTML = `<div class="os-warning" style="margin-bottom: 0;">${nextAction.message}</div>`;
+                // Gera notificação para o gerente apenas uma vez por dia por tipo de atraso
+                const notificationCheckRef = database.ref(`managerNotifications/${todayString}-${currentCollaboratorName}-${nextAction.action}`);
+                const checkSnapshot = await notificationCheckRef.get();
+                if (!checkSnapshot.exists()) {
+                     createManagerNotification(`${currentCollaboratorName}: ${nextAction.message}`);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao verificar status do ponto:", error);
+            notificationArea.innerHTML = `<div class="os-warning">Erro ao carregar status do ponto.</div>`;
+        }
+    };
+
+    const handlePontoLogic = async () => {
+        const todayString = getTodayDateString();
+        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentCollaboratorName}`);
+
+        try {
+            const snapshot = await pontoRef.get();
+            const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
+            const nextAction = determineNextPontoAction(dailyPontoData);
+
+            currentPontoAction = nextAction.action; // Armazena a ação a ser executada
+
+            if (currentPontoAction && currentPontoAction.startsWith('registrar_')) {
+                initPontoCamera();
+            } else if (nextAction.status === 'complete') {
+                alert(nextAction.message);
+            } else {
+                alert('Fora do horário de bater o ponto.');
+            }
+        } catch (error) {
+            console.error("Erro ao processar lógica do ponto:", error);
+            alert("Ocorreu um erro. Verifique sua conexão e tente novamente.");
+        }
+    };
+
+    const loadManagerNotifications = () => {
+        const section = document.getElementById('manager-notifications-section');
+        const listContainer = document.getElementById('manager-notifications-list');
+        const notificationsRef = database.ref('managerNotifications').orderByChild('timestamp').limitToLast(20);
+
+        notificationsRef.on('value', snapshot => {
+            listContainer.innerHTML = '';
+            if (snapshot.exists()) {
+                section.style.display = 'block';
+                const notifications = [];
+                snapshot.forEach(childSnapshot => {
+                    notifications.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                });
+
+                notifications.reverse().forEach(notification => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = 'mt-list-item';
+                    notificationItem.innerHTML = `
+                        <div class="mt-list-item-text">${notification.message}</div>
+                        <button class="delete-button-small" data-key="${notification.key}">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    `;
+                    listContainer.appendChild(notificationItem);
+                });
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    };
+
     const calculateAndDisplayStoreRanking = () => {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
@@ -3508,60 +3746,76 @@ Transporte - R$ 5,00"></textarea></div>
             }
 
             statusEl.textContent = 'Enviando foto...';
-
-            // ** INÍCIO DA MUDANÇA: USANDO ImgBB **
-            
-            // Sua Chave de API do ImgBB foi inserida aqui.
-            const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40'; 
-
+            const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40';
             const formData = new FormData();
-            formData.append('image', blob); // O 'blob' é a nossa imagem
+            formData.append('image', blob);
 
             fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    // Se o upload deu certo, 'result.data.url' terá o link da imagem
-                    const imageUrl = result.data.url;
-                    
-                    statusEl.textContent = 'Finalizando registro...';
-                    const city = storeMapping.pinheiro.includes(currentCollaboratorName) ? 'Pinheiro' : 'Bacabal';
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const imageUrl = result.data.url;
+                        statusEl.textContent = 'Finalizando registro...';
 
-                    const pontoData = {
-                        collaborator: currentCollaboratorName,
-                        city: city,
-                        timestamp: new Date().toISOString(),
-                        photoURL: imageUrl // Usamos o novo link do ImgBB
-                    };
+                        if (!currentPontoAction) {
+                            statusEl.textContent = 'Erro: Ação de ponto indefinida.';
+                            console.error("currentPontoAction está nulo no momento do salvamento.");
+                            return;
+                        }
 
-                    // Salva os dados no Firebase REALTIME DATABASE (isso continua igual)
-                    database.ref(`pontos/${currentCollaboratorName}`).push(pontoData)
-                        .then(() => {
-                            statusEl.textContent = 'Ponto registrado com sucesso!';
-                            setTimeout(() => {
-                                stopPontoCamera();
-                                showPage('collaboratorPage');
-                            }, 2000);
-                        })
-                        .catch(dbError => {
-                            console.error("Erro ao salvar no banco de dados:", dbError);
-                            statusEl.textContent = 'Erro ao salvar os dados do ponto.';
-                        });
-                } else {
-                    // Se o ImgBB retornou um erro
-                    console.error('Erro no ImgBB:', result);
-                    statusEl.textContent = 'Falha ao enviar a foto.';
-                }
-            })
-            .catch(error => {
-                // Se houve um erro de rede (internet caiu, etc)
-                console.error('Erro de rede ao enviar para ImgBB:', error);
-                statusEl.textContent = 'Erro de conexão ao enviar a foto.';
-            });
-            // ** FIM DA MUDANÇA **
+                        const pontoType = currentPontoAction.replace('registrar_', ''); // Ex: 'entrada', 'saida_almoco'
+                        const city = storeMapping.pinheiro.includes(currentCollaboratorName) ? 'Pinheiro' : 'Bacabal';
+
+                        // Dados para o histórico (compatibilidade)
+                        const historyPontoData = {
+                            collaborator: currentCollaboratorName,
+                            city: city,
+                            timestamp: new Date().toISOString(),
+                            photoURL: imageUrl,
+                            type: pontoType
+                        };
+
+                        // Dados para a lógica diária
+                        const dailyPontoData = {
+                            timestamp: historyPontoData.timestamp,
+                            photoURL: imageUrl
+                        };
+
+                        const todayString = getTodayDateString();
+                        const updates = {};
+                        // 1. Salva na nova estrutura para controle diário
+                        updates[`pontosDoDia/${todayString}/${currentCollaboratorName}/${pontoType}`] = dailyPontoData;
+                        // 2. Salva na estrutura antiga para manter o histórico funcionando
+                        updates[`pontos/${currentCollaboratorName}/${database.ref().push().key}`] = historyPontoData;
+
+                        // Executa ambas as escritas de uma vez
+                        database.ref().update(updates)
+                            .then(() => {
+                                statusEl.textContent = 'Ponto registrado com sucesso!';
+                                currentPontoAction = null; // Reseta a ação
+                                setTimeout(() => {
+                                    stopPontoCamera();
+                                    showPage('collaboratorPage');
+                                    // Reavalia os avisos na tela do colaborador após o retorno
+                                    checkPontoStatusAndDisplayWarnings();
+                                }, 2000);
+                            })
+                            .catch(dbError => {
+                                console.error("Erro ao salvar dados do ponto:", dbError);
+                                statusEl.textContent = 'Erro ao salvar os dados do ponto.';
+                            });
+                    } else {
+                        console.error('Erro no ImgBB:', result);
+                        statusEl.textContent = 'Falha ao enviar a foto.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro de rede ao enviar para ImgBB:', error);
+                    statusEl.textContent = 'Erro de conexão ao enviar a foto.';
+                });
 
         }, 'image/jpeg', 0.8);
     };
@@ -3854,9 +4108,11 @@ Transporte - R$ 5,00"></textarea></div>
                 event.preventDefault();
                 const selectedCollaboratorName = event.currentTarget.dataset.name;
                 const userKey = selectedCollaboratorName.toLowerCase();
+
                 const openCollaboratorPanel = () => {
                     currentCollaboratorName = selectedCollaboratorName;
                     document.getElementById('collaborator-name-display').textContent = currentCollaboratorName;
+                    
                     closeModal(() => {
                         const managerBtn = document.getElementById('manager-panel-btn');
                         const closingBtn = document.getElementById('closing-btn');
@@ -3868,9 +4124,11 @@ Transporte - R$ 5,00"></textarea></div>
                             closingBtn.style.display = 'none';
                         }
                         loadAndDisplayIndividualSalesData();
+                        checkPontoStatusAndDisplayWarnings(); // Adicionado para verificar o status do ponto
                         showPage('collaboratorPage');
                     });
                 };
+
                 database.ref('userPasswords/' + userKey).get().then(snapshot => {
                     const personalPassword = snapshot.val();
                     if (!personalPassword) {
@@ -3941,7 +4199,10 @@ Transporte - R$ 5,00"></textarea></div>
             // --- BOTÕES DE VOLTAR (TODOS CENTRALIZADOS AQUI) ---
             document.getElementById('back-to-main').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-gs').addEventListener('click', showMainPage);
-            document.getElementById('back-to-main-from-send').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-send').addEventListener('click', () => {
+                resetSendDeviceForm(); // Limpa o estado de edição antes de voltar
+                showMainPage();
+            });
             document.getElementById('back-to-main-from-brand').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-os').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-stock').addEventListener('click', showMainPage);
@@ -3998,7 +4259,7 @@ Transporte - R$ 5,00"></textarea></div>
             });
 
             // --- LISTENERS DA FUNÇÃO DE PONTO ---
-            document.getElementById('bater-ponto-btn').addEventListener('click', initPontoCamera);
+            document.getElementById('bater-ponto-btn').addEventListener('click', handlePontoLogic);
             document.getElementById('capture-ponto-btn').addEventListener('click', captureAndUploadPonto);
             document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
                 stopPontoCamera();
@@ -4008,10 +4269,21 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('back-to-gs-from-ponto-verify').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-ponto-verify-from-history').addEventListener('click', () => showPage('pontoVerificationPage'));
 
-            // --- LÓGICA DO VISUALIZADOR DE IMAGEM AMPLIADA ---
+            // --- LÓGICA DO VISUALIZADOR DE IMAGEM AMPLIADA E NOTIFICAÇÕES DE PONTO ---
             const imageViewer = document.getElementById('image-viewer-overlay');
             const viewerImage = document.getElementById('viewer-image');
             const historyContainer = document.getElementById('ponto-history-container');
+
+            document.getElementById('manager-notifications-list').addEventListener('click', (event) => {
+                const dismissButton = event.target.closest('.delete-button-small');
+                if (dismissButton) {
+                    const key = dismissButton.dataset.key;
+                    if (key && confirm('Deseja apagar esta notificação?')) {
+                        database.ref(`managerNotifications/${key}`).remove()
+                            .catch(err => console.error("Erro ao remover notificação:", err));
+                    }
+                }
+            });
 
             const openImageViewer = (imageUrl) => {
                 viewerImage.src = imageUrl;
@@ -4050,6 +4322,7 @@ Transporte - R$ 5,00"></textarea></div>
             showMainPage();
             calculateAndDisplayRanking(); // Carrega o ranking de colaboradores
             calculateAndDisplayStoreRanking(); // Carrega o ranking de lojas
+            loadManagerNotifications(); // Carrega notificações para o gerente na inicialização
 
         });
     </script>
