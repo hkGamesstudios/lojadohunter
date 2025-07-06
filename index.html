@@ -448,7 +448,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gerencia-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -1351,9 +1351,9 @@
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                         <span>Recibos</span>
                     </div>
-                    <div id="open-gerencia-page" class="tool-item">
+                    <div id="open-gs-page" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
-                        <span>Gerencia</span>
+                        <span>GS</span>
                     </div>
                     <div id="open-send-device-page" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-paper-plane"></i></div>
@@ -1577,10 +1577,10 @@
         </div>
     </div>
 
-    <!-- Tela da Gerencia (Dashboard) -->
-    <div id="gerencia-page" style="display: none;">
+    <!-- Tela da gs (Dashboard) -->
+    <div id="gs-page" style="display: none;">
         <div class="collaborator-header">
-            <button id="back-to-main-from-gerencia" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <button id="back-to-main-from-gs" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2>Dashboard Geral</h2>
         </div>
         <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; gap: 1.5rem; padding-top: 1.5rem; overflow-y: auto;">
@@ -1649,6 +1649,7 @@
                 <label for="mt-brand-filter">Filtrar por Marca</label>
                 <select id="mt-brand-filter" class="data-input">
                     <option value="" selected>Selecione uma marca...</option>
+                    <option value="apple">Apple</option> <!-- Adicionado -->
                     <option value="xiaomi">Xiaomi</option>
                     <option value="poco">Poco</option>
                     <option value="realme">Realme</option>
@@ -1666,11 +1667,11 @@
         </div>
     </div>
 
-    <!-- TELA DE GERENCIAMENTO DO MOSTRUÁRIO (MT) -->
+    <!-- TELA DE gsMENTO DO MOSTRUÁRIO (MT) -->
     <div id="mt-management-page" style="display: none;">
         <div class="collaborator-header">
-            <button id="back-to-gerencia-from-mt-management" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Gerenciar MT</h2>
+            <button id="back-to-gs-from-mt-management" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>gsr MT</h2>
         </div>
         <div class="collaborator-content" style="align-items: stretch;">
 
@@ -1681,6 +1682,7 @@
                     <label for="mt-add-brand">Marca</label>
                     <select id="mt-add-brand" class="data-input">
                         <option value="" disabled selected>Selecione a marca...</option>
+                        <option value="apple">Apple</option> <!-- Adicionado -->
                         <option value="xiaomi">Xiaomi</option>
                         <option value="poco">Poco</option>
                         <option value="realme">Realme</option>
@@ -1716,7 +1718,7 @@
 <!-- Tela de Configuração de Metas e Premiações -->
     <div id="metas-config-page" style="display: none;">
         <div class="collaborator-header">
-            <button id="back-to-gerencia-from-metas" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <button id="back-to-gs-from-metas" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2>Metas e Premiações</h2>
         </div>
         <div id="metas-content-container" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
@@ -1750,6 +1752,7 @@
                 <label for="device-brand">Marca</label>
                 <select id="device-brand" class="data-input">
                     <option value="" disabled selected>Selecione a marca...</option>
+                    <option value="apple">Apple</option> <!-- Adicionado -->
                     <option value="xiaomi">Xiaomi</option>
                     <option value="poco">Poco</option>
                     <option value="realme">Realme</option>
@@ -1886,7 +1889,7 @@ P3: R$ 299,00"></textarea>
     <!-- TELA DE CORREÇÃO DE DADOS DE FUNCIONÁRIOS -->
     <div id="correction-page" style="display: none;">
         <div class="collaborator-header">
-            <button id="back-to-gerencia-from-correction" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <button id="back-to-gs-from-correction" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2>Corrigir Dados de Vendas</h2>
         </div>
         <div id="correction-content-container" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
@@ -2080,7 +2083,7 @@ Transporte - R$ 5,00"></textarea></div>
     <!-- TELA DE VERIFICAÇÃO DE PONTO (LISTA DE FUNCIONÁRIOS) -->
     <div id="ponto-verification-page" style="display: none;">
         <div class="collaborator-header">
-            <button id="back-to-gerencia-from-ponto-verify" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <button id="back-to-gs-from-ponto-verify" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2>Verificar Ponto</h2>
         </div>
         <div id="ponto-employee-list" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
@@ -2164,7 +2167,7 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('ponto-verification-page').classList.add('page');
     document.getElementById('ponto-history-page').classList.add('page');
     document.getElementById('collaborator-page').classList.add('page');
-    document.getElementById('gerencia-page').classList.add('page');
+    document.getElementById('gs-page').classList.add('page');
     document.getElementById('metas-config-page').classList.add('page');
     document.getElementById('metas-display-page').classList.add('page');
     document.getElementById('send-device-page').classList.add('page');
@@ -2188,7 +2191,7 @@ Transporte - R$ 5,00"></textarea></div>
         mainContainer: mainContainer,
         modal: document.getElementById('colaborador-modal'),
         collaboratorPage: document.getElementById('collaborator-page'),
-        gerenciaPage: document.getElementById('gerencia-page'),
+        gsPage: document.getElementById('gs-page'),
         metasConfigPage: document.getElementById('metas-config-page'),
         metasDisplayPage: document.getElementById('metas-display-page'),
         sendDevicePage: document.getElementById('send-device-page'),
@@ -2325,7 +2328,7 @@ Transporte - R$ 5,00"></textarea></div>
 
 
     // --- DEMAIS FUNÇÕES (SEM ALTERAÇÃO NA LÓGICA INTERNA) ---
-    // As funções loadGerenciaData e saveGerenciaData foram removidas pois se tornaram obsoletas
+    // As funções loadgsData e savegsData foram removidas pois se tornaram obsoletas
     // com a implementação do novo Dashboard e da página de Configurações Gerais.
             const buildAndLoadMetasPage = () => {
         const container = document.getElementById('metas-content-container');
@@ -3628,9 +3631,10 @@ Transporte - R$ 5,00"></textarea></div>
         const parcelas = parseInt(document.getElementById('crediario-parcelas').value, 10);
         document.getElementById('parcelas-value').textContent = parcelas;
 
-        // AQUI ESTÁ A ALTERAÇÃO: A taxa de juros agora é de 10% ao mês.
-        const taxaJurosMensal = 0.1; // 10% a.m.
+        // Lógica de cálculo replicada EXATAMENTE do seu código Velo.
         const valorFinanciado = valorProduto - entrada;
+        // AQUI ESTÁ A ALTERAÇÃO: A taxa agora é de 8.9% ao mês.
+        const taxaJurosMensal = 0.089; // 8.9% ao mês.
 
         if (valorFinanciado <= 0 || parcelas === 0) {
             document.getElementById('result-parcela').textContent = formatBRL(0);
@@ -3639,14 +3643,14 @@ Transporte - R$ 5,00"></textarea></div>
             return;
         }
         
-        // =================================================================================================
-        // ATENÇÃO: Esta é a fórmula financeira padrão para JUROS COMPOSTOS em parcelas fixas (Tabela Price).
-        // Ela calcula os juros sobre o saldo devedor a cada mês, que é a definição de juros compostos.
-        // O termo 'Math.pow' é o que faz a "mágica" do juro composto.
-        // =================================================================================================
-        const valorParcela = valorFinanciado * (taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -parcelas)));
+        // 1. Calcula o valor futuro total (montante) com juros compostos.
+        const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosMensal, parcelas);
         
-        const totalPrazo = valorParcela * parcelas;
+        // 2. Divide o valor futuro pelo número de parcelas para obter a parcela mensal.
+        const valorParcela = valorFinalComJuros / parcelas;
+
+        // Os totais são calculados com base no novo valor da parcela.
+        const totalPrazo = valorParcela * parcelas; // Isso será igual a valorFinalComJuros
         const totalJuros = totalPrazo - valorFinanciado;
         const totalFinal = totalPrazo + entrada;
 
@@ -3767,14 +3771,14 @@ Transporte - R$ 5,00"></textarea></div>
                 { name: 'Hunter Card', keywords: 'cartao, brasilcard', targetId: null, url: 'https://www.brasilcard.net/bca/lojista/login?f=login_lojista?b=m' },
                 { name: 'Colaborador', keywords: 'vendas, metas, funcionario', targetId: 'open-colaborador-modal' },
                 { name: 'Bater Ponto', keywords: 'ponto, camera, registro', targetId: 'bater-ponto-btn' },
-                { name: 'Verificar Ponto', keywords: 'gerencia, ponto, historico', targetId: 'verificar-ponto-btn' },
+                { name: 'Verificar Ponto', keywords: 'gs, ponto, historico', targetId: 'verificar-ponto-btn' },
                 { name: 'Previsão de Entrega', keywords: 'data, prazo, entrega', targetId: 'previsao-btn' },
                 { name: 'Assistência Técnica (OS)', keywords: 'os, concerto, garantia', targetId: 'open-os-modal' },
                 { name: 'Suporte', keywords: 'ajuda, contato, brasilcard, paymobi', targetId: 'open-suporte-modal' },
                 { name: 'Solicitar Estoque', keywords: 'pedir, produto, celular', targetId: 'open-request-stock-page' },
                 { name: 'Quiz de Feedback', keywords: 'clima, pesquisa, feedback', targetId: 'open-quiz-page' },
                 { name: 'Recibos de Gastos', keywords: 'gasto, despesa', targetId: 'open-recibos-page' },
-                { name: 'Gerencia', keywords: 'dashboard, painel, adm', targetId: 'open-gerencia-page' },
+                { name: 'gs', keywords: 'dashboard, painel, adm', targetId: 'open-gs-page' },
                 { name: 'Enviar Dispositivo', keywords: 'cadastrar, novo, aparelho', targetId: 'open-send-device-page' },
                 { name: 'MT (Mostruário)', keywords: 'mostruario, vitrine', targetId: 'open-mt-display-page' },
                 { name: 'Calculadora de Crediário', keywords: 'juros, parcelamento', targetId: 'open-crediario-calculator' },
@@ -3831,7 +3835,7 @@ Transporte - R$ 5,00"></textarea></div>
 
             // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
             document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
-            document.getElementById('open-gerencia-page').addEventListener('click', () => { if (checkPassword()) { loadDashboardData(); showPage('gerenciaPage'); } });
+            document.getElementById('open-gs-page').addEventListener('click', () => { if (checkPassword()) { loadDashboardData(); showPage('gsPage'); } });
             document.getElementById('open-send-device-page').addEventListener('click', () => { if (checkPassword()) { showPage('sendDevicePage'); } });
             document.querySelectorAll('.brand-button').forEach(button => button.addEventListener('click', () => loadBrandDevices(button.dataset.brand)));
             document.getElementById('previsao-btn').addEventListener('click', calculateDeliveryPrediction);
@@ -3936,15 +3940,15 @@ Transporte - R$ 5,00"></textarea></div>
 
             // --- BOTÕES DE VOLTAR (TODOS CENTRALIZADOS AQUI) ---
             document.getElementById('back-to-main').addEventListener('click', showMainPage);
-            document.getElementById('back-to-main-from-gerencia').addEventListener('click', showMainPage);
+            document.getElementById('back-to-main-from-gs').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-send').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-brand').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-os').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-stock').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-recibos').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-quiz').addEventListener('click', showMainPage);
-            document.getElementById('back-to-gerencia-from-metas').addEventListener('click', () => showPage('gerenciaPage'));
-            document.getElementById('back-to-gerencia-from-correction').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('back-to-gs-from-metas').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-correction').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-collab-from-metas').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-panel').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-closing').addEventListener('click', () => showPage('collaboratorPage'));
@@ -3983,7 +3987,7 @@ Transporte - R$ 5,00"></textarea></div>
             });
             document.getElementById('mt-brand-filter').addEventListener('change', (event) => displayMtForBrand(event.target.value));
             document.getElementById('back-to-main-from-mt-display').addEventListener('click', showMainPage);
-            document.getElementById('back-to-gerencia-from-mt-management').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('back-to-gs-from-mt-management').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('save-mt-item-btn').addEventListener('click', saveMtItem);
             document.getElementById('mt-list-container').addEventListener('click', (event) => {
                 const deleteButton = event.target.closest('.delete-button-small');
@@ -4001,7 +4005,7 @@ Transporte - R$ 5,00"></textarea></div>
                 showPage('collaboratorPage');
             });
             document.getElementById('verificar-ponto-btn').addEventListener('click', showPontoVerificationList);
-            document.getElementById('back-to-gerencia-from-ponto-verify').addEventListener('click', () => showPage('gerenciaPage'));
+            document.getElementById('back-to-gs-from-ponto-verify').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-ponto-verify-from-history').addEventListener('click', () => showPage('pontoVerificationPage'));
 
             // --- LÓGICA DO VISUALIZADOR DE IMAGEM AMPLIADA ---
