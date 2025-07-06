@@ -3628,7 +3628,8 @@ Transporte - R$ 5,00"></textarea></div>
         const parcelas = parseInt(document.getElementById('crediario-parcelas').value, 10);
         document.getElementById('parcelas-value').textContent = parcelas;
 
-        const taxaJurosMensal = 0.0349; // 3.49% a.m.
+        // AQUI ESTÁ A ALTERAÇÃO: A taxa de juros agora é de 10% ao mês.
+        const taxaJurosMensal = 0.1; // 10% a.m.
         const valorFinanciado = valorProduto - entrada;
 
         if (valorFinanciado <= 0 || parcelas === 0) {
@@ -3638,8 +3639,13 @@ Transporte - R$ 5,00"></textarea></div>
             return;
         }
         
-        // Esta é a fórmula PMT (Tabela Price), que já calcula o valor da parcela com base em JUROS COMPOSTOS.
+        // =================================================================================================
+        // ATENÇÃO: Esta é a fórmula financeira padrão para JUROS COMPOSTOS em parcelas fixas (Tabela Price).
+        // Ela calcula os juros sobre o saldo devedor a cada mês, que é a definição de juros compostos.
+        // O termo 'Math.pow' é o que faz a "mágica" do juro composto.
+        // =================================================================================================
         const valorParcela = valorFinanciado * (taxaJurosMensal / (1 - Math.pow(1 + taxaJurosMensal, -parcelas)));
+        
         const totalPrazo = valorParcela * parcelas;
         const totalJuros = totalPrazo - valorFinanciado;
         const totalFinal = totalPrazo + entrada;
@@ -3664,8 +3670,8 @@ Transporte - R$ 5,00"></textarea></div>
         const parcelas = parseInt(document.getElementById('loja-parcelas').value, 10);
         document.getElementById('loja-parcelas-value').textContent = parcelas;
 
-        // A tabela de coeficientes foi removida.
-        const valorFinanciado = valorProduto - entrada;
+        // CORREÇÃO: O valor a ser financiado agora inclui o seguro.
+        const valorFinanciado = (valorProduto + seguro) - entrada;
 
         if (valorFinanciado <= 0 || parcelas === 0) {
             document.getElementById('loja-result-parcela').textContent = formatBRL(0);
@@ -3673,9 +3679,10 @@ Transporte - R$ 5,00"></textarea></div>
             return;
         }
 
-        // O cálculo agora é uma divisão simples, sem juros.
+        // O valor da parcela agora reflete o valor do produto + seguro.
         const valorParcela = valorFinanciado / parcelas;
-        // O valor total a prazo será o valor do produto mais o seguro, pois não há juros.
+        
+        // O valor total a prazo continua sendo o valor do produto + seguro.
         const totalPrazo = valorProduto + seguro;
 
         document.getElementById('loja-result-parcela').textContent = formatBRL(valorParcela);
