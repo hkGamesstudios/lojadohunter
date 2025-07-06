@@ -1304,9 +1304,9 @@
                 </div>
             </section>
             
-            <!-- Seção do Ranking de Lojas -->
+            <!-- Seção do Ranking de Gerentes -->
             <section id="store-ranking">
-                <h2 class="section-title">Ranking de Lojas</h2>
+                <h2 class="section-title">Ranking de Gerentes</h2>
                 <div id="store-ranking-container" class="ranking-list">
                     <!-- O JavaScript irá popular este container -->
                      <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
@@ -3256,7 +3256,6 @@ Transporte - R$ 5,00"></textarea></div>
             const metasData = metasSnapshot.val();
             const performanceData = [];
 
-            // Lista de colaboradores elegíveis (todos, exceto gerentes)
             const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
 
             eligibleCollaborators.forEach(name => {
@@ -3264,7 +3263,6 @@ Transporte - R$ 5,00"></textarea></div>
                 const actualSales = parseFloat(salesData[key]?.vendas || 0);
                 const salesGoal = parseFloat(metasData[key]?.venda || 0);
 
-                // Só inclui no ranking se a meta de venda for maior que zero
                 if (salesGoal > 0) {
                     const percentage = (actualSales / salesGoal) * 100;
                     performanceData.push({
@@ -3274,12 +3272,9 @@ Transporte - R$ 5,00"></textarea></div>
                 }
             });
 
-            // Ordena os colaboradores pela maior porcentagem
             performanceData.sort((a, b) => b.percentage - a.percentage);
 
-            // Limpa o container e exibe o top 3
             rankingContainer.innerHTML = '';
-
             const top3 = performanceData.slice(0, 3);
 
             if (top3.length === 0) {
@@ -3289,21 +3284,26 @@ Transporte - R$ 5,00"></textarea></div>
 
             top3.forEach((collab, index) => {
                 const rank = index + 1;
-                const prizes = ['R$ 300,00', 'R$ 200,00', 'R$ 100,00'];
+                // Prêmios atualizados
+                const prizes = ['R$ 200,00', 'R$ 100,00', 'R$ 50,00'];
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+
+                // Mostra o prêmio apenas se a meta for atingida, caso contrário não mostra nada
+                const prizeHTML = collab.percentage >= 100
+                    ? `<span class="rank-prize">${prizes[index]}</span>`
+                    : '';
                 
                 const rankItem = document.createElement('div');
                 rankItem.className = `rank-item rank-${rank}`;
                 
-                // Limita a barra de progresso visualmente em 100% para não estourar o layout
-                const progressBarWidth = Math.min(collab.percentage, 100);
+                const progressBarWidth = collab.percentage;
 
                 rankItem.innerHTML = `
                     <div class="rank-medal">${medals[index]}</div>
                     <div class="rank-details">
                         <div class="rank-name">
                             <span>${collab.name}</span>
-                            <span class="rank-prize">${prizes[index]}</span>
+                            ${prizeHTML}
                         </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
@@ -3321,48 +3321,70 @@ Transporte - R$ 5,00"></textarea></div>
 
     const calculateAndDisplayStoreRanking = () => {
         const container = document.getElementById('store-ranking-container');
-        container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking das lojas...</p>';
+        container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
 
-        database.ref('salesData').get().then(salesSnapshot => {
-            if (!salesSnapshot.exists()) {
-                container.innerHTML = '<p>Dados de vendas não encontrados.</p>';
+        Promise.all([
+            database.ref('salesData').get(),
+            database.ref('metas').get()
+        ]).then(([salesSnapshot, metasSnapshot]) => {
+            if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
+                container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
                 return;
             }
+
             const salesData = salesSnapshot.val();
-            let pinheiroTotal = 0;
-            let bacabalTotal = 0;
+            const metasData = metasSnapshot.val();
+            const performanceData = [];
+            const managersToRank = ['Beatriz', 'Natalia']; // As gerentes que serão comparadas
 
-            // Calcula o total de vendas para cada loja
-            storeMapping.pinheiro.forEach(name => {
-                pinheiroTotal += parseFloat(salesData[name.toLowerCase()]?.vendas || 0);
+            managersToRank.forEach(name => {
+                const key = name.toLowerCase();
+                const actualSales = parseFloat(salesData[key]?.vendas || 0);
+                const salesGoal = parseFloat(metasData[key]?.venda || 0);
+
+                if (salesGoal > 0) {
+                    const percentage = (actualSales / salesGoal) * 100;
+                    performanceData.push({ name: name, percentage: percentage });
+                } else {
+                    performanceData.push({ name: name, percentage: 0 }); // Adiciona para aparecer mesmo sem meta
+                }
             });
-            storeMapping.bacabal.forEach(name => {
-                bacabalTotal += parseFloat(salesData[name.toLowerCase()]?.vendas || 0);
-            });
 
-            const storePerformance = [
-                { name: 'Pinheiro', total: pinheiroTotal },
-                { name: 'Bacabal', total: bacabalTotal }
-            ];
+            // Ordena pela maior porcentagem
+            performanceData.sort((a, b) => b.percentage - a.percentage);
 
-            // Ordena as lojas pelo total de vendas
-            storePerformance.sort((a, b) => b.total - a.total);
-            
-            container.innerHTML = ''; // Limpa o container
+            container.innerHTML = '';
 
-            storePerformance.forEach((store, index) => {
+            if (performanceData.length === 0) {
+                container.innerHTML = '<p style="text-align: center;">Nenhuma gerente com meta definida.</p>';
+                return;
+            }
+
+            performanceData.forEach((collab, index) => {
                 const rank = index + 1;
+                const prize = 'R$ 200,00';
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+
+                // O prêmio é apenas para o 1º lugar e se a meta de 100% for atingida
+                const prizeHTML = (rank === 1 && collab.percentage >= 100)
+                    ? `<span class="rank-prize">${prize}</span>`
+                    : '';
                 
                 const rankItem = document.createElement('div');
-                // Adiciona uma classe específica para o item de loja
-                rankItem.className = `rank-item store-rank-item rank-${rank}`;
+                rankItem.className = `rank-item rank-${rank}`;
                 
+                const progressBarWidth = collab.percentage;
+
                 rankItem.innerHTML = `
                     <div class="rank-medal">${medals[index]}</div>
                     <div class="rank-details">
                         <div class="rank-name">
-                            <span>${store.name}</span>
+                            <span>${collab.name}</span>
+                            ${prizeHTML}
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
+                            <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
                         </div>
                     </div>
                 `;
@@ -3370,8 +3392,8 @@ Transporte - R$ 5,00"></textarea></div>
             });
 
         }).catch(error => {
-            console.error("Erro ao carregar ranking de lojas:", error);
-            container.innerHTML = '<p>Erro ao carregar o ranking das lojas.</p>';
+            console.error("Erro ao carregar dados para o ranking de gerentes:", error);
+            container.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
         });
     };
 
