@@ -307,6 +307,23 @@
             flex-shrink: 0;
         }
 
+        .rank-photo-container {
+            position: relative;
+            flex-shrink: 0;
+            width: 40px; /* Garante que o container não ocupe mais espaço que a foto */
+            height: 40px;
+        }
+
+        .rank-crown {
+            position: absolute;
+            top: -10px; /* Posição acima da foto */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.1rem;
+            color: #FFD700; /* Cor de ouro */
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
         .rank-photo {
             width: 40px;
             height: 40px;
@@ -458,7 +475,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -1266,6 +1283,17 @@
             font-size: 2.5rem;
             color: #e74c3c;
         }
+
+        /* Estilo para justificativas no histórico */
+        .ponto-history-justification {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            border-left: 3px solid #f1c40f;
+        }
         .ponto-history-photo {
             width: 80px;
             height: 80px;
@@ -1635,7 +1663,9 @@
                     <!-- O conteúdo agora tem um container para melhor organização -->
         <div class="collaborator-content" style="flex-direction: column; gap: 1rem; padding-top: 2rem;">
             <!-- Área de Notificação do Ponto -->
-            <div id="ponto-notification-area" style="width: 100%; max-width: 350px; text-align: center; margin-bottom: 0rem;"></div>
+            <div id="ponto-notification-area" style="width: 100%; max-width: 350px; text-align: center; margin-bottom: 0rem;">
+                <!-- O JS vai popular esta área com avisos e botões de justificar -->
+            </div>
 
             <!-- Painel de vendas individuais que será preenchido pelo JS -->
             <div id="individual-sales-data" style="width: 100%; max-width: 350px;"></div>
@@ -1714,6 +1744,17 @@
                     <div id="manager-notifications-list" class="ranking-list" style="gap: 0.5rem;">
                         <!-- Notificações serão carregadas aqui -->
                     </div>
+                </div>
+            </div>
+
+            <!-- Nova Seção de Horas Extras -->
+            <div class="charts-section" id="overtime-section">
+                <div class="chart-container">
+                    <h4>Horas Extras Acumuladas</h4>
+                    <div id="overtime-list-container" class="ranking-list" style="gap: 0.5rem;">
+                         <p style="text-align: center;">Carregando...</p>
+                    </div>
+                    <button id="open-overtime-management-page" class="action-button" style="margin-top: 1.5rem; background-color: rgba(41, 128, 185, 0.8);"><i class="fa-solid fa-edit"></i>Gerenciar Horas</button>
                 </div>
             </div>
 
@@ -2257,7 +2298,7 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
-    <!-- TELA DE GERENCIAMENTO DE FOLGAS -->
+                <!-- TELA DE GERENCIAMENTO DE FOLGAS -->
     <div id="day-off-management-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-gs-from-day-off" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
@@ -2288,6 +2329,21 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+     <!-- TELA DE GERENCIAMENTO DE HORAS EXTRAS -->
+    <div id="overtime-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-overtime" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gerenciar Horas Extras</h2>
+        </div>
+        <div id="overtime-management-content" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <!-- O JS vai popular esta área -->
+        </div>
+        <div class="save-footer">
+            <button id="save-overtime-btn" class="action-button"><i class="fa-solid fa-save"></i> Salvar Alterações</button>
+            <p id="overtime-status-message" class="status-message"></p>
+        </div>
+    </div>
+
 
     <!-- =================================================================== -->
     <!-- SCRIPTS (CARREGADOS NA ORDEM CORRETA) -->
@@ -2301,7 +2357,8 @@ Transporte - R$ 5,00"></textarea></div>
     <!-- 2. Seu script principal -->
             <script>
     // --- VERSÃO DO APLICATIVO ---
-    const APP_VERSION = '1.2.0'; // Altere este número para atualizar a versão
+                //2805
+    const APP_VERSION = '1.2.1'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2401,6 +2458,7 @@ Transporte - R$ 5,00"></textarea></div>
         holidaysManagementPage: document.getElementById('holidays-management-page'),
         sundaysManagementPage: document.getElementById('sundays-management-page'),
         dayOffManagementPage: document.getElementById('day-off-management-page'),
+        overtimeManagementPage: document.getElementById('overtime-management-page'),
         pontoPage: document.getElementById('ponto-page'),
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
         pontoHistoryPage: document.getElementById('ponto-history-page'),
@@ -3632,8 +3690,14 @@ Transporte - R$ 5,00"></textarea></div>
                 const collaboratorProfile = profilesData[collab.name.toLowerCase()];
                 const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
 
+                // Adiciona a coroa apenas para o rank 1
+                const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
+
                 rankItem.innerHTML = `
-                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                    <div class="rank-photo-container">
+                        ${crownHtml}
+                        <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                    </div>
                     <div class="rank-medal">${medals[index]}</div>
                     <div class="rank-details">
                         <div class="rank-name">
@@ -3678,15 +3742,27 @@ Transporte - R$ 5,00"></textarea></div>
         const todayString = getTodayDateString();
 
         // 1. Fetch de feriados, domingos de trabalho e folgas
-        const [holidaySnap, sundaySnap, dayOffSnap] = await Promise.all([
+        // 1. Fetch de feriados, domingos de trabalho, folgas e justificativas
+        const [holidaySnap, sundaySnap, dayOffSnap, justificationSnap] = await Promise.all([
             database.ref('holidays').get(),
             database.ref('workingSundays').get(),
-            database.ref(`scheduledDaysOff/${todayString}/${currentCollaboratorName.toLowerCase()}`).get()
+            database.ref(`scheduledDaysOff/${todayString}/${currentCollaboratorName.toLowerCase()}`).get(),
+            database.ref(`justifications/${todayString}/${currentCollaboratorName.toLowerCase()}`).get() // Adicionado
         ]);
 
         // 2. Verificar se o funcionário está de folga
         if (dayOffSnap.exists()) {
             return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.' };
+        }
+
+        // 2.1 Verificar se há uma justificativa para hoje, que libera os horários
+        if (justificationSnap.exists()) {
+            // Se justificou, permite bater o ponto a qualquer hora, mas seguindo a ordem
+            if (!dailyPontoData.entrada) return { action: 'registrar_entrada', status: 'justified', message: 'Justificativa aceita. Registre sua ENTRADA.'};
+            if (!isWeekendShift && !dailyPontoData.saida_almoco) return { action: 'registrar_saida_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA DE ALMOÇO.'};
+            if (!isWeekendShift && !dailyPontoData.volta_almoco) return { action: 'registrar_volta_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua VOLTA DO ALMOÇO.'};
+            if (!dailyPontoData.saida) return { action: 'registrar_saida', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA.'};
+            return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.' };
         }
 
         // 3. Verificar se hoje é feriado
@@ -3708,7 +3784,7 @@ Transporte - R$ 5,00"></textarea></div>
             // Horário de Sábado / Domingo de trabalho
             windows = {
                 entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, // 7:40 - 8:15
-                saida: { start: 12 * 60 + 40, end: 13 * 60 + 15 } // 12:40 - 13:15
+                saida: { start: 12 * 60 + 40 } // 12:40 em diante
                 // Sem almoço
             };
         } else {
@@ -3716,7 +3792,7 @@ Transporte - R$ 5,00"></textarea></div>
             windows = {
                 entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, // 7:40 - 8:15
                 saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, // 11:00 - 15:00
-                saida: { start: 17 * 60 + 40, end: 18 * 60 + 15 } // 17:40 - 18:15
+                saida: { start: 17 * 60 + 40 } // 17:40 em diante
             };
         }
         
@@ -3751,7 +3827,16 @@ Transporte - R$ 5,00"></textarea></div>
         }
 
         if (!dailyPontoData.saida) {
-            if (currentTimeInMinutes >= windows.saida.start) { // Permite bater ponto depois das 18:15
+            // Verifica se a saída foi perdida no dia anterior
+            const lastPunchTimestamp = dailyPontoData.volta_almoco?.timestamp || dailyPontoData.entrada?.timestamp;
+            if (lastPunchTimestamp) {
+                const lastPunchDate = new Date(lastPunchTimestamp);
+                if (now.getDate() > lastPunchDate.getDate() || now.getMonth() > lastPunchDate.getMonth() || now.getFullYear() > lastPunchDate.getFullYear()) {
+                     return { action: 'missed_saida', status: 'late', message: 'Você esqueceu de bater o ponto de SAÍDA ontem.' };
+                }
+            }
+
+            if (currentTimeInMinutes >= windows.saida.start) {
                 return { action: 'registrar_saida', status: 'pending', message: 'Você pode bater o ponto de SAÍDA.' };
             }
             return { action: null, status: 'working', message: 'Em horário de trabalho.' };
@@ -3772,11 +3857,23 @@ Transporte - R$ 5,00"></textarea></div>
             const snapshot = await pontoRef.get();
             const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
             const nextAction = await determineNextPontoAction(dailyPontoData);
+            const justificationRef = database.ref(`justifications/${todayString}/${currentCollaboratorName.toLowerCase()}`);
+            const justificationSnapshot = await justificationRef.get();
 
-            if (nextAction.status === 'pending') {
+
+            if (nextAction.status === 'pending' || nextAction.status === 'justified') {
                 notificationArea.innerHTML = `<div class="os-warning" style="border-color: #f1c40f; color: #f1c40f; margin-bottom: 0;">${nextAction.message}</div>`;
+                 if (justificationSnapshot.exists()) {
+                    notificationArea.innerHTML += `<p style="font-size: 0.8rem; color: #f1c40f; margin-top: 0.5rem;">Sua justificativa para hoje foi registrada.</p>`;
+                }
             } else if (nextAction.status === 'late') {
-                notificationArea.innerHTML = `<div class="os-warning" style="margin-bottom: 0;">${nextAction.message}</div>`;
+                notificationArea.innerHTML = `<div class="os-warning" style="margin-bottom: 0;">${nextAction.message}</div>
+                                              <button id="justify-btn" class="action-button" style="margin-top: 1rem; padding: 0.75rem; font-size: 0.9rem; background-color: #f39c12;"><i class="fa-solid fa-comment-medical"></i> Justificar Ocorrência</button>`;
+
+                // Adiciona listener para o botão de justificar
+                setTimeout(() => {
+                    document.getElementById('justify-btn')?.addEventListener('click', justifyOccurrence);
+                }, 0);
 
                 // --- INÍCIO DA LÓGICA PARA REGISTRAR A FALTA ---
                 const absenceLogRef = database.ref(`absencesLogged/${todayString}/${currentCollaboratorName}/${nextAction.action}`);
@@ -4102,6 +4199,177 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
 
+    const justifyOccurrence = () => {
+        const reason = prompt("Por favor, digite o motivo para a ocorrência (atraso/falta):");
+        if (!reason || reason.trim() === "") {
+            alert("A justificativa não pode ser vazia.");
+            return;
+        }
+
+        const todayString = getTodayDateString();
+        const userKey = currentCollaboratorName.toLowerCase();
+        const justificationRef = database.ref(`justifications/${todayString}/${userKey}`);
+
+        justificationRef.set({ reason: reason.trim(), timestamp: new Date().toISOString() })
+            .then(() => {
+                alert("Justificativa enviada com sucesso! Os horários de ponto para hoje foram flexibilizados.");
+                // Reavalia a tela para remover o aviso e o botão
+                checkPontoStatusAndDisplayWarnings();
+            })
+            .catch(error => {
+                alert("Ocorreu um erro ao enviar a justificativa.");
+                console.error(error);
+            });
+    };
+
+    const calculateAndSaveOvertime = async (todayString) => {
+        const userKey = currentCollaboratorName.toLowerCase();
+        const pontoHojeRef = database.ref(`pontosDoDia/${todayString}/${userKey}`);
+        
+        const snapshot = await pontoHojeRef.get();
+        if (!snapshot.exists()) return;
+        const pontoHoje = snapshot.val();
+
+        // Precisa ter entrada e saída para calcular horas
+        if (!pontoHoje.entrada || !pontoHoje.saida) return;
+
+        const entradaTime = new Date(pontoHoje.entrada.timestamp);
+        const saidaTime = new Date(pontoHoje.saida.timestamp);
+        
+        let workedMilliseconds = saidaTime - entradaTime;
+
+        // Subtrai o almoço, se houver
+        if (pontoHoje.saida_almoco && pontoHoje.volta_almoco) {
+            const saidaAlmocoTime = new Date(pontoHoje.saida_almoco.timestamp);
+            const voltaAlmocoTime = new Date(pontoHoje.volta_almoco.timestamp);
+            workedMilliseconds -= (voltaAlmocoTime - saidaAlmocoTime);
+        }
+
+        const workedMinutes = Math.floor(workedMilliseconds / 60000);
+
+        const dayOfWeek = entradaTime.getDay();
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+        const expectedWorkMinutes = isWeekend ? 5 * 60 : 8 * 60; // 5h no fds, 8h na semana
+
+        const overtimeMinutes = Math.max(0, workedMinutes - expectedWorkMinutes);
+
+        if (overtimeMinutes > 0) {
+            const profileRef = database.ref(`userProfiles/${userKey}/overtimeMinutes`);
+            // Usar transação para evitar condição de corrida se a função for chamada duas vezes
+            await profileRef.transaction(currentOvertime => {
+                return (currentOvertime || 0) + overtimeMinutes;
+            });
+        }
+    };
+
+    const loadAndDisplayOvertime = async () => {
+        const container = document.getElementById('overtime-list-container');
+        container.innerHTML = '<p style="text-align: center;">Carregando...</p>';
+
+        const profilesSnap = await database.ref('userProfiles').get();
+        if (!profilesSnap.exists()) {
+            container.innerHTML = '<p style="text-align: center;">Nenhum funcionário encontrado.</p>';
+            return;
+        }
+        container.innerHTML = '';
+        const profiles = profilesSnap.val();
+
+        allCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            const overtimeMinutes = profiles[key]?.overtimeMinutes || 0;
+            const hours = Math.floor(overtimeMinutes / 60);
+            const minutes = overtimeMinutes % 60;
+            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+            const item = document.createElement('div');
+            item.className = 'rank-item'; // Reutilizando estilo
+            item.innerHTML = `
+                <div class="rank-details" style="width: 100%;">
+                    <div class="rank-name">
+                        <span>${name}</span>
+                        <span class="rank-prize" style="color: #3498db;">${formattedTime}</span>
+                    </div>
+                </div>`;
+            container.appendChild(item);
+        });
+    };
+
+    const openOvertimeManagementPage = async () => {
+        showPage('overtimeManagementPage');
+        const container = document.getElementById('overtime-management-content');
+        container.innerHTML = '<p style="text-align: center;">Carregando...</p>';
+
+        const profilesSnap = await database.ref('userProfiles').get();
+        if (!profilesSnap.exists()) {
+            container.innerHTML = '<p style="text-align: center;">Nenhum funcionário encontrado.</p>';
+            return;
+        }
+        container.innerHTML = '';
+        const profiles = profilesSnap.val();
+
+        allCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            const overtimeMinutes = profiles[key]?.overtimeMinutes || 0;
+            const card = document.createElement('div');
+            card.className = 'employee-meta-card';
+            card.innerHTML = `
+                 <h4>${name}</h4>
+                 <div class="input-group">
+                    <label for="overtime-input-${key}">Horas Extras (em minutos)</label>
+                    <input type="number" id="overtime-input-${key}" class="data-input" value="${overtimeMinutes}">
+                </div>`;
+            container.appendChild(card);
+        });
+    };
+
+    const saveOvertimeChanges = () => {
+        const statusEl = document.getElementById('overtime-status-message');
+        statusEl.textContent = 'Salvando...';
+
+        const updates = {};
+        allCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            const input = document.getElementById(`overtime-input-${key}`);
+            const newMinutes = parseInt(input.value, 10);
+
+            if (!isNaN(newMinutes)) {
+                updates[`/userProfiles/${key}/overtimeMinutes`] = newMinutes;
+            }
+        });
+
+        database.ref().update(updates)
+            .then(() => {
+                statusEl.textContent = 'Horas extras atualizadas!';
+                loadAndDisplayOvertime(); // Atualiza a visualização no GS
+                setTimeout(() => {
+                     statusEl.textContent = '';
+                }, 3000);
+            })
+            .catch(error => {
+                statusEl.textContent = 'Erro ao salvar!';
+                console.error(error);
+            });
+    };
+
+    const deletePontoRecord = (recordKey, employeeName) => {
+        if (!checkPassword()) {
+            return;
+        }
+
+        if (confirm(`Tem certeza que deseja apagar este registro de ponto para ${employeeName}? Esta ação não pode ser desfeita.`)) {
+            database.ref(`pontos/${employeeName}/${recordKey}`).remove()
+                .then(() => {
+                    alert('Registro de ponto apagado com sucesso.');
+                    // Recarrega a tela de histórico para refletir a mudança
+                    showPontoHistory(employeeName);
+                })
+                .catch(error => {
+                    alert('Ocorreu um erro ao apagar o registro.');
+                    console.error('Erro ao deletar registro de ponto:', error);
+                });
+        }
+    };
+
     const calculateAndDisplayStoreRanking = () => {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
@@ -4166,8 +4434,14 @@ Transporte - R$ 5,00"></textarea></div>
                 const photoUrl = managerProfile && managerProfile.photoURL ? managerProfile.photoURL : defaultPhoto;
 
 
+                // Adiciona a coroa apenas para o rank 1
+                const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
+
                 rankItem.innerHTML = `
-                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                    <div class="rank-photo-container">
+                        ${crownHtml}
+                        <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                    </div>
                     <div class="rank-medal">${medals[index]}</div>
                     <div class="rank-details">
                         <div class="rank-name">
@@ -4257,6 +4531,12 @@ Transporte - R$ 5,00"></textarea></div>
 
                         const pontoType = currentPontoAction.replace('registrar_', ''); // Ex: 'entrada', 'saida_almoco'
                         const city = storeMapping.pinheiro.includes(currentCollaboratorName) ? 'Pinheiro' : 'Bacabal';
+                        const todayString = getTodayDateString();
+
+                        // Se o ponto for de SAÍDA, calcular horas extras
+                        if (pontoType === 'saida') {
+                            calculateAndSaveOvertime(todayString);
+                        }
 
                         // Dados para o histórico (compatibilidade)
                         const historyPontoData = {
@@ -4273,7 +4553,7 @@ Transporte - R$ 5,00"></textarea></div>
                             photoURL: imageUrl
                         };
 
-                        const todayString = getTodayDateString();
+                        // A segunda declaração foi removida daqui.
                         const updates = {};
                         // 1. Salva na nova estrutura para controle diário
                         updates[`pontosDoDia/${todayString}/${currentCollaboratorName}/${pontoType}`] = dailyPontoData;
@@ -4337,14 +4617,30 @@ Transporte - R$ 5,00"></textarea></div>
 
             const records = [];
             snapshot.forEach(child => {
-                records.push(child.val());
+                // Modificado para guardar a chave junto com o registro
+                records.push({ key: child.key, record: child.val() });
             });
 
             // Inverte para mostrar o mais recente primeiro
-            records.reverse().forEach(record => {
+            records.reverse().forEach(async (recordWithKey) => { // Mudou para receber o objeto com a chave
+                const { key, record } = recordWithKey;
                 const card = document.createElement('div');
                 card.className = 'ponto-history-card';
                 const date = new Date(record.timestamp);
+                const recordDateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
+                let justificationHtml = '';
+                const justificationSnap = await database.ref(`justifications/${recordDateString}/${name.toLowerCase()}`).get();
+                if (justificationSnap.exists()) {
+                    justificationHtml = `<div class="ponto-history-justification"><strong>Justificativa:</strong> ${justificationSnap.val().reason}</div>`;
+                }
+
+                // Botão de deletar que será adicionado ao final do card
+                const deleteButtonHtml = `
+                    <button class="delete-button-small" data-record-key="${key}" data-employee-name="${name}" style="margin-left: auto;">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
 
                 if (record.type === 'falta') {
                     // --- RENDERIZA O CARD DE FALTA ---
@@ -4358,6 +4654,8 @@ Transporte - R$ 5,00"></textarea></div>
                             <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
                             <p><strong>Hora da Ocorrência:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
                         </div>
+                        ${justificationHtml}
+                        ${deleteButtonHtml}
                     `;
                 } else {
                     // --- RENDERIZA O CARD DE PONTO NORMAL ---
@@ -4368,6 +4666,7 @@ Transporte - R$ 5,00"></textarea></div>
                             <p><strong>Hora:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
                             <p><strong>Cidade:</strong> ${record.city}</p>
                         </div>
+                         ${deleteButtonHtml}
                     `;
                 }
                 historyContainer.appendChild(card);
@@ -4684,6 +4983,7 @@ Transporte - R$ 5,00"></textarea></div>
                 loadAndRenderDaysOff();
                 showPage('dayOffManagementPage');
             });
+            document.getElementById('open-overtime-management-page').addEventListener('click', openOvertimeManagementPage);
 
             // --- PÁGINA DE CONFIGURAÇÕES / CORREÇÃO ---
             document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
@@ -4736,6 +5036,7 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('back-to-gs-from-holidays').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-sundays').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-day-off').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-overtime').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-collab-from-metas').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-panel').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-closing').addEventListener('click', () => showPage('collaboratorPage'));
@@ -4828,6 +5129,9 @@ Transporte - R$ 5,00"></textarea></div>
                     deleteDayOff(deleteButton.dataset.date, deleteButton.dataset.employeeKey);
                 }
             });
+
+            // Listener para a página de gerenciamento de horas extras
+            document.getElementById('save-overtime-btn').addEventListener('click', saveOvertimeChanges);
             document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
                 stopPontoCamera();
                 showPage('collaboratorPage');
@@ -4870,8 +5174,17 @@ Transporte - R$ 5,00"></textarea></div>
 
             // Listener no container de histórico (event delegation)
             historyContainer.addEventListener('click', (event) => {
-                if (event.target.classList.contains('ponto-history-photo')) {
-                    openImageViewer(event.target.src);
+                const photo = event.target.closest('.ponto-history-photo');
+                if (photo) {
+                    openImageViewer(photo.src);
+                    return; // Para não acionar o listener de delete sem querer
+                }
+
+                const deleteButton = event.target.closest('.delete-button-small');
+                if (deleteButton) {
+                    const recordKey = deleteButton.dataset.recordKey;
+                    const employeeName = deleteButton.dataset.employeeName;
+                    deletePontoRecord(recordKey, employeeName);
                 }
             });
 
@@ -4890,6 +5203,7 @@ Transporte - R$ 5,00"></textarea></div>
             calculateAndDisplayRanking(); // Carrega o ranking de colaboradores
             calculateAndDisplayStoreRanking(); // Carrega o ranking de lojas
             loadManagerNotifications(); // Carrega notificações para o gerente na inicialização
+            loadAndDisplayOvertime(); // Carrega as horas extras no GS na inicialização
 
             // Exibe a versão do app no rodapé
             document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
