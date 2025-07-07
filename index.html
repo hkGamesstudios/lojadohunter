@@ -1465,6 +1465,21 @@
             color: var(--primary-color);
         }
 
+        #gs-notification-indicator {
+            background-color: #e74c3c; /* Vermelho */
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 5px;
+            vertical-align: top;
+        }
+
         /* Ajuste para o container de conteúdo principal do GS */
         #gs-page .collaborator-content {
             padding-top: 1rem; /* Reduz o padding superior já que os botões estão acima */
@@ -1610,7 +1625,7 @@
                     </div>
                     <div id="open-gs-page" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
-                        <span>GS</span>
+                        <span>GS <span id="gs-notification-indicator" style="display: none;">!</span></span>
                     </div>
                     <div id="open-send-device-page" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-paper-plane"></i></div>
@@ -2502,7 +2517,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.4.2'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.4.3'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3916,7 +3931,29 @@ Transporte - R$ 5,00"></textarea></div>
         const notificationRef = database.ref(`managerNotifications/${notificationId}`);
         notificationRef.set({
             message: message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            read: false // Adiciona o status de "não lido"
+        });
+    };
+
+        // (Pode ser adicionada antes da função loadManagerNotifications)
+
+    const markNotificationsAsRead = () => {
+        const notificationsRef = database.ref('managerNotifications');
+        notificationsRef.once('value', snapshot => {
+            if (snapshot.exists()) {
+                const updates = {};
+                snapshot.forEach(childSnapshot => {
+                    // Marca como lida apenas se a notificação não tiver a flag 'read' ou se for 'false'
+                    if (!childSnapshot.val().read) {
+                        updates[childSnapshot.key + '/read'] = true;
+                    }
+                });
+                // Executa o update somente se houver algo para atualizar
+                if (Object.keys(updates).length > 0) {
+                    notificationsRef.update(updates);
+                }
+            }
         });
     };
 
@@ -4133,20 +4170,34 @@ Transporte - R$ 5,00"></textarea></div>
     const loadManagerNotifications = () => {
         const section = document.getElementById('manager-notifications-section');
         const listContainer = document.getElementById('manager-notifications-list');
+        const indicator = document.getElementById('gs-notification-indicator');
         const notificationsRef = database.ref('managerNotifications').orderByChild('timestamp').limitToLast(20);
 
         notificationsRef.on('value', snapshot => {
             listContainer.innerHTML = '';
+            let hasUnread = false;
+
             if (snapshot.exists()) {
                 section.style.display = 'block';
                 const notifications = [];
                 snapshot.forEach(childSnapshot => {
-                    notifications.push({ key: childSnapshot.key, ...childSnapshot.val() });
+                    const notificationData = childSnapshot.val();
+                    if (!notificationData.read) {
+                        hasUnread = true; // Encontrou uma notificação não lida
+                    }
+                    notifications.push({ key: childSnapshot.key, ...notificationData });
                 });
+
+                // Atualiza o indicador visual
+                indicator.style.display = hasUnread ? 'inline-flex' : 'none';
 
                 notifications.reverse().forEach(notification => {
                     const notificationItem = document.createElement('div');
                     notificationItem.className = 'mt-list-item';
+                    // Adiciona um estilo sutil para notificações não lidas
+                    if (!notification.read) {
+                        notificationItem.style.background = 'rgba(255, 255, 255, 0.1)';
+                    }
                     notificationItem.innerHTML = `
                         <div class="mt-list-item-text">${notification.message}</div>
                         <button class="delete-button-small" data-key="${notification.key}">
@@ -4157,6 +4208,7 @@ Transporte - R$ 5,00"></textarea></div>
                 });
             } else {
                 section.style.display = 'none';
+                indicator.style.display = 'none'; // Esconde se não houver notificações
             }
         });
     };
@@ -5227,7 +5279,13 @@ Transporte - R$ 5,00"></textarea></div>
 
             // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
             document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
-            document.getElementById('open-gs-page').addEventListener('click', () => { if (checkPassword()) { loadDashboardData(); showPage('gsPage'); } });
+            document.getElementById('open-gs-page').addEventListener('click', () => { 
+                if (checkPassword()) { 
+                    loadDashboardData(); 
+                    markNotificationsAsRead(); // Marca as notificações como lidas ao abrir
+                    showPage('gsPage'); 
+                } 
+            });
             document.getElementById('open-send-device-page').addEventListener('click', () => { if (checkPassword()) { showPage('sendDevicePage'); } });
             document.querySelectorAll('.brand-button').forEach(button => button.addEventListener('click', () => loadBrandDevices(button.dataset.brand)));
             document.getElementById('previsao-btn').addEventListener('click', calculateDeliveryPrediction);
