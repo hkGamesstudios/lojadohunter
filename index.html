@@ -2482,7 +2482,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.3.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.3.9'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3137,25 +3137,66 @@ Transporte - R$ 5,00"></textarea></div>
 
     const loadAndDisplayIndividualSalesData = () => {
         const container = document.getElementById('individual-sales-data');
-        container.innerHTML = ''; // Limpa antes de carregar
-        const key = currentCollaboratorName.toLowerCase();
+        container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`; // Limpa antes de carregar
+        const collaboratorKey = currentCollaboratorName.toLowerCase();
+        
+        // Verifica se o colaborador logado é um gerente
+        const isManager = managers.includes(currentCollaboratorName);
 
-        database.ref(`salesData/${key}`).get().then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
+        if (isManager) {
+            // Se for gerente, precisa buscar os dados de toda a loja para somar
+            let storeEmployees = [];
+            if (storeMapping.pinheiro.includes(currentCollaboratorName)) {
+                storeEmployees = storeMapping.pinheiro;
+            } else if (storeMapping.bacabal.includes(currentCollaboratorName)) {
+                storeEmployees = storeMapping.bacabal;
+            }
+
+            database.ref('salesData').get().then(snapshot => {
+                if (!snapshot.exists()) {
+                    container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
+                    return;
+                }
+                const allSales = snapshot.val();
+                const managerData = allSales[collaboratorKey] || {};
+                
+                // Soma o P1/P2 de todos os funcionários da loja
+                let totalP1P2daLoja = 0;
+                storeEmployees.forEach(employeeName => {
+                    const employeeKey = employeeName.toLowerCase();
+                    totalP1P2daLoja += parseFloat(allSales[employeeKey]?.p1p2 || 0);
+                });
+
+                // Exibe os dados da gerente com o P1/P2 somado
                 container.innerHTML = `
                     <div class="sales-data-card">
                         <h4>Resultados Atuais</h4>
-                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
-                        <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
-                        <p>🔧 SEGURO: ${data.seguro || '0'}</p>
-                        <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                        <p>📈 VENDAS: ${formatBRL(managerData.vendas)}</p>
+                        <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
+                        <p>🔧 SEGURO: ${managerData.seguro || '0'}</p>
+                        <p>💳 CARTÃO: ${managerData.cartao || '0'}</p>
                     </div>
                 `;
-            } else {
-                 container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
-            }
-        });
+            });
+        } else {
+            // Se não for gerente, busca apenas os dados individuais (comportamento antigo)
+            database.ref(`salesData/${collaboratorKey}`).get().then(snapshot => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    container.innerHTML = `
+                        <div class="sales-data-card">
+                            <h4>Resultados Atuais</h4>
+                            <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
+                            <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
+                            <p>🔧 SEGURO: ${data.seguro || '0'}</p>
+                            <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                        </div>
+                    `;
+                } else {
+                     container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
+                }
+            });
+        }
     };
 
     const loadManagerPanel = () => {
