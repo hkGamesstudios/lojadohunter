@@ -2482,7 +2482,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.3.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.4.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3160,21 +3160,27 @@ Transporte - R$ 5,00"></textarea></div>
                 const allSales = snapshot.val();
                 const managerData = allSales[collaboratorKey] || {};
                 
-                // Soma o P1/P2 de todos os funcionários da loja
+                // Soma os totais de P1/P2, Seguro e Cartão de todos na loja
                 let totalP1P2daLoja = 0;
+                let totalSeguroDaLoja = 0;
+                let totalCartaoDaLoja = 0;
+
                 storeEmployees.forEach(employeeName => {
                     const employeeKey = employeeName.toLowerCase();
-                    totalP1P2daLoja += parseFloat(allSales[employeeKey]?.p1p2 || 0);
+                    const employeeData = allSales[employeeKey] || {};
+                    totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
+                    totalSeguroDaLoja += parseInt(employeeData.seguro || 0, 10);
+                    totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
                 });
 
-                // Exibe os dados da gerente com o P1/P2 somado
+                // Exibe os dados da gerente com os valores somados da equipe
                 container.innerHTML = `
                     <div class="sales-data-card">
                         <h4>Resultados Atuais</h4>
                         <p>📈 VENDAS: ${formatBRL(managerData.vendas)}</p>
                         <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
-                        <p>🔧 SEGURO: ${managerData.seguro || '0'}</p>
-                        <p>💳 CARTÃO: ${managerData.cartao || '0'}</p>
+                        <p>🔧 SEGURO: ${totalSeguroDaLoja}</p>
+                        <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
                     </div>
                 `;
             });
@@ -3216,12 +3222,16 @@ Transporte - R$ 5,00"></textarea></div>
             container.innerHTML = ''; // Limpa o "carregando"
             const allSales = snapshot.exists() ? snapshot.val() : {};
             
-            // 1. Calcular o total de P1/P2 de toda a equipe da loja
+            // 1. Calcular os totais da equipe da loja
             let totalP1P2daLoja = 0;
+            let totalSeguroDaLoja = 0;
+            let totalCartaoDaLoja = 0;
             storeEmployees.forEach(employeeName => {
                 const employeeKey = employeeName.toLowerCase();
-                const p1p2Value = allSales[employeeKey]?.p1p2 || 0;
-                totalP1P2daLoja += parseFloat(p1p2Value);
+                const employeeData = allSales[employeeKey] || {};
+                totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
+                totalSeguroDaLoja += parseInt(employeeData.seguro || 0, 10);
+                totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
             });
 
             // 2. Renderizar o card para cada funcionário
@@ -3229,18 +3239,18 @@ Transporte - R$ 5,00"></textarea></div>
                 const employeeKey = employeeName.toLowerCase();
                 const data = allSales[employeeKey] || {};
                 
-                // 3. Se o funcionário atual for a gerente, use o total calculado
-                const p1p2DisplayValue = (employeeName === managerName) 
-                    ? totalP1P2daLoja 
-                    : data.p1p2;
+                // 3. Se o funcionário atual for a gerente, use os totais calculados
+                const p1p2DisplayValue = (employeeName === managerName) ? totalP1P2daLoja : data.p1p2;
+                const seguroDisplayValue = (employeeName === managerName) ? totalSeguroDaLoja : data.seguro;
+                const cartaoDisplayValue = (employeeName === managerName) ? totalCartaoDaLoja : data.cartao;
 
                 container.innerHTML += `
                     <div class="sales-data-card">
                         <h4>${employeeName}</h4>
                         <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
                         <p>🔱 P1/P2: ${formatBRL(p1p2DisplayValue)}</p>
-                        <p>🔧 SEGURO: ${data.seguro || '0'}</p>
-                        <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                        <p>🔧 SEGURO: ${seguroDisplayValue || '0'}</p>
+                        <p>💳 CARTÃO: ${cartaoDisplayValue || '0'}</p>
                     </div>
                 `;
             });
