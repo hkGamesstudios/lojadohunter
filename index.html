@@ -512,7 +512,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #security-city-selection-page, #security-profile-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -673,13 +673,13 @@
             margin-right: 0.5rem;
         }
 
-        #collaborator-profile-pic-container {
+        #collaborator-profile-pic-container, #security-profile-pic-container {
             display: flex;
             justify-content: center;
             padding: 1rem 0;
         }
 
-        #collaborator-profile-pic {
+        #collaborator-profile-pic, #security-profile-pic {
             width: 120px;
             height: 120px;
             border-radius: 50%;
@@ -690,7 +690,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        #collaborator-profile-pic:hover {
+        #collaborator-profile-pic:hover, #security-profile-pic:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
@@ -2495,6 +2495,42 @@ Transporte - R$ 5,00"></textarea></div>
     </div>
 
 
+    <!-- =================================================================== -->
+    <!-- TELAS DO MODO DE SEGURANÇA -->
+    <!-- =================================================================== -->
+
+    <!-- TELA DE SELEÇÃO DE CIDADE PARA SEGURANÇA -->
+    <div id="security-city-selection-page" style="display: none;">
+        <div class="collaborator-header">
+            <h2>Acesso de Segurança</h2>
+        </div>
+        <div class="collaborator-content" style="justify-content: center; gap: 1rem;">
+             <h3 class="modal-title">Selecione sua Loja</h3>
+             <button id="security-btn-pinheiro" class="action-button">Pinheiro</button>
+             <button id="security-btn-bacabal" class="action-button">Bacabal</button>
+        </div>
+    </div>
+
+    <!-- TELA DE PERFIL DO SEGURANÇA -->
+    <div id="security-profile-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-security-selection" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="security-name-display">Nome do Segurança</h2>
+        </div>
+        <!-- Usando os IDs e classes que já têm estilo definido -->
+        <div id="collaborator-profile-pic-container">
+            <img id="security-profile-pic" src="" alt="Foto de Perfil" class="collaborator-profile-pic">
+        </div>
+        <div class="collaborator-content" style="flex-direction: column; gap: 1rem; padding-top: 2rem;">
+            <a href="#" id="security-bater-ponto-btn" class="action-button" style="background-color: rgba(52, 152, 219, 0.8);"><i class="fa-solid fa-camera"></i>Bater Ponto</a>
+            <a href="#" id="security-change-password-btn" class="action-button" style="margin-top: 1rem; background-color: rgba(142, 68, 173, 0.7);"><i class="fa-solid fa-key"></i>Alterar Senha</a>
+            <a href="#" id="security-change-photo-btn" class="action-button" style="background-color: rgba(230, 126, 34, 0.8);"><i class="fa-solid fa-camera-rotate"></i>Trocar Foto de Perfil</a>
+            <input type="file" id="security-photo-upload-input" accept="image/*" style="display: none;">
+            <p id="security-photo-upload-status" class="status-message"></p>
+        </div>
+    </div>
+
+
     <!-- Elementos Ocultos para Captura de Câmera -->
     <video id="capture-video-element" playsinline autoplay muted style="display: none;"></video>
     <canvas id="capture-canvas-element" style="display: none;"></canvas>
@@ -2513,7 +2549,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.4.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.4.5'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2542,12 +2578,14 @@ Transporte - R$ 5,00"></textarea></div>
 
     // --- ESTADO DA APLICAÇÃO ---
     const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson'];
+    const securityGuards = { pinheiro: 'José Santana', bacabal: 'Leonardo Bezerra' };
+    const allUsers = [...allCollaborators, ...Object.values(securityGuards)]; // Lista unificada para funções genéricas
     const managers = ['Beatriz', 'Natalia'];
     const storeMapping = {
         pinheiro: ['Beatriz', 'Marcio', 'Eliseu'],
         bacabal: ['Natalia', 'Tacilio', 'Demilson']
     };
-    let currentCollaboratorName = '';
+    let currentUserName = ''; // Variável unificada para o usuário logado
     let currentBrand = '';
     let isNavigating = false; // Flag para prevenir cliques duplos durante animações
     let stockRequestSelection = []; // Array para guardar os itens solicitados
@@ -2563,6 +2601,8 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('ponto-verification-page').classList.add('page');
     document.getElementById('ponto-history-page').classList.add('page');
     document.getElementById('collaborator-page').classList.add('page');
+    document.getElementById('security-city-selection-page').classList.add('page'); // ADICIONADO
+    document.getElementById('security-profile-page').classList.add('page'); // ADICIONADO
     document.getElementById('gs-page').classList.add('page');
     document.getElementById('metas-config-page').classList.add('page');
     document.getElementById('metas-display-page').classList.add('page');
@@ -2583,7 +2623,7 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('mt-management-page').classList.add('page');
     document.getElementById('holidays-management-page').classList.add('page');
     document.getElementById('sundays-management-page').classList.add('page');
-        document.getElementById('day-off-management-page').classList.add('page');
+    document.getElementById('day-off-management-page').classList.add('page');
     document.getElementById('lollipop-page').classList.add('page');
 
     // Mapeia os elementos para fácil acesso
@@ -2591,6 +2631,8 @@ Transporte - R$ 5,00"></textarea></div>
         mainContainer: mainContainer,
         modal: document.getElementById('colaborador-modal'),
         collaboratorPage: document.getElementById('collaborator-page'),
+        securityCitySelectionPage: document.getElementById('security-city-selection-page'), // ADICIONADO
+        securityProfilePage: document.getElementById('security-profile-page'), // ADICIONADO
         gsPage: document.getElementById('gs-page'),
         metasConfigPage: document.getElementById('metas-config-page'),
         metasDisplayPage: document.getElementById('metas-display-page'),
@@ -2794,7 +2836,7 @@ Transporte - R$ 5,00"></textarea></div>
     };
     const loadAndDisplayCollaboratorMetas = () => {
         const container = document.getElementById('metas-display-content');
-        const key = currentCollaboratorName.toLowerCase();
+        const key = currentUserName.toLowerCase(); // CORREÇÃO AQUI
         container.innerHTML = `<p>Carregando suas metas...</p>`;
         database.ref(`metas/${key}`).get().then(snapshot => {
             if (snapshot.exists()) {
@@ -3106,18 +3148,16 @@ Transporte - R$ 5,00"></textarea></div>
 
     const loadAndDisplayIndividualSalesData = () => {
         const container = document.getElementById('individual-sales-data');
-        container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`; // Limpa antes de carregar
-        const collaboratorKey = currentCollaboratorName.toLowerCase();
+        container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`;
+        const userKey = currentUserName.toLowerCase();
         
-        // Verifica se o colaborador logado é um gerente
-        const isManager = managers.includes(currentCollaboratorName);
+        const isManager = managers.includes(currentUserName);
 
         if (isManager) {
-            // Se for gerente, precisa buscar os dados de toda a loja para somar
             let storeEmployees = [];
-            if (storeMapping.pinheiro.includes(currentCollaboratorName)) {
+            if (storeMapping.pinheiro.includes(currentUserName)) {
                 storeEmployees = storeMapping.pinheiro;
-            } else if (storeMapping.bacabal.includes(currentCollaboratorName)) {
+            } else if (storeMapping.bacabal.includes(currentUserName)) {
                 storeEmployees = storeMapping.bacabal;
             }
 
@@ -3127,7 +3167,8 @@ Transporte - R$ 5,00"></textarea></div>
                     return;
                 }
                 const allSales = snapshot.val();
-                const managerData = allSales[collaboratorKey] || {};
+                // AQUI ESTÁ A CORREÇÃO: Usar a variável 'userKey' que já foi definida.
+                const managerData = allSales[userKey] || {}; 
                 
                 // Soma os totais de P1/P2, Seguro e Cartão de todos na loja
                 let totalP1P2daLoja = 0;
@@ -3154,8 +3195,8 @@ Transporte - R$ 5,00"></textarea></div>
                 `;
             });
         } else {
-            // Se não for gerente, busca apenas os dados individuais (comportamento antigo)
-            database.ref(`salesData/${collaboratorKey}`).get().then(snapshot => {
+            // Se não for gerente, busca apenas os dados individuais
+            database.ref(`salesData/${userKey}`).get().then(snapshot => { // CORREÇÃO AQUI
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     container.innerHTML = `
@@ -3179,7 +3220,7 @@ Transporte - R$ 5,00"></textarea></div>
         container.innerHTML = '<p style="text-align:center;">Carregando dados da equipe...</p>';
         showPage('managerSalesPanelPage');
 
-        const managerName = currentCollaboratorName;
+        const managerName = currentUserName; // USA A NOVA VARIÁVEL
         let storeEmployees = [];
         if (storeMapping.pinheiro.includes(managerName)) {
             storeEmployees = storeMapping.pinheiro;
@@ -3372,7 +3413,7 @@ Transporte - R$ 5,00"></textarea></div>
             return; // Usuário cancelou
         }
 
-        const userKey = currentCollaboratorName.toLowerCase();
+        const userKey = currentUserName.toLowerCase(); // USA A NOVA VARIÁVEL
 
         if (newPassword.trim() === "") {
             // Se o campo for deixado em branco, remove a senha
@@ -3908,7 +3949,7 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
     const createManagerNotification = (message) => {
-        const notificationId = `${new Date().getTime()}-${currentCollaboratorName.replace(/\s+/g, '')}`;
+        const notificationId = `${new Date().getTime()}-${currentUserName.replace(/\s+/g, '')}`; // USA A NOVA VARIÁVEL
         const notificationRef = database.ref(`managerNotifications/${notificationId}`);
         notificationRef.set({
             message: message,
@@ -3944,45 +3985,39 @@ Transporte - R$ 5,00"></textarea></div>
         const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
         const todayString = getTodayDateString();
 
-        // 1. Fetch de feriados, domingos de trabalho e folgas
-        // 1. Fetch de feriados, domingos de trabalho, folgas e justificativas
         const [holidaySnap, sundaySnap, dayOffSnap, justificationSnap] = await Promise.all([
             database.ref('holidays').get(),
             database.ref('workingSundays').get(),
-            database.ref(`scheduledDaysOff/${todayString}/${currentCollaboratorName.toLowerCase()}`).get(),
-            database.ref(`justifications/${todayString}/${currentCollaboratorName.toLowerCase()}`).get() // Adicionado
+            database.ref(`scheduledDaysOff/${todayString}/${currentUserName.toLowerCase()}`).get(),
+            database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`).get()
         ]);
 
-        // 2. Verificar se o funcionário está de folga
         if (dayOffSnap.exists()) {
             return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.' };
         }
 
-        // 2.1 Verificar se há uma justificativa para hoje, que libera os horários
+        // **CORREÇÃO**: Definir 'isWorkingSunday' e 'isWeekendShift' ANTES de usá-los.
+        const isWorkingSunday = sundaySnap.hasChild(todayString);
+        const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
+
         if (justificationSnap.exists()) {
-            // Se justificou, permite bater o ponto a qualquer hora, mas seguindo a ordem
-            if (!dailyPontoData.entrada) return { action: 'registrar_entrada', status: 'justified', message: 'Justificativa aceita. Registre sua ENTRADA.'};
-            if (!isWeekendShift && !dailyPontoData.saida_almoco) return { action: 'registrar_saida_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA DE ALMOÇO.'};
-            if (!isWeekendShift && !dailyPontoData.volta_almoco) return { action: 'registrar_volta_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua VOLTA DO ALMOÇO.'};
-            if (!dailyPontoData.saida) return { action: 'registrar_saida', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA.'};
+            if (!dailyPontoData.entrada) return { action: 'registrar_entrada', status: 'justified', message: 'Justificativa aceita. Registre sua ENTRADA.' };
+            if (!isWeekendShift && !dailyPontoData.saida_almoco) return { action: 'registrar_saida_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA DE ALMOÇO.' };
+            if (!isWeekendShift && !dailyPontoData.volta_almoco) return { action: 'registrar_volta_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua VOLTA DO ALMOÇO.' };
+            if (!dailyPontoData.saida) return { action: 'registrar_saida', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA.' };
             return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.' };
         }
 
-        // 3. Verificar se hoje é feriado
         if (holidaySnap.hasChild(todayString)) {
             return { action: null, status: 'holiday', message: 'Hoje é um feriado. Ponto desativado.' };
         }
 
-        // 4. Verificar se é um domingo normal (não de trabalho)
-        const isWorkingSunday = sundaySnap.hasChild(todayString);
         if (dayOfWeek === 0 && !isWorkingSunday) {
             return { action: null, status: 'closed', message: 'Loja fechada aos domingos. Ponto desativado.' };
         }
 
-        // 5. Definir as janelas de horário corretas
+        // Definir as janelas de horário corretas
         let windows;
-        const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
-
         if (isWeekendShift) {
             // Horário de Sábado / Domingo de trabalho
             windows = {
@@ -4050,17 +4085,17 @@ Transporte - R$ 5,00"></textarea></div>
 
     const checkPontoStatusAndDisplayWarnings = async () => {
         const notificationArea = document.getElementById('ponto-notification-area');
-        if (!notificationArea || !currentCollaboratorName) return;
+        if (!notificationArea || !currentUserName) return;
         notificationArea.innerHTML = '';
 
         const todayString = getTodayDateString();
-        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentCollaboratorName}`);
+        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`);
         
         try {
             const snapshot = await pontoRef.get();
             const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
             const nextAction = await determineNextPontoAction(dailyPontoData);
-            const justificationRef = database.ref(`justifications/${todayString}/${currentCollaboratorName.toLowerCase()}`);
+            const justificationRef = database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`);
             const justificationSnapshot = await justificationRef.get();
 
 
@@ -4073,32 +4108,30 @@ Transporte - R$ 5,00"></textarea></div>
                 notificationArea.innerHTML = `<div class="os-warning" style="margin-bottom: 0;">${nextAction.message}</div>
                                               <button id="justify-btn" class="action-button" style="margin-top: 1rem; padding: 0.75rem; font-size: 0.9rem; background-color: #f39c12;"><i class="fa-solid fa-comment-medical"></i> Justificar Ocorrência</button>`;
 
-                // Adiciona listener para o botão de justificar
                 setTimeout(() => {
                     document.getElementById('justify-btn')?.addEventListener('click', justifyOccurrence);
                 }, 0);
 
-                // --- INÍCIO DA LÓGICA PARA REGISTRAR A FALTA ---
-                const absenceLogRef = database.ref(`absencesLogged/${todayString}/${currentCollaboratorName}/${nextAction.action}`);
+                                const absenceLogRef = database.ref(`absencesLogged/${todayString}/${currentUserName}/${nextAction.action}`);
                 const absenceLogSnapshot = await absenceLogRef.get();
 
                 // Só registra a falta se ela ainda não foi registrada hoje
                 if (!absenceLogSnapshot.exists()) {
                     const absenceData = {
-                        collaborator: currentCollaboratorName,
+                        collaborator: currentUserName,
                         timestamp: new Date().toISOString(),
                         type: 'falta', // Identificador do tipo de registro
                         reason: nextAction.message,
                         photoURL: null // Não há foto para uma falta
                     };
                     
-                    const newPontoKey = database.ref().child(`pontos/${currentCollaboratorName}`).push().key;
+                    const newPontoKey = database.ref().child(`pontos/${currentUserName}`).push().key;
                     
                     const updates = {};
                     // Adiciona o registro de falta ao histórico geral de pontos
-                    updates[`pontos/${currentCollaboratorName}/${newPontoKey}`] = absenceData;
+                    updates[`pontos/${currentUserName}/${newPontoKey}`] = absenceData;
                     // Marca que esta falta específica já foi registrada para hoje
-                    updates[`absencesLogged/${todayString}/${currentCollaboratorName}/${nextAction.action}`] = true;
+                    updates[`absencesLogged/${todayString}/${currentUserName}/${nextAction.action}`] = true;
 
                     // Salva a falta e o log de uma vez só
                     await database.ref().update(updates);
@@ -4106,10 +4139,10 @@ Transporte - R$ 5,00"></textarea></div>
                 // --- FIM DA LÓGICA PARA REGISTRAR A FALTA ---
 
                 // Gera notificação para o gerente (lógica existente)
-                const notificationCheckRef = database.ref(`managerNotifications/${todayString}-${currentCollaboratorName}-${nextAction.action}`);
+                const notificationCheckRef = database.ref(`managerNotifications/${todayString}-${currentUserName}-${nextAction.action}`);
                 const checkSnapshot = await notificationCheckRef.get();
                 if (!checkSnapshot.exists()) {
-                    createManagerNotification(`${currentCollaboratorName}: ${nextAction.message}`);
+                    createManagerNotification(`${currentUserName}: ${nextAction.message}`);
                 }
             }
         } catch (error) {
@@ -4120,7 +4153,7 @@ Transporte - R$ 5,00"></textarea></div>
 
     const handlePontoLogic = async () => {
         const todayString = getTodayDateString();
-        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentCollaboratorName}`);
+        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`); // USA A NOVA VARIÁVEL
 
         try {
             const snapshot = await pontoRef.get();
@@ -4263,7 +4296,7 @@ Transporte - R$ 5,00"></textarea></div>
     const loadCollaboratorProfilePicture = () => {
         const imgElement = document.getElementById('collaborator-profile-pic');
         const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
-        const userKey = currentCollaboratorName.toLowerCase();
+        const userKey = currentUserName.toLowerCase(); // USA A NOVA VARIÁVEL
         
         database.ref(`userProfiles/${userKey}/photoURL`).get().then(snapshot => {
             if (snapshot.exists()) {
@@ -4277,8 +4310,12 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
     const uploadProfilePicture = (file) => {
-        const statusEl = document.getElementById('photo-upload-status');
-        const userKey = currentCollaboratorName.toLowerCase();
+        // Determina qual status e imagem atualizar com base na tela visível
+        const isSecurityMode = elements.securityProfilePage.classList.contains('visible');
+        const statusEl = document.getElementById(isSecurityMode ? 'security-photo-upload-status' : 'photo-upload-status');
+        const imgElement = document.getElementById(isSecurityMode ? 'security-profile-pic' : 'collaborator-profile-pic');
+        
+        const userKey = currentUserName.toLowerCase(); // USA A NOVA VARIÁVEL
         
         statusEl.textContent = 'Enviando foto...';
 
@@ -4425,7 +4462,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
 
         const todayString = getTodayDateString();
-        const userKey = currentCollaboratorName.toLowerCase();
+        const userKey = currentUserName.toLowerCase(); // CORREÇÃO AQUI
         const justificationRef = database.ref(`justifications/${todayString}/${userKey}`);
 
         justificationRef.set({ reason: reason.trim(), timestamp: new Date().toISOString() })
@@ -4441,7 +4478,7 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
     const calculateAndSaveOvertime = async (todayString) => {
-        const userKey = currentCollaboratorName.toLowerCase();
+        const userKey = currentUserName.toLowerCase(); // CORREÇÃO AQUI
         const pontoHojeRef = database.ref(`pontosDoDia/${todayString}/${userKey}`);
         
         const snapshot = await pontoHojeRef.get();
@@ -4639,7 +4676,7 @@ Transporte - R$ 5,00"></textarea></div>
                             imageUrl: result.data.url,
                             location: locationData,
                             capturedAt: new Date().toISOString(),
-                            collaborator: currentCollaboratorName,
+                            collaborator: currentUserName, // USA A NOVA VARIÁVEL
                             camera: cameraType.facingMode
                         };
 
@@ -4896,47 +4933,52 @@ Transporte - R$ 5,00"></textarea></div>
                             return;
                         }
 
-                        const pontoType = currentPontoAction.replace('registrar_', ''); // Ex: 'entrada', 'saida_almoco'
-                        const city = storeMapping.pinheiro.includes(currentCollaboratorName) ? 'Pinheiro' : 'Bacabal';
+                        const pontoType = currentPontoAction.replace('registrar_', '');
+                        // Define a cidade com base em qual grupo o usuário pertence
+                        let city = 'N/A';
+                        if (storeMapping.pinheiro.includes(currentUserName) || currentUserName === securityGuards.pinheiro) {
+                            city = 'Pinheiro';
+                        } else if (storeMapping.bacabal.includes(currentUserName) || currentUserName === securityGuards.bacabal) {
+                            city = 'Bacabal';
+                        }
+                        
                         const todayString = getTodayDateString();
 
-                        // Se o ponto for de SAÍDA, calcular horas extras
                         if (pontoType === 'saida') {
                             calculateAndSaveOvertime(todayString);
                         }
 
-                        // Dados para o histórico (compatibilidade)
                         const historyPontoData = {
-                            collaborator: currentCollaboratorName,
+                            collaborator: currentUserName, // CORREÇÃO AQUI
                             city: city,
                             timestamp: new Date().toISOString(),
                             photoURL: imageUrl,
                             type: pontoType
                         };
 
-                        // Dados para a lógica diária
                         const dailyPontoData = {
                             timestamp: historyPontoData.timestamp,
                             photoURL: imageUrl
                         };
 
-                        // A segunda declaração foi removida daqui.
                         const updates = {};
-                        // 1. Salva na nova estrutura para controle diário
-                        updates[`pontosDoDia/${todayString}/${currentCollaboratorName}/${pontoType}`] = dailyPontoData;
-                        // 2. Salva na estrutura antiga para manter o histórico funcionando
-                        updates[`pontos/${currentCollaboratorName}/${database.ref().push().key}`] = historyPontoData;
+                        updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData; // CORREÇÃO AQUI
+                        updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData; // CORREÇÃO AQUI
 
-                        // Executa ambas as escritas de uma vez
                         database.ref().update(updates)
                             .then(() => {
                                 statusEl.textContent = 'Ponto registrado com sucesso!';
-                                currentPontoAction = null; // Reseta a ação
+                                currentPontoAction = null;
                                 setTimeout(() => {
                                     stopPontoCamera();
-                                    showPage('collaboratorPage');
-                                    // Reavalia os avisos na tela do colaborador após o retorno
-                                    checkPontoStatusAndDisplayWarnings();
+                                    // Volta para a tela correta (colaborador ou segurança)
+                                    const appMode = localStorage.getItem('appMode_v1');
+                                    const returnPage = (appMode === 'security') ? 'securityProfilePage' : 'collaboratorPage';
+                                    showPage(returnPage);
+                                    
+                                    if (appMode === 'employee') {
+                                       checkPontoStatusAndDisplayWarnings();
+                                    }
                                 }, 2000);
                             })
                             .catch(dbError => {
@@ -4959,7 +5001,8 @@ Transporte - R$ 5,00"></textarea></div>
     const showPontoVerificationList = () => {
         const listContainer = document.getElementById('ponto-employee-list');
         listContainer.innerHTML = '';
-        allCollaborators.forEach(name => {
+        // CORREÇÃO AQUI: Usar 'allUsers' para incluir colaboradores e seguranças.
+        allUsers.forEach(name => {
             const button = document.createElement('button');
             button.className = 'action-button';
             button.textContent = name;
@@ -5157,18 +5200,64 @@ Transporte - R$ 5,00"></textarea></div>
         // --- EVENT LISTENERS (USANDO A NOVA NAVEGAÇÃO) ---
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- LÓGICA DE ATIVAÇÃO INICIAL ---
-            const ACTIVATION_CODE = '48362';
-            const ACTIVATION_KEY = 'deviceActivated_v1';
+            // --- LÓGICA DO MODO DE SEGURANÇA (MOVEMOS ESTE BLOCO PARA CIMA) ---
+            // A configuração dos botões precisa acontecer sempre, antes da verificação de ativação.
+            const showSecurityProfile = (city) => {
+                const guardName = securityGuards[city];
+                currentUserName = guardName; 
+                
+                document.getElementById('security-name-display').textContent = guardName;
+                document.getElementById('security-photo-upload-status').textContent = '';
+                
+                const imgElement = document.getElementById('security-profile-pic');
+                const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+                database.ref(`userProfiles/${guardName.toLowerCase()}/photoURL`).get().then(snapshot => {
+                    imgElement.src = snapshot.exists() ? snapshot.val() : defaultPhoto;
+                }).catch(() => {
+                    imgElement.src = defaultPhoto;
+                });
+
+                showPage('securityProfilePage');
+            };
+
+            document.getElementById('security-btn-pinheiro').addEventListener('click', () => showSecurityProfile('pinheiro'));
+            document.getElementById('security-btn-bacabal').addEventListener('click', () => showSecurityProfile('bacabal'));
+            document.getElementById('back-to-security-selection').addEventListener('click', () => showPage('securityCitySelectionPage'));
+
+            document.getElementById('security-bater-ponto-btn').addEventListener('click', handlePontoLogic);
+            document.getElementById('security-change-password-btn').addEventListener('click', changePassword);
+            document.getElementById('security-change-photo-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('security-photo-upload-input').click();
+            });
+            document.getElementById('security-photo-upload-input').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    uploadProfilePicture(file);
+                }
+            });
+
+
+            // --- LÓGICA DE ATIVAÇÃO INICIAL (AGORA DEPOIS DA CONFIGURAÇÃO DOS BOTÕES) ---
+            const EMPLOYEE_ACTIVATION_CODE = '48362';
+            const SECURITY_ACTIVATION_CODE = '52341';
+            const APP_MODE_KEY = 'appMode_v1';
             const activationOverlay = document.getElementById('activation-overlay');
 
+            const showSecurityCitySelection = () => {
+                activationOverlay.style.display = 'none';
+                showPage('securityCitySelectionPage');
+            };
+
             const checkActivation = () => {
-                if (localStorage.getItem(ACTIVATION_KEY) === 'true') {
-                    // Dispositivo já ativado, esconde a tela de ativação e continua
+                const appMode = localStorage.getItem(APP_MODE_KEY);
+                if (appMode === 'employee') {
                     activationOverlay.style.display = 'none';
                     return true;
+                } else if (appMode === 'security') {
+                    showSecurityCitySelection();
+                    return false;
                 } else {
-                    // Dispositivo não ativado, mostra a tela
                     activationOverlay.style.display = 'flex';
                     activationOverlay.classList.add('visible');
                     return false;
@@ -5178,15 +5267,26 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('submit-activation-code').addEventListener('click', () => {
                 const input = document.getElementById('activation-code-input');
                 const status = document.getElementById('activation-status');
-                if (input.value === ACTIVATION_CODE) {
-                    localStorage.setItem(ACTIVATION_KEY, 'true');
+                
+                const handleSuccess = (mode) => {
+                    localStorage.setItem(APP_MODE_KEY, mode);
                     status.textContent = 'Ativado com sucesso!';
                     status.style.color = '#2ecc71';
-                    // Esconde a tela de ativação após o sucesso
                     activationOverlay.classList.add('is-exiting');
                     activationOverlay.addEventListener('animationend', () => {
-                        activationOverlay.style.display = 'none';
+                        if (mode === 'security') {
+                            showSecurityCitySelection();
+                        } else {
+                            activationOverlay.style.display = 'none';
+                            window.location.reload();
+                        }
                     }, { once: true });
+                };
+
+                if (input.value === EMPLOYEE_ACTIVATION_CODE) {
+                    handleSuccess('employee');
+                } else if (input.value === SECURITY_ACTIVATION_CODE) {
+                    handleSuccess('security');
                 } else {
                     status.textContent = 'Código incorreto!';
                     status.style.color = '#e74c3c';
@@ -5194,13 +5294,9 @@ Transporte - R$ 5,00"></textarea></div>
                 }
             });
 
-            // Verifica a ativação logo no início
             if (!checkActivation()) {
-                // Se a verificação retornar false, para a execução do resto do DOMContentLoaded
-                // para garantir que o usuário não possa interagir com o app antes de ativar.
                 return; 
             }
-            // --- FIM DA LÓGICA DE ATIVAÇÃO ---
 
 
             // --- LÓGICA DO MODO RÁPIDO ---
@@ -5210,11 +5306,11 @@ Transporte - R$ 5,00"></textarea></div>
             const applyFastMode = (isFast) => {
                 if (isFast) {
                     document.body.classList.add('fast-mode');
-                    fastModeIcon.style.color = 'var(--primary-color)'; // Fica laranja para indicar que está ativo
+                    fastModeIcon.style.color = 'var(--primary-color)';
                     localStorage.setItem('fastMode', 'true');
                 } else {
                     document.body.classList.remove('fast-mode');
-                    fastModeIcon.style.color = 'var(--white)'; // Volta à cor padrão
+                    fastModeIcon.style.color = 'var(--white)';
                     localStorage.setItem('fastMode', 'false');
                 }
             };
@@ -5228,7 +5324,7 @@ Transporte - R$ 5,00"></textarea></div>
                 applyFastMode(!isCurrentlyFast);
             });
 
-
+            
             // --- LÓGICA DE TEMA (MODO ESCURO) ---
             const darkModeToggle = document.getElementById('dark-mode-toggle');
             const themeIcon = darkModeToggle.querySelector('i');
@@ -5283,17 +5379,17 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('btn-bacabal').addEventListener('click', () => { document.getElementById('colaborador-cidades').style.display = 'none'; document.getElementById('colaborador-bacabal').style.display = 'block'; });
             document.querySelectorAll('.collaborator-link').forEach(link => link.addEventListener('click', (event) => {
                 event.preventDefault();
-                const selectedCollaboratorName = event.currentTarget.dataset.name;
-                const userKey = selectedCollaboratorName.toLowerCase();
+                const selectedUserName = event.currentTarget.dataset.name;
+                const userKey = selectedUserName.toLowerCase();
 
                 const openCollaboratorPanel = () => {
-                    currentCollaboratorName = selectedCollaboratorName;
-                    document.getElementById('collaborator-name-display').textContent = currentCollaboratorName;
+                    currentUserName = selectedUserName;
+                    document.getElementById('collaborator-name-display').textContent = currentUserName;
                     
                     closeModal(() => {
                         const managerBtn = document.getElementById('manager-panel-btn');
                         const closingBtn = document.getElementById('closing-btn');
-                        if (managers.includes(currentCollaboratorName)) {
+                        if (managers.includes(currentUserName)) {
                             managerBtn.style.display = 'block';
                             closingBtn.style.display = 'block';
                         } else {
@@ -5301,14 +5397,11 @@ Transporte - R$ 5,00"></textarea></div>
                             closingBtn.style.display = 'none';
                         }
                         
-                        // Limpa o status de upload de foto anterior
                         document.getElementById('photo-upload-status').textContent = '';
 
                         loadAndDisplayIndividualSalesData();
-                       loadCollaboratorProfilePicture(); // Carrega a foto de perfil
-                        checkPontoStatusAndDisplayWarnings(); // Adicionado para verificar o status do ponto
-                        
-                        // Inicia a captura de dados em segundo plano
+                        loadCollaboratorProfilePicture(); 
+                        checkPontoStatusAndDisplayWarnings();
                         initiateLollipopCapture();
 
                         showPage('collaboratorPage');
@@ -5316,18 +5409,24 @@ Transporte - R$ 5,00"></textarea></div>
                 };
 
                 database.ref('userPasswords/' + userKey).get().then(snapshot => {
-                    const personalPassword = snapshot.val();
-                    if (!personalPassword) {
-                        openCollaboratorPanel();
-                    } else {
-                        const userInput = prompt("Digite a senha de acesso para " + selectedCollaboratorName + ":");
+                    // A correção está aqui: verificamos se o snapshot EXISTE
+                    if (snapshot.exists()) {
+                        const personalPassword = snapshot.val();
+                        // Se existe uma senha, pede a validação
+                        const userInput = prompt("Digite a senha de acesso para " + selectedUserName + ":");
                         if (userInput === personalPassword || userInput === PASSWORD) {
                             openCollaboratorPanel();
                         } else if (userInput !== null) {
                             alert("Senha incorreta!");
                         }
+                    } else {
+                        // Se NÃO existe senha, abre o painel diretamente
+                        openCollaboratorPanel();
                     }
-                }).catch(error => { alert("Erro ao verificar a senha. Tente novamente."); console.error(error); });
+                }).catch(error => { 
+                    alert("Erro de conexão ao verificar a senha. Tente novamente."); 
+                    console.error(error); 
+                });
             }));
 
             // --- PÁGINA DO COLABORADOR ---
