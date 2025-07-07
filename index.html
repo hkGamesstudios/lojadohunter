@@ -2098,20 +2098,11 @@ P3: R$ 299,00"></textarea>
 
             <!-- Formulário Pinheiro -->
             <div id="closing-form-pinheiro" style="display: none; padding: 0 1rem;">
-                <h3 class="modal-title">Fechamento - Pinheiro</h3>
-                <div class="input-group"><label for="closing-venda-beatriz">VENDA DE BEATRIZ 📈</label><input type="number" id="closing-venda-beatriz" class="data-input"></div>
-                <div class="input-group"><label for="closing-cartao-beatriz">CARTOES BEATRIZ (DIARIO) 💳</label><input type="number" id="closing-cartao-beatriz" class="data-input"></div>
-                <div class="input-group"><label for="closing-venda-marcio">VENDA DE MARCIO 📈</label><input type="number" id="closing-venda-marcio" class="data-input"></div>
-                <div class="input-group"><label for="closing-cartao-marcio">CARTOES MARCIO (DIARIO) 💳</label><input type="number" id="closing-cartao-marcio" class="data-input"></div>
-                <div class="input-group"><label for="closing-venda-eliseu">VENDA DE ELISEU 📈</label><input type="number" id="closing-venda-eliseu" class="data-input"></div>
-                <div class="input-group"><label for="closing-cartao-eliseu">CARTOES ELISEU (DIARIO) 💳</label><input type="number" id="closing-cartao-eliseu" class="data-input"></div>
-                <div class="meta-group-title">Geral</div>
-                <div class="input-group"><label for="closing-seguro-beatriz">SEGURO DE BEATRIZ (GERAL) 📝</label><input type="number" id="closing-seguro-beatriz" class="data-input"></div>
-                <div class="input-group"><label for="closing-seguro-marcio">SEGURO DE MARCIO (GERAL) 📝</label><input type="number" id="closing-seguro-marcio" class="data-input"></div>
-                <div class="input-group"><label for="closing-seguro-eliseu">SEGURO DE ELISEU (GERAL) 📝</label><input type="number" id="closing-seguro-eliseu" class="data-input"></div>
-                <div class="input-group"><label for="closing-p1p2-beatriz">PN/PP DE BEATRIZ 🔱</label><input type="number" id="closing-p1p2-beatriz" class="data-input"></div>
-                <div class="input-group"><label for="closing-p1p2-marcio">PN/PP DE MARCIO 🔱</label><input type="number" id="closing-p1p2-marcio" class="data-input"></div>
-                <div class="input-group"><label for="closing-p1p2-eliseu">PN/PP DE ELISEU 🔱</label><input type="number" id="closing-p1p2-eliseu" class="data-input"></div>
+                <!-- Formulário de Fechamento será gerado pelo JavaScript -->
+            </div>
+            
+            <div id="closing-form-bacabal" style="display: none; padding: 0 1rem;">
+                <!-- Formulário de Fechamento será gerado pelo JavaScript -->
             </div>
             
             <!-- Formulário Bacabal -->
@@ -2495,7 +2486,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.3.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.3.6'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3191,8 +3182,8 @@ Transporte - R$ 5,00"></textarea></div>
                 container.innerHTML += `
                     <div class="sales-data-card">
                         <h4>${employeeName}</h4>
-                        <p>📈 VENDAS: R$ ${data.vendas || '0.00'}</p>
-                        <p>🔱 P1/P2: R$ ${data.p1p2 || '0.00'}</p>
+                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
+                        <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
                         <p>🔧 SEGURO: ${data.seguro || '0'}</p>
                         <p>💳 CARTÃO: ${data.cartao || '0'}</p>
                     </div>
@@ -3240,11 +3231,11 @@ Transporte - R$ 5,00"></textarea></div>
                 const key = name.toLowerCase();
                 const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 };
                 
-                const newVenda = parseFloat(document.getElementById(`closing-venda-${key}`).value) || 0;
+                const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
                 totalVendasDoFechamento += newVenda;
-                const newCartao = parseFloat(document.getElementById(`closing-cartao-${key}`).value) || 0;
-                const newSeguro = parseFloat(document.getElementById(`closing-seguro-${key}`).value) || 0;
-                const newP1P2 = parseFloat(document.getElementById(`closing-p1p2-${key}`).value) || 0;
+                const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
+                const newSeguro = parseInt(document.getElementById(`closing-seguro-${key}`).value, 10) || 0;
+                const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
 
                 existingSales[key] = {
                     vendas: (parseFloat(currentData.vendas) || 0) + newVenda,
@@ -4997,12 +4988,12 @@ Transporte - R$ 5,00"></textarea></div>
         const valorParcela = valorFinalComJuros / parcelas;
 
         // Os totais são calculados com base no novo valor da parcela.
-        const totalPrazo = valorParcela * parcelas; // Isso será igual a valorFinalComJuros
-        const totalJuros = totalPrazo - valorFinanciado;
-        const totalFinal = totalPrazo + entrada;
+        const valorTotalFinanciadoComJuros = valorParcela * parcelas;
+        const totalJuros = valorTotalFinanciadoComJuros - valorFinanciado;
+        const totalAPagar = valorTotalFinanciadoComJuros + entrada; // Valor total que o cliente desembolsará
 
         document.getElementById('result-parcela').textContent = formatBRL(valorParcela);
-        document.getElementById('result-total-prazo').textContent = formatBRL(totalFinal);
+        document.getElementById('result-total-prazo').textContent = formatBRL(totalAPagar);
         document.getElementById('result-juros').textContent = formatBRL(totalJuros);
     };
 
@@ -5302,17 +5293,33 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('submit-recibo-btn').addEventListener('click', sendReciboEmail);
             document.getElementById('submit-quiz-btn').addEventListener('click', sendQuizEmail);
 
-            // --- FECHAMENTO (seleção de loja) ---
+            // --- FECHAMENTO (seleção de loja e geração de formulário) ---
             const showClosingForm = (store) => {
+                const formContainerId = `closing-form-${store}`;
+                const formContainer = document.getElementById(formContainerId);
+                const employeesForStore = storeMapping[store];
+
+                let formHtml = `<h3 class="modal-title">Fechamento - ${store.charAt(0).toUpperCase() + store.slice(1)}</h3>`;
+
+                employeesForStore.forEach(name => {
+                    const key = name.toLowerCase();
+                    formHtml += `
+                        <div class="employee-meta-card" style="margin-bottom: 2rem;">
+                            <h4>${name}</h4>
+                            <div class="input-group"><label for="closing-venda-${key}">VENDA 📈</label><input type="text" inputmode="decimal" id="closing-venda-${key}" class="data-input" placeholder="0,00"></div>
+                            <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
+                            <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="number" id="closing-seguro-${key}" class="data-input" placeholder="0"></div>
+                            <div class="input-group"><label for="closing-cartao-${key}">CARTÕES (DIÁRIO) 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
+                        </div>
+                    `;
+                });
+                
+                formContainer.innerHTML = formHtml;
+                
                 document.getElementById('closing-store-selection').style.display = 'none';
                 document.getElementById('closing-submit-container').style.display = 'block';
-                if (store === 'pinheiro') {
-                    document.getElementById('closing-form-pinheiro').style.display = 'block';
-                    document.getElementById('closing-form-bacabal').style.display = 'none';
-                } else {
-                    document.getElementById('closing-form-pinheiro').style.display = 'none';
-                    document.getElementById('closing-form-bacabal').style.display = 'block';
-                }
+                document.getElementById('closing-form-pinheiro').style.display = store === 'pinheiro' ? 'block' : 'none';
+                document.getElementById('closing-form-bacabal').style.display = store === 'bacabal' ? 'block' : 'none';
             };
             document.getElementById('closing-btn-pinheiro').addEventListener('click', () => showClosingForm('pinheiro'));
             document.getElementById('closing-btn-bacabal').addEventListener('click', () => showClosingForm('bacabal'));
