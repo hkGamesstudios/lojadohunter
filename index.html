@@ -944,7 +944,7 @@
         /* --- Estilos do Dashboard --- */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
             width: 100%;
             max-width: 400px;
@@ -1868,11 +1868,6 @@
             <!-- KPIs principais -->
             <div class="dashboard-grid">
                 <div class="kpi-card"><span class="kpi-title">VENDAS TOTAIS</span><span id="total-vendas-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">VALOR DO MÊS</span><span id="mes-total-kpi" class="kpi-value">---</span></div>
-            </div>
-
-             <!-- KPIs por Loja -->
-            <div class="dashboard-grid">
                 <div class="kpi-card"><span class="kpi-title">VENDAS PINHEIRO</span><span id="pinheiro-vendas-kpi" class="kpi-value">---</span></div>
                 <div class="kpi-card"><span class="kpi-title">VENDAS BACABAL</span><span id="bacabal-vendas-kpi" class="kpi-value">---</span></div>
             </div>
@@ -2507,7 +2502,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.4.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.4.2'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2956,8 +2951,6 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
     const loadDashboardData = () => {
-        // As linhas que causavam o erro foram removidas daqui.
-        // O app agora usará os '---' nos campos como indicador de carregamento.
         Promise.all([
             database.ref('salesData').get(),
             database.ref('monthlySales').get()
@@ -2987,15 +2980,11 @@ Transporte - R$ 5,00"></textarea></div>
 
             const melhorLoja = vendasPinheiro > vendasBacabal ? 'Pinheiro' : 'Bacabal';
 
-            // --- Cálculo do Valor do Mês Atual ---
-            const now = new Date();
-            const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-            const valorDoMes = monthlyData[currentMonthKey]?.totalVendas || 0;
+            // A lógica do 'Valor do Mês' foi removida.
 
             // --- Atualização do DOM (KPIs) ---
             const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('total-vendas-kpi').textContent = formatCurrency(totalVendas);
-            document.getElementById('mes-total-kpi').textContent = formatCurrency(valorDoMes);
             document.getElementById('pinheiro-vendas-kpi').textContent = formatCurrency(vendasPinheiro);
             document.getElementById('bacabal-vendas-kpi').textContent = formatCurrency(vendasBacabal);
             document.getElementById('melhor-loja-kpi').textContent = melhorLoja;
@@ -3006,46 +2995,8 @@ Transporte - R$ 5,00"></textarea></div>
             renderEmployeeChart(salesData);
             renderMonthlySalesList(monthlyData);
             renderMonthlySalesChart(monthlyData);
-
-            // --- ADIÇÃO: LÓGICA PARA EDITAR O VALOR DO MÊS ---
-            const mesTotalKpiElement = document.getElementById('mes-total-kpi');
-            mesTotalKpiElement.style.cursor = 'pointer';
-            mesTotalKpiElement.style.textDecoration = 'underline dashed rgba(255, 255, 255, 0.5)';
-            mesTotalKpiElement.title = 'Clique para editar o valor do mês';
-
-            mesTotalKpiElement.addEventListener('click', () => {
-                const currentValueRaw = parseFromBRLInput(mesTotalKpiElement.textContent);
-                const currentValueFormatted = formatToBRLInput(currentValueRaw);
-
-                const newTotalMesFormatted = prompt("Digite o novo valor total para o mês:", currentValueFormatted);
-
-                if (newTotalMesFormatted === null) {
-                    return; // Usuário cancelou
-                }
-
-                const newTotalMes = parseFromBRLInput(newTotalMesFormatted);
-                if (isNaN(newTotalMes)) {
-                    alert("Valor inválido. Por favor, insira um número.");
-                    return;
-                }
-                
-                const dbPath = `monthlySales/${currentMonthKey}/totalVendas`;
-                
-                database.ref(dbPath).set(newTotalMes)
-                    .then(() => {
-                        mesTotalKpiElement.textContent = formatBRL(newTotalMes);
-                        alert("Valor do mês atualizado com sucesso!");
-                        // Recarrega os gráficos que dependem desse dado para refletir a mudança
-                        monthlyData[currentMonthKey] = { totalVendas: newTotalMes };
-                        renderMonthlySalesChart(monthlyData);
-                        renderMonthlySalesList(monthlyData);
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao atualizar valor do mês:", error);
-                        alert("Ocorreu um erro ao salvar a alteração.");
-                    });
-            });
-
+            
+            // A lógica de edição do 'Valor do Mês' foi removida.
         });
     };
 
