@@ -1634,7 +1634,7 @@
                         <span id="result-parcela">R$ 0,00</span>
                     </div>
                     <div class="result-item">
-                        <span>Total a Prazo</span>
+                        <span>Total a Prazo (Restante)</span>
                         <span id="result-total-prazo">R$ 0,00</span>
                     </div>
                     <div class="result-item">
@@ -2486,7 +2486,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.3.6'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.3.7'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2699,10 +2699,13 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
     const parseFromBRLInput = (value) => {
-      if (!value || typeof value !== 'string') return 0;
-      const num = parseFloat(value.replace(/\./g, '').replace(',', '.'));
-      return isNaN(num) ? 0 : num;
-    };
+  if (!value || typeof value !== 'string') return 0;
+  // Ex: "1.234,56" -> "1234,56" -> "1234.56" -> 1234.56
+  const num = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+  return isNaN(num) ? 0 : num;
+};
+
+
 
 
     // --- DEMAIS FUNÇÕES (SEM ALTERAÇÃO NA LÓGICA INTERNA) ---
@@ -3226,6 +3229,7 @@ Transporte - R$ 5,00"></textarea></div>
             const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
             let totalVendasDoFechamento = 0;
+            let totalP1P2ParaGerente = 0; // Nova variável para acumular o P1/P2 da equipe
 
             employeesForStore.forEach(name => {
                 const key = name.toLowerCase();
@@ -3243,7 +3247,18 @@ Transporte - R$ 5,00"></textarea></div>
                     seguro: (parseFloat(currentData.seguro) || 0) + newSeguro,
                     cartao: (parseFloat(currentData.cartao) || 0) + newCartao,
                 };
+
+                // Acumula o valor de P1/P2 para a gerente
+                totalP1P2ParaGerente += newP1P2;
             });
+
+            // Identifica a gerente da loja e atualiza seu saldo P1/P2
+            const gerenteDaLoja = managers.find(manager => employeesForStore.includes(manager));
+            if (gerenteDaLoja) {
+                const gerenteKey = gerenteDaLoja.toLowerCase();
+                const gerenteData = existingSales[gerenteKey] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 };
+                existingSales[gerenteKey].p1p2 = (parseFloat(gerenteData.p1p2) || 0) + totalP1P2ParaGerente;
+            }
             
             // Atualiza o total do mês atual
             monthlyTotalVendas += totalVendasDoFechamento;
@@ -4990,10 +5005,11 @@ Transporte - R$ 5,00"></textarea></div>
         // Os totais são calculados com base no novo valor da parcela.
         const valorTotalFinanciadoComJuros = valorParcela * parcelas;
         const totalJuros = valorTotalFinanciadoComJuros - valorFinanciado;
-        const totalAPagar = valorTotalFinanciadoComJuros + entrada; // Valor total que o cliente desembolsará
+        // O "Total a Prazo" agora representa apenas o que falta pagar (o valor financiado com juros).
+        const totalAPrazo = valorTotalFinanciadoComJuros; 
 
         document.getElementById('result-parcela').textContent = formatBRL(valorParcela);
-        document.getElementById('result-total-prazo').textContent = formatBRL(totalAPagar);
+        document.getElementById('result-total-prazo').textContent = formatBRL(totalAPrazo);
         document.getElementById('result-juros').textContent = formatBRL(totalJuros);
     };
 
@@ -5309,7 +5325,7 @@ Transporte - R$ 5,00"></textarea></div>
                             <div class="input-group"><label for="closing-venda-${key}">VENDA 📈</label><input type="text" inputmode="decimal" id="closing-venda-${key}" class="data-input" placeholder="0,00"></div>
                             <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
                             <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="number" id="closing-seguro-${key}" class="data-input" placeholder="0"></div>
-                            <div class="input-group"><label for="closing-cartao-${key}">CARTÕES (DIÁRIO) 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
+                            <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
                         </div>
                     `;
                 });
