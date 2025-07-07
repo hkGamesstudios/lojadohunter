@@ -1899,10 +1899,6 @@
                     <h4>Vendas Mensais (Histórico)</h4>
                     <canvas id="monthly-sales-chart"></canvas>
                 </div>
-                 <div id="monthly-sales-list-container" class="chart-container">
-                    <h4>Lista de Vendas por Mês</h4>
-                    <!-- JS vai popular aqui -->
-                </div>
             </div>
 
             <!-- Seção de Gráficos de Vendas Atuais -->
@@ -2517,7 +2513,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.4.3'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.4.4'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2973,18 +2969,12 @@ Transporte - R$ 5,00"></textarea></div>
             const salesData = salesSnapshot.exists() ? salesSnapshot.val() : {};
             const monthlyData = monthlySnapshot.exists() ? monthlySnapshot.val() : {};
             
-            // --- Cálculos de Vendas Gerais e por Loja ---
+            // --- Cálculos de Vendas Gerais e por Loja (inclui todos) ---
             let totalVendas = 0, vendasPinheiro = 0, vendasBacabal = 0;
-            let melhorVendedor = { nome: 'N/A', vendas: 0 };
-
             allCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const venda = parseFloat(salesData[key]?.vendas || 0);
                 totalVendas += venda;
-
-                if (venda > melhorVendedor.vendas) {
-                    melhorVendedor = { nome: name, vendas: venda };
-                }
 
                 if (storeMapping.pinheiro.includes(name)) {
                     vendasPinheiro += venda;
@@ -2993,9 +2983,19 @@ Transporte - R$ 5,00"></textarea></div>
                 }
             });
 
-            const melhorLoja = vendasPinheiro > vendasBacabal ? 'Pinheiro' : 'Bacabal';
+            // --- Cálculo do Melhor VENDEDOR (exclui gerentes) ---
+            let melhorVendedor = { nome: 'N/A', vendas: 0 };
+            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
 
-            // A lógica do 'Valor do Mês' foi removida.
+            nonManagerCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const venda = parseFloat(salesData[key]?.vendas || 0);
+                if (venda > melhorVendedor.vendas) {
+                    melhorVendedor = { nome: name, vendas: venda };
+                }
+            });
+
+            const melhorLoja = vendasPinheiro > vendasBacabal ? 'Pinheiro' : 'Bacabal';
 
             // --- Atualização do DOM (KPIs) ---
             const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -3008,30 +3008,11 @@ Transporte - R$ 5,00"></textarea></div>
             // --- Renderização dos Gráficos e Listas ---
             renderStoreChart(vendasPinheiro, vendasBacabal);
             renderEmployeeChart(salesData);
-            renderMonthlySalesList(monthlyData);
+            // A chamada para renderMonthlySalesList() foi removida daqui
             renderMonthlySalesChart(monthlyData);
-            
-            // A lógica de edição do 'Valor do Mês' foi removida.
         });
     };
 
-    const renderMonthlySalesList = (monthlyData) => {
-        const container = document.getElementById('monthly-sales-list-container');
-        // Mantém o título e limpa só a lista
-        container.innerHTML = '<h4>Lista de Vendas por Mês</h4>';
-
-        const sortedMonths = Object.keys(monthlyData).sort().reverse(); // Mais recente primeiro
-        if (sortedMonths.length === 0) {
-            container.innerHTML += '<p>Nenhum histórico mensal encontrado.</p>';
-            return;
-        }
-
-        sortedMonths.forEach(monthKey => {
-            const value = monthlyData[monthKey].totalVendas;
-            const formattedValue = value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            container.innerHTML += `<p>${monthKey}: <strong>${formattedValue}</strong></p>`;
-        });
-    };
 
     const renderMonthlySalesChart = (monthlyData) => {
         const ctx = document.getElementById('monthly-sales-chart').getContext('2d');
