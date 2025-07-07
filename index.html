@@ -17,6 +17,30 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* --- MODO RÁPIDO (SEM ANIMAÇÕES) --- */
+        .fast-mode .modal-content,
+        .fast-mode .brand-button, 
+        .fast-mode .tool-item, 
+        .fast-mode .device-card, 
+        .fast-mode .modal-btn, 
+        .fast-mode .action-button, 
+        .fast-mode .employee-meta-card {
+            animation: none !important;
+            opacity: 1 !important; /* Garante que os itens fiquem visíveis imediatamente */
+        }
+        
+        /* Remove apenas transições de elementos específicos para não quebrar a lógica de página */
+        .fast-mode .brand-button:hover,
+        .fast-mode .tool-item:hover,
+        .fast-mode .modal-btn:hover,
+        .fast-mode .action-button:hover,
+        .fast-mode #collaborator-profile-pic:hover,
+        .fast-mode .ponto-history-photo:hover,
+        .fast-mode .data-input {
+            transition: none !important;
+        }
+
+
         /* CSS Reset e Variáveis de Cor */
         :root {
             --primary-color: #FF6B00; /* Laranja vibrante */
@@ -125,11 +149,13 @@
             background: linear-gradient(160deg, #372b62 0%, #453880 30%, #2980b9 100%);
             color: var(--white);
             min-height: 100vh;
+            overflow-x: hidden; /* Impede a rolagem horizontal */
         }
 
         /* --- Estrutura Principal (Simula o Celular no PC) --- */
         .mobile-container {
             max-width: 450px;
+            width: 100%; /* Garante que o container ocupe a largura disponível */
             margin: 0 auto;
             background-color: transparent; /* O fundo agora é o do body */
         }
@@ -1420,7 +1446,7 @@
                 LOJA DO HUNTER
             </div>
             <nav class="header-icons">
-                <a href="#" id="search-icon-btn"><i class="fa-solid fa-search"></i></a>
+                <a href="#" id="fast-mode-toggle"><i class="fa-solid fa-person-running"></i></a>
                 <a href="#" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></a>
             </nav>
         </header>
@@ -2427,7 +2453,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.3.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.3.1'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -5059,6 +5085,32 @@ Transporte - R$ 5,00"></textarea></div>
             // --- FIM DA LÓGICA DE ATIVAÇÃO ---
 
 
+            // --- LÓGICA DO MODO RÁPIDO ---
+            const fastModeToggle = document.getElementById('fast-mode-toggle');
+            const fastModeIcon = fastModeToggle.querySelector('i');
+
+            const applyFastMode = (isFast) => {
+                if (isFast) {
+                    document.body.classList.add('fast-mode');
+                    fastModeIcon.style.color = 'var(--primary-color)'; // Fica laranja para indicar que está ativo
+                    localStorage.setItem('fastMode', 'true');
+                } else {
+                    document.body.classList.remove('fast-mode');
+                    fastModeIcon.style.color = 'var(--white)'; // Volta à cor padrão
+                    localStorage.setItem('fastMode', 'false');
+                }
+            };
+
+            const savedFastMode = localStorage.getItem('fastMode') === 'true';
+            applyFastMode(savedFastMode);
+
+            fastModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isCurrentlyFast = document.body.classList.contains('fast-mode');
+                applyFastMode(!isCurrentlyFast);
+            });
+
+
             // --- LÓGICA DE TEMA (MODO ESCURO) ---
             const darkModeToggle = document.getElementById('dark-mode-toggle');
             const themeIcon = darkModeToggle.querySelector('i');
@@ -5086,77 +5138,7 @@ Transporte - R$ 5,00"></textarea></div>
                 applyTheme(currentTheme);
             });
 
-            // --- LÓGICA DE PESQUISA ---
-            const searchIconBtn = document.getElementById('search-icon-btn');
-            const searchOverlay = document.getElementById('search-overlay');
-            const searchInput = document.getElementById('search-input');
-            const searchResultsContainer = document.getElementById('search-results-container');
-            const searchCloseBtn = document.getElementById('search-close-btn');
-            const searchDataSource = [
-                { name: 'Hunter Card', keywords: 'cartao, brasilcard', targetId: null, url: 'https://www.brasilcard.net/bca/lojista/login?f=login_lojista?b=m' },
-                { name: 'Colaborador', keywords: 'vendas, metas, funcionario', targetId: 'open-colaborador-modal' },
-                { name: 'Bater Ponto', keywords: 'ponto, camera, registro', targetId: 'bater-ponto-btn' },
-                { name: 'Verificar Ponto', keywords: 'gs, ponto, historico', targetId: 'verificar-ponto-btn' },
-                { name: 'Previsão de Entrega', keywords: 'data, prazo, entrega', targetId: 'previsao-btn' },
-                { name: 'Assistência Técnica (OS)', keywords: 'os, concerto, garantia', targetId: 'open-os-modal' },
-                { name: 'Suporte', keywords: 'ajuda, contato, brasilcard, paymobi', targetId: 'open-suporte-modal' },
-                { name: 'Solicitar Estoque', keywords: 'pedir, produto, celular', targetId: 'open-request-stock-page' },
-                { name: 'Quiz de Feedback', keywords: 'clima, pesquisa, feedback', targetId: 'open-quiz-page' },
-                { name: 'Recibos de Gastos', keywords: 'gasto, despesa', targetId: 'open-recibos-page' },
-                { name: 'gs', keywords: 'dashboard, painel, adm', targetId: 'open-gs-page' },
-                { name: 'Enviar Dispositivo', keywords: 'cadastrar, novo, aparelho', targetId: 'open-send-device-page' },
-                { name: 'MT (Mostruário)', keywords: 'mostruario, vitrine', targetId: 'open-mt-display-page' },
-                { name: 'Calculadora de Crediário', keywords: 'juros, parcelamento', targetId: 'open-crediario-calculator' },
-                { name: 'Calculadora para Site', keywords: 'website, sistema', targetId: 'open-site-calculator' },
-                { name: 'Calculadora de Loja', keywords: 'seguro, parcelamento', targetId: 'open-loja-calculator' }
-            ];
-            const performSearch = () => {
-                const query = searchInput.value.toLowerCase();
-                searchResultsContainer.innerHTML = '';
-                if (query.length < 2) return;
-                const results = searchDataSource.filter(item =>
-                    item.name.toLowerCase().includes(query) ||
-                    item.keywords.toLowerCase().includes(query)
-                );
-                results.forEach(item => {
-                    const resultElement = document.createElement('div');
-                    resultElement.className = 'tool-item search-result-item';
-                    resultElement.innerHTML = `<div class="tool-icon-wrapper"><i class="fa-solid fa-star"></i></div><span>${item.name}</span>`;
-                    resultElement.addEventListener('click', () => {
-                        closeSearch();
-                        setTimeout(() => {
-                            // A lógica de clique aqui é mais complexa porque "Bater Ponto" e "Verificar Ponto"
-                            // dependem de estar em uma página específica ou de um login.
-                            // A forma mais segura é simular o clique no botão real, se ele existir.
-                            const targetButton = document.getElementById(item.targetId);
-                            if (targetButton) {
-                                targetButton.click();
-                            } else if (item.url) {
-                                window.open(item.url, '_blank');
-                            }
-                        }, 400);
-                    });
-                    searchResultsContainer.appendChild(resultElement);
-                });
-            };
-            const openSearch = () => {
-                searchInput.value = '';
-                searchResultsContainer.innerHTML = '';
-                searchOverlay.style.display = 'flex';
-                requestAnimationFrame(() => searchOverlay.classList.add('visible'));
-                setTimeout(() => searchInput.focus(), 100);
-            };
-            const closeSearch = () => {
-                searchOverlay.classList.remove('visible');
-                searchOverlay.classList.add('is-exiting');
-                searchOverlay.addEventListener('animationend', () => {
-                    searchOverlay.style.display = 'none';
-                    searchOverlay.classList.remove('is-exiting');
-                }, { once: true });
-            };
-            searchIconBtn.addEventListener('click', (e) => { e.preventDefault(); openSearch(); });
-            searchCloseBtn.addEventListener('click', closeSearch);
-            searchInput.addEventListener('input', performSearch);
+            
 
             // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
             document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
