@@ -1380,14 +1380,24 @@
             animation: modalContentEnter 0.4s var(--ease-out-back);
         }
 
-        /* Estilo para a Exibição da Versão */
+        /* Estilo para a Exibição da Versão Dourada (sem pulsação) */
         #app-version-display {
             text-align: center;
-            padding: 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.6);
-            width: 100%;
+            padding: 1.5rem 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            
+            /* Efeito de texto em gradiente dourado */
+            background: linear-gradient(45deg, #f0c72c, #ffd700, #e6b400);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-fill-color: transparent;
+
+            /* Sombra suave para manter o efeito de brilho, sem animação */
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
         }
 
         /* Estilos para a página Lollipop */
@@ -2850,10 +2860,22 @@ Transporte - R$ 5,00"></textarea></div>
                 const key = name.toLowerCase();
                 const metasData = allMetas[key] || {};
                 
+                // Campo extra para a meta da loja, que só aparece para gerentes
+                let managerMetaField = '';
+                if (managers.includes(name)) {
+                    managerMetaField = `
+                        <div class="input-group" style="background-color: rgba(255,107,0,0.1); padding: 0.5rem; border-radius: 8px;">
+                           <label for="metaLoja-${key}" style="font-weight: 700; color: #FF6B00;">🎯 META DA LOJA (R$)</label>
+                           <input type="text" id="metaLoja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaLoja)}">
+                        </div>
+                    `;
+                }
+                
                 // Cards para Metas e Premiações por funcionário
                 container.innerHTML += `
                     <div class="employee-meta-card">
                         <h4>Metas e Prêmios: ${name}</h4>
+                        ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
                         <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
                         <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
@@ -2874,7 +2896,7 @@ Transporte - R$ 5,00"></textarea></div>
 
         allCollaborators.forEach(name => {
             const key = name.toLowerCase();
-            metasDataToSave[key] = {
+            const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
                 seguro: document.getElementById(`seguro-${key}`).value,
                 p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
@@ -2883,6 +2905,16 @@ Transporte - R$ 5,00"></textarea></div>
                 premioSeguro: parseFromBRLInput(document.getElementById(`premio-seguro-${key}`).value),
                 premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
             };
+
+            // Se for gerente, salva também a meta da loja
+            if (managers.includes(name)) {
+                const metaLojaInput = document.getElementById(`metaLoja-${key}`);
+                if (metaLojaInput) {
+                    data.metaLoja = parseFromBRLInput(metaLojaInput.value);
+                }
+            }
+            
+            metasDataToSave[key] = data;
         });
 
         database.ref('metas').set(metasDataToSave).then(() => {
@@ -3212,13 +3244,12 @@ Transporte - R$ 5,00"></textarea></div>
         
         const isManager = managers.includes(currentUserName);
 
+        // Se o usuário logado for um gerente, faz a soma dos dados da loja para exibição.
         if (isManager) {
-            let storeEmployees = [];
-            if (storeMapping.pinheiro.includes(currentUserName)) {
-                storeEmployees = storeMapping.pinheiro;
-            } else if (storeMapping.bacabal.includes(currentUserName)) {
-                storeEmployees = storeMapping.bacabal;
-            }
+            // Define qual a lista de funcionários da loja da gerente
+            const storeEmployees = storeMapping.pinheiro.includes(currentUserName) 
+                ? storeMapping.pinheiro 
+                : storeMapping.bacabal;
 
             database.ref('salesData').get().then(snapshot => {
                 if (!snapshot.exists()) {
@@ -3227,12 +3258,13 @@ Transporte - R$ 5,00"></textarea></div>
                 }
                 const allSales = snapshot.val();
                 
-                // Soma os totais de TODOS os campos para a loja inteira
+                // Variáveis para somar os totais da loja inteira
                 let totalVendasDaLoja = 0;
                 let totalP1P2daLoja = 0;
                 let totalSeguroDaLoja = 0;
                 let totalCartaoDaLoja = 0;
 
+                // Itera sobre cada funcionário da loja para somar seus valores
                 storeEmployees.forEach(employeeName => {
                     const employeeKey = employeeName.toLowerCase();
                     const employeeData = allSales[employeeKey] || {};
@@ -3242,7 +3274,7 @@ Transporte - R$ 5,00"></textarea></div>
                     totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
                 });
 
-                // Exibe os dados somados da loja inteira
+                // Exibe o card com os dados somados da loja
                 container.innerHTML = `
                     <div class="sales-data-card">
                         <h4>Resultados Atuais (Loja)</h4>
@@ -3254,7 +3286,7 @@ Transporte - R$ 5,00"></textarea></div>
                 `;
             });
         } else {
-            // Se não for gerente, busca apenas os dados individuais
+            // Se não for gerente, busca e exibe apenas os dados individuais do colaborador.
             database.ref(`salesData/${userKey}`).get().then(snapshot => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
@@ -3279,49 +3311,60 @@ Transporte - R$ 5,00"></textarea></div>
         container.innerHTML = '<p style="text-align:center;">Carregando dados da equipe...</p>';
         showPage('managerSalesPanelPage');
 
-        const managerName = currentUserName; // USA A NOVA VARIÁVEL
-        let storeEmployees = [];
-        if (storeMapping.pinheiro.includes(managerName)) {
-            storeEmployees = storeMapping.pinheiro;
-        } else if (storeMapping.bacabal.includes(managerName)) {
-            storeEmployees = storeMapping.bacabal;
-        }
+        const managerName = currentUserName;
+        const storeEmployees = storeMapping.pinheiro.includes(managerName)
+            ? storeMapping.pinheiro
+            : storeMapping.bacabal;
 
         database.ref('salesData').get().then(snapshot => {
             container.innerHTML = ''; // Limpa o "carregando"
-            const allSales = snapshot.exists() ? snapshot.val() : {};
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p>Nenhum dado de venda encontrado para a equipe.</p>';
+                return;
+            }
+            const allSales = snapshot.val();
             
-            // 1. Calcular os totais da equipe da loja
-            let totalP1P2daLoja = 0;
-            let totalSeguroDaLoja = 0;
-            let totalCartaoDaLoja = 0;
+            // --- CÁLCULO DOS TOTAIS DA LOJA ---
+            let totalVendasDaLoja = 0, totalP1P2daLoja = 0, totalSeguroDaLoja = 0, totalCartaoDaLoja = 0;
+
             storeEmployees.forEach(employeeName => {
                 const employeeKey = employeeName.toLowerCase();
                 const employeeData = allSales[employeeKey] || {};
+                totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
                 totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
                 totalSeguroDaLoja += parseInt(employeeData.seguro || 0, 10);
                 totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
             });
 
-            // 2. Renderizar o card para cada funcionário
+            // --- RENDERIZAÇÃO DOS CARDS ---
             storeEmployees.forEach(employeeName => {
-                const employeeKey = employeeName.toLowerCase();
-                const data = allSales[employeeKey] || {};
-                
-                // 3. Se o funcionário atual for a gerente, use os totais calculados
-                const p1p2DisplayValue = (employeeName === managerName) ? totalP1P2daLoja : data.p1p2;
-                const seguroDisplayValue = (employeeName === managerName) ? totalSeguroDaLoja : data.seguro;
-                const cartaoDisplayValue = (employeeName === managerName) ? totalCartaoDaLoja : data.cartao;
-
-                container.innerHTML += `
-                    <div class="sales-data-card">
-                        <h4>${employeeName}</h4>
-                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
-                        <p>🔱 P1/P2: ${formatBRL(p1p2DisplayValue)}</p>
-                        <p>🔧 SEGURO: ${seguroDisplayValue || '0'}</p>
-                        <p>💳 CARTÃO: ${cartaoDisplayValue || '0'}</p>
-                    </div>
-                `;
+                let cardHtml;
+                // Se o funcionário atual for a gerente, mostra o card com os totais da loja.
+                if (employeeName === managerName) {
+                    cardHtml = `
+                        <div class="sales-data-card" style="border-left: 4px solid var(--primary-color);">
+                            <h4>${employeeName} (Total Loja)</h4>
+                            <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
+                            <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
+                            <p>🔧 SEGURO: ${totalSeguroDaLoja}</p>
+                            <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
+                        </div>
+                    `;
+                } else {
+                    // Para os demais funcionários, mostra seus dados individuais.
+                    const employeeKey = employeeName.toLowerCase();
+                    const data = allSales[employeeKey] || {};
+                    cardHtml = `
+                        <div class="sales-data-card">
+                            <h4>${employeeName}</h4>
+                            <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
+                            <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
+                            <p>🔧 SEGURO: ${data.seguro || '0'}</p>
+                            <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                        </div>
+                    `;
+                }
+                container.innerHTML += cardHtml;
             });
             staggerAnimate(container);
         });
@@ -3349,7 +3392,6 @@ Transporte - R$ 5,00"></textarea></div>
         const store = formPinheiro.style.display !== 'none' ? 'pinheiro' : 'bacabal';
         const employeesForStore = storeMapping[store];
 
-        // Obter data atual no formato YYYY-MM
         const now = new Date();
         const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
 
@@ -3360,8 +3402,9 @@ Transporte - R$ 5,00"></textarea></div>
             const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
             let totalVendasDoFechamento = 0;
-            let totalP1P2ParaGerente = 0;
-            let totalVendasParaGerente = 0; // Variável para acumular vendas para a gerente
+            
+            // A lógica de acumular para o gerente foi removida.
+            // Agora, a função simplesmente salva os dados pessoais de cada um.
 
             employeesForStore.forEach(name => {
                 const key = name.toLowerCase();
@@ -3374,13 +3417,7 @@ Transporte - R$ 5,00"></textarea></div>
 
                 totalVendasDoFechamento += newVenda;
 
-                // Acumula os valores dos vendedores para a gerente
-                if (!managers.includes(name)) {
-                    totalP1P2ParaGerente += newP1P2;
-                    totalVendasParaGerente += newVenda; // Soma a venda do vendedor para a gerente
-                }
-
-                // Atualiza os dados individuais de cada funcionário
+                // Atualiza os dados individuais de cada funcionário, incluindo a gerente, com seus valores pessoais.
                 existingSales[key] = {
                     vendas: (parseFloat(currentData.vendas) || 0) + newVenda,
                     p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
@@ -3389,20 +3426,11 @@ Transporte - R$ 5,00"></textarea></div>
                 };
             });
 
-            // Identifica a gerente da loja e ADICIONA os totais da equipe aos saldos dela
-            const gerenteDaLoja = managers.find(manager => employeesForStore.includes(manager));
-            if (gerenteDaLoja) {
-                const gerenteKey = gerenteDaLoja.toLowerCase();
-                // Adiciona o P1/P2 acumulado da equipe ao total da gerente
-                existingSales[gerenteKey].p1p2 = (parseFloat(existingSales[gerenteKey].p1p2) || 0) + totalP1P2ParaGerente;
-                // Adiciona a VENDA acumulada da equipe ao total da gerente
-                existingSales[gerenteKey].vendas = (parseFloat(existingSales[gerenteKey].vendas) || 0) + totalVendasParaGerente;
-            }
+            // A lógica que somava os totais da equipe no campo da gerente foi REMOVIDA.
 
-            // Atualiza o total do mês atual
+            // Atualiza o total do mês atual (isso continua correto)
             monthlyTotalVendas += totalVendasDoFechamento;
 
-            // Prepara um update atômico para salvar em múltiplos locais
             const updates = {};
             updates['/salesData'] = existingSales;
             updates[`/monthlySales/${currentMonthKey}/totalVendas`] = monthlyTotalVendas;
@@ -3421,12 +3449,47 @@ Transporte - R$ 5,00"></textarea></div>
     const buildAndLoadCorrectionPage = () => {
         const container = document.getElementById('correction-content-container');
         container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
-        
+
+        // Função para recalcular e atualizar os totais de uma loja
+        const updateManagerTotals = (storeName) => {
+            let totalVendas = 0, totalP1P2 = 0, totalSeguro = 0, totalCartao = 0;
+            const employeesOfStore = storeMapping[storeName].filter(name => !managers.includes(name));
+
+            // Soma os valores dos funcionários da loja
+            employeesOfStore.forEach(employeeName => {
+                const key = employeeName.toLowerCase();
+                totalVendas += parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value);
+                totalP1P2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value);
+                totalSeguro += parseInt(document.getElementById(`correction-seguro-${key}`).value || 0, 10);
+                totalCartao += parseInt(document.getElementById(`correction-cartao-${key}`).value || 0, 10);
+            });
+            
+            // Adiciona os valores da própria gerente (se houver)
+            const managerName = storeMapping[storeName].find(name => managers.includes(name));
+            if(managerName) {
+                const key = managerName.toLowerCase();
+                 totalVendas += parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value);
+                 totalP1P2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value);
+                 totalSeguro += parseInt(document.getElementById(`correction-seguro-${key}`).value || 0, 10);
+                 totalCartao += parseInt(document.getElementById(`correction-cartao-${key}`).value || 0, 10);
+            }
+
+
+            // Atualiza os campos de total da gerente
+            const managerKey = `manager-total-${storeName}`;
+            document.querySelector(`#correction-vendas-${managerKey}`).value = formatToBRLInput(totalVendas);
+            document.querySelector(`#correction-p1p2-${managerKey}`).value = formatToBRLInput(totalP1P2);
+            document.querySelector(`#correction-seguro-${managerKey}`).value = totalSeguro;
+            document.querySelector(`#correction-cartao-${managerKey}`).value = totalCartao;
+        };
+
         database.ref('salesData').get().then(snapshot => {
             const allSales = snapshot.exists() ? snapshot.val() : {};
             container.innerHTML = '';
 
-            allCollaborators.forEach(name => {
+            // Renderiza os cards de VENDEDORES (não-gerentes)
+            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
+            nonManagerCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const salesData = allSales[key] || {};
                 container.innerHTML += `
@@ -3439,34 +3502,90 @@ Transporte - R$ 5,00"></textarea></div>
                     </div>
                 `;
             });
+
+            // Renderiza os cards de GERENTES (com inputs editáveis para os totais)
+            managers.forEach(name => {
+                const storeName = storeMapping.pinheiro.includes(name) ? 'pinheiro' : 'bacabal';
+                const managerKey = `manager-total-${storeName}`; // ID único para os campos de total
+                 const key = name.toLowerCase();
+                const salesData = allSales[key] || {};
+
+                container.innerHTML += `
+                    <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
+                        <h4>${name}</h4>
+                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
+                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
+                        <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
+                        <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
+                        <hr style="border-color: rgba(255,255,255,0.2); margin: 1rem 0;">
+                        <h4 style="color: #fff; text-align: left;">Total Loja</h4>
+                        <div class="input-group"><label for="correction-vendas-${managerKey}">📈 TOTAL VENDAS</label><input type="text" id="correction-vendas-${managerKey}" class="data-input" value="0,00" disabled></div>
+                        <div class="input-group"><label for="correction-p1p2-${managerKey}">🔱 TOTAL P1/P2</label><input type="text" id="correction-p1p2-${managerKey}" class="data-input" value="0,00" disabled></div>
+                        <div class="input-group"><label for="correction-seguro-${managerKey}">🔧 TOTAL SEGURO</label><input type="number" id="correction-seguro-${managerKey}" class="data-input" value="0" disabled></div>
+                        <div class="input-group"><label for="correction-cartao-${managerKey}">💳 TOTAL CARTÃO</label><input type="number" id="correction-cartao-${managerKey}" class="data-input" value="0" disabled></div>
+                    </div>
+                `;
+            });
+
+            // Após renderizar tudo, adiciona os listeners e calcula os totais iniciais
+            allCollaborators.forEach(name => {
+                const storeName = storeMapping.pinheiro.includes(name) ? 'pinheiro' : 'bacabal';
+                const key = name.toLowerCase();
+                const inputs = container.querySelectorAll(`#correction-vendas-${key}, #correction-p1p2-${key}, #correction-seguro-${key}, #correction-cartao-${key}`);
+                
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => updateManagerTotals(storeName));
+                    input.addEventListener('blur', () => updateManagerTotals(storeName));
+                });
+            });
+
+            // Calcula os totais iniciais para cada loja
+            updateManagerTotals('pinheiro');
+            updateManagerTotals('bacabal');
         });
     };
 
     const saveCorrections = () => {
         const statusMessage = document.getElementById('correction-status-message');
         statusMessage.textContent = 'Salvando correções...';
-        const dataToSave = {};
+        
+        // 1. Pega os dados atuais do banco para não sobrescrever os dados das gerentes
+        database.ref('salesData').get().then(snapshot => {
+            const dataToSave = snapshot.exists() ? snapshot.val() : {};
 
-        allCollaborators.forEach(name => {
-            const key = name.toLowerCase();
-            // Pega os valores do formulário e os define, usando o parser para converter de volta para número.
-            dataToSave[key] = {
-                vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
-                p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
-                seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
-                cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
-            };
-        });
+            // 2. Itera APENAS sobre os vendedores (não-gerentes) para pegar os valores do formulário
+            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
 
-        // O método .set() substitui completamente os dados no nó 'salesData'
-        database.ref('salesData').set(dataToSave)
-            .then(() => {
-                statusMessage.textContent = 'Dados corrigidos com sucesso!';
-                setTimeout(() => { statusMessage.textContent = ''; }, 3000);
-            })
-            .catch(() => {
-                statusMessage.textContent = 'Erro ao salvar as correções!';
+            nonManagerCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                
+                // Garante que o objeto do funcionário exista
+                if (!dataToSave[key]) {
+                    dataToSave[key] = {};
+                }
+
+                // Atualiza os dados do vendedor com os valores dos campos editáveis
+                dataToSave[key] = {
+                    vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
+                    p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
+                    seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
+                    cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
+                };
             });
+
+            // 3. Salva o objeto de dados completo de volta no Firebase
+            database.ref('salesData').set(dataToSave)
+                .then(() => {
+                    statusMessage.textContent = 'Dados corrigidos com sucesso!';
+                    // Recarrega a página para exibir os novos totais atualizados para as gerentes
+                    buildAndLoadCorrectionPage(); 
+                    setTimeout(() => { statusMessage.textContent = ''; }, 3000);
+                })
+                .catch((error) => {
+                    statusMessage.textContent = 'Erro ao salvar as correções!';
+                    console.error(error);
+                });
+        });
     };
 
     const changePassword = () => {
@@ -4845,14 +4964,14 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
 
-    const calculateAndDisplayStoreRanking = () => {
+                        const calculateAndDisplayStoreRanking = () => {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
 
         Promise.all([
             database.ref('salesData').get(),
             database.ref('metas').get(),
-            database.ref('userProfiles').get() // Adicionado para buscar as fotos
+            database.ref('userProfiles').get()
         ]).then(([salesSnapshot, metasSnapshot, profilesSnapshot]) => {
             if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
                 container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
@@ -4863,24 +4982,41 @@ Transporte - R$ 5,00"></textarea></div>
             const metasData = metasSnapshot.val();
             const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
             const performanceData = [];
-            const managersToRank = ['Beatriz', 'Natalia']; // As gerentes que serão comparadas
+            const managersToRank = ['Beatriz', 'Natalia'];
 
             managersToRank.forEach(name => {
                 const key = name.toLowerCase();
-                const actualSales = parseFloat(salesData[key]?.vendas || 0);
-                const salesGoal = parseFloat(metasData[key]?.venda || 0);
+                const storeEmployees = storeMapping.pinheiro.includes(name) ? storeMapping.pinheiro : storeMapping.bacabal;
+                
+                // 1. Somar as vendas de todos na loja
+                let totalStoreSales = 0;
+                storeEmployees.forEach(employeeName => {
+                    const employeeKey = employeeName.toLowerCase();
+                    totalStoreSales += parseFloat(salesData[employeeKey]?.vendas || 0);
+                });
 
-                if (salesGoal > 0) {
-                    const percentage = (actualSales / salesGoal) * 100;
-                    performanceData.push({ name: name, percentage: percentage });
+                // 2. Tentar pegar a meta específica da LOJA.
+                let storeGoal = parseFloat(metasData[key]?.metaLoja || 0);
+
+                // 3. FALLBACK: Se a meta da loja não foi definida (é 0), soma as metas individuais da equipe.
+                if (storeGoal <= 0) {
+                    storeGoal = 0; // Reseta para garantir a soma correta
+                    storeEmployees.forEach(employeeName => {
+                        const employeeKey = employeeName.toLowerCase();
+                        storeGoal += parseFloat(metasData[employeeKey]?.venda || 0);
+                    });
+                }
+                
+                // 4. Calcular a porcentagem com a meta encontrada (específica ou somada)
+                if (storeGoal > 0) {
+                    const percentage = (totalStoreSales / storeGoal) * 100;
+                    performanceData.push({ name: name, percentage: Math.max(0, percentage) });
                 } else {
-                    performanceData.push({ name: name, percentage: 0 }); // Adiciona para aparecer mesmo sem meta
+                    performanceData.push({ name: name, percentage: 0 });
                 }
             });
 
-            // Ordena pela maior porcentagem
             performanceData.sort((a, b) => b.percentage - a.percentage);
-
             container.innerHTML = '';
 
             if (performanceData.length === 0) {
@@ -4888,28 +5024,22 @@ Transporte - R$ 5,00"></textarea></div>
                 return;
             }
 
+            // --- RENDERIZAÇÃO DO RANKING (esta parte não muda) ---
             performanceData.forEach((collab, index) => {
                 const rank = index + 1;
-                // A linha abaixo já contém a formatação ",00"
                 const prize = 'R$ 200,00';
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
-
-                const prizeHTML = (rank === 1)
-                    ? `<span class="rank-prize">${prize}</span>`
-                    : '';
+                const prizeHTML = (rank === 1) ? `<span class="rank-prize">${prize}</span>` : '';
                 
                 const rankItem = document.createElement('div');
                 rankItem.className = `rank-item rank-${rank}`;
                 
-                const progressBarWidth = collab.percentage;
+                const progressBarWidth = collab.percentage > 100 ? 100 : collab.percentage;
                 
-                // Lógica para buscar a foto do perfil da gerente
                 const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
                 const managerProfile = profilesData[collab.name.toLowerCase()];
-                const photoUrl = managerProfile && managerProfile.photoURL ? managerProfile.photoURL : defaultPhoto;
+                const photoUrl = managerProfile?.photoURL || defaultPhoto;
 
-
-                // Adiciona a coroa apenas para o rank 1
                 const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
 
                 rankItem.innerHTML = `
@@ -5837,7 +5967,7 @@ Transporte - R$ 5,00"></textarea></div>
             loadAndDisplayOvertime(); // Carrega as horas extras no GS na inicialização
 
             // Exibe a versão do app no rodapé
-            document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
+            document.getElementById('app-version-display').textContent = `1.5.2`;
             
             // --- LÓGICA DO EASTER EGG DA VERSÃO ---
             let versionClickCount = 0;
