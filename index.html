@@ -1834,6 +1834,11 @@
         <!-- O conteúdo agora tem um container para melhor organização -->
                     <!-- O conteúdo agora tem um container para melhor organização -->
         <div class="collaborator-content" style="flex-direction: column; gap: 1rem; padding-top: 2rem;">
+            <!-- Aviso de Manutenção (escondido por padrão) -->
+            <div id="maintenance-notice-area" class="os-warning" style="width: 100%; max-width: 350px; text-align: center; margin-bottom: 1rem; display: none;">
+                Estamos passando por manutenção, desconsidere erros até este aviso sumir.
+            </div>
+
             <!-- Área de Notificação do Ponto -->
             <div id="ponto-notification-area" style="width: 100%; max-width: 350px; text-align: center; margin-bottom: 0rem;">
                 <!-- O JS vai popular esta área com avisos e botões de justificar -->
@@ -1927,12 +1932,29 @@
                 </div>
             </div>
 
-            <!-- Nova Seção de Horas Extras -->
+                        <!-- Seção de Horas Extras -->
             <div class="charts-section" id="overtime-section">
                 <div class="chart-container">
                     <h4>Horas Extras Acumuladas</h4>
                     <div id="overtime-list-container" class="ranking-list" style="gap: 0.5rem;">
                          <p style="text-align: center;">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seção de Configurações Gerais -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h4>Configurações Gerais</h4>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="maintenance-mode-toggle" style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="maintenance-mode-toggle" style="margin-right: 10px; width: 20px; height: 20px;">
+                            Ativar Modo de Manutenção
+                        </label>
+                        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 0.5rem;">
+                            Exibe um aviso de manutenção na tela de cada colaborador.
+                        </p>
+                        <p id="maintenance-status-message" class="status-message"></p>
                     </div>
                 </div>
             </div>
@@ -2557,7 +2579,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.4.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.5.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2633,6 +2655,10 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('sundays-management-page').classList.add('page');
     document.getElementById('day-off-management-page').classList.add('page');
     document.getElementById('lollipop-page').classList.add('page');
+
+
+
+
 
     // Mapeia os elementos para fácil acesso
     const elements = {
@@ -2710,6 +2736,30 @@ Transporte - R$ 5,00"></textarea></div>
             });
         }
     }
+
+        const loadMaintenanceModeStatus = () => {
+        const checkbox = document.getElementById('maintenance-mode-toggle');
+        const statusEl = document.getElementById('maintenance-status-message');
+        if (!checkbox) return; // Garante que não dê erro se a função for chamada em outra tela
+        
+        statusEl.textContent = ''; // Limpa o status anterior
+        database.ref('globalSettings/isMaintenanceMode').get().then(snapshot => {
+            checkbox.checked = snapshot.exists() && snapshot.val() === true;
+        });
+    };
+
+    const checkAndDisplayMaintenanceNotice = () => {
+        const noticeArea = document.getElementById('maintenance-notice-area');
+        if (!noticeArea) return;
+
+        database.ref('globalSettings/isMaintenanceMode').get().then(snapshot => {
+            if (snapshot.exists() && snapshot.val() === true) {
+                noticeArea.style.display = 'block';
+            } else {
+                noticeArea.style.display = 'none';
+            }
+        });
+    };
     
     // Funções de atalho para a navegação
     const showPage = (pageKey) => showScreen(elements[pageKey]);
@@ -5381,7 +5431,9 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('open-gs-page').addEventListener('click', () => { 
                 if (checkPassword()) { 
                     loadDashboardData(); 
-                    markNotificationsAsRead(); // Marca as notificações como lidas ao abrir
+                    loadManagerNotifications();
+                    loadMaintenanceModeStatus(); // <-- Adicionado aqui
+                    markNotificationsAsRead();
                     showPage('gsPage'); 
                 } 
             });
@@ -5421,6 +5473,7 @@ Transporte - R$ 5,00"></textarea></div>
                         
                         document.getElementById('photo-upload-status').textContent = '';
 
+                        checkAndDisplayMaintenanceNotice(); // <-- Adicionado aqui
                         loadAndDisplayIndividualSalesData();
                         loadCollaboratorProfilePicture(); 
                         checkPontoStatusAndDisplayWarnings();
@@ -5718,6 +5771,22 @@ Transporte - R$ 5,00"></textarea></div>
                 }
             });
 
+            // Listener para o checkbox de modo de manutenção
+            document.getElementById('maintenance-mode-toggle').addEventListener('change', (event) => {
+                const isChecked = event.target.checked;
+                const statusEl = document.getElementById('maintenance-status-message');
+                statusEl.textContent = 'Salvando...';
+                database.ref('globalSettings/isMaintenanceMode').set(isChecked)
+                    .then(() => {
+                        statusEl.textContent = 'Configuração salva!';
+                        setTimeout(() => statusEl.textContent = '', 2000);
+                    })
+                    .catch(err => {
+                        statusEl.textContent = 'Erro ao salvar!';
+                        console.error(err);
+                    });
+            });
+
             const openImageViewer = (imageUrl) => {
                 viewerImage.src = imageUrl;
                 imageViewer.style.display = 'flex';
@@ -5769,6 +5838,27 @@ Transporte - R$ 5,00"></textarea></div>
 
             // Exibe a versão do app no rodapé
             document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
+            
+            // --- LÓGICA DO EASTER EGG DA VERSÃO ---
+            let versionClickCount = 0;
+            let versionClickTimer = null;
+            document.getElementById('app-version-display').addEventListener('click', () => {
+                // Limpa o timer anterior para que a contagem não seja resetada entre cliques rápidos
+                clearTimeout(versionClickTimer);
+
+                versionClickCount++; // Incrementa o contador de cliques
+
+                if (versionClickCount === 10) {
+                    // Se atingir 10 cliques, redireciona para o link
+                    window.location.href = 'https://www.instagram.com/reel/DJt6QptTX5y/?igsh=cjUyODhicGEwaTVx';
+                    versionClickCount = 0; // Reseta o contador
+                } else {
+                    // Inicia um timer. Se o usuário não clicar novamente em 2 segundos, o contador reseta.
+                    versionClickTimer = setTimeout(() => {
+                        versionClickCount = 0;
+                    }, 2000);
+                }
+            });
         });
     </script>
 
