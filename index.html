@@ -2582,7 +2582,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.5.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.5.7'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3614,85 +3614,136 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const buildAndLoadCorrectionPage = () => {
-        const container = document.getElementById('correction-content-container');
-        container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
-
-        // Função interna para recalcular e atualizar os totais de TODAS as lojas
-        const updateAllTotals = () => {
-            const totals = {
+                const updateStoreTotalsOnCorrectionPage = () => {
+            const storeTotals = {
                 pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
                 bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
             };
 
-            // Itera sobre cada loja para somar os valores dos seus funcionários
-            for (const storeName in storeMapping) { // "pinheiro", "bacabal"
-                storeMapping[storeName].forEach(employeeName => {
-                    const key = employeeName.toLowerCase();
-                    totals[storeName].vendas += parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value);
-                    totals[storeName].p1p2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value);
-                    totals[storeName].seguro += parseInt(document.getElementById(`correction-seguro-${key}`).value || 0, 10);
-                    totals[storeName].cartao += parseInt(document.getElementById(`correction-cartao-${key}`).value || 0, 10);
+            // Recalcula os totais com base nos valores ATUAIS dos inputs dos funcionários
+            for (const store in storeMapping) {
+                storeMapping[store].forEach(employeeName => {
+                    const employeeKey = employeeName.toLowerCase();
+                    storeTotals[store].vendas += parseFromBRLInput(document.getElementById(`correction-vendas-${employeeKey}`).value);
+                    storeTotals[store].p1p2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${employeeKey}`).value);
+                    storeTotals[store].seguro += parseInt(document.getElementById(`correction-seguro-${employeeKey}`).value, 10) || 0;
+                    storeTotals[store].cartao += parseInt(document.getElementById(`correction-cartao-${employeeKey}`).value, 10) || 0;
                 });
             }
 
-            // Atualiza os campos de "Total Loja" no DOM
-            for (const storeName in totals) {
-                document.getElementById(`total-loja-${storeName}-vendas`).value = formatToBRLInput(totals[storeName].vendas);
-                document.getElementById(`total-loja-${storeName}-p1p2`).value = formatToBRLInput(totals[storeName].p1p2);
-                document.getElementById(`total-loja-${storeName}-seguro`).value = totals[storeName].seguro;
-                document.getElementById(`total-loja-${storeName}-cartao`).value = totals[storeName].cartao;
+            // Atualiza os campos de total da loja na tela
+            for (const storeName in storeTotals) {
+                const totals = storeTotals[storeName];
+                const totalCardIdPrefix = `total-loja-${storeName}`;
+                
+                document.getElementById(`${totalCardIdPrefix}-vendas`).value = formatToBRLInput(totals.vendas);
+                document.getElementById(`${totalCardIdPrefix}-p1p2`).value = formatToBRLInput(totals.p1p2);
+                document.getElementById(`${totalCardIdPrefix}-seguro`).value = totals.seguro;
+                document.getElementById(`${totalCardIdPrefix}-cartao`).value = totals.cartao;
             }
         };
 
-        database.ref('salesData').get().then(snapshot => {
-            const allSales = snapshot.exists() ? snapshot.val() : {};
-            container.innerHTML = '';
+                const distributeStoreTotal = (storeName, field) => {
+            const employees = storeMapping[storeName];
+            const isCurrency = field === 'vendas' || field === 'p1p2';
+            
+            const totalInput = document.getElementById(`total-loja-${storeName}-${field}`);
+            const newTotal = isCurrency ? parseFromBRLInput(totalInput.value) : parseInt(totalInput.value, 10) || 0;
 
-            // 1. Renderiza os cards para TODOS os colaboradores
-            allCollaborators.forEach(name => {
-                const key = name.toLowerCase();
-                const salesData = allSales[key] || {};
-                container.innerHTML += `
-                    <div class="employee-meta-card">
-                        <h4>${name}</h4>
-                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
-                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
-                        <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
-                        <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
-                    </div>
-                `;
+            // 1. Calcular o total antigo somando os valores atuais dos funcionários
+            let oldTotal = 0;
+            employees.forEach(employeeName => {
+                const key = employeeName.toLowerCase();
+                const input = document.getElementById(`correction-${field}-${key}`);
+                oldTotal += isCurrency ? parseFromBRLInput(input.value) : parseInt(input.value, 10) || 0;
             });
+            
+            // 2. Distribuir o novo total
+            employees.forEach(employeeName => {
+                const key = employeeName.toLowerCase();
+                const input = document.getElementById(`correction-${field}-${key}`);
+                const oldValue = isCurrency ? parseFromBRLInput(input.value) : parseInt(input.value, 10) || 0;
 
-            // 2. Renderiza os cards de "Total Loja" com campos DESABILITADOS (eles serão atualizados pela função)
-            for (const storeName in storeMapping) {
-                const totalCardIdPrefix = `total-loja-${storeName}`;
-                const storeTitle = storeName.charAt(0).toUpperCase() + storeName.slice(1);
-                container.innerHTML += `
-                    <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
-                        <h4 style="color: #fff;">Total Loja ${storeTitle}</h4>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" disabled></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" disabled></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-seguro">🔧 TOTAL SEGURO</label><input type="number" id="${totalCardIdPrefix}-seguro" class="data-input" disabled></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" disabled></div>
-                    </div>
-                `;
-            }
+                let newValue;
+                if (oldTotal > 0) {
+                    // Distribuição proporcional
+                    const proportion = oldValue / oldTotal;
+                    newValue = newTotal * proportion;
+                } else {
+                    // Se o total era zero, distribui igualmente
+                    newValue = newTotal / employees.length;
+                }
+                
+                input.value = isCurrency ? formatToBRLInput(newValue) : Math.round(newValue);
+            });
+        };
 
-            // 3. Adiciona um event listener a TODOS os inputs individuais.
-            // Qualquer mudança em qualquer um deles irá disparar o recálculo de TUDO.
-            allCollaborators.forEach(name => {
-                const key = name.toLowerCase();
-                const inputs = container.querySelectorAll(`#correction-vendas-${key}, #correction-p1p2-${key}, #correction-seguro-${key}, #correction-cartao-${key}`);
-                inputs.forEach(input => {
-                    input.addEventListener('input', updateAllTotals);
+        const buildAndLoadCorrectionPage = () => {
+            const container = document.getElementById('correction-content-container');
+            container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
+
+            database.ref('salesData').get().then(snapshot => {
+                const allSales = snapshot.exists() ? snapshot.val() : {};
+                container.innerHTML = '';
+
+                // 1. Renderiza os cards para TODOS os colaboradores
+                allCollaborators.forEach(name => {
+                    const key = name.toLowerCase();
+                    const salesData = allSales[key] || {};
+                    container.innerHTML += `
+                        <div class="employee-meta-card">
+                            <h4>${name}</h4>
+                            <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
+                            <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
+                            <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
+                            <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
+                        </div>
+                    `;
                 });
-            });
 
-            // 4. Calcula e exibe os totais pela primeira vez.
-            updateAllTotals();
-        });
-    };
+                // 2. Calcula os totais iniciais
+                const storeTotals = {
+                    pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
+                    bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
+                };
+                for (const store in storeMapping) {
+                    storeMapping[store].forEach(employeeName => {
+                        const employeeKey = employeeName.toLowerCase();
+                        const employeeData = allSales[employeeKey] || {};
+                        storeTotals[store].vendas += parseFloat(employeeData.vendas || 0);
+                        storeTotals[store].p1p2 += parseFloat(employeeData.p1p2 || 0);
+                        storeTotals[store].seguro += parseInt(employeeData.seguro || 0, 10);
+                        storeTotals[store].cartao += parseInt(employeeData.cartao || 0, 10);
+                    });
+                }
+
+                // 3. Renderiza os cards de "Total Loja" com campos EDITÁVEIS
+                for (const storeName in storeTotals) {
+                    const totals = storeTotals[storeName];
+                    const totalCardIdPrefix = `total-loja-${storeName}`;
+                    const storeTitle = storeName.charAt(0).toUpperCase() + storeName.slice(1);
+
+                    container.innerHTML += `
+                        <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
+                            <h4 style="color: #fff;">Editar Total Loja ${storeTitle}</h4>
+                            <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
+                            <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" value="${formatToBRLInput(totals.p1p2)}"></div>
+                            <div class="input-group"><label for="${totalCardIdPrefix}-seguro">🔧 TOTAL SEGURO</label><input type="number" id="${totalCardIdPrefix}-seguro" class="data-input" value="${totals.seguro}"></div>
+                            <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" value="${totals.cartao}"></div>
+                        </div>
+                    `;
+                }
+                
+                // 4. Adiciona os listeners para a distribuição
+                const fields = ['vendas', 'p1p2', 'seguro', 'cartao'];
+                for (const storeName in storeMapping) {
+                    fields.forEach(field => {
+                        const totalInput = document.getElementById(`total-loja-${storeName}-${field}`);
+                        totalInput.addEventListener('change', () => distributeStoreTotal(storeName, field));
+                    });
+                }
+            });
+        };
 
     const saveCorrections = () => {
         const statusMessage = document.getElementById('correction-status-message');
