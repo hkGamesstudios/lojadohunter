@@ -2582,7 +2582,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.5.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.5.5'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3618,11 +3618,38 @@ Transporte - R$ 5,00"></textarea></div>
         const container = document.getElementById('correction-content-container');
         container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
 
+        // Função interna para recalcular e atualizar os totais de TODAS as lojas
+        const updateAllTotals = () => {
+            const totals = {
+                pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
+                bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
+            };
+
+            // Itera sobre cada loja para somar os valores dos seus funcionários
+            for (const storeName in storeMapping) { // "pinheiro", "bacabal"
+                storeMapping[storeName].forEach(employeeName => {
+                    const key = employeeName.toLowerCase();
+                    totals[storeName].vendas += parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value);
+                    totals[storeName].p1p2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value);
+                    totals[storeName].seguro += parseInt(document.getElementById(`correction-seguro-${key}`).value || 0, 10);
+                    totals[storeName].cartao += parseInt(document.getElementById(`correction-cartao-${key}`).value || 0, 10);
+                });
+            }
+
+            // Atualiza os campos de "Total Loja" no DOM
+            for (const storeName in totals) {
+                document.getElementById(`total-loja-${storeName}-vendas`).value = formatToBRLInput(totals[storeName].vendas);
+                document.getElementById(`total-loja-${storeName}-p1p2`).value = formatToBRLInput(totals[storeName].p1p2);
+                document.getElementById(`total-loja-${storeName}-seguro`).value = totals[storeName].seguro;
+                document.getElementById(`total-loja-${storeName}-cartao`).value = totals[storeName].cartao;
+            }
+        };
+
         database.ref('salesData').get().then(snapshot => {
             const allSales = snapshot.exists() ? snapshot.val() : {};
             container.innerHTML = '';
 
-            // 1. Renderiza os cards para TODOS os colaboradores, incluindo gerentes, com seus dados individuais editáveis.
+            // 1. Renderiza os cards para TODOS os colaboradores
             allCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const salesData = allSales[key] || {};
@@ -3637,39 +3664,33 @@ Transporte - R$ 5,00"></textarea></div>
                 `;
             });
 
-            // 2. Calcula os totais iniciais para cada loja.
-            const storeTotals = {
-                pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
-                bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
-            };
-            for (const store in storeMapping) {
-                storeMapping[store].forEach(employeeName => {
-                    const employeeKey = employeeName.toLowerCase();
-                    const employeeData = allSales[employeeKey] || {};
-                    storeTotals[store].vendas += parseFloat(employeeData.vendas || 0);
-                    storeTotals[store].p1p2 += parseFloat(employeeData.p1p2 || 0);
-                    storeTotals[store].seguro += parseInt(employeeData.seguro || 0, 10);
-                    storeTotals[store].cartao += parseInt(employeeData.cartao || 0, 10);
-                });
-            }
-
-            // 3. Renderiza os cards de "Total Loja" com campos editáveis.
-            for (const storeName in storeTotals) {
-                const totals = storeTotals[storeName];
+            // 2. Renderiza os cards de "Total Loja" com campos DESABILITADOS (eles serão atualizados pela função)
+            for (const storeName in storeMapping) {
                 const totalCardIdPrefix = `total-loja-${storeName}`;
                 const storeTitle = storeName.charAt(0).toUpperCase() + storeName.slice(1);
-
                 container.innerHTML += `
                     <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
                         <h4 style="color: #fff;">Total Loja ${storeTitle}</h4>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" value="${formatToBRLInput(totals.p1p2)}"></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-seguro">🔧 TOTAL SEGURO</label><input type="number" id="${totalCardIdPrefix}-seguro" class="data-input" value="${totals.seguro}"></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" value="${totals.cartao}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" disabled></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" disabled></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-seguro">🔧 TOTAL SEGURO</label><input type="number" id="${totalCardIdPrefix}-seguro" class="data-input" disabled></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" disabled></div>
                     </div>
                 `;
             }
-            // Não há mais listeners para atualização automática. A página agora é estática após o carregamento.
+
+            // 3. Adiciona um event listener a TODOS os inputs individuais.
+            // Qualquer mudança em qualquer um deles irá disparar o recálculo de TUDO.
+            allCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const inputs = container.querySelectorAll(`#correction-vendas-${key}, #correction-p1p2-${key}, #correction-seguro-${key}, #correction-cartao-${key}`);
+                inputs.forEach(input => {
+                    input.addEventListener('input', updateAllTotals);
+                });
+            });
+
+            // 4. Calcula e exibe os totais pela primeira vez.
+            updateAllTotals();
         });
     };
 
