@@ -1881,6 +1881,9 @@
             <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
             <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
             <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
+            <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar Backup</span></button>
+            <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Restaurar Backup</span></button>
+            <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
         </div>
 
         <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; gap: 1.5rem; padding-top: 1.5rem; overflow-y: auto;">
@@ -2579,7 +2582,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.5.3'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.5.4'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2760,10 +2763,185 @@ Transporte - R$ 5,00"></textarea></div>
             }
         });
     };
+
+                // --- FUNÇÕES DE BACKUP DE DADOS (Movidas para dentro do DOMContentLoaded) ---
+    
+            // Função principal que coleta e formata todos os dados em um texto
+            const generateBackupText = async () => {
+                try {
+                    const [salesSnapshot, metasSnapshot, profilesSnapshot] = await Promise.all([
+                        database.ref('salesData').get(),
+                        database.ref('metas').get(),
+                        database.ref('userProfiles').get()
+                    ]);
+
+                    const salesData = salesSnapshot.exists() ? salesSnapshot.val() : {};
+                    const metasData = metasSnapshot.exists() ? metasSnapshot.val() : {};
+                    const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
+
+                    const now = new Date();
+                    let backupString = `BACKUP DE DADOS - LOJA DO HUNTER\n`;
+                    backupString += `Data e Hora: ${now.toLocaleString('pt-BR')}\n`;
+                    backupString += `=========================================\n\n`;
+
+                    allCollaborators.forEach(name => {
+                        const key = name.toLowerCase();
+                        const sales = salesData[key] || {};
+                        const metas = metasData[key] || {};
+                        const profile = profilesData[key] || {};
+
+                        backupString += `--- ${name} ---\n`;
+                        
+                        // Dados de Vendas
+                        backupString += `  Vendas: ${formatBRL(sales.vendas || 0)}\n`;
+                        backupString += `  P1/P2: ${formatBRL(sales.p1p2 || 0)}\n`;
+                        backupString += `  Seguro: ${sales.seguro || 0}\n`;
+                        backupString += `  Cartão: ${sales.cartao || 0}\n\n`;
+
+                        // Metas e Premiações
+                        backupString += `  Meta Venda: ${formatBRL(metas.venda || 0)}\n`;
+                        if(managers.includes(name)) {
+                            backupString += `  Meta Loja: ${formatBRL(metas.metaLoja || 0)}\n`;
+                        }
+                        backupString += `  Meta Seguro: ${metas.seguro || 0}\n`;
+                        backupString += `  Meta P1 50%: ${formatBRL(metas.p1 || 0)}\n`;
+                        backupString += `  Meta Cartão: ${metas.cartao || 0}\n`;
+                        backupString += `  Prêmio P1/P2: ${formatBRL(metas.premioP1P2 || 0)}\n`;
+                        backupString += `  Prêmio Seguro: ${formatBRL(metas.premioSeguro || 0)}\n`;
+                        backupString += `  Prêmio Cartão 2%+: ${formatBRL(metas.premioCartao || 0)}\n\n`;
+                        
+                        // Horas Extras
+                        const overtimeMinutes = profile.overtimeMinutes || 0;
+                        const hours = Math.floor(overtimeMinutes / 60);
+                        const minutes = overtimeMinutes % 60;
+                        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                        backupString += `  Horas Extras Acumuladas: ${formattedTime}\n`;
+
+                        backupString += `-----------------------------------------\n\n`;
+                    });
+
+                    return backupString;
+
+                } catch (error) {
+                    console.error("Erro ao gerar backup:", error);
+                    alert("Ocorreu um erro ao gerar o backup. Verifique sua conexão e tente novamente.");
+                    return null;
+                }
+            };
+
+            // Função para baixar o backup como um arquivo .txt
+            const handleSaveBackup = async () => {
+                alert('Gerando arquivo de backup... Por favor, aguarde.');
+                const textContent = await generateBackupText();
+                if (!textContent) return;
+
+                const filename = `backup_loja_hunter_${getTodayDateString()}.txt`;
+                const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            };
+
+            // Função para processar e restaurar dados de um arquivo de backup
+            const handleRestoreBackup = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    try {
+                        const newSalesData = {};
+                        
+                        // Encontra todos os blocos de dados de colaboradores no texto
+                        const collaboratorBlocks = text.split('---').slice(1); // Divide por '---' e remove o cabeçalho
+
+                        collaboratorBlocks.forEach(block => {
+                            // Extrai o nome do colaborador
+                            const nameMatch = block.match(/^\s*([\w\s]+)\s*\n/);
+                            if (!nameMatch) return;
+                            
+                            const name = nameMatch[1].trim();
+                            const key = name.toLowerCase();
+
+                            // Extrai os valores usando expressões regulares (mais robusto)
+                            const vendasMatch = block.match(/Vendas:\s*R\$\s*([\d.,]+)/);
+                            const p1p2Match = block.match(/P1\/P2:\s*R\$\s*([\d.,]+)/);
+                            const seguroMatch = block.match(/Seguro:\s*(\d+)/);
+                            const cartaoMatch = block.match(/Cartão:\s*(\d+)/);
+
+                            // Converte os valores extraídos para o formato numérico correto
+                            const vendas = vendasMatch ? parseFromBRLInput(vendasMatch[1]) : 0;
+                            const p1p2 = p1p2Match ? parseFromBRLInput(p1p2Match[1]) : 0;
+                            const seguro = seguroMatch ? parseInt(seguroMatch[1], 10) : 0;
+                            const cartao = cartaoMatch ? parseInt(cartaoMatch[1], 10) : 0;
+
+                            // Adiciona ao objeto que será salvo no Firebase
+                            newSalesData[key] = { vendas, p1p2, seguro, cartao };
+                        });
+
+                        if (Object.keys(newSalesData).length === 0) {
+                            alert('Nenhum dado válido encontrado no arquivo de backup.');
+                            return;
+                        }
+
+                        if (confirm('Dados do backup foram lidos. Deseja substituir os dados atuais no Firebase com estes dados? ESSA AÇÃO NÃO PODE SER DESFEITA.')) {
+                            database.ref('salesData').set(newSalesData)
+                                .then(() => {
+                                    alert('Backup restaurado com sucesso! Os dados foram atualizados.');
+                                    // Recarrega os dados na tela para refletir a restauração
+                                    loadDashboardData();
+                                    buildAndLoadCorrectionPage();
+                                })
+                                .catch(error => {
+                                    alert('Erro ao restaurar o backup.');
+                                    console.error(error);
+                                });
+                        }
+
+                    } catch (error) {
+                        alert('Erro ao processar o arquivo de backup. Verifique o formato do arquivo.');
+                        console.error(error);
+                    } finally {
+                        // Limpa o valor do input para permitir o upload do mesmo arquivo novamente
+                        event.target.value = null;
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            // Listeners para os botões de backup
+            document.getElementById('save-backup-btn').addEventListener('click', handleSaveBackup);
+            // Aciona o input de arquivo quando o botão de restaurar é clicado
+            document.getElementById('restore-backup-btn').addEventListener('click', () => {
+                document.getElementById('backup-file-input').click();
+            });
+            // Lê e processa o arquivo quando ele é selecionado
+            document.getElementById('backup-file-input').addEventListener('change', handleRestoreBackup);
+
+            // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+            showMainPage();
+            calculateAndDisplayRanking(); // Carrega o ranking de colaboradores
+            calculateAndDisplayStoreRanking(); // Carrega o ranking de lojas
+            loadManagerNotifications(); // Carrega notificações para o gerente na inicialização
+            loadAndDisplayOvertime(); // Carrega as horas extras no GS na inicialização
+
+            // Exibe a versão do app no rodapé
+            document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
     
     // Funções de atalho para a navegação
-    const showPage = (pageKey) => showScreen(elements[pageKey]);
-    const showMainPage = () => showScreen(mainContainer);
+    function showPage(pageKey) {
+        showScreen(elements[pageKey]);
+    }
+    function showMainPage() {
+        showScreen(mainContainer);
+    }
 
     // --- FUNÇÕES DA MODAL (ADAPTADAS PARA A NOVA NAVEGAÇÃO) ---
     const openModal = () => {
@@ -3499,43 +3677,33 @@ Transporte - R$ 5,00"></textarea></div>
         const statusMessage = document.getElementById('correction-status-message');
         statusMessage.textContent = 'Salvando correções...';
         
-        // 1. Pega os dados atuais do banco para não sobrescrever os dados das gerentes
-        database.ref('salesData').get().then(snapshot => {
-            const dataToSave = snapshot.exists() ? snapshot.val() : {};
+        const dataToSave = {};
 
-            // 2. Itera APENAS sobre os vendedores (não-gerentes) para pegar os valores do formulário
-            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
-
-            nonManagerCollaborators.forEach(name => {
-                const key = name.toLowerCase();
-                
-                // Garante que o objeto do funcionário exista
-                if (!dataToSave[key]) {
-                    dataToSave[key] = {};
-                }
-
-                // Atualiza os dados do vendedor com os valores dos campos editáveis
-                dataToSave[key] = {
-                    vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
-                    p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
-                    seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
-                    cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
-                };
-            });
-
-            // 3. Salva o objeto de dados completo de volta no Firebase
-            database.ref('salesData').set(dataToSave)
-                .then(() => {
-                    statusMessage.textContent = 'Dados corrigidos com sucesso!';
-                    // Recarrega a página para exibir os novos totais atualizados para as gerentes
-                    buildAndLoadCorrectionPage(); 
-                    setTimeout(() => { statusMessage.textContent = ''; }, 3000);
-                })
-                .catch((error) => {
-                    statusMessage.textContent = 'Erro ao salvar as correções!';
-                    console.error(error);
-                });
+        // Itera sobre TODOS os colaboradores, incluindo as gerentes.
+        allCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            
+            // Lê os valores dos campos de cada colaborador e os adiciona ao objeto que será salvo.
+            dataToSave[key] = {
+                vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
+                p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
+                seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
+                cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
+            };
         });
+
+        // O método .set() substitui completamente os dados no nó 'salesData' com os novos dados lidos do formulário.
+        database.ref('salesData').set(dataToSave)
+            .then(() => {
+                statusMessage.textContent = 'Dados corrigidos com sucesso!';
+                // Recarrega a página para recalcular e exibir os totais atualizados
+                buildAndLoadCorrectionPage(); 
+                setTimeout(() => { statusMessage.textContent = ''; }, 3000);
+            })
+            .catch((error) => {
+                statusMessage.textContent = 'Erro ao salvar as correções!';
+                console.error(error);
+            });
     };
 
     const changePassword = () => {
@@ -3980,7 +4148,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-        const calculateAndDisplayRanking = () => {
+function calculateAndDisplayRanking() {
         const rankingContainer = document.getElementById('ranking-container');
         rankingContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking...</p>';
 
@@ -4071,7 +4239,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-        const getTodayDateString = () => {
+    function getTodayDateString() {
         const today = new Date();
         const year = today.getFullYear();
         const month = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -4079,7 +4247,7 @@ Transporte - R$ 5,00"></textarea></div>
         return `${year}-${month}-${day}`;
     };
 
-    const createManagerNotification = (message) => {
+    function createManagerNotification(message) {
         const notificationId = `${new Date().getTime()}-${currentUserName.replace(/\s+/g, '')}`; // USA A NOVA VARIÁVEL
         const notificationRef = database.ref(`managerNotifications/${notificationId}`);
         notificationRef.set({
@@ -4091,7 +4259,7 @@ Transporte - R$ 5,00"></textarea></div>
 
         // (Pode ser adicionada antes da função loadManagerNotifications)
 
-    const markNotificationsAsRead = () => {
+    function markNotificationsAsRead() {
         const notificationsRef = database.ref('managerNotifications');
         notificationsRef.once('value', snapshot => {
             if (snapshot.exists()) {
@@ -4110,7 +4278,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const determineNextPontoAction = async (dailyPontoData) => {
+    async function determineNextPontoAction(dailyPontoData) {
         const now = new Date();
         const dayOfWeek = now.getDay(); // 0 = Domingo, 6 = Sábado
         const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
@@ -4214,7 +4382,7 @@ Transporte - R$ 5,00"></textarea></div>
         return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.' };
     };
 
-    const checkPontoStatusAndDisplayWarnings = async () => {
+    async function checkPontoStatusAndDisplayWarnings() {
         const notificationArea = document.getElementById('ponto-notification-area');
         if (!notificationArea || !currentUserName) return;
         notificationArea.innerHTML = '';
@@ -4282,7 +4450,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-    const handlePontoLogic = async () => {
+    async function handlePontoLogic() {
         const todayString = getTodayDateString();
         const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`); // USA A NOVA VARIÁVEL
 
@@ -4312,7 +4480,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-    const loadManagerNotifications = () => {
+    function loadManagerNotifications() {
         const section = document.getElementById('manager-notifications-section');
         const listContainer = document.getElementById('manager-notifications-list');
         const indicator = document.getElementById('gs-notification-indicator');
@@ -4368,7 +4536,7 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
     // --- Funções para Gerenciamento de Feriados e Domingos ---
-    const loadAndRenderList = (dbNode, listContainerId, title) => {
+    function loadAndRenderList(dbNode, listContainerId, title) {
         const listContainer = document.getElementById(listContainerId);
         listContainer.innerHTML = `<p style="text-align:center;">Carregando...</p>`;
 
@@ -4395,7 +4563,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const addDateToList = (inputId, dbNode, statusId, callback) => {
+    function addDateToList(inputId, dbNode, statusId, callback) {
         const dateInput = document.getElementById(inputId);
         const statusEl = document.getElementById(statusId);
         const dateValue = dateInput.value;
@@ -4419,7 +4587,7 @@ Transporte - R$ 5,00"></textarea></div>
             });
     };
 
-    const deleteDateFromList = (dbNode, key, callback) => {
+    function deleteDateFromList(dbNode, key, callback) {
         if (confirm('Tem certeza que deseja remover esta data?')) {
             database.ref(dbNode).child(key).remove()
                 .then(() => {
@@ -4433,7 +4601,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-    const loadCollaboratorProfilePicture = () => {
+    function loadCollaboratorProfilePicture() {
         const imgElement = document.getElementById('collaborator-profile-pic');
         const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
         const userKey = currentUserName.toLowerCase(); // USA A NOVA VARIÁVEL
@@ -4449,7 +4617,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const uploadProfilePicture = (file) => {
+    function uploadProfilePicture(file) {
         // Determina qual status e imagem atualizar com base na tela visível
         const isSecurityMode = elements.securityProfilePage.classList.contains('visible');
         const statusEl = document.getElementById(isSecurityMode ? 'security-photo-upload-status' : 'photo-upload-status');
@@ -4500,7 +4668,7 @@ Transporte - R$ 5,00"></textarea></div>
 
     // --- Funções para Gerenciamento de Folgas ---
 
-    const populateEmployeeSelect = () => {
+    function populateEmployeeSelect() {
         const select = document.getElementById('day-off-employee-select');
         select.innerHTML = '<option value="" disabled selected>Selecione...</option>';
         allCollaborators.forEach(name => {
@@ -4508,7 +4676,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const loadAndRenderDaysOff = () => {
+    function loadAndRenderDaysOff() {
         const listContainer = document.getElementById('days-off-list-container');
         listContainer.innerHTML = `<p style="text-align:center;">Carregando...</p>`;
 
@@ -4554,7 +4722,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const addDayOff = () => {
+    function addDayOff() {
         const employeeKey = document.getElementById('day-off-employee-select').value;
         const dateValue = document.getElementById('day-off-date-input').value;
         const statusEl = document.getElementById('day-off-status-message');
@@ -4579,7 +4747,7 @@ Transporte - R$ 5,00"></textarea></div>
             });
     };
 
-    const deleteDayOff = (date, employeeKey) => {
+    function deleteDayOff(date, employeeKey) {
         if (confirm('Tem certeza que deseja remover esta folga?')) {
             database.ref(`scheduledDaysOff/${date}/${employeeKey}`).remove()
                 .then(() => {
@@ -4594,7 +4762,7 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
 
-    const justifyOccurrence = () => {
+    function justifyOccurrence() {
         const reason = prompt("Por favor, digite o motivo para a ocorrência (atraso/falta):");
         if (!reason || reason.trim() === "") {
             alert("A justificativa não pode ser vazia.");
@@ -4617,7 +4785,7 @@ Transporte - R$ 5,00"></textarea></div>
             });
     };
 
-    const calculateAndSaveOvertime = async (todayString) => {
+    async function calculateAndSaveOvertime(todayString) {
         const userKey = currentUserName.toLowerCase(); // CORREÇÃO AQUI
         const pontoHojeRef = database.ref(`pontosDoDia/${todayString}/${userKey}`);
         
@@ -4657,7 +4825,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-    const loadAndDisplayOvertime = async () => {
+    async function loadAndDisplayOvertime() {
         const container = document.getElementById('overtime-list-container');
         container.innerHTML = '<p style="text-align: center;">Carregando...</p>';
 
@@ -4689,7 +4857,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const openOvertimeManagementPage = async () => {
+    async function openOvertimeManagementPage() {
         showPage('overtimeManagementPage');
         const container = document.getElementById('overtime-management-content');
         container.innerHTML = '<p style="text-align: center;">Carregando...</p>';
@@ -4717,7 +4885,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const saveOvertimeChanges = () => {
+    function saveOvertimeChanges() {
         const statusEl = document.getElementById('overtime-status-message');
         statusEl.textContent = 'Salvando...';
 
@@ -4914,7 +5082,7 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
 
-                        const calculateAndDisplayStoreRanking = () => {
+function calculateAndDisplayStoreRanking() {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
 
