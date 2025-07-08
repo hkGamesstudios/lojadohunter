@@ -2557,7 +2557,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.4.7'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.4.8'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -4802,7 +4802,7 @@ Transporte - R$ 5,00"></textarea></div>
         Promise.all([
             database.ref('salesData').get(),
             database.ref('metas').get(),
-            database.ref('userProfiles').get()
+            database.ref('userProfiles').get() // Adicionado para buscar as fotos
         ]).then(([salesSnapshot, metasSnapshot, profilesSnapshot]) => {
             if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
                 container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
@@ -4813,36 +4813,24 @@ Transporte - R$ 5,00"></textarea></div>
             const metasData = metasSnapshot.val();
             const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
             const performanceData = [];
-            const managersToRank = ['Beatriz', 'Natalia'];
-
-            // Corrigindo a lógica de cálculo para usar as vendas da loja inteira
-            const salesByStore = { pinheiro: 0, bacabal: 0 };
-            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
-            nonManagerCollaborators.forEach(name => {
-                const key = name.toLowerCase();
-                const venda = parseFloat(salesData[key]?.vendas || 0);
-                if (storeMapping.pinheiro.includes(name)) {
-                    salesByStore.pinheiro += venda;
-                } else if (storeMapping.bacabal.includes(name)) {
-                    salesByStore.bacabal += venda;
-                }
-            });
+            const managersToRank = ['Beatriz', 'Natalia']; // As gerentes que serão comparadas
 
             managersToRank.forEach(name => {
                 const key = name.toLowerCase();
-                // Determina qual total de vendas usar
-                const storeSales = name === 'Beatriz' ? salesByStore.pinheiro : salesByStore.bacabal;
+                const actualSales = parseFloat(salesData[key]?.vendas || 0);
                 const salesGoal = parseFloat(metasData[key]?.venda || 0);
 
                 if (salesGoal > 0) {
-                    const percentage = (storeSales / salesGoal) * 100;
+                    const percentage = (actualSales / salesGoal) * 100;
                     performanceData.push({ name: name, percentage: percentage });
                 } else {
-                    performanceData.push({ name: name, percentage: 0 });
+                    performanceData.push({ name: name, percentage: 0 }); // Adiciona para aparecer mesmo sem meta
                 }
             });
 
+            // Ordena pela maior porcentagem
             performanceData.sort((a, b) => b.percentage - a.percentage);
+
             container.innerHTML = '';
 
             if (performanceData.length === 0) {
@@ -4852,21 +4840,26 @@ Transporte - R$ 5,00"></textarea></div>
 
             performanceData.forEach((collab, index) => {
                 const rank = index + 1;
+                // A linha abaixo já contém a formatação ",00"
                 const prize = 'R$ 200,00';
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
 
-                // O prêmio é exibido apenas para o primeiro lugar
-                const prizeHTML = (rank === 1) ? `<span class="rank-prize">${prize}</span>` : '';
+                const prizeHTML = (rank === 1)
+                    ? `<span class="rank-prize">${prize}</span>`
+                    : '';
                 
                 const rankItem = document.createElement('div');
                 rankItem.className = `rank-item rank-${rank}`;
                 
-                const progressBarWidth = collab.percentage > 100 ? 100 : collab.percentage;
+                const progressBarWidth = collab.percentage;
                 
+                // Lógica para buscar a foto do perfil da gerente
                 const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
                 const managerProfile = profilesData[collab.name.toLowerCase()];
-                const photoUrl = managerProfile?.photoURL || defaultPhoto;
+                const photoUrl = managerProfile && managerProfile.photoURL ? managerProfile.photoURL : defaultPhoto;
 
+
+                // Adiciona a coroa apenas para o rank 1
                 const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
 
                 rankItem.innerHTML = `
