@@ -1380,24 +1380,14 @@
             animation: modalContentEnter 0.4s var(--ease-out-back);
         }
 
-        /* Estilo para a Exibição da Versão Dourada (sem pulsação) */
+        /* Estilo para a Exibição da Versão */
         #app-version-display {
             text-align: center;
-            padding: 1.5rem 1rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            
-            /* Efeito de texto em gradiente dourado */
-            background: linear-gradient(45deg, #f0c72c, #ffd700, #e6b400);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-fill-color: transparent;
-
-            /* Sombra suave para manter o efeito de brilho, sem animação */
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            padding: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            width: 100%;
         }
 
         /* Estilos para a página Lollipop */
@@ -2589,7 +2579,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.5.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.5.3'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3450,46 +3440,12 @@ Transporte - R$ 5,00"></textarea></div>
         const container = document.getElementById('correction-content-container');
         container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
 
-        // Função para recalcular e atualizar os totais de uma loja
-        const updateManagerTotals = (storeName) => {
-            let totalVendas = 0, totalP1P2 = 0, totalSeguro = 0, totalCartao = 0;
-            const employeesOfStore = storeMapping[storeName].filter(name => !managers.includes(name));
-
-            // Soma os valores dos funcionários da loja
-            employeesOfStore.forEach(employeeName => {
-                const key = employeeName.toLowerCase();
-                totalVendas += parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value);
-                totalP1P2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value);
-                totalSeguro += parseInt(document.getElementById(`correction-seguro-${key}`).value || 0, 10);
-                totalCartao += parseInt(document.getElementById(`correction-cartao-${key}`).value || 0, 10);
-            });
-            
-            // Adiciona os valores da própria gerente (se houver)
-            const managerName = storeMapping[storeName].find(name => managers.includes(name));
-            if(managerName) {
-                const key = managerName.toLowerCase();
-                 totalVendas += parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value);
-                 totalP1P2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value);
-                 totalSeguro += parseInt(document.getElementById(`correction-seguro-${key}`).value || 0, 10);
-                 totalCartao += parseInt(document.getElementById(`correction-cartao-${key}`).value || 0, 10);
-            }
-
-
-            // Atualiza os campos de total da gerente
-            const managerKey = `manager-total-${storeName}`;
-            document.querySelector(`#correction-vendas-${managerKey}`).value = formatToBRLInput(totalVendas);
-            document.querySelector(`#correction-p1p2-${managerKey}`).value = formatToBRLInput(totalP1P2);
-            document.querySelector(`#correction-seguro-${managerKey}`).value = totalSeguro;
-            document.querySelector(`#correction-cartao-${managerKey}`).value = totalCartao;
-        };
-
         database.ref('salesData').get().then(snapshot => {
             const allSales = snapshot.exists() ? snapshot.val() : {};
             container.innerHTML = '';
 
-            // Renderiza os cards de VENDEDORES (não-gerentes)
-            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
-            nonManagerCollaborators.forEach(name => {
+            // 1. Renderiza os cards para TODOS os colaboradores, incluindo gerentes, com seus dados individuais editáveis.
+            allCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const salesData = allSales[key] || {};
                 container.innerHTML += `
@@ -3503,45 +3459,39 @@ Transporte - R$ 5,00"></textarea></div>
                 `;
             });
 
-            // Renderiza os cards de GERENTES (com inputs editáveis para os totais)
-            managers.forEach(name => {
-                const storeName = storeMapping.pinheiro.includes(name) ? 'pinheiro' : 'bacabal';
-                const managerKey = `manager-total-${storeName}`; // ID único para os campos de total
-                 const key = name.toLowerCase();
-                const salesData = allSales[key] || {};
+            // 2. Calcula os totais iniciais para cada loja.
+            const storeTotals = {
+                pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
+                bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
+            };
+            for (const store in storeMapping) {
+                storeMapping[store].forEach(employeeName => {
+                    const employeeKey = employeeName.toLowerCase();
+                    const employeeData = allSales[employeeKey] || {};
+                    storeTotals[store].vendas += parseFloat(employeeData.vendas || 0);
+                    storeTotals[store].p1p2 += parseFloat(employeeData.p1p2 || 0);
+                    storeTotals[store].seguro += parseInt(employeeData.seguro || 0, 10);
+                    storeTotals[store].cartao += parseInt(employeeData.cartao || 0, 10);
+                });
+            }
+
+            // 3. Renderiza os cards de "Total Loja" com campos editáveis.
+            for (const storeName in storeTotals) {
+                const totals = storeTotals[storeName];
+                const totalCardIdPrefix = `total-loja-${storeName}`;
+                const storeTitle = storeName.charAt(0).toUpperCase() + storeName.slice(1);
 
                 container.innerHTML += `
                     <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
-                        <h4>${name}</h4>
-                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
-                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
-                        <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
-                        <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
-                        <hr style="border-color: rgba(255,255,255,0.2); margin: 1rem 0;">
-                        <h4 style="color: #fff; text-align: left;">Total Loja</h4>
-                        <div class="input-group"><label for="correction-vendas-${managerKey}">📈 TOTAL VENDAS</label><input type="text" id="correction-vendas-${managerKey}" class="data-input" value="0,00" disabled></div>
-                        <div class="input-group"><label for="correction-p1p2-${managerKey}">🔱 TOTAL P1/P2</label><input type="text" id="correction-p1p2-${managerKey}" class="data-input" value="0,00" disabled></div>
-                        <div class="input-group"><label for="correction-seguro-${managerKey}">🔧 TOTAL SEGURO</label><input type="number" id="correction-seguro-${managerKey}" class="data-input" value="0" disabled></div>
-                        <div class="input-group"><label for="correction-cartao-${managerKey}">💳 TOTAL CARTÃO</label><input type="number" id="correction-cartao-${managerKey}" class="data-input" value="0" disabled></div>
+                        <h4 style="color: #fff;">Total Loja ${storeTitle}</h4>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" value="${formatToBRLInput(totals.p1p2)}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-seguro">🔧 TOTAL SEGURO</label><input type="number" id="${totalCardIdPrefix}-seguro" class="data-input" value="${totals.seguro}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" value="${totals.cartao}"></div>
                     </div>
                 `;
-            });
-
-            // Após renderizar tudo, adiciona os listeners e calcula os totais iniciais
-            allCollaborators.forEach(name => {
-                const storeName = storeMapping.pinheiro.includes(name) ? 'pinheiro' : 'bacabal';
-                const key = name.toLowerCase();
-                const inputs = container.querySelectorAll(`#correction-vendas-${key}, #correction-p1p2-${key}, #correction-seguro-${key}, #correction-cartao-${key}`);
-                
-                inputs.forEach(input => {
-                    input.addEventListener('input', () => updateManagerTotals(storeName));
-                    input.addEventListener('blur', () => updateManagerTotals(storeName));
-                });
-            });
-
-            // Calcula os totais iniciais para cada loja
-            updateManagerTotals('pinheiro');
-            updateManagerTotals('bacabal');
+            }
+            // Não há mais listeners para atualização automática. A página agora é estática após o carregamento.
         });
     };
 
@@ -5100,6 +5050,12 @@ Transporte - R$ 5,00"></textarea></div>
         const video = document.getElementById('ponto-video');
         const canvas = document.getElementById('ponto-canvas');
         const statusEl = document.getElementById('ponto-status-message');
+        const captureButton = document.getElementById('capture-ponto-btn');
+
+        // Desabilita o botão imediatamente para evitar cliques duplos
+        captureButton.disabled = true;
+        captureButton.style.opacity = '0.5';
+        captureButton.style.cursor = 'not-allowed';
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -5110,6 +5066,10 @@ Transporte - R$ 5,00"></textarea></div>
         canvas.toBlob(blob => {
             if (!blob) {
                 statusEl.textContent = 'Erro ao capturar imagem.';
+                // Reabilita o botão em caso de erro
+                captureButton.disabled = false;
+                captureButton.style.opacity = '1';
+                captureButton.style.cursor = 'pointer';
                 return;
             }
 
@@ -5131,6 +5091,10 @@ Transporte - R$ 5,00"></textarea></div>
                         if (!currentPontoAction) {
                             statusEl.textContent = 'Erro: Ação de ponto indefinida.';
                             console.error("currentPontoAction está nulo no momento do salvamento.");
+                            // Reabilita o botão em caso de erro
+                            captureButton.disabled = false;
+                            captureButton.style.opacity = '1';
+                            captureButton.style.cursor = 'pointer';
                             return;
                         }
 
@@ -5169,32 +5133,47 @@ Transporte - R$ 5,00"></textarea></div>
                             .then(() => {
                                 statusEl.textContent = 'Ponto registrado com sucesso!';
                                 currentPontoAction = null;
+                                // O botão permanece desabilitado, pois a navegação ocorrerá em seguida
                                 setTimeout(() => {
                                     stopPontoCamera();
                                     
-                                    // Lógica de retorno corrigida e mais robusta
                                     const isSecurity = Object.values(securityGuards).includes(currentUserName);
                                     if (isSecurity) {
                                         showPage('securityProfilePage');
                                     } else {
                                         showPage('collaboratorPage');
-                                        // Esta função só deve ser chamada para colaboradores
                                         checkPontoStatusAndDisplayWarnings();
                                     }
+                                    // Reabilita o botão ao sair da página, para a próxima vez que entrar
+                                    captureButton.disabled = false;
+                                    captureButton.style.opacity = '1';
+                                    captureButton.style.cursor = 'pointer';
                                 }, 2000);
                             })
                             .catch(dbError => {
                                 console.error("Erro ao salvar dados do ponto:", dbError);
                                 statusEl.textContent = 'Erro ao salvar os dados do ponto.';
+                                // Reabilita o botão em caso de erro
+                                captureButton.disabled = false;
+                                captureButton.style.opacity = '1';
+                                captureButton.style.cursor = 'pointer';
                             });
                     } else {
                         console.error('Erro no ImgBB:', result);
                         statusEl.textContent = 'Falha ao enviar a foto.';
+                        // Reabilita o botão em caso de erro
+                        captureButton.disabled = false;
+                        captureButton.style.opacity = '1';
+                        captureButton.style.cursor = 'pointer';
                     }
                 })
                 .catch(error => {
                     console.error('Erro de rede ao enviar para ImgBB:', error);
                     statusEl.textContent = 'Erro de conexão ao enviar a foto.';
+                    // Reabilita o botão em caso de erro
+                    captureButton.disabled = false;
+                    captureButton.style.opacity = '1';
+                    captureButton.style.cursor = 'pointer';
                 });
 
         }, 'image/jpeg', 0.8);
@@ -5967,7 +5946,7 @@ Transporte - R$ 5,00"></textarea></div>
             loadAndDisplayOvertime(); // Carrega as horas extras no GS na inicialização
 
             // Exibe a versão do app no rodapé
-            document.getElementById('app-version-display').textContent = `1.5.2`;
+            document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
             
             // --- LÓGICA DO EASTER EGG DA VERSÃO ---
             let versionClickCount = 0;
