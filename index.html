@@ -52,16 +52,146 @@
             --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* Curva para animação com "overshoot" */
         }
 
-        /* --- ESTILOS DO TEMA NOTURNO --- */
-        body.dark-theme {
-            /* O gradiente principal do corpo é substituído por um mais escuro */
-            background: linear-gradient(160deg, #1d1a2c 0%, #252044 30%, #1a4f6d 100%);
+        /* ================================================= */
+        /* == ESTILOS DOS TEMAS                           == */
+        /* ================================================= */
+
+        /* --- TEMA PADRÃO (Nenhuma alteração, já é o base) --- */
+
+        /* --- TEMA HUNTER (LARANJA) --- */
+        body.theme-hunter {
+            background: linear-gradient(160deg, #612f00 0%, #a15000 30%, #e67e22 100%);
+        }
+        .theme-hunter header {
+            background-color: rgba(161, 80, 0, 0.5);
+            border-bottom-color: rgba(255, 255, 255, 0.15);
+        }
+        .theme-hunter .modal-content {
+            background: rgba(161, 80, 0, 0.8);
+        }
+        .theme-hunter #collaborator-page, .theme-hunter #gs-page, .theme-hunter #metas-config-page, .theme-hunter #metas-display-page, .theme-hunter #send-device-page, .theme-hunter #brand-devices-page, .theme-hunter #device-detail-page, .theme-hunter #manager-sales-panel-page, .theme-hunter #closing-page, .theme-hunter #correction-page, .theme-hunter #os-form-page, .theme-hunter #request-stock-page, .theme-hunter #recibos-page, .theme-hunter #quiz-page, .theme-hunter #crediario-calculator-page, .theme-hunter #site-calculator-page, .theme-hunter #loja-calculator-page, .theme-hunter #mt-display-page, .theme-hunter #mt-management-page, .theme-hunter #ponto-verification-page, .theme-hunter #holidays-management-page, .theme-hunter #sundays-management-page, .theme-hunter #ponto-history-page, .theme-hunter #day-off-management-page, .theme-hunter #overtime-management-page, .theme-hunter #security-city-selection-page, .theme-hunter #security-profile-page {
+            background: linear-gradient(160deg, #612f00 0%, #a15000 30%, #e67e22 100%);
         }
 
-        /* Sobrescreve o fundo do cabeçalho para o tema escuro */
-        .dark-theme header {
-            background-color: rgba(29, 26, 44, 0.5);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* --- TEMA ROSA --- */
+        body.theme-rosa {
+            background: linear-gradient(160deg, #6d1a4f 0%, #c83a7d 30%, #ff69b4 100%);
+            --primary-color: #ff1493; /* Deep Pink */
+        }
+        .theme-rosa header {
+            background-color: rgba(200, 58, 125, 0.5);
+            border-bottom-color: rgba(255, 255, 255, 0.15);
+        }
+        .theme-rosa .modal-content {
+            background: rgba(109, 26, 79, 0.8);
+        }
+        .theme-rosa .logo i { color: #ff1493; }
+        .theme-rosa .tool-icon-wrapper { background-color: #ff1493; }
+        .theme-rosa #collaborator-profile-pic, .theme-rosa #security-profile-pic { border-color: #ff1493; }
+        .theme-rosa .gs-action-btn i { color: #ff1493; }
+        .theme-rosa .mt-item-card { border-left-color: #ff1493; }
+        .theme-rosa .ponto-history-details p strong { color: #ff1493; }
+        .theme-rosa .kpi-value { color: #ff1493; }
+        .theme-rosa .stock-brand-header { color: #ff1493; }
+        .theme-rosa .progress-bar { background: #ff1493; }
+        .theme-rosa .data-input:focus { border-color: #ff1493; }
+        .theme-rosa #collaborator-page, .theme-rosa #gs-page, .theme-rosa #metas-config-page, .theme-rosa #metas-display-page, .theme-rosa #send-device-page, .theme-rosa #brand-devices-page, .theme-rosa #device-detail-page, .theme-rosa #manager-sales-panel-page, .theme-rosa #closing-page, .theme-rosa #correction-page, .theme-rosa #os-form-page, .theme-rosa #request-stock-page, .theme-rosa #recibos-page, .theme-rosa #quiz-page, .theme-rosa #crediario-calculator-page, .theme-rosa #site-calculator-page, .theme-rosa #loja-calculator-page, .theme-rosa #mt-display-page, .theme-rosa #mt-management-page, .theme-rosa #ponto-verification-page, .theme-rosa #holidays-management-page, .theme-rosa #sundays-management-page, .theme-rosa #ponto-history-page, .theme-rosa #day-off-management-page, .theme-rosa #overtime-management-page, .theme-rosa #security-city-selection-page, .theme-rosa #security-profile-page {
+            background: linear-gradient(160deg, #6d1a4f 0%, #c83a7d 30%, #ff69b4 100%);
+        }
+
+        /* --- TEMA BLACK --- */
+        body.theme-black {
+            background: #000;
+            --primary-color: #00BFFF; /* DeepSkyBlue como contraste */
+        }
+        .theme-black header {
+            background-color: rgba(10, 10, 10, 0.7);
+            border-bottom-color: rgba(255, 255, 255, 0.08);
+        }
+        .theme-black .brand-button, .theme-black .tool-item, .theme-black .modal-btn, .theme-black .action-button {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .theme-black .modal-content {
+            background: rgba(15, 15, 15, 0.85);
+        }
+        .theme-black .logo i { color: #00BFFF; }
+        .theme-black .tool-icon-wrapper { background-color: #00BFFF; }
+        .theme-black #collaborator-profile-pic, .theme-black #security-profile-pic { border-color: #00BFFF; }
+        .theme-black .gs-action-btn i { color: #00BFFF; }
+        .theme-black .mt-item-card { border-left-color: #00BFFF; }
+        .theme-black .ponto-history-details p strong { color: #00BFFF; }
+        .theme-black .kpi-value { color: #00BFFF; }
+        .theme-black .stock-brand-header { color: #00BFFF; }
+        .theme-black .progress-bar { background: #00BFFF; }
+        .theme-black .data-input:focus { border-color: #00BFFF; }
+        .theme-black #collaborator-page, .theme-black #gs-page, .theme-black #metas-config-page, .theme-black #metas-display-page, .theme-black #send-device-page, .theme-black #brand-devices-page, .theme-black #device-detail-page, .theme-black #manager-sales-panel-page, .theme-black #closing-page, .theme-black #correction-page, .theme-black #os-form-page, .theme-black #request-stock-page, .theme-black #recibos-page, .theme-black #quiz-page, .theme-black #crediario-calculator-page, .theme-black #site-calculator-page, .theme-black #loja-calculator-page, .theme-black #mt-display-page, .theme-black #mt-management-page, .theme-black #ponto-verification-page, .theme-black #holidays-management-page, .theme-black #sundays-management-page, .theme-black #ponto-history-page, .theme-black #day-off-management-page, .theme-black #overtime-management-page, .theme-black #security-city-selection-page, .theme-black #security-profile-page {
+            background: #000;
+        }
+
+        /* --- TEMA CLARO --- */
+        body.theme-claro {
+            background: #eef2f3;
+            color: var(--secondary-color);
+        }
+        .theme-claro #collaborator-page, .theme-claro #gs-page, .theme-claro #metas-config-page, .theme-claro #metas-display-page, .theme-claro #send-device-page, .theme-claro #brand-devices-page, .theme-claro #device-detail-page, .theme-claro #manager-sales-panel-page, .theme-claro #closing-page, .theme-claro #correction-page, .theme-claro #os-form-page, .theme-claro #request-stock-page, .theme-claro #recibos-page, .theme-claro #quiz-page, .theme-claro #crediario-calculator-page, .theme-claro #site-calculator-page, .theme-claro #loja-calculator-page, .theme-claro #mt-display-page, .theme-claro #mt-management-page, .theme-claro #ponto-verification-page, .theme-claro #holidays-management-page, .theme-claro #sundays-management-page, .theme-claro #ponto-history-page, .theme-claro #day-off-management-page, .theme-claro #overtime-management-page, .theme-claro #security-city-selection-page, .theme-claro #security-profile-page {
+            background: #eef2f3;
+            color: var(--secondary-color);
+        }
+        .theme-claro header {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        .theme-claro .logo, .theme-claro .header-icons a {
+            color: var(--secondary-color);
+        }
+        .theme-claro .section-title, .theme-claro .rank-name, .theme-claro .collaborator-header h2, .theme-claro .back-button {
+            color: #111;
+        }
+        .theme-claro .section-title::after {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .theme-claro .brand-button, .theme-claro .tool-item, .theme-claro .modal-btn, .theme-claro .action-button, .theme-claro .gs-action-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: var(--secondary-color);
+        }
+        .theme-claro .tool-item:hover, .theme-claro .brand-button:hover, .theme-claro .modal-btn:hover, .theme-claro .action-button:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .theme-claro .rank-item, .theme-claro .sales-data-card, .theme-claro .kpi-card, .theme-claro .performance-card, .theme-claro .chart-container, .theme-claro .employee-meta-card, .theme-claro .ponto-history-card {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .theme-claro .progress-percentage, .theme-claro .ponto-history-details p, .theme-claro .mt-item-card pre, .theme-claro .mt-list-item-text {
+            color: #333;
+            text-shadow: none;
+        }
+        .theme-claro .modal-content {
+            background: rgba(240, 240, 240, 0.9);
+            color: var(--secondary-color);
+        }
+        .theme-claro .modal-close-btn, .theme-claro .modal-title {
+            color: var(--secondary-color);
+        }
+        .theme-claro .data-input {
+            background-color: rgba(0,0,0,0.08);
+            border-color: rgba(0,0,0,0.2);
+            color: var(--secondary-color);
+        }
+        .theme-claro .input-group label, .theme-claro .kpi-title, .theme-claro .chart-container h4, .theme-claro .meta-group-title, .theme-claro .ponto-history-justification {
+            color: #555;
+        }
+        .theme-claro #metas-display-content p {
+            background: rgba(0,0,0,0.05);
+        }
+        .theme-claro #monthly-sales-list-container p {
+            border-bottom-color: rgba(0,0,0,0.1);
+        }
+        .theme-claro .fast-mode-toggle i {
+            color: var(--secondary-color);
+        }
+        .theme-claro .fast-mode .fast-mode-toggle i {
+            color: var(--primary-color);
         }
 
         /* --- ANIMAÇÕES E CONTROLE DE VISIBILIDADE --- */
@@ -1547,7 +1677,7 @@
             </div>
             <nav class="header-icons">
                 <a href="#" id="fast-mode-toggle"><i class="fa-solid fa-person-running"></i></a>
-                <a href="#" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></a>
+                <a href="#" id="theme-toggle"><i class="fa-solid fa-palette"></i></a>
             </nav>
         </header>
 
@@ -2220,7 +2350,6 @@ P3: R$ 299,00"></textarea>
             <button id="close-os-modal-btn" class="modal-close-btn">×</button>
             <h3 class="modal-title">Assistência Técnica</h3>
             <div class="modal-button-container">
-                <button id="open-os-form-btn" class="modal-btn">Todas as Marcas</button>
                 <a href="https://w.app/gkesxd" target="_blank" class="modal-btn">Realme</a>
             </div>
         </div>
@@ -2319,35 +2448,57 @@ Transporte - R$ 5,00"></textarea></div>
     <div id="quiz-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-main-from-quiz" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Feedback de Clima</h2>
+            <h2>Treinamento da Loja do Hunter</h2>
         </div>
         <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1.5rem; align-items: stretch; overflow-y: auto;">
             
-            <div class="input-group"><label for="quiz-nome">NOME (Obrigatório)</label><input type="text" id="quiz-nome" class="data-input" placeholder="Seu nome"></div>
+            <div class="input-group"><label for="quiz-nome">Nome (Obrigatório)</label><input type="text" id="quiz-nome" class="data-input" placeholder="Seu nome"></div>
 
             <div class="quiz-question-group">
-                <label>1. Como você se sente no seu trabalho atualmente? (Obrigatório)</label>
-                <div class="radio-option"><input type="radio" id="sentimento-motivado" name="sentimento" value="Motivado(a)"><label for="sentimento-motivado">Motivado(a)</label></div>
-                <div class="radio-option"><input type="radio" id="sentimento-neutro" name="sentimento" value="Neutro(a)"><label for="sentimento-neutro">Neutro(a)</label></div>
-                <div class="radio-option"><input type="radio" id="sentimento-desmotivado" name="sentimento" value="Desmotivado(a)"><label for="sentimento-desmotivado">Desmotivado(a)</label></div>
+                <label>1. Você gostou do conteúdo do treinamento?</label>
+                <div class="radio-option"><input type="radio" id="gostou-sim-muito" name="gostou_treinamento" value="Sim, muito!"><label for="gostou-sim-muito">Sim, muito!</label></div>
+                <div class="radio-option"><input type="radio" id="gostou-sim-bom" name="gostou_treinamento" value="Sim, foi bom."><label for="gostou-sim-bom">Sim, foi bom.</label></div>
+                <div class="radio-option"><input type="radio" id="gostou-razoavel" name="gostou_treinamento" value="Foi razoável."><label for="gostou-razoavel">Foi razoável.</label></div>
+                <div class="radio-option"><input type="radio" id="gostou-nao" name="gostou_treinamento" value="Não gostei muito."><label for="gostou-nao">Não gostei muito.</label></div>
+            </div>
+
+            <div class="input-group">
+                <label for="quiz_parte_util">2. Qual parte você achou mais útil ou que mais chamou sua atenção?</label>
+                <textarea id="quiz_parte_util" class="data-input" rows="3"></textarea>
             </div>
 
             <div class="quiz-question-group">
-                <label>2. Você sente que tem voz dentro da empresa? (Obrigatório)</label>
-                <div class="radio-option"><input type="radio" id="voz-sempre" name="voz" value="Sempre posso me expressar"><label for="voz-sempre">Sempre posso me expressar</label></div>
-                <div class="radio-option"><input type="radio" id="voz-asvezes" name="voz" value="Às vezes sim, às vezes não"><label for="voz-asvezes">Às vezes sim, às vezes não</label></div>
-                <div class="radio-option"><input type="radio" id="voz-nao" name="voz" value="Sinto que não sou ouvido(a)"><label for="voz-nao">Sinto que não sou ouvido(a)</label></div>
+                <label>3. Teve alguma parte que ficou confusa ou você sentiu falta de mais explicações?</label>
+                <div class="radio-option"><input type="radio" id="confusa-sim" name="parte_confusa" value="Sim"><label for="confusa-sim">Sim</label></div>
+                <div class="radio-option"><input type="radio" id="confusa-nao" name="parte_confusa" value="Não"><label for="confusa-nao">Não</label></div>
+                <div class="input-group" style="margin-top: 1rem; margin-bottom: 0;">
+                    <label for="quiz_parte_confusa_detalhe">Se sim, qual parte?</label>
+                    <textarea id="quiz_parte_confusa_detalhe" class="data-input" rows="2"></textarea>
+                </div>
             </div>
 
             <div class="quiz-question-group">
-                <label>3. Como você avalia a liderança da equipe? (Obrigatório)</label>
-                <div class="radio-option"><input type="radio" id="lideranca-apoiado" name="lideranca" value="Me sinto apoiado(a) e guiado(a)"><label for="lideranca-apoiado">Me sinto apoiado(a) e guiado(a)</label></div>
-                <div class="radio-option"><input type="radio" id="lideranca-falta" name="lideranca" value="Faço o que é preciso, mas falta mais presença/liderança"><label for="lideranca-falta">Faço o que é preciso, mas falta mais presença/liderança</label></div>
-                <div class="radio-option"><input type="radio" id="lideranca-semapoio" name="lideranca" value="Sinto falta de apoio ou clareza na liderança"><label for="lideranca-semapoio">Sinto falta de apoio ou clareza na liderança</label></div>
+                <label>4. Você sentiu que esse treinamento te ajudou a se sentir mais preparado(a) para vender e atender melhor?</label>
+                <div class="radio-option"><input type="radio" id="ajudou-certeza" name="ajudou_preparar" value="Sim, com certeza"><label for="ajudou-certeza">Sim, com certeza</label></div>
+                <div class="radio-option"><input type="radio" id="ajudou-pouco" name="ajudou_preparar" value="Um pouco"><label for="ajudou-pouco">Um pouco</label></div>
+                <div class="radio-option"><input type="radio" id="ajudou-nao-muito" name="ajudou_preparar" value="Não muito"><label for="ajudou-nao-muito">Não muito</label></div>
+                <div class="radio-option"><input type="radio" id="ajudou-nao" name="ajudou_preparar" value="Não"><label for="ajudou-nao">Não</label></div>
             </div>
 
-            <div class="input-group"><label for="quiz-melhorar">4. O que você acha que a empresa poderia melhorar para o time se sentir mais valorizado e motivado? (Obrigatório)</label><textarea id="quiz-melhorar" class="data-input" rows="4"></textarea></div>
-            <div class="input-group"><label for="quiz-precisando">5. Tem algo que você está precisando agora (apoio, estrutura, etc.) que gostaria de compartilhar? (Obrigatório)</label><textarea id="quiz-precisando" class="data-input" rows="4"></textarea></div>
+            <div class="quiz-question-group">
+                <label>5. Qual tema você gostaria que a gente abordasse no próximo treinamento?</label>
+                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-redes" value="Abordagem nas redes sociais e atendimento online"><label for="tema-redes">Abordagem nas redes sociais e atendimento online</label></div>
+                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-metas" value="Como bater metas de forma leve e planejada"><label for="tema-metas">Como bater metas de forma leve e planejada</label></div>
+                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-clientes" value="Técnicas para lidar com clientes indecisos ou difíceis"><label for="tema-clientes">Técnicas para lidar com clientes indecisos ou difíceis</label></div>
+                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-sistema" value="Como usar melhor o sistema Hunter Vendas"><label for="tema-sistema">Como usar melhor o sistema Hunter Vendas</label></div>
+                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-outro" value="Outro"><label for="tema-outro">Outro:</label></div>
+                <input type="text" id="quiz_proximo_tema_outro" class="data-input" style="margin-left: 2rem; width: calc(100% - 2rem);">
+            </div>
+
+            <div class="input-group">
+                <label for="quiz_sugestao">6. Deixe aqui alguma sugestão, elogio ou crítica (opcional):</label>
+                <textarea id="quiz_sugestao" class="data-input" rows="3"></textarea>
+            </div>
             
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
                 <button id="submit-quiz-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Feedback</button>
@@ -2408,6 +2559,21 @@ Transporte - R$ 5,00"></textarea></div>
     <div id="image-viewer-overlay" class="modal-overlay">
         <button id="close-viewer-btn" class="modal-close-btn" style="z-index: 10;">×</button>
         <img id="viewer-image" src="" alt="Imagem ampliada">
+    </div>
+
+    <!-- Janela Modal para Seleção de Tema -->
+    <div id="theme-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-theme-modal-btn" class="modal-close-btn">×</button>
+            <h3 class="modal-title">Escolha um Tema</h3>
+            <div class="modal-button-container">
+                <button class="modal-btn theme-select-btn" data-theme="default">Padrão</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-hunter">Hunter (Laranja)</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-rosa">Rosa</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-black">Black</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-claro">Claro</button>
+            </div>
+        </div>
     </div>
 
     <!-- Elemento para exibir a versão -->
@@ -2582,7 +2748,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.5.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.6.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -2699,6 +2865,7 @@ Transporte - R$ 5,00"></textarea></div>
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
         pontoHistoryPage: document.getElementById('ponto-history-page'),
         searchOverlay: document.getElementById('search-overlay'),
+        themeModal: document.getElementById('theme-modal'),
     };    
     // --- LÓGICA DE NAVEGAÇÃO E ANIMAÇÃO (REFEITA DO ZERO) ---
     function staggerAnimate(container) {
@@ -4087,40 +4254,72 @@ Transporte - R$ 5,00"></textarea></div>
 
     const sendQuizEmail = () => {
         const statusEl = document.getElementById('quiz-status-message');
-        const nome = document.getElementById('quiz-nome').value.trim();
-        const sentimento = document.querySelector('input[name="sentimento"]:checked');
-        const voz = document.querySelector('input[name="voz"]:checked');
-        const lideranca = document.querySelector('input[name="lideranca"]:checked');
-        const melhorar = document.getElementById('quiz-melhorar').value.trim();
-        const precisando = document.getElementById('quiz-precisando').value.trim();
 
-        if (!nome || !sentimento || !voz || !lideranca || !melhorar || !precisando) {
-            statusEl.textContent = 'Por favor, preencha todos os campos obrigatórios!';
+        // Coleta de dados dos campos
+        const nome = document.getElementById('quiz-nome').value.trim();
+        const gostouTreinamento = document.querySelector('input[name="gostou_treinamento"]:checked');
+        const parteUtil = document.getElementById('quiz_parte_util').value.trim();
+        const parteConfusa = document.querySelector('input[name="parte_confusa"]:checked');
+        const parteConfusaDetalhe = document.getElementById('quiz_parte_confusa_detalhe').value.trim();
+        const ajudouPreparar = document.querySelector('input[name="ajudou_preparar"]:checked');
+        const proximoTemaRadio = document.querySelector('input[name="proximo_tema"]:checked');
+        const proximoTemaOutro = document.getElementById('quiz_proximo_tema_outro').value.trim();
+        const sugestao = document.getElementById('quiz_sugestao').value.trim();
+
+        // Validação
+        if (!nome || !gostouTreinamento || !parteUtil || !parteConfusa || !ajudouPreparar || !proximoTemaRadio) {
+            statusEl.textContent = 'Por favor, responda todas as perguntas obrigatórias.';
+            return;
+        }
+        if (parteConfusa.value === 'Sim' && !parteConfusaDetalhe) {
+            statusEl.textContent = 'Por favor, especifique qual parte do treinamento ficou confusa.';
+            return;
+        }
+        if (proximoTemaRadio.value === 'Outro' && !proximoTemaOutro) {
+            statusEl.textContent = 'Por favor, especifique o outro tema para o próximo treinamento.';
             return;
         }
 
-        let body = `FEEDBACK DE CLIMA ORGANIZACIONAL\n`;
-        body += `=====================================\n\n`;
+        // Montagem do corpo do email
+        let proximoTemaFinal = proximoTemaRadio.value;
+        if (proximoTemaRadio.value === 'Outro') {
+            proximoTemaFinal = `Outro: ${proximoTemaOutro}`;
+        }
+        
+        let parteConfusaFinal = parteConfusa.value;
+        if (parteConfusa.value === 'Sim') {
+            parteConfusaFinal = `Sim, a parte sobre: ${parteConfusaDetalhe}`;
+        }
+
+        let body = `FEEDBACK - TREINAMENTO LOJA DO HUNTER\n`;
+        body += `=========================================\n\n`;
         body += `NOME DO COLABORADOR: ${nome}\n\n`;
         
-        body += `1. Como você se sente no seu trabalho atualmente?\n- ${sentimento.value}\n\n`;
-        body += `2. Você sente que tem voz dentro da empresa?\n- ${voz.value}\n\n`;
-        body += `3. Como você avalia a liderança da equipe?\n- ${lideranca.value}\n\n`;
-        body += `4. O que você acha que a empresa poderia melhorar?\n- ${melhorar}\n\n`;
-        body += `5. Tem algo que você está precisando agora?\n- ${precisando}\n`;
+        body += `1. Você gostou do conteúdo do treinamento?\n- ${gostouTreinamento.value}\n\n`;
+        body += `2. Qual parte você achou mais útil ou que mais chamou sua atenção?\n- ${parteUtil}\n\n`;
+        body += `3. Teve alguma parte que ficou confusa ou você sentiu falta de mais explicações?\n- ${parteConfusaFinal}\n\n`;
+        body += `4. Você sentiu que esse treinamento te ajudou a se sentir mais preparado(a) para vender e atender melhor?\n- ${ajudouPreparar.value}\n\n`;
+        body += `5. Qual tema você gostaria que a gente abordasse no próximo treinamento?\n- ${proximoTemaFinal}\n\n`;
+        
+        if (sugestao) {
+            body += `6. Sugestão, elogio ou crítica (opcional):\n- ${sugestao}\n`;
+        }
 
+        // Envio do email
         const recipient = 'paulotrindade700@gmail.com';
-        const subject = `Feedback de Clima Organizacional - ${nome}`;
+        const subject = `Feedback de Treinamento - ${nome}`;
         
         window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         
         statusEl.textContent = 'Abrindo seu cliente de email...';
         
-        // Limpar formulário
+        // Limpeza do formulário
         document.getElementById('quiz-nome').value = '';
         document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-        document.getElementById('quiz-melhorar').value = '';
-        document.getElementById('quiz-precisando').value = '';
+        document.getElementById('quiz_parte_util').value = '';
+        document.getElementById('quiz_parte_confusa_detalhe').value = '';
+        document.getElementById('quiz_proximo_tema_outro').value = '';
+        document.getElementById('quiz_sugestao').value = '';
     };
 
         const displayMtForBrand = (brand) => {
@@ -5730,7 +5929,10 @@ function calculateAndDisplayStoreRanking() {
                     localStorage.setItem('fastMode', 'true');
                 } else {
                     document.body.classList.remove('fast-mode');
-                    fastModeIcon.style.color = 'var(--white)';
+                    // O seletor de tema claro cuida da cor do ícone no tema claro
+                    if (!document.body.classList.contains('theme-claro')) {
+                       fastModeIcon.style.color = 'var(--white)';
+                    }
                     localStorage.setItem('fastMode', 'false');
                 }
             };
@@ -5745,33 +5947,68 @@ function calculateAndDisplayStoreRanking() {
             });
 
             
-            // --- LÓGICA DE TEMA (MODO ESCURO) ---
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const themeIcon = darkModeToggle.querySelector('i');
-
-            const applyTheme = (theme) => {
-                if (theme === 'dark') {
-                    document.body.classList.add('dark-theme');
-                    themeIcon.classList.remove('fa-moon');
-                    themeIcon.classList.add('fa-sun');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    document.body.classList.remove('dark-theme');
-                    themeIcon.classList.remove('fa-sun');
-                    themeIcon.classList.add('fa-moon');
-                    localStorage.setItem('theme', 'light');
-                }
+            // --- LÓGICA DE TEMA (NOVA) ---
+            const openThemeModal = () => {
+                const modal = elements.themeModal;
+                if(isNavigating) return;
+                isNavigating = true;
+                
+                modal.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    modal.classList.add('visible');
+                    staggerAnimate(modal);
+                    isNavigating = false;
+                });
             };
 
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
+            const closeThemeModal = () => {
+                const modal = elements.themeModal;
+                if (isNavigating || !modal.classList.contains('visible')) return;
+                isNavigating = true;
 
-            darkModeToggle.addEventListener('click', (e) => {
+                modal.classList.add('is-exiting');
+
+                modal.addEventListener('animationend', (e) => {
+                    modal.style.display = 'none';
+                    modal.classList.remove('visible', 'is-exiting');
+                    isNavigating = false;
+                }, { once: true });
+            };
+
+            const applySelectedTheme = (themeName) => {
+                document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro');
+                if (themeName && themeName !== 'default') {
+                    document.body.classList.add(themeName);
+                }
+                localStorage.setItem('selectedTheme', themeName);
+            };
+
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeModal = document.getElementById('theme-modal');
+            const closeThemeBtn = document.getElementById('close-theme-modal-btn');
+            
+            themeToggle.addEventListener('click', (e) => {
                 e.preventDefault();
-                const currentTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
-                applyTheme(currentTheme);
+                openThemeModal();
             });
 
+            closeThemeBtn.addEventListener('click', closeThemeModal);
+            themeModal.addEventListener('click', (e) => {
+                if (e.target === themeModal) {
+                    closeThemeModal();
+                }
+            });
+
+            document.querySelectorAll('.theme-select-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const themeName = e.currentTarget.dataset.theme;
+                    applySelectedTheme(themeName);
+                    closeThemeModal();
+                });
+            });
+
+            const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+            applySelectedTheme(savedTheme);
             
 
             // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
@@ -5900,7 +6137,6 @@ function calculateAndDisplayStoreRanking() {
             elements.suporteModal.addEventListener('click', (event) => { if (event.target === elements.suporteModal) closeSuporteModal(); });
             document.getElementById('close-os-modal-btn').addEventListener('click', () => closeOsModal());
             elements.osModal.addEventListener('click', (e) => { if (e.target === elements.osModal) closeOsModal(); });
-            document.getElementById('open-os-form-btn').addEventListener('click', () => { closeOsModal(() => { showPage('osFormPage'); }); });
             document.getElementById('submit-os-form-btn').addEventListener('click', sendOsEmail);
             document.getElementById('send-stock-request-btn').addEventListener('click', sendStockRequestEmail);
             document.getElementById('submit-recibo-btn').addEventListener('click', sendReciboEmail);
