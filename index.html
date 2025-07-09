@@ -194,6 +194,69 @@
             color: var(--primary-color);
         }
 
+        /* --- TEMA LGBT --- */
+        @keyframes rainbow-bg {
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
+        }
+        body.theme-lgbt {
+            background: linear-gradient(270deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
+            background-size: 400% 400%;
+            animation: rainbow-bg 20s ease infinite; /* Velocidade diminuída */
+        }
+        .theme-lgbt header {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+        }
+        .theme-lgbt .modal-content {
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .theme-lgbt #collaborator-page, .theme-lgbt #gs-page, .theme-lgbt #metas-config-page, .theme-lgbt #metas-display-page, .theme-lgbt #send-device-page, .theme-lgbt #brand-devices-page, .theme-lgbt #device-detail-page, .theme-lgbt #manager-sales-panel-page, .theme-lgbt #closing-page, .theme-lgbt #correction-page, .theme-lgbt #os-form-page, .theme-lgbt #request-stock-page, .theme-lgbt #recibos-page, .theme-lgbt #quiz-page, .theme-lgbt #crediario-calculator-page, .theme-lgbt #site-calculator-page, .theme-lgbt #loja-calculator-page, .theme-lgbt #mt-display-page, .theme-lgbt #mt-management-page, .theme-lgbt #ponto-verification-page, .theme-lgbt #holidays-management-page, .theme-lgbt #sundays-management-page, .theme-lgbt #ponto-history-page, .theme-lgbt #day-off-management-page, .theme-lgbt #overtime-management-page, .theme-lgbt #security-city-selection-page, .theme-lgbt #security-profile-page {
+            background: transparent; /* Permite que o fundo animado do body apareça */
+        }
+
+        /* --- TEMA CINZA X --- */
+        @keyframes floatUp {
+            from { transform: translateY(0) rotate(var(--start-rot)); }
+            to { transform: translateY(-120vh) rotate(var(--end-rot)); }
+        }
+
+        body.theme-grayx {
+            background: linear-gradient(160deg, #111 0%, #4a4a4a 60%, #f0f0f0 100%);
+        }
+
+        #floating-x-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0; /* Abaixo do conteúdo principal, mas acima do fundo do body */
+            pointer-events: none;
+        }
+        .floating-x {
+            position: absolute;
+            top: 110vh; /* Começa fora da tela, embaixo */
+            color: rgba(255, 255, 255, 0.06);
+            font-weight: 900;
+            animation: floatUp linear infinite;
+            will-change: transform; /* Otimização para animação */
+        }
+
+        .theme-grayx header, .theme-grayx main {
+            position: relative; /* Garante que fiquem sobre a animação de Xs */
+            z-index: 1;
+        }
+        .theme-grayx #collaborator-page, .theme-grayx #gs-page, .theme-grayx #metas-config-page, .theme-grayx #metas-display-page, .theme-grayx #send-device-page, .theme-grayx #brand-devices-page, .theme-grayx #device-detail-page, .theme-grayx #manager-sales-panel-page, .theme-grayx #closing-page, .theme-grayx #correction-page, .theme-grayx #os-form-page, .theme-grayx #request-stock-page, .theme-grayx #recibos-page, .theme-grayx #quiz-page, .theme-grayx #crediario-calculator-page, .theme-grayx #site-calculator-page, .theme-grayx #loja-calculator-page, .theme-grayx #mt-display-page, .theme-grayx #mt-management-page, .theme-grayx #ponto-verification-page, .theme-grayx #holidays-management-page, .theme-grayx #sundays-management-page, .theme-grayx #ponto-history-page, .theme-grayx #day-off-management-page, .theme-grayx #overtime-management-page, .theme-grayx #security-city-selection-page, .theme-grayx #security-profile-page {
+            background: transparent;
+        }
+        .theme-grayx header {
+            background-color: rgba(10, 10, 10, 0.5);
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
         /* --- ANIMAÇÕES E CONTROLE DE VISIBILIDADE --- */
         @keyframes pageEnter {
             from {
@@ -2572,12 +2635,17 @@ Transporte - R$ 5,00"></textarea></div>
                 <button class="modal-btn theme-select-btn" data-theme="theme-rosa">Rosa</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-black">Black</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-claro">Claro</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-lgbt">LGBT</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-grayx">Cinza X</button>
             </div>
         </div>
     </div>
 
     <!-- Elemento para exibir a versão -->
     <div id="app-version-display"></div>
+
+    <!-- Container para o Tema Cinza X -->
+    <div id="floating-x-container"></div>
 
     <!-- TELA DE GERENCIAMENTO DE FERIADOS -->
     <div id="holidays-management-page" style="display: none;">
@@ -2748,7 +2816,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.6.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.6.1'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -5975,11 +6043,50 @@ function calculateAndDisplayStoreRanking() {
                 }, { once: true });
             };
 
+            const createOrClearFloatingXs = (create) => {
+                const container = document.getElementById('floating-x-container');
+                container.innerHTML = ''; // Limpa sempre
+                if (!create) return;
+
+                const xCount = 40; // Número de 'X's na tela
+                for (let i = 0; i < xCount; i++) {
+                    const x = document.createElement('span');
+                    x.classList.add('floating-x');
+                    x.innerText = 'X';
+                    
+                    const size = Math.random() * 40 + 20; // Tamanho entre 20px e 60px
+                    const left = Math.random() * 100;
+                    const duration = Math.random() * 20 + 15; // Duração entre 15s e 35s
+                    const delay = Math.random() * 10; // Delay de até 10s
+                    const startRotation = Math.random() * 360;
+                    const endRotation = startRotation + (Math.random() * 180 - 90); // Gira até 90 graus para um lado ou outro
+
+                    x.style.fontSize = `${size}px`;
+                    x.style.left = `${left}vw`;
+                    x.style.animationDuration = `${duration}s`;
+                    x.style.animationDelay = `${delay}s`;
+                    x.style.setProperty('--start-rot', `${startRotation}deg`);
+                    x.style.setProperty('--end-rot', `${endRotation}deg`);
+
+                    container.appendChild(x);
+                }
+            };
+            
             const applySelectedTheme = (themeName) => {
-                document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro');
+                // Limpa temas e efeitos anteriores
+                document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx');
+                createOrClearFloatingXs(false);
+                
+                // Adiciona o novo tema
                 if (themeName && themeName !== 'default') {
                     document.body.classList.add(themeName);
                 }
+                
+                // Ativa efeitos especiais para temas específicos
+                if (themeName === 'theme-grayx') {
+                    createOrClearFloatingXs(true);
+                }
+
                 localStorage.setItem('selectedTheme', themeName);
             };
 
