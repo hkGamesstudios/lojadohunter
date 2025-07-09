@@ -3112,7 +3112,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.7.6'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.7.7'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -6859,25 +6859,27 @@ function calculateAndDisplayStoreRanking() {
                 const originalUrl = event.currentTarget.dataset.url;
                 if (!originalUrl) return;
 
-                // Detecta se o app está rodando em um dispositivo Android
-                const isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+                // Remove o "https://" ou "http://" da URL para montar a Intent
+                const urlWithoutScheme = originalUrl.replace(/^https?:\/\//, '');
 
-                if (isAndroid) {
-                    // Para Android, cria uma "Intent URL" para forçar a abertura no navegador externo
-                    
-                    // Remove o "https://" do início da URL
-                    const urlWithoutScheme = originalUrl.replace(/^https?:\/\//, '');
+                // Cria uma Intent URL que mira especificamente o pacote do Google Chrome
+                const chromeIntentUrl = `intent://${urlWithoutScheme}#Intent;scheme=https;package=com.android.chrome;end`;
+                
+                // Dispara a Intent para abrir o Chrome
+                window.location.href = chromeIntentUrl;
 
-                    // Monta a URL especial de Intent
-                    const intentUrl = `intent://${urlWithoutScheme}#Intent;scheme=https;action=android.intent.action.VIEW;end`;
-                    
-                    // Navega para a URL de Intent, que o sistema operacional vai interceptar
-                    window.location.href = intentUrl;
-                    
-                } else {
-                    // Para outros sistemas (como PC), usa o método padrão
-                    window.open(originalUrl, '_blank');
-                }
+                // Adiciona um pequeno delay para dar tempo ao sistema de processar a Intent
+                // e então tenta fechar o aplicativo.
+                setTimeout(() => {
+                    // navigator.app.exitApp() é a forma padrão de fechar um app híbrido (Cordova/Phonegap etc.)
+                    if (navigator.app && navigator.app.exitApp) {
+                        navigator.app.exitApp();
+                    } else {
+                        // Se a função acima não existir, tenta o método window.close() como um fallback
+                        // (pode não funcionar em todos os casos)
+                        window.close();
+                    }
+                }, 150); // 150 milissegundos de delay
             });
 
             document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
