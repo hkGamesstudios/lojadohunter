@@ -3112,7 +3112,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.7.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.7.6'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -6856,19 +6856,27 @@ function calculateAndDisplayStoreRanking() {
 
             // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
             document.getElementById('hunter-card-link').addEventListener('click', function(event) {
-                // Pega a URL do atributo data-url
-                const url = event.currentTarget.dataset.url;
-                if (url) {
-                    // Cria um link temporário e invisível
-                    const tempLink = document.createElement('a');
-                    tempLink.href = url;
-                    tempLink.target = '_blank'; // Essencial para abrir externamente
-                    tempLink.style.display = 'none'; // Garante que não apareça na tela
+                const originalUrl = event.currentTarget.dataset.url;
+                if (!originalUrl) return;
 
-                    // Adiciona o link ao corpo do documento, clica nele e o remove
-                    document.body.appendChild(tempLink);
-                    tempLink.click();
-                    document.body.removeChild(tempLink);
+                // Detecta se o app está rodando em um dispositivo Android
+                const isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+
+                if (isAndroid) {
+                    // Para Android, cria uma "Intent URL" para forçar a abertura no navegador externo
+                    
+                    // Remove o "https://" do início da URL
+                    const urlWithoutScheme = originalUrl.replace(/^https?:\/\//, '');
+
+                    // Monta a URL especial de Intent
+                    const intentUrl = `intent://${urlWithoutScheme}#Intent;scheme=https;action=android.intent.action.VIEW;end`;
+                    
+                    // Navega para a URL de Intent, que o sistema operacional vai interceptar
+                    window.location.href = intentUrl;
+                    
+                } else {
+                    // Para outros sistemas (como PC), usa o método padrão
+                    window.open(originalUrl, '_blank');
                 }
             });
 
