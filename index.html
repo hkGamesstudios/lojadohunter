@@ -1858,7 +1858,12 @@
 
         /* Ajuste para o container de conteúdo principal do GS */
         #gs-page .collaborator-content {
-            padding-top: 1rem; /* Reduz o padding superior já que os botões estão acima */
+            /* O padding-top foi removido para que o conteúdo flua a partir do topo */
+            /* O espaçamento agora é controlado pelo padding da grade de ações */
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 1.5rem;
+            overflow-y: auto;
         }
 
 
@@ -1980,7 +1985,7 @@
                 
                 <!-- Grade de Ferramentas Principais -->
                 <div class="tools-grid">
-                    <a href="https://www.brasilcard.net/bca/lojista/login?f=login_lojista?b=m" id="hunter-card-link" class="tool-item">
+                    <a href="https://www.brasilcard.net" id="hunter-card-link" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-id-card"></i></div>
                         <span>Hunter Card</span>
                     </a>
@@ -2302,25 +2307,26 @@
             <h2>Dashboard Geral</h2>
         </div>
 
-        <!-- Botões de Ação no Topo -->
-        <div class="gs-actions-grid">
-            <button id="open-settings-page" class="gs-action-btn"><i class="fa-solid fa-bullseye"></i><span>Metas</span></button>
-            <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
-            <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>MT</span></button>
-            <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
-            <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
-            <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
-            <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
-            <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
-            <button id="open-avisos-management-page" class="gs-action-btn"><i class="fa-solid fa-bullhorn"></i><span>Avisos</span></button>
-            <button id="open-security-menu-btn" class="gs-action-btn"><i class="fa-solid fa-shield-halved"></i><span>Segurança</span></button>
-            <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar Backup</span></button>
-            <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Restaurar Backup</span></button>
-            <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
-        </div>
-
-        <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; gap: 1.5rem; padding-top: 1.5rem; overflow-y: auto;">
+        <div class="collaborator-content">
             
+            <!-- Botões de Ação agora estão DENTRO da área de rolagem -->
+            <div class="gs-actions-grid">
+                <button id="open-settings-page" class="gs-action-btn"><i class="fa-solid fa-bullseye"></i><span>Metas</span></button>
+                <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
+                <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>MT</span></button>
+                <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
+                <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
+                <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
+                <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
+                <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
+                <button id="open-avisos-management-page" class="gs-action-btn"><i class="fa-solid fa-bullhorn"></i><span>Avisos</span></button>
+                <button id="clear-ponto-status-btn" class="gs-action-btn"><i class="fa-solid fa-user-clock"></i><span>Limpar Ponto</span></button>
+                <button id="open-security-menu-btn" class="gs-action-btn"><i class="fa-solid fa-shield-halved"></i><span>Segurança</span></button>
+                <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar Backup</span></button>
+                <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Restaurar Backup</span></button>
+                <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
+            </div>
+
             <!-- KPIs principais -->
             <div class="dashboard-grid">
                 <div class="kpi-card"><span class="kpi-title">VENDAS TOTAIS</span><span id="total-vendas-kpi" class="kpi-value">---</span></div>
@@ -3106,7 +3112,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.7.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.7.3'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3133,6 +3139,7 @@ Transporte - R$ 5,00"></textarea></div>
     let monthlySalesChartInstance = null;
     let employeeGoalProgressChartInstance = null; // Variável para o novo gráfico
     let currentPontoAction = null; // Variável para controlar a ação de ponto atual
+    let pontoCheckTimeout = null; // Timer para a próxima verificação de estado
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
     // --- ESTADO DA APLICAÇÃO ---
@@ -5290,34 +5297,33 @@ function calculateAndDisplayRanking() {
             return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.', nextActionTime: null };
         }
 
-        const isWorkingSunday = sundaySnap.hasChild(todayString);
-        const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
-
-        if (justificationSnap.exists()) {
-            if (!dailyPontoData.entrada) return { action: 'registrar_entrada', status: 'justified', message: 'Justificativa aceita. Registre sua ENTRADA.', nextActionTime: null };
-            if (!isGuard && !isWeekendShift && !dailyPontoData.saida_almoco) return { action: 'registrar_saida_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA DE ALMOÇO.', nextActionTime: null };
-            if (!isGuard && !isWeekendShift && !dailyPontoData.volta_almoco) return { action: 'registrar_volta_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua VOLTA DO ALMOÇO.', nextActionTime: null };
-            if (!dailyPontoData.saida) return { action: 'registrar_saida', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA.', nextActionTime: null };
-            return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.', nextActionTime: null };
-        }
-
         if (holidaySnap.hasChild(todayString)) {
             return { action: null, status: 'holiday', message: 'Hoje é um feriado. Ponto desativado.', nextActionTime: null };
         }
 
+        const isWorkingSunday = sundaySnap.hasChild(todayString);
         if (dayOfWeek === 0 && !isWorkingSunday) {
             return { action: null, status: 'closed', message: 'Loja fechada aos domingos. Ponto desativado.', nextActionTime: null };
         }
 
-        let windows;
-        if (isWeekendShift) {
-            windows = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, saida: { start: 12 * 60 + 40 } };
-        } else {
-            windows = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 20 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
+        const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
+        const scheduleWithLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 20 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
+        const scheduleWithoutLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, saida: { start: 12 * 60 + 40 } };
+        
+        const windows = (isGuard || isWeekendShift) ? scheduleWithoutLunch : scheduleWithLunch;
+
+        // LÓGICA UNIFICADA A PARTIR DAQUI
+
+        if (justificationSnap.exists()) {
+            if (!dailyPontoData.entrada) return { action: 'registrar_entrada', status: 'justified', message: 'Justificativa aceita. Registre sua ENTRADA.', nextActionTime: null };
+            // A verificação `windows.saidaAlmoco` determina se o almoço é aplicável hoje.
+            if (windows.saidaAlmoco && !dailyPontoData.saida_almoco) return { action: 'registrar_saida_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA DE ALMOÇO.', nextActionTime: null };
+            if (windows.saidaAlmoco && !dailyPontoData.volta_almoco) return { action: 'registrar_volta_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua VOLTA DO ALMOÇO.', nextActionTime: null };
+            if (!dailyPontoData.saida) return { action: 'registrar_saida', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA.', nextActionTime: null };
+            return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.', nextActionTime: null };
         }
 
         if (!dailyPontoData.entrada) {
-            // Retornamos o início e o fim da janela para a entrada
             if (currentTimeInMinutes >= windows.entrada.start && currentTimeInMinutes <= windows.entrada.end) {
                 return { action: 'registrar_entrada', status: 'pending', message: 'Você deve bater o ponto de ENTRADA.', nextActionTime: windows.entrada.start, nextActionEndTime: windows.entrada.end };
             }
@@ -5327,14 +5333,13 @@ function calculateAndDisplayRanking() {
             return { action: null, status: 'waiting', message: 'Aguardando horário de entrada.', nextActionTime: windows.entrada.start, nextActionEndTime: windows.entrada.end };
         }
 
-        if (!isGuard && !isWeekendShift) {
+        // Se o horário de hoje TEM almoço, verifica os pontos de almoço.
+        if (windows.saidaAlmoco) {
             if (!dailyPontoData.saida_almoco) {
                 if (currentTimeInMinutes >= windows.saidaAlmoco.start && currentTimeInMinutes <= windows.saidaAlmoco.end) {
                     return { action: 'registrar_saida_almoco', status: 'pending', message: 'Você pode bater o ponto para SAÍDA DE ALMOÇO.', nextActionTime: windows.saidaAlmoco.start };
                 }
-                return { action: null, status: 'working', message: 'Em horário de trabalho.', nextActionTime: windows.saidaAlmoco.start };
-            }
-            if (!dailyPontoData.volta_almoco) {
+            } else if (!dailyPontoData.volta_almoco) {
                 const saidaAlmocoTime = new Date(dailyPontoData.saida_almoco.timestamp);
                 const expectedReturnTime = new Date(saidaAlmocoTime.getTime() + (2 * 60 * 60 * 1000));
                 const returnToleranceEnd = new Date(expectedReturnTime.getTime() + (15 * 60 * 1000));
@@ -5346,9 +5351,9 @@ function calculateAndDisplayRanking() {
                 }
             }
         }
-
+        
         if (!dailyPontoData.saida) {
-            const lastPunchTimestamp = dailyPontoData.volta_almoco?.timestamp || dailyPontoData.entrada?.timestamp;
+            const lastPunchTimestamp = dailyPontoData.volta_almoco?.timestamp || dailyPontoData.entrada.timestamp;
             if (lastPunchTimestamp) {
                 const lastPunchDate = new Date(lastPunchTimestamp);
                 if (now.getDate() > lastPunchDate.getDate() || now.getMonth() > lastPunchDate.getMonth() || now.getFullYear() > lastPunchDate.getFullYear()) {
@@ -5364,49 +5369,40 @@ function calculateAndDisplayRanking() {
         return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.', nextActionTime: null };
     };
 
-            const startCountdownTimer = (targetTimeInMinutes) => {
-        // Se já existe um timer rodando, não faz nada.
-        if (countdownInterval) return;
-
-        const isGuard = Object.values(securityGuards).includes(currentUserName);
-        const liveCountdownEl = document.getElementById(isGuard ? 'security-ponto-live-countdown' : 'ponto-live-countdown');
-        
-        if (targetTimeInMinutes === null || !liveCountdownEl) return;
-
-        const targetDate = new Date();
-        targetDate.setHours(Math.floor(targetTimeInMinutes / 60), targetTimeInMinutes % 60, 0, 0);
-
-        const updateTimer = () => {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            if (distance < 0) {
-                stopCountdownTimer(); // Limpa o intervalo
-                liveCountdownEl.textContent = "00:00:00";
-                // Chama a verificação uma única vez quando o tempo expira
-                checkPontoStatusAndDisplayWarnings();
-                return;
-            }
-
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            liveCountdownEl.textContent = 
-                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        };
-
-        // Roda uma vez imediatamente para não haver atraso na exibição
-        updateTimer(); 
-        // Define o intervalo para futuras atualizações
-        countdownInterval = setInterval(updateTimer, 1000);
-    };
-
     const stopCountdownTimer = () => {
         if (countdownInterval) {
             clearInterval(countdownInterval);
             countdownInterval = null;
         }
+    };
+
+    const startLiveCountdown = (targetTimeInMinutes, displayElement) => {
+        stopCountdownTimer(); // Garante que nenhum outro timer esteja rodando
+
+        const targetDate = new Date();
+        targetDate.setHours(Math.floor(targetTimeInMinutes / 60), targetTimeInMinutes % 60, 0, 0);
+
+        const updateCountdown = () => {
+            const now = new Date();
+            const difference = targetDate.getTime() - now.getTime();
+
+            if (difference <= 0) {
+                displayElement.textContent = 'Horário de ponto iniciado!';
+                stopCountdownTimer();
+                // Re-verifica o status, pois o tempo chegou
+                checkPontoStatusAndDisplayWarnings();
+                return;
+            }
+
+            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((difference / 1000 / 60) % 60);
+            const seconds = Math.floor((difference / 1000) % 60);
+
+            displayElement.textContent = `(Faltam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
+        };
+
+        updateCountdown(); // Chamada inicial para mostrar o tempo imediatamente
+        countdownInterval = setInterval(updateCountdown, 1000);
     };
 
     async function checkPontoStatusAndDisplayWarnings() {
@@ -5418,14 +5414,10 @@ function calculateAndDisplayRanking() {
 
         if (!notificationArea || !countdownTimerEl || !liveCountdownEl || !currentUserName) return;
 
-        // Limpa a área de notificação, mas não o timer.
-        notificationArea.innerHTML = '';
-        // Só limpa o timer se ele não estiver rodando.
-        if (!countdownInterval) {
-            countdownTimerEl.innerHTML = '';
-            liveCountdownEl.innerHTML = '';
-        }
         stopCountdownTimer();
+        notificationArea.innerHTML = '';
+        countdownTimerEl.innerHTML = '';
+        liveCountdownEl.innerHTML = '';
 
         const todayString = getTodayDateString();
         const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`);
@@ -5437,25 +5429,36 @@ function calculateAndDisplayRanking() {
             const justificationRef = database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`);
             const justificationSnapshot = await justificationRef.get();
 
+            let nextCheckInMilliseconds = null;
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const nowInMilliseconds = now.getTime();
+
             if (nextAction.nextActionTime !== null) {
-                const targetTimeInMinutes = nextAction.nextActionTime;
-                const targetHour = Math.floor(targetTimeInMinutes / 60);
-                const targetMinute = targetTimeInMinutes % 60;
-                const formattedStartTime = `${String(targetHour).padStart(2, '0')}:${String(targetMinute).padStart(2, '0')}`;
+                const targetTime = new Date();
+                targetTime.setHours(Math.floor(nextAction.nextActionTime / 60), nextAction.nextActionTime % 60, 1, 0);
+                nextCheckInMilliseconds = targetTime.getTime() - nowInMilliseconds;
+
+                const formattedStartTime = targetTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 
                 let displayText = `Próximo ponto a partir das ${formattedStartTime}`;
                 
-                // Verifica se a hora de término foi fornecida
-                if (nextAction.nextActionEndTime) {
-                    const endTimeInMinutes = nextAction.nextActionEndTime;
-                    const endHour = Math.floor(endTimeInMinutes / 60);
-                    const endMinute = endTimeInMinutes % 60;
-                    const formattedEndTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-                    displayText = `Próximo ponto das ${formattedStartTime} até às ${formattedEndTime}`;
+                if (nextAction.nextActionEndTime && currentMinutes < nextAction.nextActionEndTime) {
+                    const endTime = new Date();
+                    endTime.setHours(Math.floor(nextAction.nextActionEndTime / 60), nextAction.nextActionEndTime % 60, 0, 0);
+                    displayText = `Próximo ponto das ${formattedStartTime} até às ${endTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                    
+                    const endCheckInMilliseconds = endTime.getTime() - nowInMilliseconds;
+                    if (nextCheckInMilliseconds < 0) {
+                         nextCheckInMilliseconds = endCheckInMilliseconds;
+                    }
                 }
-
                 countdownTimerEl.textContent = displayText;
-                startCountdownTimer(targetTimeInMinutes);
+
+                // Inicia o timer de contagem regressiva se o horário do ponto ainda não chegou
+                if (targetTime.getTime() > now.getTime()) {
+                    startLiveCountdown(nextAction.nextActionTime, liveCountdownEl);
+                }
             }
 
             if (nextAction.status === 'pending' || nextAction.status === 'justified') {
@@ -5489,7 +5492,16 @@ function calculateAndDisplayRanking() {
                 if (!checkSnapshot.exists()) {
                     createManagerNotification(`${currentUserName}: ${nextAction.message}`);
                 }
+                        } else {
+                notificationArea.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.9); font-weight: 600;">${nextAction.message}</p>`;
             }
+
+            // Agenda a próxima verificação, se aplicável
+            if (nextCheckInMilliseconds > 0 && nextCheckInMilliseconds < 86400000) { // Não agenda se for para mais de 24h
+                clearTimeout(pontoCheckTimeout); // Limpa o timer antigo antes de criar um novo
+                pontoCheckTimeout = setTimeout(checkPontoStatusAndDisplayWarnings, nextCheckInMilliseconds);
+            }
+
         } catch (error) {
             console.error("Erro ao verificar status do ponto:", error);
             notificationArea.innerHTML = `<div class="os-warning">Erro ao carregar status do ponto.</div>`;
@@ -6854,9 +6866,41 @@ function calculateAndDisplayStoreRanking() {
                 if (checkPassword()) { 
                     loadDashboardData(); 
                     loadManagerNotifications();
-                    loadMaintenanceModeStatus(); // <-- Adicionado aqui
+                    loadMaintenanceModeStatus();
                     markNotificationsAsRead();
                     showPage('gsPage'); 
+
+                    // Atribui os listeners apenas uma vez quando a página GS é carregada
+                    // Isso evita erros de "elemento nulo" e múltiplas atribuições.
+                    document.getElementById('open-settings-page').onclick = () => { buildAndLoadMetasPage(); showPage('metasConfigPage'); };
+                    document.getElementById('open-correction-page').onclick = () => { buildAndLoadCorrectionPage(); showPage('correctionPage'); };
+                    document.getElementById('open-mt-management-page').onclick = loadAndShowMtManagementPage;
+                    document.getElementById('verificar-ponto-btn').onclick = showPontoVerificationList;
+                    document.getElementById('clear-ponto-status-btn').onclick = clearPontoStatusForUser;
+                    document.getElementById('open-overtime-management-page').onclick = openOvertimeManagementPage;
+                    document.getElementById('open-holidays-management-page').onclick = () => {
+                        loadAndRenderList('holidays', 'holidays-list-container', 'Feriado');
+                        showPage('holidaysManagementPage');
+                    };
+                    document.getElementById('open-sundays-management-page').onclick = () => {
+                        loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho');
+                        showPage('sundaysManagementPage');
+                    };
+                    document.getElementById('open-day-off-management-page').onclick = () => {
+                        populateEmployeeSelect();
+                        loadAndRenderDaysOff();
+                        showPage('dayOffManagementPage');
+                    };
+                     document.getElementById('open-avisos-management-page').onclick = () => {
+                        loadAndManageAvisos();
+                        showPage('avisosManagementPage');
+                    };
+                    document.getElementById('open-security-menu-btn').onclick = () => {
+                        if (checkPassword()) { 
+                            applySelectedTheme('theme-grayx'); 
+                            showPage('securityCitySelectionPage');
+                        }
+                    };
                 } 
             });
             document.getElementById('open-send-device-page').addEventListener('click', () => { if (checkPassword()) { showPage('sendDevicePage'); } });
@@ -6943,34 +6987,8 @@ function calculateAndDisplayStoreRanking() {
             });
 
             // --- PÁGINA DE GERÊNCIA (DASHBOARD) ---
-            document.getElementById('open-settings-page').addEventListener('click', () => { buildAndLoadMetasPage(); showPage('metasConfigPage'); });
-            document.getElementById('open-correction-page').addEventListener('click', () => { buildAndLoadCorrectionPage(); showPage('correctionPage'); });
-            document.getElementById('open-mt-management-page').addEventListener('click', loadAndShowMtManagementPage);
-            document.getElementById('open-holidays-management-page').addEventListener('click', () => {
-                loadAndRenderList('holidays', 'holidays-list-container', 'Feriado');
-                showPage('holidaysManagementPage');
-            });
-            document.getElementById('open-sundays-management-page').addEventListener('click', () => {
-                loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho');
-                showPage('sundaysManagementPage');
-            });
-            document.getElementById('open-day-off-management-page').addEventListener('click', () => {
-                populateEmployeeSelect();
-                loadAndRenderDaysOff();
-                showPage('dayOffManagementPage');
-            });
-            document.getElementById('open-overtime-management-page').addEventListener('click', openOvertimeManagementPage);
-            document.getElementById('open-avisos-management-page').addEventListener('click', () => {
-                loadAndManageAvisos();
-                showPage('avisosManagementPage');
-            });
-            // Listener para o novo botão do menu de segurança
-            document.getElementById('open-security-menu-btn').addEventListener('click', () => {
-                if (checkPassword()) { 
-                    applySelectedTheme('theme-grayx'); // Aplica o tema padrão do segurança
-                    showPage('securityCitySelectionPage'); // Mostra a seleção de cidade do segurança
-                }
-            });
+            // Os listeners foram movidos para dentro do evento de clique que abre a página GS
+            // para garantir que os elementos existam no DOM.
 
             // --- PÁGINA DE CONFIGURAÇÕES / CORREÇÃO ---
             // Os listeners para estes botões agora são adicionados dinamicamente quando as páginas são construídas.
@@ -7272,7 +7290,7 @@ function calculateAndDisplayStoreRanking() {
                 }
             });
 
-            // O listener para 'save-overtime-btn' agora é adicionado dinamicamente na função openOvertimeManagementPage.
+            // Os listeners para os botões do painel GS são atribuídos quando a página é aberta.
             
             // Listener para a página Lollipop
             document.getElementById('back-to-send-device-from-lollipop').addEventListener('click', () => showPage('sendDevicePage'));
@@ -7305,9 +7323,14 @@ function calculateAndDisplayStoreRanking() {
 
             document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
                 stopPontoCamera();
-                showPage('collaboratorPage');
+                // A volta agora depende se o usuário é segurança ou funcionário
+                const isSecurity = Object.values(securityGuards).includes(currentUserName);
+                if (isSecurity) {
+                    showPage('securityProfilePage');
+                } else {
+                    showPage('collaboratorPage');
+                }
             });
-            document.getElementById('verificar-ponto-btn').addEventListener('click', showPontoVerificationList);
             document.getElementById('back-to-gs-from-ponto-verify').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-ponto-verify-from-history').addEventListener('click', () => showPage('pontoVerificationPage'));
 
@@ -7455,6 +7478,39 @@ function calculateAndDisplayStoreRanking() {
 
             // Roda a função de inicialização principal
             initializeApp();
+
+    const clearPontoStatusForUser = () => {
+        if (!checkPassword()) return;
+
+        // Cria uma lista de nomes de usuários para seleção
+        const userList = allUsers.map((name, index) => `${index + 1}. ${name}`).join('\n');
+        const selectedUserIndex = prompt(`Selecione o usuário para limpar o status de ponto do dia:\n\n${userList}`);
+
+        if (selectedUserIndex === null || selectedUserIndex.trim() === "") {
+            return; // Usuário cancelou
+        }
+
+        const userIndex = parseInt(selectedUserIndex, 10) - 1;
+        if (isNaN(userIndex) || userIndex < 0 || userIndex >= allUsers.length) {
+            alert('Seleção inválida.');
+            return;
+        }
+
+        const userNameToClear = allUsers[userIndex];
+        const todayString = getTodayDateString();
+        
+        if (confirm(`Tem certeza que deseja apagar TODOS os registros de ponto de HOJE para ${userNameToClear}? Esta ação não pode ser desfeita.`)) {
+            const pontoDiaRef = database.ref(`pontosDoDia/${todayString}/${userNameToClear}`);
+            pontoDiaRef.remove()
+                .then(() => {
+                    alert(`Status de ponto do dia para ${userNameToClear} foi limpo com sucesso.`);
+                })
+                .catch(error => {
+                    alert(`Ocorreu um erro ao limpar o status de ponto.`);
+                    console.error("Erro ao limpar ponto do dia:", error);
+                });
+        }
+    };
 
         // --- LÓGICA DO EASTER EGG DA VERSÃO ---
         let versionClickCount = 0;
