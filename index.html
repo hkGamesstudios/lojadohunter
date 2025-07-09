@@ -440,9 +440,11 @@
         }
 
         .header-icons a {
+            display: inline-block; /* Garante que o padding seja aplicado corretamente */
+            padding: 0.5rem; /* Aumenta a área de clique/toque ao redor do ícone */
             font-size: 1.2rem;
             color: var(--white); /* Ícones do cabeçalho brancos */
-            margin-left: 1rem;
+            margin-left: 0.5rem; /* Margem ajustada para compensar o novo padding */
             text-decoration: none;
         }
         
@@ -2860,7 +2862,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.6.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.6.5'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
