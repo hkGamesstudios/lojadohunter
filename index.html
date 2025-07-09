@@ -195,25 +195,26 @@
         }
 
         /* --- TEMA LGBT --- */
-        @keyframes rainbow-bg {
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+                body.theme-lgbt {
+            background-color: #1a1a1a; /* Cinza bem escuro */
+            background-image: url('https://i.redd.it/15vfoi1r0v741.jpg');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
         }
-        body.theme-lgbt {
-            background: linear-gradient(270deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
-            background-size: 400% 400%;
-            animation: rainbow-bg 20s ease infinite; /* Velocidade diminuída */
-        }
+
         .theme-lgbt header {
-            background-color: rgba(0, 0, 0, 0.3);
-            border-bottom-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.4);
+            border-bottom-color: rgba(255, 255, 255, 0.15);
         }
+
         .theme-lgbt .modal-content {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(10, 10, 10, 0.5);
         }
+
         .theme-lgbt #collaborator-page, .theme-lgbt #gs-page, .theme-lgbt #metas-config-page, .theme-lgbt #metas-display-page, .theme-lgbt #send-device-page, .theme-lgbt #brand-devices-page, .theme-lgbt #device-detail-page, .theme-lgbt #manager-sales-panel-page, .theme-lgbt #closing-page, .theme-lgbt #correction-page, .theme-lgbt #os-form-page, .theme-lgbt #request-stock-page, .theme-lgbt #recibos-page, .theme-lgbt #quiz-page, .theme-lgbt #crediario-calculator-page, .theme-lgbt #site-calculator-page, .theme-lgbt #loja-calculator-page, .theme-lgbt #mt-display-page, .theme-lgbt #mt-management-page, .theme-lgbt #ponto-verification-page, .theme-lgbt #holidays-management-page, .theme-lgbt #sundays-management-page, .theme-lgbt #ponto-history-page, .theme-lgbt #day-off-management-page, .theme-lgbt #overtime-management-page, .theme-lgbt #security-city-selection-page, .theme-lgbt #security-profile-page {
-            background: transparent; /* Permite que o fundo animado do body apareça */
+            background: transparent;
         }
 
         /* --- TEMA CINZA X --- */
@@ -255,6 +256,48 @@
         .theme-grayx header {
             background-color: rgba(10, 10, 10, 0.5);
             border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- TEMA NEON --- */
+        body.theme-neon {
+            background-color: #0d0d1a; /* Fundo escuro azulado */
+            background-image: url('https://w0.peakpx.com/wallpaper/756/750/HD-wallpaper-neon-frame-black-blue-edge-lights-neon-neon-lights-pink-screen-thumbnail.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            --primary-color: #00ffff; /* Ciano Neon */
+        }
+        .theme-neon header {
+            background-color: rgba(13, 13, 26, 0.6);
+            border-bottom-color: rgba(0, 255, 255, 0.2);
+        }
+        .theme-neon .modal-content {
+            background: rgba(13, 13, 26, 0.85);
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+        .theme-neon .brand-button, .theme-neon .tool-item, .theme-neon .modal-btn, .theme-neon .action-button, .theme-neon .gs-action-btn {
+             background: rgba(0, 255, 255, 0.08);
+             border-color: rgba(0, 255, 255, 0.2);
+        }
+        .theme-neon .logo i { color: #00ffff; }
+        .theme-neon .tool-icon-wrapper { background-color: #00ffff; }
+        .theme-neon .tool-item i { color: #0d0d1a; } /* Cor do ícone dentro do wrapper */
+        .theme-neon #collaborator-profile-pic, .theme-neon #security-profile-pic { border-color: #00ffff; }
+        .theme-neon .gs-action-btn i { color: #00ffff; }
+        .theme-neon .mt-item-card { border-left-color: #00ffff; }
+        .theme-neon .ponto-history-details p strong { color: #00ffff; }
+        .theme-neon .kpi-value { color: #00ffff; }
+        .theme-neon .stock-brand-header { color: #00ffff; }
+        .theme-neon .progress-bar { background: #00ffff; }
+        .theme-neon .data-input {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+        .theme-neon .data-input:focus {
+            border-color: #00ffff;
+        }
+        .theme-neon #collaborator-page, .theme-neon #gs-page, .theme-neon #metas-config-page, .theme-neon #metas-display-page, .theme-neon #send-device-page, .theme-neon #brand-devices-page, .theme-neon #device-detail-page, .theme-neon #manager-sales-panel-page, .theme-neon #closing-page, .theme-neon #correction-page, .theme-neon #os-form-page, .theme-neon #request-stock-page, .theme-neon #recibos-page, .theme-neon #quiz-page, .theme-neon #crediario-calculator-page, .theme-neon #site-calculator-page, .theme-neon #loja-calculator-page, .theme-neon #mt-display-page, .theme-neon #mt-management-page, .theme-neon #ponto-verification-page, .theme-neon #holidays-management-page, .theme-neon #sundays-management-page, .theme-neon #ponto-history-page, .theme-neon #day-off-management-page, .theme-neon #overtime-management-page, .theme-neon #security-city-selection-page, .theme-neon #security-profile-page {
+            background: transparent; /* Para mostrar a imagem de fundo do body */
         }
 
         /* --- ANIMAÇÕES E CONTROLE DE VISIBILIDADE --- */
@@ -2637,6 +2680,7 @@ Transporte - R$ 5,00"></textarea></div>
                 <button class="modal-btn theme-select-btn" data-theme="theme-claro">Claro</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-lgbt">LGBT</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-grayx">Cinza X</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-neon">Neon</button>
             </div>
         </div>
     </div>
@@ -2816,7 +2860,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.6.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.6.3'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -6074,7 +6118,7 @@ function calculateAndDisplayStoreRanking() {
             
             const applySelectedTheme = (themeName) => {
                 // Limpa temas e efeitos anteriores
-                document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx');
+                document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx', 'theme-neon');
                 createOrClearFloatingXs(false);
                 
                 // Adiciona o novo tema
