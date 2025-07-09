@@ -2582,7 +2582,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.5.7'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.5.9'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3269,13 +3269,11 @@ Transporte - R$ 5,00"></textarea></div>
             const salesData = salesSnapshot.exists() ? salesSnapshot.val() : {};
             const monthlyData = monthlySnapshot.exists() ? monthlySnapshot.val() : {};
 
-            // --- Cálculos de Vendas Gerais e por Loja (CORRIGIDO) ---
+            // --- Cálculos de Vendas Gerais e por Loja ---
             let totalVendas = 0, vendasPinheiro = 0, vendasBacabal = 0;
-            
-            // Filtra para pegar apenas os vendedores (excluindo gerentes)
-            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
 
-            nonManagerCollaborators.forEach(name => {
+            // Itera sobre TODOS os colaboradores para obter os totais corretos.
+            allCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const venda = parseFloat(salesData[key]?.vendas || 0);
                 totalVendas += venda; // Soma para o total geral
@@ -3287,7 +3285,8 @@ Transporte - R$ 5,00"></textarea></div>
                 }
             });
 
-            // --- Cálculo do Melhor VENDEDOR (lógica existente já está correta) ---
+            // --- Cálculo do Melhor VENDEDOR (apenas entre não-gerentes) ---
+            const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
             let melhorVendedor = { nome: 'N/A', vendas: 0 };
             nonManagerCollaborators.forEach(name => {
                 const key = name.toLowerCase();
