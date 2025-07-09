@@ -1985,10 +1985,10 @@
                 
                 <!-- Grade de Ferramentas Principais -->
                 <div class="tools-grid">
-                    <a href="https://www.brasilcard.net/bca/lojista/login" id="hunter-card-link" class="tool-item">
+                    <div data-url="https://www.brasilcard.net/bca/lojista/login" id="hunter-card-link" class="tool-item" style="cursor: pointer;">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-id-card"></i></div>
                         <span>Hunter Card</span>
-                    </a>
+                    </div>
                     <div id="open-colaborador-modal" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-users"></i></div>
                         <span>Colaborador</span>
@@ -3112,7 +3112,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.7.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.7.5'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -6856,9 +6856,20 @@ function calculateAndDisplayStoreRanking() {
 
             // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
             document.getElementById('hunter-card-link').addEventListener('click', function(event) {
-                event.preventDefault(); // Impede a navegação padrão
-                const url = this.getAttribute('href');
-                window.open(url, '_blank'); // Força a abertura em nova aba/janela do navegador
+                // Pega a URL do atributo data-url
+                const url = event.currentTarget.dataset.url;
+                if (url) {
+                    // Cria um link temporário e invisível
+                    const tempLink = document.createElement('a');
+                    tempLink.href = url;
+                    tempLink.target = '_blank'; // Essencial para abrir externamente
+                    tempLink.style.display = 'none'; // Garante que não apareça na tela
+
+                    // Adiciona o link ao corpo do documento, clica nele e o remove
+                    document.body.appendChild(tempLink);
+                    tempLink.click();
+                    document.body.removeChild(tempLink);
+                }
             });
 
             document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
