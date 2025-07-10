@@ -602,7 +602,7 @@
             font-weight: 700;
             font-size: 1rem; /* Fonte do nome reduzida */
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
         }
 
@@ -1180,6 +1180,69 @@
             background: transparent; /* O fundo agora é o padrão da página */
         }
 
+                /* --- ESTILOS PARA CONQUISTAS (BADGES) --- */
+        .achievements-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .achievement-badge {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #FFD700; /* Ouro */
+            cursor: help;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .achievement-badge.locked {
+            color: rgba(255, 255, 255, 0.3);
+            filter: grayscale(1);
+        }
+        .achievement-badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        .achievement-badge .tooltip {
+            visibility: hidden;
+            width: 160px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -80px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+        .achievement-badge .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        .achievement-badge:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
         /* Este estilo será mantido, mas o rodapé do estoque não o usará mais */
         .save-footer {
             display: none; 
@@ -1211,6 +1274,33 @@
             padding: 0.75rem;
             border-radius: 8px;
             width: 100%;
+        }
+
+                .prize-container {
+            display: flex;
+            align-items: center;
+        }
+        .daily-bonus-value {
+            font-weight: 700;
+            color: #2ecc71; /* Verde esmeralda */
+            font-size: 0.85rem; /* Tamanho da fonte ajustado */
+            margin-left: 0.5rem; /* Espaçamento para o lado */
+        }
+        .bonus-info-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px; /* Um pouco maior para melhor toque */
+            height: 20px;
+            font-size: 0.9rem; /* Tamanho da fonte do '?' */
+            font-weight: 700;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.8); /* Um pouco mais opaco */
+            border-radius: 50%; /* Garante que seja um círculo */
+            cursor: pointer;
+            user-select: none; /* Impede a seleção do texto '?' */
+            margin-left: 4px; /* Pequeno espaço à esquerda */
+            line-height: 1; /* Garante alinhamento vertical */
         }
 
                 /* Estilos da página de envio e detalhes - ESTA REGRA PODE SER REMOVIDA */
@@ -1598,6 +1688,22 @@
         }
         #site-calculator-page .action-button:hover {
             background-color: rgba(46, 204, 113, 1);
+        }
+
+
+                .parabens-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            transition: color 0.2s, transform 0.2s;
+            margin-left: auto; /* Isso empurra o botão para a direita */
+        }
+        .parabens-btn:hover {
+            color: #1eff00; /* Verde neon */
+            transform: scale(1.2);
         }
 
                 /* --- Estilos da Página de Bater Ponto (Câmera) --- */
@@ -2275,6 +2381,12 @@
 
             <!-- Painel de vendas individuais -->
             <div id="individual-sales-data"></div>
+
+            <!-- Histórico de Vendas Pessoal -->
+            <div id="personal-sales-history" class="chart-container" style="width: 100%; max-width: 380px; display: none;">
+                 <h4>Vendas nos Últimos 7 Dias</h4>
+                 <canvas id="personal-sales-chart"></canvas>
+            </div>
             
             <!-- NOVA GRADE DE AÇÕES PRINCIPAIS -->
             <div class="collaborator-actions-grid">
@@ -2306,6 +2418,14 @@
             
             <input type="file" id="photo-upload-input" accept="image/*" style="display: none;">
             <p id="photo-upload-status" class="status-message"></p>
+
+            <!-- Seção de Conquistas -->
+            <div id="achievements-section" style="width: 100%; max-width: 380px; margin-top: 2rem; display: none;">
+                <h3 class="section-title" style="font-size: 1.3rem; margin-bottom: 1rem;">Conquistas</h3>
+                <div id="achievements-container" class="achievements-grid">
+                    <!-- Badges serão inseridas aqui -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3189,7 +3309,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.8.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3652,6 +3772,114 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
+        const achievementsList = {
+        'rei_do_ranking': {
+            name: 'Rei do Ranking',
+            description: 'Alcançar o 1º lugar no ranking de vendas ou de gerentes.',
+            icon: 'fa-solid fa-ranking-star'
+        },
+        'vendedor_ouro': {
+            name: 'Vendedor de Ouro',
+            description: 'Atingir 100% da meta de vendas do mês.',
+            icon: 'fa-solid fa-medal'
+        },
+        'rei_do_cartao': {
+            name: 'Rei do Cartão',
+            description: 'Superar a meta de cartões em 50%.',
+            icon: 'fa-solid fa-crown'
+        },
+        'escudo_protetor': {
+            name: 'Escudo Protetor',
+            description: 'Atingir a meta de 10 seguros vendidos no mês.',
+            icon: 'fa-solid fa-shield-halved'
+        },
+        'queridinho_da_galera': {
+            name: 'Queridinho(a) da Galera',
+            description: 'Receber 5 "Parabéns!" dos colegas de equipe.',
+            icon: 'fa-solid fa-heart'
+        },
+        'comentarista_consistente': {
+            name: 'Comentarista Consistente',
+            description: 'Manter o status atualizado por 3 dias seguidos.',
+            icon: 'fa-solid fa-comments'
+        },
+        'colega_de_equipe': {
+            name: 'Colega de Equipe',
+            description: 'Reconhecer o esforço de um colega enviando "Parabéns!" no ranking.',
+            icon: 'fa-solid fa-handshake-angle'
+        },
+        'a_voz_da_melhoria': {
+            name: 'A Voz da Melhoria',
+            description: 'Ajudar a melhorar o app enviando um feedback ou sugestão.',
+            icon: 'fa-solid fa-lightbulb'
+        },
+        'frequentador_assiduo': {
+            name: 'Frequentador Assíduo',
+            description: 'Acessar seu perfil mais de 50 vezes.',
+            icon: 'fa-solid fa-door-open'
+        },
+        'pontualidade_britanica': {
+            name: 'Pontualidade Britânica',
+            description: 'Não registrar nenhum atraso no ponto durante o mês.',
+            icon: 'fa-solid fa-user-clock'
+        }
+        // Adicione mais conquistas aqui no futuro
+    };
+
+    const displayAchievements = async (userKey) => {
+        const section = document.getElementById('achievements-section');
+        const container = document.getElementById('achievements-container');
+        container.innerHTML = '';
+        section.style.display = 'block';
+
+        const profileSnap = await database.ref(`userProfiles/${userKey}/achievements`).get();
+        const earnedAchievements = profileSnap.exists() ? profileSnap.val() : {};
+
+        for (const id in achievementsList) {
+            const achievement = achievementsList[id];
+            const isEarned = earnedAchievements[id];
+
+            const badge = document.createElement('div');
+            badge.className = `achievement-badge ${isEarned ? '' : 'locked'}`;
+            badge.innerHTML = `
+                <i class="${achievement.icon}"></i>
+                <span class="tooltip">
+                    <strong>${achievement.name}</strong><br>
+                    ${achievement.description}<br>
+                    ${isEarned ? `(Conquistado em ${new Date(earnedAchievements[id]).toLocaleDateString()})` : '(Bloqueado)'}
+                </span>
+            `;
+            container.appendChild(badge);
+        }
+    };
+
+    const checkAndAwardAchievements = async (userKey) => {
+        const userSnap = await database.ref(`salesData/${userKey}`).get();
+        const metaSnap = await database.ref(`metas/${userKey}`).get();
+
+        if (userSnap.exists() && metaSnap.exists()) {
+            const sales = userSnap.val();
+            const metas = metaSnap.val();
+
+            // 1. Checar 'Vendedor de Ouro'
+            if (sales.vendas >= metas.venda && metas.venda > 0) {
+                awardAchievement(userKey, 'vendedor_ouro');
+            }
+            
+            // 2. Checar 'Rei do Cartão'
+            if (sales.cartao >= (metas.cartao * 1.5) && metas.cartao > 0) {
+                awardAchievement(userKey, 'rei_do_cartao');
+            }
+            
+            // 3. Checar 'Escudo Protetor' (meta de 10 seguros)
+            if (sales.seguro >= 10) {
+                awardAchievement(userKey, 'escudo_protetor');
+            }
+
+            // A lógica de 'Pontualidade' exigiria varrer todos os pontos do mês e é mais complexa.
+        }
+    };
+
     const saveAviso = (photoURL) => {
         const name = document.getElementById('aviso-name').value.trim();
         const text = document.getElementById('aviso-text').value.trim();
@@ -3711,15 +3939,8 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
             // --- INICIALIZAÇÃO DA APLICAÇÃO ---
-            showMainPage();
-            calculateAndDisplayRanking(); // Carrega o ranking de colaboradores
-            calculateAndDisplayStoreRanking(); // Carrega o ranking de lojas
-            loadAndDisplayAvisos(); // Carrega os avisos na tela principal
-            loadManagerNotifications(); // Carrega notificações para o gerente na inicialização
-            loadAndDisplayOvertime(); // Carrega as horas extras no GS na inicialização
-
-            // Exibe a versão do app no rodapé
-            document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
+            // (Remova completamente o bloco de código acima. Ele está sendo chamado duas vezes e causando a duplicação do ranking.)
+            // A chamada correta já acontece dentro da função `initializeApp()` mais abaixo no código.
     
     // Funções de atalho para a navegação
     function showPage(pageKey) {
@@ -4178,6 +4399,125 @@ Transporte - R$ 5,00"></textarea></div>
     };
 
 
+
+        const handleParabensClick = async (recipientName) => {
+        const senderName = prompt("Para enviar, digite SEU nome:");
+        if (!senderName || !allUsers.map(u => u.toLowerCase()).includes(senderName.trim().toLowerCase())) {
+            if (senderName) alert("Nome inválido. Por favor, digite seu nome corretamente.");
+            return;
+        }
+
+        const senderKey = senderName.trim().toLowerCase();
+
+        const passwordSnap = await database.ref(`userPasswords/${senderKey}`).get();
+        let passwordCorrect = false;
+
+        if (passwordSnap.exists()) {
+            const correctPassword = passwordSnap.val();
+            const enteredPassword = prompt(`Olá, ${senderName.trim()}! Digite sua senha para confirmar:`);
+            if (enteredPassword === correctPassword || enteredPassword === PASSWORD) {
+                passwordCorrect = true;
+            }
+        } else {
+            // Se o usuário não tem senha, permite enviar
+            passwordCorrect = true; 
+        }
+
+        if (passwordCorrect) {
+            const todayString = getTodayDateString();
+            const recipientKey = recipientName.toLowerCase();
+            
+            // Incrementa o contador de "Parabéns" recebidos
+            const receivedCountRef = database.ref(`userProfiles/${recipientKey}/parabensReceivedCount`);
+            receivedCountRef.transaction(count => {
+                const newCount = (count || 0) + 1;
+                if (newCount >= 5) {
+                    awardAchievement(recipientKey, 'queridinho_da_galera');
+                }
+                return newCount;
+            });
+            
+            // Envia a notificação
+            const parabensRef = database.ref(`parabens/${todayString}/${recipientKey}`).push();
+            await parabensRef.set({ sender: senderName.trim() });
+            
+            // Concede a conquista para o remetente
+            await awardAchievement(senderKey, 'colega_de_equipe');
+
+            alert(`Obrigado! Seu "Parabéns!" foi enviado para ${recipientName}.`);
+        } else {
+            alert("Senha incorreta. Ação cancelada.");
+        }
+    };
+
+        const checkForParabens = async (userKey) => {
+        const todayString = getTodayDateString();
+        const parabensSnap = await database.ref(`parabens/${todayString}/${userKey}`).get();
+        if (parabensSnap.exists()) {
+            const allParabens = parabensSnap.val();
+            const senders = Object.values(allParabens).map(p => p.sender).join(', ');
+            
+            // Um timeout para o alerta não aparecer imediatamente, atrapalhando a animação
+            setTimeout(() => {
+                alert(`🎉 Parabéns! Você recebeu reconhecimento de: ${senders}`);
+            }, 1500);
+
+            // Remover os parabéns depois de notificar para não mostrar de novo
+            database.ref(`parabens/${todayString}/${userKey}`).remove();
+        }
+    };
+
+    // Adicione o listener dentro do DOMContentLoaded
+    document.querySelector('main').addEventListener('click', (event) => {
+        const btn = event.target.closest('.parabens-btn');
+        if (btn) {
+            handleParabensClick(btn.dataset.recipientName);
+        }
+    });
+
+
+    const updateAndFetchDailyBonus = async (topUserKey, rankType) => {
+        const DAILY_AMOUNT = 5;
+        const MAX_AMOUNT = 50;
+        const todayString = getTodayDateString();
+        const bonusRef = database.ref(`dailyBonus/${rankType}`);
+
+        try {
+            const { committed, snapshot } = await bonusRef.transaction(currentData => {
+                // Se não há dados, inicializa para o novo Top 1
+                if (currentData === null) {
+                    return { userKey: topUserKey, amount: DAILY_AMOUNT, lastUpdateDate: todayString };
+                }
+
+                // Se o Top 1 é o mesmo de antes
+                if (currentData.userKey === topUserKey) {
+                    // E o bônus de hoje ainda não foi dado
+                    if (currentData.lastUpdateDate !== todayString) {
+                        currentData.amount = Math.min(MAX_AMOUNT, currentData.amount + DAILY_AMOUNT);
+                        currentData.lastUpdateDate = todayString;
+                    }
+                } 
+                // Se o Top 1 mudou
+                else {
+                    // Zera e começa para o novo usuário
+                    currentData.userKey = topUserKey;
+                    currentData.amount = DAILY_AMOUNT;
+                    currentData.lastUpdateDate = todayString;
+                }
+                return currentData;
+            });
+            
+            if (committed) {
+                return snapshot.val();
+            }
+            return null; // A transação falhou ou foi abortada
+            
+        } catch (error) {
+            console.error("Erro na transação do bônus diário:", error);
+            return null; // Retorna nulo em caso de erro
+        }
+    };
+
     const renderMonthlySalesChart = (monthlyData) => {
         const ctx = document.getElementById('monthly-sales-chart').getContext('2d');
         const sortedMonths = Object.keys(monthlyData).sort(); // Ordem cronológica para o gráfico
@@ -4513,21 +4853,24 @@ Transporte - R$ 5,00"></textarea></div>
 
         const now = new Date();
         const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+        const todayString = getTodayDateString(); // Função que já existe
 
         Promise.all([
             database.ref('salesData').get(),
-            database.ref(`monthlySales/${currentMonthKey}`).get()
-        ]).then(([salesSnapshot, monthlySalesSnapshot]) => {
+            database.ref(`monthlySales/${currentMonthKey}`).get(),
+            database.ref(`dailySales/${todayString}`).get() // Busca os dados do dia
+        ]).then(([salesSnapshot, monthlySalesSnapshot, dailySalesSnapshot]) => {
             const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
+            const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
             let totalVendasDoFechamento = 0;
-            
-            // A lógica de acumular para o gerente foi removida.
-            // Agora, a função simplesmente salva os dados pessoais de cada um.
 
+            const updates = {};
+            
             employeesForStore.forEach(name => {
                 const key = name.toLowerCase();
                 const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 };
+                const currentDailyData = existingDailySales[key] || { vendas: 0 };
 
                 const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
                 const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
@@ -4536,26 +4879,29 @@ Transporte - R$ 5,00"></textarea></div>
 
                 totalVendasDoFechamento += newVenda;
 
-                // Atualiza os dados individuais de cada funcionário, incluindo a gerente, com seus valores pessoais.
+                // Atualiza o total do MÊS
                 existingSales[key] = {
                     vendas: (parseFloat(currentData.vendas) || 0) + newVenda,
                     p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
                     seguro: (parseFloat(currentData.seguro) || 0) + newSeguro,
                     cartao: (parseFloat(currentData.cartao) || 0) + newCartao,
                 };
+                
+                // Salva o registro do DIA
+                updates[`/dailySales/${todayString}/${key}`] = {
+                    vendas: (currentDailyData.vendas || 0) + newVenda
+                };
             });
 
-            // A lógica que somava os totais da equipe no campo da gerente foi REMOVIDA.
-
-            // Atualiza o total do mês atual (isso continua correto)
             monthlyTotalVendas += totalVendasDoFechamento;
-
-            const updates = {};
+            
             updates['/salesData'] = existingSales;
             updates[`/monthlySales/${currentMonthKey}/totalVendas`] = monthlyTotalVendas;
 
             database.ref().update(updates).then(() => {
                 statusEl.textContent = 'Fechamento salvo com sucesso!';
+                // Verifica conquistas para todos os funcionários da loja após o fechamento
+                employeesForStore.forEach(name => checkAndAwardAchievements(name.toLowerCase()));
                 clearClosingForm(store);
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
             }).catch(error => {
@@ -5226,7 +5572,7 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-function calculateAndDisplayRanking() {
+async function calculateAndDisplayRanking() {
         const rankingContainer = document.getElementById('ranking-container');
         rankingContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking...</p>';
 
@@ -5235,7 +5581,7 @@ function calculateAndDisplayRanking() {
             database.ref('metas').get(),
             database.ref('userProfiles').get(),
             database.ref('userStatuses').get() // Adicionado para buscar status
-        ]).then(([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
+        ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
             if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
                 rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
                 return;
@@ -5272,9 +5618,25 @@ function calculateAndDisplayRanking() {
                 rankingContainer.innerHTML = '<p style="text-align: center;">Nenhum colaborador com meta definida para o ranking.</p>';
                 return;
             }
+            
+            // Pega o bônus do Top 1 ANTES de começar a montar o HTML
+            const topUserData = top3[0];
+            const dailyBonusData = await updateAndFetchDailyBonus(topUserData.name.toLowerCase(), 'employee');
 
-            top3.forEach((collab, index) => {
+            for (const [index, collab] of top3.entries()) {
                 const rank = index + 1;
+                let dailyBonusHTML = '';
+
+                // Concede a conquista e prepara o HTML do bônus
+                if (rank === 1) {
+                    awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
+                    if(dailyBonusData && dailyBonusData.userKey === collab.name.toLowerCase()) {
+                        dailyBonusHTML = `
+                            <span class="daily-bonus-value">+ ${formatBRL(dailyBonusData.amount)}</span> 
+                            <span class="bonus-info-btn">?</span>`;
+                    }
+                }
+
                 const prizes = ['R$ 200,00', 'R$ 100,00', 'R$ 50,00'];
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
                 const prizeHTML = `<span class="rank-prize">${prizes[index]}</span>`;
@@ -5311,7 +5673,9 @@ function calculateAndDisplayRanking() {
                     <div class="rank-details">
                         <div class="rank-name">
                             <span>${collab.name}</span>
-                            ${prizeHTML}
+                            <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
+                            <div class="prize-container">${prizeHTML}</div>
+                            ${dailyBonusHTML}
                         </div>
                         ${statusBubbleHtml}
                         <div class="progress-bar-container">
@@ -5321,7 +5685,7 @@ function calculateAndDisplayRanking() {
                     </div>
                 `;
                 rankingContainer.appendChild(rankItem);
-            });
+            };
         }).catch(error => {
             console.error("Erro ao carregar dados para o ranking:", error);
             rankingContainer.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
@@ -5633,6 +5997,22 @@ function calculateAndDisplayRanking() {
         } catch (error) {
             console.error("Erro ao processar lógica do ponto:", error);
             alert("Ocorreu um erro. Verifique sua conexão e tente novamente.");
+        }
+    };
+
+        const awardAchievement = async (userKey, achievementId) => {
+        const achievementRef = database.ref(`userProfiles/${userKey}/achievements/${achievementId}`);
+        const snapshot = await achievementRef.get();
+        
+        // Concede a conquista apenas se ela ainda não existir
+        if (!snapshot.exists()) {
+            await achievementRef.set(new Date().toISOString());
+            const achievementName = achievementsList[achievementId]?.name || 'Nova Conquista';
+            
+            // Pausa pequena para não sobrepor outros alertas
+            setTimeout(() => {
+                alert(`🎉 Conquista Desbloqueada: ${achievementName}!`);
+            }, 500);
         }
     };
 
@@ -6079,6 +6459,67 @@ function calculateAndDisplayRanking() {
     };
 
 
+
+
+        let personalSalesChartInstance = null;
+    const loadPersonalSalesHistoryChart = async () => {
+        const historyContainer = document.getElementById('personal-sales-history');
+        const ctx = document.getElementById('personal-sales-chart').getContext('2d');
+        historyContainer.style.display = 'none';
+
+        const labels = [];
+        const data = [];
+        const today = new Date();
+
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            const dateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+            const dayLabel = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+            labels.push(dayLabel);
+
+            try {
+                const snapshot = await database.ref(`dailySales/${dateString}/${currentUserName.toLowerCase()}/vendas`).get();
+                data.push(snapshot.exists() ? snapshot.val() : 0);
+            } catch (error) {
+                console.error("Erro ao buscar vendas do dia " + dateString, error);
+                data.push(0);
+            }
+        }
+        
+        // Só mostra o gráfico se houver alguma venda nos últimos 7 dias
+        if (data.some(v => v > 0)) {
+            historyContainer.style.display = 'block';
+
+            if (personalSalesChartInstance) {
+                personalSalesChartInstance.destroy();
+            }
+            personalSalesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Vendas Diárias',
+                        data: data,
+                        borderColor: 'var(--primary-color)',
+                        backgroundColor: 'rgba(255, 107, 0, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+        }
+    };
+
+
         // --- LÓGICA LOLLIPOP ---
     
     const initiateLollipopCapture = async () => {
@@ -6228,7 +6669,7 @@ function calculateAndDisplayRanking() {
     };
 
 
-function calculateAndDisplayStoreRanking() {
+async function calculateAndDisplayStoreRanking() {
         const container = document.getElementById('store-ranking-container');
         container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de gerentes...</p>';
 
@@ -6237,7 +6678,7 @@ function calculateAndDisplayStoreRanking() {
             database.ref('metas').get(),
             database.ref('userProfiles').get(),
             database.ref('userStatuses').get() // Adicionado para buscar status
-        ]).then(([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
+        ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
             if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
                 container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
                 return;
@@ -6285,9 +6726,17 @@ function calculateAndDisplayStoreRanking() {
                 container.innerHTML = '<p style="text-align: center;">Nenhuma gerente com meta definida.</p>';
                 return;
             }
+            
+            // A lógica de bônus foi removida daqui
 
-            performanceData.forEach((collab, index) => {
+            for (const [index, collab] of performanceData.entries()) {
                 const rank = index + 1;
+                
+                // A única coisa a se fazer para o rank 1 é dar a conquista
+                if (rank === 1) {
+                    awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
+                }
+
                 const prize = 'R$ 200,00';
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
                 const prizeHTML = (rank === 1) ? `<span class="rank-prize">${prize}</span>` : '';
@@ -6325,7 +6774,8 @@ function calculateAndDisplayStoreRanking() {
                     <div class="rank-details">
                         <div class="rank-name">
                             <span>${collab.name}</span>
-                            ${prizeHTML}
+                            <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
+                            <div class="prize-container">${prizeHTML}</div>
                         </div>
                         ${statusBubbleHtml}
                         <div class="progress-bar-container">
@@ -6335,7 +6785,7 @@ function calculateAndDisplayStoreRanking() {
                     </div>
                 `;
                 container.appendChild(rankItem);
-            });
+            };
 
         }).catch(error => {
             console.error("Erro ao carregar dados para o ranking de gerentes:", error);
@@ -6355,14 +6805,27 @@ function calculateAndDisplayStoreRanking() {
         showPage('pontoPage');
         const video = document.getElementById('ponto-video');
         const statusEl = document.getElementById('ponto-status-message');
+        const captureButton = document.getElementById('capture-ponto-btn');
+
+        // Desabilita o botão por padrão até a câmera estar pronta
+        captureButton.disabled = true;
+        captureButton.style.opacity = '0.5';
+        captureButton.style.cursor = 'not-allowed';
         
-        statusEl.textContent = 'Solicitando permissão da câmera...';
+        statusEl.textContent = 'Iniciando câmera...';
 
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
             .then(stream => {
                 cameraStream = stream;
                 video.srcObject = stream;
-                statusEl.textContent = '';
+                
+                // Evento crucial: espera o vídeo carregar os dados para habilitar o botão
+                video.addEventListener('loadeddata', () => {
+                    statusEl.textContent = ''; // Limpa a mensagem de status
+                    captureButton.disabled = false;
+                    captureButton.style.opacity = '1';
+                    captureButton.style.cursor = 'pointer';
+                }, { once: true }); // O listener só precisa rodar uma vez
             })
             .catch(err => {
                 console.error("Erro ao acessar a câmera: ", err);
@@ -6377,7 +6840,6 @@ function calculateAndDisplayStoreRanking() {
         const statusEl = document.getElementById('ponto-status-message');
         const captureButton = document.getElementById('capture-ponto-btn');
 
-        // Desabilita o botão imediatamente para evitar cliques duplos
         captureButton.disabled = true;
         captureButton.style.opacity = '0.5';
         captureButton.style.cursor = 'not-allowed';
@@ -6391,7 +6853,6 @@ function calculateAndDisplayStoreRanking() {
         canvas.toBlob(blob => {
             if (!blob) {
                 statusEl.textContent = 'Erro ao capturar imagem.';
-                // Reabilita o botão em caso de erro
                 captureButton.disabled = false;
                 captureButton.style.opacity = '1';
                 captureButton.style.cursor = 'pointer';
@@ -6403,103 +6864,109 @@ function calculateAndDisplayStoreRanking() {
             const formData = new FormData();
             formData.append('image', blob);
 
+            // Timeout de 15 segundos para o upload
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
             fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        const imageUrl = result.data.url;
-                        statusEl.textContent = 'Finalizando registro...';
+                method: 'POST',
+                body: formData,
+                signal: controller.signal // Adiciona o sinal do AbortController
+            })
+            .then(response => response.json())
+            .then(result => {
+                clearTimeout(timeoutId); // Limpa o timeout se a resposta chegou a tempo
 
-                        if (!currentPontoAction) {
-                            statusEl.textContent = 'Erro: Ação de ponto indefinida.';
-                            console.error("currentPontoAction está nulo no momento do salvamento.");
-                            // Reabilita o botão em caso de erro
-                            captureButton.disabled = false;
-                            captureButton.style.opacity = '1';
-                            captureButton.style.cursor = 'pointer';
-                            return;
-                        }
+                if (result.success) {
+                    const imageUrl = result.data.url;
+                    statusEl.textContent = 'Finalizando registro...';
 
-                        const pontoType = currentPontoAction.replace('registrar_', '');
-                        let city = 'N/A';
-                        if (storeMapping.pinheiro.includes(currentUserName) || currentUserName === securityGuards.pinheiro) {
-                            city = 'Pinheiro';
-                        } else if (storeMapping.bacabal.includes(currentUserName) || currentUserName === securityGuards.bacabal) {
-                            city = 'Bacabal';
-                        }
-                        
-                        const todayString = getTodayDateString();
-
-                        if (pontoType === 'saida') {
-                            calculateAndSaveOvertime(todayString);
-                        }
-
-                        const historyPontoData = {
-                            collaborator: currentUserName,
-                            city: city,
-                            timestamp: new Date().toISOString(),
-                            photoURL: imageUrl,
-                            type: pontoType
-                        };
-
-                        const dailyPontoData = {
-                            timestamp: historyPontoData.timestamp,
-                            photoURL: imageUrl
-                        };
-
-                        const updates = {};
-                        updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData;
-                        updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData;
-
-                        database.ref().update(updates)
-                            .then(() => {
-                                statusEl.textContent = 'Ponto registrado com sucesso!';
-                                currentPontoAction = null;
-                                // O botão permanece desabilitado, pois a navegação ocorrerá em seguida
-                                setTimeout(() => {
-                                    stopPontoCamera();
-                                    
-                                    const isSecurity = Object.values(securityGuards).includes(currentUserName);
-                                    if (isSecurity) {
-                                        showPage('securityProfilePage');
-                                    } else {
-                                        showPage('collaboratorPage');
-                                        checkPontoStatusAndDisplayWarnings();
-                                    }
-                                    // Reabilita o botão ao sair da página, para a próxima vez que entrar
-                                    captureButton.disabled = false;
-                                    captureButton.style.opacity = '1';
-                                    captureButton.style.cursor = 'pointer';
-                                }, 2000);
-                            })
-                            .catch(dbError => {
-                                console.error("Erro ao salvar dados do ponto:", dbError);
-                                statusEl.textContent = 'Erro ao salvar os dados do ponto.';
-                                // Reabilita o botão em caso de erro
-                                captureButton.disabled = false;
-                                captureButton.style.opacity = '1';
-                                captureButton.style.cursor = 'pointer';
-                            });
-                    } else {
-                        console.error('Erro no ImgBB:', result);
-                        statusEl.textContent = 'Falha ao enviar a foto.';
-                        // Reabilita o botão em caso de erro
+                    if (!currentPontoAction) {
+                        statusEl.textContent = 'Erro: Ação de ponto indefinida.';
+                        console.error("currentPontoAction está nulo no momento do salvamento.");
                         captureButton.disabled = false;
                         captureButton.style.opacity = '1';
                         captureButton.style.cursor = 'pointer';
+                        return;
                     }
-                })
-                .catch(error => {
-                    console.error('Erro de rede ao enviar para ImgBB:', error);
-                    statusEl.textContent = 'Erro de conexão ao enviar a foto.';
-                    // Reabilita o botão em caso de erro
+
+                    const pontoType = currentPontoAction.replace('registrar_', '');
+                    let city = 'N/A';
+                    if (storeMapping.pinheiro.includes(currentUserName) || currentUserName === securityGuards.pinheiro) {
+                        city = 'Pinheiro';
+                    } else if (storeMapping.bacabal.includes(currentUserName) || currentUserName === securityGuards.bacabal) {
+                        city = 'Bacabal';
+                    }
+                    
+                    const todayString = getTodayDateString();
+
+                    if (pontoType === 'saida') {
+                        calculateAndSaveOvertime(todayString);
+                    }
+
+                    const historyPontoData = {
+                        collaborator: currentUserName,
+                        city: city,
+                        timestamp: new Date().toISOString(),
+                        photoURL: imageUrl,
+                        type: pontoType
+                    };
+
+                    const dailyPontoData = {
+                        timestamp: historyPontoData.timestamp,
+                        photoURL: imageUrl
+                    };
+
+                    const updates = {};
+                    updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData;
+                    updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData;
+
+                    database.ref().update(updates)
+                        .then(() => {
+                            statusEl.textContent = 'Ponto registrado com sucesso!';
+                            currentPontoAction = null;
+                            setTimeout(() => {
+                                stopPontoCamera();
+                                
+                                const isSecurity = Object.values(securityGuards).includes(currentUserName);
+                                if (isSecurity) {
+                                    showPage('securityProfilePage');
+                                } else {
+                                    showPage('collaboratorPage');
+                                    checkPontoStatusAndDisplayWarnings();
+                                }
+                                captureButton.disabled = false;
+                                captureButton.style.opacity = '1';
+                                captureButton.style.cursor = 'pointer';
+                            }, 2000);
+                        })
+                        .catch(dbError => {
+                            console.error("Erro ao salvar dados do ponto:", dbError);
+                            statusEl.textContent = 'Erro ao salvar o registro no banco de dados.';
+                            captureButton.disabled = false;
+                            captureButton.style.opacity = '1';
+                            captureButton.style.cursor = 'pointer';
+                        });
+                } else {
+                    console.error('Erro no ImgBB:', result);
+                    statusEl.textContent = 'Falha ao enviar a foto para o servidor.';
                     captureButton.disabled = false;
                     captureButton.style.opacity = '1';
                     captureButton.style.cursor = 'pointer';
-                });
+                }
+            })
+            .catch(error => {
+                clearTimeout(timeoutId);
+                console.error('Erro de fetch/timeout ao enviar para ImgBB:', error);
+                if (error.name === 'AbortError') {
+                    statusEl.textContent = 'O envio da foto demorou muito. Tente novamente.';
+                } else {
+                    statusEl.textContent = 'Erro de conexão ao enviar a foto.';
+                }
+                captureButton.disabled = false;
+                captureButton.style.opacity = '1';
+                captureButton.style.cursor = 'pointer';
+            });
 
         }, 'image/jpeg', 0.8);
     };
@@ -6736,6 +7203,10 @@ function calculateAndDisplayStoreRanking() {
 
         database.ref('feedback').push(feedbackData)
             .then(() => {
+                // Concede a conquista com base no nome digitado no formulário
+                const userKey = name.toLowerCase();
+                awardAchievement(userKey, 'a_voz_da_melhoria');
+
                 statusEl.textContent = 'Feedback enviado com sucesso!';
                 nameInput.value = '';
                 messageInput.value = '';
@@ -7171,6 +7642,16 @@ function calculateAndDisplayStoreRanking() {
                 currentUserName = selectedUserName;
                 document.getElementById('collaborator-name-display').textContent = currentUserName;
                 
+                // Rastreia a abertura do perfil para a conquista
+                const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
+                profileOpenRef.transaction(count => {
+                    const newCount = (count || 0) + 1;
+                    if (newCount >= 50) {
+                        awardAchievement(userKey, 'frequentador_assiduo');
+                    }
+                    return newCount;
+                });
+
                 closeModal(() => {
                     const managerBtn = document.getElementById('manager-panel-btn');
                     const closingBtn = document.getElementById('closing-btn');
@@ -7187,8 +7668,11 @@ function calculateAndDisplayStoreRanking() {
 
                     checkAndDisplayMaintenanceNotice(); 
                     loadAndDisplayIndividualSalesData();
+                    loadPersonalSalesHistoryChart(); 
+                    displayAchievements(userKey); 
+                    checkForParabens(userKey); // Adicionado para checar os parabéns
                     loadCollaboratorProfilePicture(); 
-                    loadAndDisplayCollaboratorStatus(); // Adicionado para carregar o status
+                    loadAndDisplayCollaboratorStatus(); 
                     checkPontoStatusAndDisplayWarnings();
                     initiateLollipopCapture();
 
@@ -7426,11 +7910,44 @@ function calculateAndDisplayStoreRanking() {
                         timestamp: new Date().toISOString()
                     };
 
+                    // --- INÍCIO DA NOVA LÓGICA DE STREAK ---
+                    const streakRef = database.ref(`userProfiles/${userKey}/statusStreakData`);
+                    
+                    streakRef.transaction(currentData => {
+                        const todayString = getTodayDateString();
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        const yesterdayString = `${yesterday.getFullYear()}-${(yesterday.getMonth() + 1).toString().padStart(2, '0')}-${yesterday.getDate().toString().padStart(2, '0')}`;
+                        
+                        let data = currentData || { streak: 0, lastCommentDate: null };
+
+                        if (data.lastCommentDate === todayString) {
+                            // Já comentou hoje, não faz nada com a sequência
+                        } else if (data.lastCommentDate === yesterdayString) {
+                            // Comentou ontem, incrementa a sequência
+                            data.streak++;
+                        } else {
+                            // Não comentou ontem, reseta a sequência
+                            data.streak = 1;
+                        }
+
+                        data.lastCommentDate = todayString;
+                        
+                        // Verifica se a conquista foi alcançada
+                        if(data.streak >= 3) {
+                            awardAchievement(userKey, 'comentarista_consistente');
+                        }
+
+                        return data; // Salva os dados atualizados no Firebase
+                    });
+                    // --- FIM DA NOVA LÓGICA DE STREAK ---
+
                     await statusRef.set(newStatusData);
                     alert('Status atualizado com sucesso!');
                     loadAndDisplayCollaboratorStatus(); // Atualiza a exibição no perfil
                     calculateAndDisplayRanking();
                     calculateAndDisplayStoreRanking();
+                    displayAchievements(userKey); // Re-exibe as conquistas para mostrar a nova
 
                 } catch (error) {
                     alert('Ocorreu um erro ao gerenciar o status.');
@@ -7506,36 +8023,45 @@ function calculateAndDisplayStoreRanking() {
                     return;
                 }
 
-                // Desabilita o botão para evitar múltiplos envios
                 saveButton.disabled = true;
                 saveButton.style.opacity = '0.5';
                 photoStatusEl.textContent = 'Enviando imagem...';
 
-                const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40'; 
+                const IMGBB_API_KEY = '7c32c55ffc68c5fbadae81f11a263a40';
                 const formData = new FormData();
                 formData.append('image', file);
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
 
                 fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                     method: 'POST',
                     body: formData,
+                    signal: controller.signal
                 })
                 .then(response => response.json())
                 .then(result => {
+                    clearTimeout(timeoutId);
                     if (result.success) {
                         photoStatusEl.textContent = 'Imagem enviada! Salvando aviso...';
-                        saveAviso(result.data.url); // Chama a função de salvar com a URL da imagem
+                        saveAviso(result.data.url);
                     } else {
-                        photoStatusEl.textContent = 'Falha ao enviar a imagem.';
-                        saveButton.disabled = false; // Reabilita o botão em caso de erro
+                        photoStatusEl.textContent = 'Falha ao enviar a imagem para o servidor.';
+                        saveButton.disabled = false;
                         saveButton.style.opacity = '1';
                         console.error('Erro no ImgBB:', result);
                     }
                 })
                 .catch(error => {
-                    photoStatusEl.textContent = 'Erro de conexão ao enviar a foto.';
-                    saveButton.disabled = false; // Reabilita o botão em caso de erro
+                    clearTimeout(timeoutId);
+                    if (error.name === 'AbortError') {
+                        photoStatusEl.textContent = 'O envio da foto demorou muito. Tente novamente.';
+                    } else {
+                        photoStatusEl.textContent = 'Erro de conexão ao enviar a foto.';
+                    }
+                    saveButton.disabled = false;
                     saveButton.style.opacity = '1';
-                    console.error('Erro de rede ao enviar para ImgBB:', error);
+                    console.error('Erro de fetch/timeout ao enviar para ImgBB:', error);
                 });
             });
             document.getElementById('avisos-list-container').addEventListener('click', (event) => {
@@ -7810,6 +8336,16 @@ function calculateAndDisplayStoreRanking() {
                         versionClickCount = 0;
                     }, 2000);
                 }
+            });
+
+            // --- LISTENER PARA O BOTÃO DE INFORMAÇÃO DO BÔNUS (?) ---
+            ['ranking-container', 'store-ranking-container'].forEach(id => {
+                document.getElementById(id).addEventListener('click', (event) => {
+                    const infoBtn = event.target.closest('.bonus-info-btn');
+                    if (infoBtn) {
+                        alert('Este é um bônus diário cumulativo de R$ 5,00 por cada dia consecutivo no topo do ranking, até um máximo de R$ 50,00. Se você for retirado do rank, o valor acumulado será zerado e começará para outro competidor do 0.');
+                    }
+                });
             });
         });
     </script>
