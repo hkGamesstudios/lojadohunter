@@ -263,7 +263,7 @@
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.5); /* Adiciona um brilho suave */
         }
 
-        .theme-grayx header, .theme-grayx main, .theme-rosa header, .theme-rosa main {
+        .theme-grayx header, .theme-grayx main, .theme-rosa header, .theme-rosa main, .theme-hunter header, .theme-hunter main {
             position: relative; /* Garante que fiquem sobre a animação */
             z-index: 1;
         }
@@ -3189,7 +3189,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.7.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.8.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -6970,7 +6970,7 @@ function calculateAndDisplayStoreRanking() {
                 if (themeName === 'theme-grayx') {
                     createOrClearFloatingXs(true);
                 }
-                if (themeName === 'theme-rosa') {
+                if (themeName === 'theme-rosa' || themeName === 'theme-hunter') {
                     createOrClearFloatingDots(true);
                 }
 
