@@ -3213,6 +3213,12 @@ Transporte - R$ 5,00"></textarea></div>
                 <button id="security-btn-pinheiro" class="action-button">Pinheiro</button>
                 <button id="security-btn-bacabal" class="action-button">Bacabal</button>
              </div>
+
+             <!-- BOTÃO DO QUIZ ADICIONADO ABAIXO -->
+             <button id="security-open-quiz-btn" class="action-button full-width">
+                 <i class="fa-solid fa-comment-dots"></i>
+                 <span>Quiz</span>
+             </button>
         </div>
     </div>
 
@@ -3313,7 +3319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.3'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.4'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -7307,6 +7313,8 @@ async function calculateAndDisplayStoreRanking() {
                     uploadProfilePicture(file);
                 }
             });
+            // ADICIONADO: Listener para o novo botão de quiz do segurança
+            document.getElementById('security-open-quiz-btn').addEventListener('click', () => showPage('quizPage'));
 
 
             // --- LÓGICA DE TEMA (MOVIDA PARA CIMA) ---
