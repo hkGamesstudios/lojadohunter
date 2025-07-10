@@ -1857,7 +1857,7 @@
         }
 
         /* Ajuste para o container de conteúdo principal do GS */
-        #gs-page .collaborator-content {
+                #gs-page .collaborator-content {
             /* O padding-top foi removido para que o conteúdo flua a partir do topo */
             /* O espaçamento agora é controlado pelo padding da grade de ações */
             flex-direction: column;
@@ -2683,7 +2683,7 @@ P3: R$ 299,00"></textarea>
                 <h4>Adicionar Item Personalizado</h4>
                 <div class="input-group" style="margin-bottom: 1rem;">
                     <label for="custom-item-name">Nome do Produto</label>
-                    <input type="text" id="custom-item-name" class="data-input" placeholder="Ex: Película 3D">
+                    <input type="text" id="custom-item-name" class="data-input" placeholder="Ex: Smartphone">
                 </div>
                 <div style="display: flex; gap: 1rem;">
                     <div class="input-group" style="margin-bottom: 1rem; flex-grow: 1;">
@@ -3189,7 +3189,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.7.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.7.9'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -4974,13 +4974,29 @@ Transporte - R$ 5,00"></textarea></div>
         body += `CIDADE: ${city.trim()}\n`;
         body += `DATA: ${new Date().toLocaleDateString('pt-BR')}\n`;
         body += `--------------------------------\n\n`;
-        
-        body += `ITENS SOLICITADOS:\n\n`;
-        stockRequestSelection.forEach(item => {
-            body += `- ${item.name}\n`;
-            body += `  Cor: ${item.color}\n`;
-            body += `  Quantidade: ${item.quantity}\n\n`;
-        });
+
+        const catalogItems = stockRequestSelection.filter(item => !item.isCustom);
+        const customItems = stockRequestSelection.filter(item => item.isCustom);
+
+        if (catalogItems.length > 0) {
+            body += `ITENS DO CATÁLOGO:\n\n`;
+            catalogItems.forEach(item => {
+                body += `- ${item.name}\n`;
+                body += `  Cor: ${item.color}\n`;
+                body += `  Quantidade: ${item.quantity}\n\n`;
+            });
+        }
+
+        if (customItems.length > 0) {
+            body += `--------------------------------\n`;
+            body += `( PEDIDO DO CLIENTE ):\n\n`;
+            customItems.forEach(item => {
+                body += `- ${item.name}\n`;
+                body += `  Cor: ${item.color}\n`;
+                body += `  Quantidade: ${item.quantity}\n\n`;
+            });
+        }
+
 
         const recipient = 'paulotrindade700@gmail.com';
         const subject = `Solicitação de Estoque - ${requester} (${city.trim()})`;
@@ -7680,7 +7696,7 @@ function calculateAndDisplayStoreRanking() {
                     return;
                 }
 
-                stockRequestSelection.push({ name, color, quantity });
+                stockRequestSelection.push({ name, color, quantity, isCustom: true });
                 renderStockSelectionList();
 
                 // Limpa os campos após adicionar
