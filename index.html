@@ -1238,9 +1238,13 @@
             border-style: solid;
             border-color: #333 transparent transparent transparent;
         }
-        .achievement-badge:hover .tooltip {
+        .achievement-badge .tooltip.visible {
             visibility: visible;
             opacity: 1;
+        }
+
+        .achievement-badge:hover .tooltip {
+            /* Regra de hover removida para priorizar o clique */
         }
 
         /* Este estilo será mantido, mas o rodapé do estoque não o usará mais */
@@ -3309,7 +3313,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.1'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -8343,9 +8347,35 @@ async function calculateAndDisplayStoreRanking() {
                 document.getElementById(id).addEventListener('click', (event) => {
                     const infoBtn = event.target.closest('.bonus-info-btn');
                     if (infoBtn) {
-                        alert('Este é um bônus diário cumulativo de R$ 5,00 por cada dia consecutivo no topo do ranking, até um máximo de R$ 50,00. Se você for retirado do rank, o valor acumulado será zerado e começará para outro competidor do 0.');
+                        alert('Este é um bônus diário cumulativo de R$ 5,00 por cada dia consecutivo no topo do ranking, até um máximo de R$ 50,00. Se você perder sua posição de primeiro lugar, o valor acumulado é zerado e a contagem recomeça para o novo competidor.');
                     }
                 });
+            });
+
+            // --- LÓGICA PARA EXIBIR TOOLTIP DA CONQUISTA NO CLIQUE ---
+            document.addEventListener('click', (e) => {
+                const badge = e.target.closest('.achievement-badge');
+                
+                // Se o clique foi DENTRO de um selo de conquista
+                if (badge) {
+                    const targetTooltip = badge.querySelector('.tooltip');
+                    const isVisible = targetTooltip.classList.contains('visible');
+                    
+                    // Primeiro, esconde TODOS os tooltips que estiverem abertos
+                    document.querySelectorAll('.achievement-badge .tooltip.visible').forEach(tt => {
+                        tt.classList.remove('visible');
+                    });
+                    
+                    // Se o tooltip clicado não estava visível, torna-o visível
+                    if (!isVisible) {
+                        targetTooltip.classList.add('visible');
+                    }
+                } else {
+                    // Se o clique foi FORA de qualquer selo, simplesmente esconde todos
+                    document.querySelectorAll('.achievement-badge .tooltip.visible').forEach(tt => {
+                        tt.classList.remove('visible');
+                    });
+                }
             });
         });
     </script>
