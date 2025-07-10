@@ -3313,7 +3313,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.2'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.3'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -8219,6 +8219,7 @@ async function calculateAndDisplayStoreRanking() {
                         calculateAndDisplayStoreRanking();
                         loadManagerNotifications();
                         loadAndDisplayOvertime();
+                        loadAndDisplayAvisos(); // ADICIONADO: Carrega os avisos gerais na tela principal
                         break;
 
                     case 'security':
