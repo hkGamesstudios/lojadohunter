@@ -3319,7 +3319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.6'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.7'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -4487,7 +4487,7 @@ Transporte - R$ 5,00"></textarea></div>
 
 
     const updateAndFetchDailyBonus = async (topUserKey, rankType) => {
-        const DAILY_AMOUNT = 5;
+        const DAILY_AMOUNT = 3; // ALTERADO: O valor do bônus diário agora é 3.
         const MAX_AMOUNT = 50;
         const todayString = getTodayDateString();
         const bonusRef = database.ref(`dailyBonus/${rankType}`);
@@ -8317,7 +8317,7 @@ async function calculateAndDisplayStoreRanking() {
                 document.getElementById(id).addEventListener('click', (event) => {
                     const infoBtn = event.target.closest('.bonus-info-btn');
                     if (infoBtn) {
-                        alert('Este é um bônus diário cumulativo de R$ 5,00 por cada dia consecutivo no topo do ranking, até um máximo de R$ 50,00. Se você perder sua posição de primeiro lugar, o valor acumulado é zerado e a contagem recomeça para o novo competidor.');
+                        alert('Este é um bônus diário cumulativo de R$ 3,00 por cada dia consecutivo no topo do ranking, até um máximo de R$ 50,00. Se você perder sua posição de primeiro lugar, o valor acumulado é zerado e a contagem recomeça para o novo competidor.');
                     }
                 });
             });
