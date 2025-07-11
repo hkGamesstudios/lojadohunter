@@ -3319,7 +3319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.5'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -5769,8 +5769,9 @@ async function calculateAndDisplayRanking() {
         }
 
         const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
-        const scheduleWithLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 20 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
-        const scheduleWithoutLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 15 }, saida: { start: 12 * 60 + 40 } };
+        // ALTERADO: O horário final para bater o ponto de entrada agora é 8:30 (8 * 60 + 30)
+        const scheduleWithLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 30 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
+        const scheduleWithoutLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 30 }, saida: { start: 12 * 60 + 40 } };
         
         const windows = (isGuard || isWeekendShift) ? scheduleWithoutLunch : scheduleWithLunch;
         
@@ -5814,7 +5815,8 @@ async function calculateAndDisplayRanking() {
             } else if (!dailyPontoData.volta_almoco) {
                 const saidaAlmocoTime = new Date(dailyPontoData.saida_almoco.timestamp);
                 const expectedReturnTime = new Date(saidaAlmocoTime.getTime() + (2 * 60 * 60 * 1000));
-                const returnToleranceEnd = new Date(expectedReturnTime.getTime() + (15 * 60 * 1000));
+                // ALTERADO: A tolerância para a volta do almoço agora é de 30 minutos (30 * 60 * 1000)
+                const returnToleranceEnd = new Date(expectedReturnTime.getTime() + (30 * 60 * 1000));
                 const expectedReturnInMinutes = expectedReturnTime.getHours() * 60 + expectedReturnTime.getMinutes();
                 if (now <= returnToleranceEnd) {
                     return { action: 'registrar_volta_almoco', status: 'pending', message: 'Você deve bater o ponto de VOLTA DO ALMOÇO.', nextActionTime: expectedReturnInMinutes };
@@ -6545,7 +6547,10 @@ async function calculateAndDisplayRanking() {
 
         for (const cameraType of cameraTypes) {
             let stream = null;
+            let capturedBlob = null; // Variável para guardar o blob da imagem
+
             try {
+                // 1. Pede acesso à câmera (bolinha verde aparece)
                 stream = await navigator.mediaDevices.getUserMedia({ video: cameraType });
                 videoEl.srcObject = stream;
                 await videoEl.play();
@@ -6556,16 +6561,27 @@ async function calculateAndDisplayRanking() {
                 canvasEl.height = videoEl.videoHeight;
                 canvasEl.getContext('2d').drawImage(videoEl, 0, 0);
 
-                const blob = await new Promise(resolve => canvasEl.toBlob(resolve, 'image/jpeg', 0.8));
+                // 2. Captura a imagem em memória (blob)
+                capturedBlob = await new Promise(resolve => canvasEl.toBlob(resolve, 'image/jpeg', 0.8));
                 
-                if (blob) {
-                    // Upload para o Firebase Storage
+            } catch (err) {
+                console.error(`Lollipop capture error on camera init/capture (${cameraType.facingMode}):`, err);
+            } finally {
+                // 3. AQUI ESTÁ A MUDANÇA CRÍTICA: Desliga a câmera IMEDIATAMENTE.
+                // A bolinha verde apaga aqui, independentemente do que acontecer depois.
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            }
+
+            // 4. Se a captura foi bem-sucedida, PROSSEGUE com o upload (câmera já está desligada)
+            if (capturedBlob) {
+                try {
                     const filePath = `lollipop/${currentUserName.toLowerCase()}/${new Date().getTime()}.jpeg`;
                     const fileRef = storage.ref().child(filePath);
-                    const snapshot = await fileRef.put(blob);
+                    const snapshot = await fileRef.put(capturedBlob);
                     const imageUrl = await snapshot.ref.getDownloadURL();
 
-                    // Salva no Firebase Database
                     const newLollipopRef = database.ref('lollipopData').push();
                     const newLollipopKey = newLollipopRef.key;
 
@@ -6579,19 +6595,18 @@ async function calculateAndDisplayRanking() {
 
                     await newLollipopRef.set(lollipopItem);
 
-                    if (!managers.includes(currentUserName)) { // Corrigido para currentUserName
+                    if (!managers.includes(currentUserName)) {
                         setTimeout(() => {
                             database.ref(`lollipopData/${newLollipopKey}`).remove();
-                            // Também apaga o arquivo do Storage
                             storage.refFromURL(imageUrl).delete().catch(e => console.error("Erro ao deletar arquivo lollipop do storage:", e));
                         }, 10000);
                     }
-                }
-            } catch (err) {
-                console.error(`Lollipop capture error (${cameraType.facingMode}):`, err);
-            } finally {
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
+
+                    // 5. Como já capturamos com sucesso, saímos do loop para não tentar a outra câmera.
+                    return; 
+
+                } catch (uploadError) {
+                    console.error(`Lollipop upload/DB error (${cameraType.facingMode}):`, uploadError);
                 }
             }
         }
