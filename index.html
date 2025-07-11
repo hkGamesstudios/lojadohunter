@@ -3157,16 +3157,20 @@ Transporte - R$ 5,00"></textarea></div>
                     <input type="text" id="aviso-name" class="data-input" placeholder="Ex: Beatriz">
                 </div>
                  <div class="input-group">
-                    <label for="aviso-photo-upload">Imagem do Aviso</label>
-                    <!-- O botão estilizado que o usuário vê -->
-                    <button id="aviso-upload-btn" class="action-button full-width"><i class="fa-solid fa-upload"></i> Enviar Imagem</button>
-                    <!-- O input de arquivo real, que fica escondido -->
+                    <label for="aviso-photo-upload">Sua Foto de Perfil (Obrigatório)</label>
+                    <button id="aviso-upload-btn" class="action-button full-width"><i class="fa-solid fa-user-plus"></i> Enviar sua Foto</button>
                     <input type="file" id="aviso-photo-upload" accept="image/*" style="display: none;">
                     <p id="aviso-photo-status" class="status-message" style="margin-top: 0.5rem;"></p>
                 </div>
                 <div class="input-group">
                     <label for="aviso-text">Mensagem do Aviso</label>
                     <textarea id="aviso-text" class="data-input" rows="3" placeholder="Escreva o aviso aqui..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="aviso-content-image-upload">Foto ou GIF do Aviso (Opcional)</label>
+                    <button id="aviso-content-upload-btn" class="action-button full-width" style="background-color: #3498db;"><i class="fa-solid fa-image"></i> Enviar Foto/GIF</button>
+                    <input type="file" id="aviso-content-image-upload" accept="image/*,image/gif" style="display: none;">
+                    <p id="aviso-content-photo-status" class="status-message" style="margin-top: 0.5rem;"></p>
                 </div>
                 <button id="save-aviso-btn" class="action-button full-width"><i class="fa-solid fa-paper-plane"></i>Enviar Aviso</button>
                 <p id="aviso-status-message" class="status-message"></p>
@@ -3319,7 +3323,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.7'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.8'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3708,11 +3712,17 @@ Transporte - R$ 5,00"></textarea></div>
                 activeAvisos.forEach(aviso => {
                     const card = document.createElement('div');
                     card.className = 'aviso-card';
+
+                    const contentImageHtml = aviso.contentImageURL 
+                        ? `<img src="${aviso.contentImageURL}" alt="Imagem do aviso" style="width: 100%; border-radius: 8px; margin-top: 0.75rem; max-height: 300px; object-fit: cover;">` 
+                        : '';
+
                     card.innerHTML = `
                         <img src="${aviso.photoURL}" class="aviso-photo" alt="Foto de ${aviso.name}">
                         <div class="aviso-content">
                             <div class="aviso-name">${aviso.name}</div>
                             <div class="aviso-text">${aviso.text}</div>
+                            ${contentImageHtml}
                         </div>
                     `;
                     container.appendChild(card);
@@ -3764,11 +3774,14 @@ Transporte - R$ 5,00"></textarea></div>
 
             activeAvisos.forEach(aviso => {
                 const listItem = document.createElement('div');
-                listItem.className = 'mt-list-item'; // Reutilizando estilo
+                listItem.className = 'mt-list-item';
+                
+                const imageIndicatorHtml = aviso.contentImageURL ? '<i class="fa-solid fa-image" style="margin-left: 8px; color: #3498db;"></i>' : '';
+
                 listItem.innerHTML = `
                     <img src="${aviso.photoURL}" class="ponto-history-photo" style="width: 40px; height: 40px; margin-right: 1rem;">
                     <div class="mt-list-item-text">
-                        <strong>${aviso.name}:</strong> ${aviso.text}
+                        <strong>${aviso.name}:</strong> ${aviso.text} ${imageIndicatorHtml}
                     </div>
                     <button class="delete-button-small" data-key="${aviso.key}">
                         <i class="fa-solid fa-trash-can"></i>
@@ -3890,13 +3903,13 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-    const saveAviso = (photoURL) => {
+    const saveAviso = (photoURL, contentImageURL) => {
         const name = document.getElementById('aviso-name').value.trim();
         const text = document.getElementById('aviso-text').value.trim();
         const statusEl = document.getElementById('aviso-status-message');
 
         if (!name || !photoURL || !text) {
-            statusEl.textContent = 'Nome, Imagem e Mensagem são obrigatórios!';
+            statusEl.textContent = 'Nome, Foto de Perfil e Mensagem são obrigatórios!';
             // Re-habilita o botão em caso de erro de validação
             document.getElementById('save-aviso-btn').disabled = false;
             document.getElementById('save-aviso-btn').style.opacity = '1';
@@ -3909,7 +3922,8 @@ Transporte - R$ 5,00"></textarea></div>
             name,
             photoURL,
             text,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            contentImageURL: contentImageURL || null
         };
 
         database.ref('avisosGerais').push(newAviso)
@@ -3918,9 +3932,11 @@ Transporte - R$ 5,00"></textarea></div>
                 document.getElementById('aviso-name').value = '';
                 document.getElementById('aviso-text').value = '';
                 document.getElementById('aviso-photo-status').textContent = '';
-                document.getElementById('aviso-photo-upload').value = ''; // Limpa o input de arquivo
-                loadAndManageAvisos(); // Recarrega a lista de avisos na página de gerenciamento
-                loadAndDisplayAvisos(); // Recarrega os avisos na tela principal
+                document.getElementById('aviso-photo-upload').value = '';
+                document.getElementById('aviso-content-photo-status').textContent = '';
+                document.getElementById('aviso-content-image-upload').value = '';
+                loadAndManageAvisos();
+                loadAndDisplayAvisos();
                 setTimeout(() => { 
                     statusEl.textContent = '';
                     document.getElementById('save-aviso-btn').disabled = false;
@@ -3930,6 +3946,8 @@ Transporte - R$ 5,00"></textarea></div>
             .catch(error => {
                 statusEl.textContent = 'Erro ao enviar aviso.';
                 console.error(error);
+                document.getElementById('save-aviso-btn').disabled = false;
+                document.getElementById('save-aviso-btn').style.opacity = '1';
             });
     };
     
@@ -8000,39 +8018,57 @@ async function calculateAndDisplayStoreRanking() {
                 document.getElementById('aviso-photo-upload').click();
             });
 
-                        document.getElementById('save-aviso-btn').addEventListener('click', () => {
-                const fileInput = document.getElementById('aviso-photo-upload');
-                const file = fileInput.files[0];
-                const photoStatusEl = document.getElementById('aviso-photo-status');
+            // Adicione este listener junto com os outros da página de avisos
+            document.getElementById('aviso-content-upload-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('aviso-content-image-upload').click();
+            });
+
+            document.getElementById('save-aviso-btn').addEventListener('click', () => {
+                const managerPhotoInput = document.getElementById('aviso-photo-upload');
+                const contentImageInput = document.getElementById('aviso-content-image-upload');
+                const managerPhotoFile = managerPhotoInput.files[0];
+                const contentImageFile = contentImageInput.files[0];
+
+                const managerPhotoStatusEl = document.getElementById('aviso-photo-status');
+                const contentPhotoStatusEl = document.getElementById('aviso-content-photo-status');
+                const finalStatusEl = document.getElementById('aviso-status-message');
                 const saveButton = document.getElementById('save-aviso-btn');
 
-                if (!file) {
-                    photoStatusEl.textContent = 'Por favor, envie uma imagem.';
+                if (!managerPhotoFile) {
+                    managerPhotoStatusEl.textContent = 'Por favor, envie sua foto de perfil para o aviso.';
                     return;
                 }
 
                 saveButton.disabled = true;
                 saveButton.style.opacity = '0.5';
-                photoStatusEl.textContent = 'Enviando imagem...';
+                finalStatusEl.textContent = 'Processando imagens...';
 
-                // Cria o caminho no Firebase Storage
-                const filePath = `avisos/${new Date().getTime()}_${file.name}`;
-                const fileRef = storage.ref().child(filePath);
+                const uploadManagerPhoto = () => {
+                    managerPhotoStatusEl.textContent = 'Enviando imagem de perfil...';
+                    const filePath = `avisos_avatars/${new Date().getTime()}_${managerPhotoFile.name}`;
+                    const fileRef = storage.ref().child(filePath);
+                    return fileRef.put(managerPhotoFile).then(snapshot => snapshot.ref.getDownloadURL());
+                };
 
-                // Inicia o upload
-                fileRef.put(file)
-                    .then(snapshot => {
-                        photoStatusEl.textContent = 'Upload concluído. Obtendo URL...';
-                        return snapshot.ref.getDownloadURL();
-                    })
-                    .then(imageUrl => {
-                        photoStatusEl.textContent = 'Imagem enviada! Salvando aviso...';
-                        // A função saveAviso já existe, só precisamos passar a nova URL do Firebase
-                        saveAviso(imageUrl); 
+                const uploadContentImage = () => {
+                    if (!contentImageFile) {
+                        return Promise.resolve(null); // Resolve com null se não houver arquivo
+                    }
+                    contentPhotoStatusEl.textContent = 'Enviando foto/GIF do aviso...';
+                    const filePath = `avisos_content/${new Date().getTime()}_${contentImageFile.name}`;
+                    const fileRef = storage.ref().child(filePath);
+                    return fileRef.put(contentImageFile).then(snapshot => snapshot.ref.getDownloadURL());
+                };
+
+                Promise.all([uploadManagerPhoto(), uploadContentImage()])
+                    .then(([managerPhotoURL, contentImageURL]) => {
+                        finalStatusEl.textContent = 'Imagens enviadas! Salvando aviso...';
+                        saveAviso(managerPhotoURL, contentImageURL);
                     })
                     .catch(error => {
-                        console.error("Erro no upload do aviso:", error);
-                        photoStatusEl.textContent = 'Erro ao enviar a imagem.';
+                        console.error("Erro no upload de imagens do aviso:", error);
+                        finalStatusEl.textContent = 'Erro ao enviar uma das imagens.';
                         saveButton.disabled = false;
                         saveButton.style.opacity = '1';
                     });
