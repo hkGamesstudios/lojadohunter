@@ -3214,8 +3214,8 @@ Transporte - R$ 5,00"></textarea></div>
              <h3 class="modal-title" style="width: 100%; text-align: center;">Selecione sua Loja</h3>
              <!-- Adicionando a grade para alinhar os botões -->
              <div class="collaborator-actions-grid">
-                <button id="security-btn-pinheiro" class="action-button">Pinheiro</button>
                 <button id="security-btn-bacabal" class="action-button">Bacabal</button>
+                <button id="security-btn-sao-luis" class="action-button">Pinheiro</button>
              </div>
 
              <!-- BOTÃO DO QUIZ ADICIONADO ABAIXO -->
@@ -3323,7 +3323,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '1.9.9'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3356,7 +3356,7 @@ Transporte - R$ 5,00"></textarea></div>
 
     // --- ESTADO DA APLICAÇÃO ---
     const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson'];
-    const securityGuards = { pinheiro: 'José Santana', bacabal: 'Leonardo Bezerra' };
+    const securityGuards = { bacabal: 'Leonardo Bezerra', pinheiro: 'Jose Santana' };
     const allUsers = [...allCollaborators, ...Object.values(securityGuards)]; // Lista unificada para funções genéricas
     const managers = ['Beatriz', 'Natalia'];
     const storeMapping = {
@@ -5417,7 +5417,7 @@ Transporte - R$ 5,00"></textarea></div>
         
         body += `\n===============================`;
 
-        const recipient = 'paulotrindade700@gmail.com';
+        const recipient = 'Keyllafonseca8804@gmail.com';
         const subject = `Recibo de Gastos - ${nome} (${loja})`;
         
         window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -6915,10 +6915,12 @@ async function calculateAndDisplayStoreRanking() {
 
                     const pontoType = currentPontoAction.replace('registrar_', '');
                     let city = 'N/A';
-                    if (storeMapping.pinheiro.includes(currentUserName) || currentUserName === securityGuards.pinheiro) {
+                    if (storeMapping.pinheiro.includes(currentUserName)) {
                         city = 'Pinheiro';
                     } else if (storeMapping.bacabal.includes(currentUserName) || currentUserName === securityGuards.bacabal) {
                         city = 'Bacabal';
+                    } else if (currentUserName === securityGuards.pinheiro) {
+                        city = 'Pinheiro';
                     }
                     
                     const todayString = getTodayDateString();
@@ -7330,8 +7332,8 @@ async function calculateAndDisplayStoreRanking() {
                 showPage('securityProfilePage');
             };
 
-            document.getElementById('security-btn-pinheiro').addEventListener('click', () => showSecurityProfile('pinheiro'));
             document.getElementById('security-btn-bacabal').addEventListener('click', () => showSecurityProfile('bacabal'));
+            document.getElementById('security-btn-sao-luis').addEventListener('click', () => showSecurityProfile('pinheiro'));
             document.getElementById('back-to-security-selection').addEventListener('click', () => showPage('securityCitySelectionPage'));
 
             document.getElementById('security-bater-ponto-btn').addEventListener('click', handlePontoLogic);
