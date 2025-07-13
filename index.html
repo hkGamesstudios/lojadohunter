@@ -763,7 +763,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #security-city-selection-page, #security-profile-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #security-city-selection-page, #security-profile-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -1939,6 +1939,7 @@
             border-radius: 16px;
             cursor: pointer;
             text-align: center;
+            position: relative; /* Adicionado para posicionar a bolha */
         }
 
         .gs-action-btn:hover {
@@ -1964,6 +1965,25 @@
             justify-content: center;
             margin-left: 5px;
             vertical-align: top;
+        }
+
+        /* Novo estilo para a bolha de notificação */
+        .gs-notification-bubble {
+            position: absolute;
+            top: 8px; /* Posição no canto superior direito */
+            right: 8px;
+            background-color: #e74c3c; /* Vermelho */
+            color: white;
+            border-radius: 50%;
+            width: 20px; /* Um pouco maior para destaque */
+            height: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(0,0,0,0.2); /* Borda para separar do fundo */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         /* Ajuste para o container de conteúdo principal do GS */
@@ -2434,6 +2454,7 @@
     </div>
 
     <!-- Tela da gs (Dashboard) -->
+        <!-- TELA DA GS (DASHBOARD) -->
     <div id="gs-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-main-from-gs" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
@@ -2458,6 +2479,28 @@
                 <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar Backup</span></button>
                 <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Restaurar Backup</span></button>
                 <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
+
+                <!-- NOVOS BOTÕES DE SUBMISSÃO -->
+                <button id="view-stock-requests-btn" class="gs-action-btn">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Estoque</span>
+                    <span id="stock-indicator" class="gs-notification-bubble" style="display: none;">!</span>
+                </button>
+                <button id="view-recibos-btn" class="gs-action-btn">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <span>Recibos</span>
+                    <span id="recibos-indicator" class="gs-notification-bubble" style="display: none;">!</span>
+                </button>
+                <button id="view-quiz-submissions-btn" class="gs-action-btn">
+                    <i class="fa-solid fa-comment-dots"></i>
+                    <span>Quiz</span>
+                    <span id="quiz-indicator" class="gs-notification-bubble" style="display: none;">!</span>
+                </button>
+                <button id="view-feedback-btn" class="gs-action-btn">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Feedback</span>
+                    <span id="feedback-indicator" class="gs-notification-bubble" style="display: none;">!</span>
+                </button>
             </div>
 
             <!-- KPIs principais -->
@@ -3283,7 +3326,7 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
-    <!-- TELA DE DEBUG -->
+    <!-- TELA DE DEBUG (não será mais usada para feedback, mas mantida para outras funções) -->
     <div id="debug-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-main-from-debug" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
@@ -3299,14 +3342,55 @@ Transporte - R$ 5,00"></textarea></div>
                 </div>
             </div>
 
-            <!-- Card de Feedbacks -->
-            <div class="employee-meta-card" style="max-width: none;">
-                <h4>Erros e Sugestões Recebidos</h4>
-                <div id="debug-feedback-list">
-                    <p>Carregando feedbacks...</p>
-                </div>
-            </div>
+        </div>
+    </div>
 
+
+    <!-- =================================================================== -->
+    <!-- NOVAS TELAS PARA VISUALIZAÇÃO DE SUBMISSÕES (GS) -->
+    <!-- =================================================================== -->
+
+    <!-- TELA PARA VER SOLICITAÇÕES DE ESTOQUE -->
+    <div id="stock-requests-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-stock-requests" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="stock-requests-title">Solicitações de Estoque</h2>
+        </div>
+        <div id="stock-requests-list" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- JS vai popular a lista de solicitações aqui -->
+        </div>
+    </div>
+
+    <!-- TELA PARA VER RECIBOS -->
+    <div id="recibos-submissions-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-recibos" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="recibos-submissions-title">Recibos Enviados</h2>
+        </div>
+        <div id="recibos-submissions-list" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- JS vai popular a lista de recibos aqui -->
+        </div>
+    </div>
+
+    <!-- TELA PARA VER RESPOSTAS DO QUIZ -->
+    <div id="quiz-submissions-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-quiz" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="quiz-submissions-title">Respostas do Quiz</h2>
+        </div>
+        <div id="quiz-submissions-list" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- JS vai popular a lista de respostas do quiz aqui -->
+        </div>
+    </div>
+
+    <!-- TELA PARA VER FEEDBACKS -->
+    <div id="feedback-submissions-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-feedback" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="feedback-submissions-title">Feedbacks Recebidos</h2>
+        </div>
+        <div id="feedback-submissions-list" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- JS vai popular a lista de feedbacks aqui -->
         </div>
     </div>
 
@@ -3323,7 +3407,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '1.9.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '2.0.0'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -3409,6 +3493,12 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('feedback-page').classList.add('page');
     document.getElementById('debug-page').classList.add('page');
 
+    // ADICIONANDO AS NOVAS PÁGINAS DE SUBMISSÃO
+    document.getElementById('stock-requests-page').classList.add('page');
+    document.getElementById('recibos-submissions-page').classList.add('page');
+    document.getElementById('quiz-submissions-page').classList.add('page');
+    document.getElementById('feedback-submissions-page').classList.add('page');
+
 
 
 
@@ -3454,7 +3544,13 @@ Transporte - R$ 5,00"></textarea></div>
         avisosManagementPage: document.getElementById('avisos-management-page'), // Nova página
         feedbackPage: document.getElementById('feedback-page'),
         debugPage: document.getElementById('debug-page'),
-    };    
+
+        // ADICIONANDO AS NOVAS PÁGINAS DE SUBMISSÃO AOS ELEMENTOS
+        stockRequestsPage: document.getElementById('stock-requests-page'),
+        recibosSubmissionsPage: document.getElementById('recibos-submissions-page'),
+        quizSubmissionsPage: document.getElementById('quiz-submissions-page'),
+        feedbackSubmissionsPage: document.getElementById('feedback-submissions-page'),
+    };
     // --- LÓGICA DE NAVEGAÇÃO E ANIMAÇÃO (REFEITA DO ZERO) ---
     function staggerAnimate(container) {
         const items = container.querySelectorAll('.brand-button, .tool-item, .device-card, .modal-btn, .action-button');
@@ -5324,7 +5420,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const sendStockRequestEmail = () => {
+    const submitStockRequest = () => {
         if (stockRequestSelection.length === 0) {
             alert('Adicione pelo menos um item ao pedido.');
             return;
@@ -5342,52 +5438,31 @@ Transporte - R$ 5,00"></textarea></div>
             return;
         }
 
-        let body = `SOLICITAÇÃO DE ESTOQUE\n`;
-        body += `--------------------------------\n`;
-        body += `SOLICITANTE: ${requester}\n`;
-        body += `CIDADE: ${city.trim()}\n`;
-        body += `DATA: ${new Date().toLocaleDateString('pt-BR')}\n`;
-        body += `--------------------------------\n\n`;
+        const requestData = {
+            requester: requester.trim(),
+            city: city.trim(),
+            items: stockRequestSelection,
+            timestamp: new Date().toISOString(),
+            read: false
+        };
 
-        const catalogItems = stockRequestSelection.filter(item => !item.isCustom);
-        const customItems = stockRequestSelection.filter(item => item.isCustom);
-
-        if (catalogItems.length > 0) {
-            body += `ITENS DO CATÁLOGO:\n\n`;
-            catalogItems.forEach(item => {
-                body += `- ${item.name}\n`;
-                body += `  Cor: ${item.color}\n`;
-                body += `  Quantidade: ${item.quantity}\n\n`;
+        database.ref('stockRequests').push(requestData)
+            .then(() => {
+                alert('Solicitação de estoque enviada com sucesso para a gerência!');
+                // Limpa tudo após o envio
+                stockRequestSelection = [];
+                document.getElementById('custom-item-name').value = '';
+                document.getElementById('custom-item-color').value = '';
+                document.getElementById('custom-item-quantity').value = '';
+                renderStockSelectionList();
+            })
+            .catch(error => {
+                alert('Ocorreu um erro ao enviar a solicitação.');
+                console.error('Erro ao salvar solicitação de estoque:', error);
             });
-        }
-
-        if (customItems.length > 0) {
-            body += `--------------------------------\n`;
-            body += `( PEDIDO DO CLIENTE ):\n\n`;
-            customItems.forEach(item => {
-                body += `- ${item.name}\n`;
-                body += `  Cor: ${item.color}\n`;
-                body += `  Quantidade: ${item.quantity}\n\n`;
-            });
-        }
-
-
-        const recipient = 'paulotrindade700@gmail.com';
-        const subject = `Solicitação de Estoque - ${requester} (${city.trim()})`;
-        
-        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        
-        // Limpa a seleção e o formulário personalizado após gerar o email
-        setTimeout(() => {
-            stockRequestSelection = [];
-            document.getElementById('custom-item-name').value = '';
-            document.getElementById('custom-item-color').value = '';
-            document.getElementById('custom-item-quantity').value = '';
-            renderStockSelectionList();
-        }, 1000);
     };
 
-    const sendReciboEmail = () => {
+    const submitRecibo = () => {
         const statusEl = document.getElementById('recibo-status-message');
         const nome = document.getElementById('recibo-nome').value.trim();
         const loja = document.getElementById('recibo-loja').value.trim();
@@ -5402,42 +5477,38 @@ Transporte - R$ 5,00"></textarea></div>
             return;
         }
 
-        const dataFormatada = `${dia}/${mes}/${ano}`;
+        const reciboData = {
+            nome,
+            loja,
+            gastos,
+            nota,
+            dataGasto: `${dia}/${mes}/${ano}`,
+            timestamp: new Date().toISOString(),
+            read: false
+        };
 
-        let body = `RECIBO DE GASTOS\n`;
-        body += `===============================\n\n`;
-        body += `NOME: ${nome}\n`;
-        body += `LOJA: ${loja}\n`;
-        body += `DATA: ${dataFormatada}\n\n`;
-        body += `GASTOS (DESCRIÇÃO E VALOR):\n${gastos}\n\n`;
-        
-        if (nota) {
-            body += `NOTA/CUPOM (Opcional):\n${nota}\n`;
-        }
-        
-        body += `\n===============================`;
-
-        const recipient = 'Keyllafonseca8804@gmail.com';
-        const subject = `Recibo de Gastos - ${nome} (${loja})`;
-        
-        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        
-        statusEl.textContent = 'Abrindo seu cliente de email...';
-        
-        // Limpa o formulário após o envio
-        document.getElementById('recibo-nome').value = '';
-        document.getElementById('recibo-loja').value = '';
-        document.getElementById('recibo-gastos').value = '';
-        document.getElementById('recibo-nota').value = '';
-        document.getElementById('recibo-dia').value = '';
-        document.getElementById('recibo-mes').value = '';
-        document.getElementById('recibo-ano').value = '';
+        database.ref('reciboSubmissions').push(reciboData)
+            .then(() => {
+                statusEl.textContent = 'Recibo enviado com sucesso!';
+                // Limpa o formulário após o envio
+                document.getElementById('recibo-nome').value = '';
+                document.getElementById('recibo-loja').value = '';
+                document.getElementById('recibo-gastos').value = '';
+                document.getElementById('recibo-nota').value = '';
+                document.getElementById('recibo-dia').value = '';
+                document.getElementById('recibo-mes').value = '';
+                document.getElementById('recibo-ano').value = '';
+                setTimeout(() => { statusEl.textContent = ''; }, 3000);
+            })
+            .catch(error => {
+                statusEl.textContent = 'Erro ao enviar o recibo.';
+                console.error("Erro ao salvar recibo:", error);
+            });
     };
 
-    const sendQuizEmail = () => {
+    const submitQuiz = () => {
         const statusEl = document.getElementById('quiz-status-message');
 
-        // Coleta de dados dos campos
         const nome = document.getElementById('quiz-nome').value.trim();
         const gostouTreinamento = document.querySelector('input[name="gostou_treinamento"]:checked');
         const parteUtil = document.getElementById('quiz_parte_util').value.trim();
@@ -5448,60 +5519,55 @@ Transporte - R$ 5,00"></textarea></div>
         const proximoTemaOutro = document.getElementById('quiz_proximo_tema_outro').value.trim();
         const sugestao = document.getElementById('quiz_sugestao').value.trim();
 
-        // Validação
         if (!nome || !gostouTreinamento || !parteUtil || !parteConfusa || !ajudouPreparar || !proximoTemaRadio) {
             statusEl.textContent = 'Por favor, responda todas as perguntas obrigatórias.';
             return;
         }
-        if (parteConfusa.value === 'Sim' && !parteConfusaDetalhe) {
-            statusEl.textContent = 'Por favor, especifique qual parte do treinamento ficou confusa.';
-            return;
-        }
-        if (proximoTemaRadio.value === 'Outro' && !proximoTemaOutro) {
-            statusEl.textContent = 'Por favor, especifique o outro tema para o próximo treinamento.';
-            return;
-        }
 
-        // Montagem do corpo do email
-        let proximoTemaFinal = proximoTemaRadio.value;
-        if (proximoTemaRadio.value === 'Outro') {
+        let proximoTemaFinal = proximoTemaRadio.labels[0].innerText;
+        if (proximoTemaRadio.id === 'tema-outro') {
+            if (!proximoTemaOutro) {
+                statusEl.textContent = 'Por favor, especifique o outro tema para o próximo treinamento.';
+                return;
+            }
             proximoTemaFinal = `Outro: ${proximoTemaOutro}`;
         }
         
         let parteConfusaFinal = parteConfusa.value;
         if (parteConfusa.value === 'Sim') {
-            parteConfusaFinal = `Sim, a parte sobre: ${parteConfusaDetalhe}`;
+            if (!parteConfusaDetalhe) {
+                statusEl.textContent = 'Por favor, especifique qual parte do treinamento ficou confusa.';
+                return;
+            }
+            parteConfusaFinal = `Sim: ${parteConfusaDetalhe}`;
         }
 
-        let body = `FEEDBACK - TREINAMENTO LOJA DO HUNTER\n`;
-        body += `=========================================\n\n`;
-        body += `NOME DO COLABORADOR: ${nome}\n\n`;
-        
-        body += `1. Você gostou do conteúdo do treinamento?\n- ${gostouTreinamento.value}\n\n`;
-        body += `2. Qual parte você achou mais útil ou que mais chamou sua atenção?\n- ${parteUtil}\n\n`;
-        body += `3. Teve alguma parte que ficou confusa ou você sentiu falta de mais explicações?\n- ${parteConfusaFinal}\n\n`;
-        body += `4. Você sentiu que esse treinamento te ajudou a se sentir mais preparado(a) para vender e atender melhor?\n- ${ajudouPreparar.value}\n\n`;
-        body += `5. Qual tema você gostaria que a gente abordasse no próximo treinamento?\n- ${proximoTemaFinal}\n\n`;
-        
-        if (sugestao) {
-            body += `6. Sugestão, elogio ou crítica (opcional):\n- ${sugestao}\n`;
-        }
+        const quizData = {
+            nome,
+            respostas: {
+                gostou: gostouTreinamento.value,
+                parteUtil: parteUtil,
+                parteConfusa: parteConfusaFinal,
+                ajudouPreparar: ajudouPreparar.value,
+                proximoTema: proximoTemaFinal,
+                sugestao: sugestao
+            },
+            timestamp: new Date().toISOString(),
+            read: false
+        };
 
-        // Envio do email
-        const recipient = 'paulotrindade700@gmail.com';
-        const subject = `Feedback de Treinamento - ${nome}`;
-        
-        window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        
-        statusEl.textContent = 'Abrindo seu cliente de email...';
-        
-        // Limpeza do formulário
-        document.getElementById('quiz-nome').value = '';
-        document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-        document.getElementById('quiz_parte_util').value = '';
-        document.getElementById('quiz_parte_confusa_detalhe').value = '';
-        document.getElementById('quiz_proximo_tema_outro').value = '';
-        document.getElementById('quiz_sugestao').value = '';
+        database.ref('quizSubmissions').push(quizData)
+            .then(() => {
+                statusEl.textContent = 'Feedback enviado com sucesso!';
+                document.getElementById('quiz-nome').value = '';
+                document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+                document.querySelectorAll('textarea, input[type="text"]').forEach(input => input.id !== 'quiz-nome' ? input.value = '' : null);
+                setTimeout(() => { statusEl.textContent = ''; }, 3000);
+            })
+            .catch(error => {
+                statusEl.textContent = 'Erro ao enviar o feedback.';
+                console.error("Erro ao salvar quiz:", error);
+            });
     };
 
         const displayMtForBrand = (brand) => {
@@ -7186,7 +7252,7 @@ async function calculateAndDisplayStoreRanking() {
         calculateSite();
     };
 
-    const sendFeedback = () => {
+    const submitFeedback = () => {
         const nameInput = document.getElementById('feedback-name');
         const messageInput = document.getElementById('feedback-message');
         const statusEl = document.getElementById('feedback-status-message');
@@ -7204,12 +7270,12 @@ async function calculateAndDisplayStoreRanking() {
         const feedbackData = {
             name,
             message,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            read: false // Adiciona o status de não lido
         };
 
         database.ref('feedback').push(feedbackData)
             .then(() => {
-                // Concede a conquista com base no nome digitado no formulário
                 const userKey = name.toLowerCase();
                 awardAchievement(userKey, 'a_voz_da_melhoria');
 
@@ -7229,10 +7295,8 @@ async function calculateAndDisplayStoreRanking() {
 
     const loadDebugPage = async () => {
         const statsContainer = document.getElementById('debug-stats-container');
-        const feedbackListContainer = document.getElementById('debug-feedback-list');
         
         statsContainer.innerHTML = `<p>Carregando estatísticas...</p>`;
-        feedbackListContainer.innerHTML = `<p>Carregando feedbacks...</p>`;
 
         // Carregar Estatísticas
         try {
@@ -7253,39 +7317,6 @@ async function calculateAndDisplayStoreRanking() {
             }
         } catch (error) {
             statsContainer.innerHTML = `<p>Erro ao carregar estatísticas.</p>`;
-            console.error(error);
-        }
-
-        // Carregar Feedbacks
-        try {
-            const feedbackSnap = await database.ref('feedback').get();
-            if (feedbackSnap.exists()) {
-                feedbackListContainer.innerHTML = '';
-                const feedbacks = [];
-                feedbackSnap.forEach(item => {
-                    feedbacks.push({ key: item.key, ...item.val() });
-                });
-
-                feedbacks.reverse().forEach(fb => {
-                    const listItem = document.createElement('div');
-                    listItem.className = 'mt-list-item';
-                    const date = new Date(fb.timestamp);
-                    listItem.innerHTML = `
-                        <div class="mt-list-item-text">
-                            <strong>${fb.name}</strong> (${date.toLocaleDateString('pt-BR')}):<br>
-                            ${fb.message}
-                        </div>
-                        <button class="delete-button-small" data-key="${fb.key}">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    `;
-                    feedbackListContainer.appendChild(listItem);
-                });
-            } else {
-                 feedbackListContainer.innerHTML = `<p>Nenhum feedback recebido.</p>`;
-            }
-        } catch (error) {
-            feedbackListContainer.innerHTML = `<p>Erro ao carregar feedbacks.</p>`;
             console.error(error);
         }
     };
@@ -7742,9 +7773,9 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('close-os-modal-btn').addEventListener('click', () => closeOsModal());
             elements.osModal.addEventListener('click', (e) => { if (e.target === elements.osModal) closeOsModal(); });
             document.getElementById('submit-os-form-btn').addEventListener('click', sendOsEmail);
-            document.getElementById('send-stock-request-btn').addEventListener('click', sendStockRequestEmail);
-            document.getElementById('submit-recibo-btn').addEventListener('click', sendReciboEmail);
-            document.getElementById('submit-quiz-btn').addEventListener('click', sendQuizEmail);
+            document.getElementById('send-stock-request-btn').addEventListener('click', submitStockRequest);
+            document.getElementById('submit-recibo-btn').addEventListener('click', submitRecibo);
+            document.getElementById('submit-quiz-btn').addEventListener('click', submitQuiz);
 
             // --- FECHAMENTO (seleção de loja e geração de formulário) ---
             const showClosingForm = (store) => {
@@ -7792,6 +7823,12 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-main-from-quiz').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-feedback').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-debug').addEventListener('click', showMainPage);
+
+            // Adicionando listeners de "voltar" para as novas páginas de submissão
+            document.getElementById('back-to-gs-from-stock-requests').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-recibos').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-quiz').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-feedback').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-metas').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-correction').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-holidays').addEventListener('click', () => showPage('gsPage'));
@@ -8005,13 +8042,65 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
             
-            // Listeners para as novas páginas
-            document.getElementById('submit-feedback-btn').addEventListener('click', sendFeedback);
-            document.getElementById('debug-feedback-list').addEventListener('click', (event) => {
-                const deleteButton = event.target.closest('.delete-button-small');
-                if (deleteButton) {
-                    deleteFeedbackItem(deleteButton.dataset.key);
-                }
+                        // Este bloco foi movido e a função deleteFeedbackItem não é mais necessária,
+            // pois foi substituída por um listener genérico mais acima.
+            document.getElementById('submit-feedback-btn').addEventListener('click', submitFeedback);
+
+            // Listeners para as novas páginas de submissão na tela GS
+            document.getElementById('view-stock-requests-btn').addEventListener('click', () => {
+                createGenericSubmissionViewer('stockRequests', 'stockRequestsPage', 'stock-requests-list', 'stock-requests-title', 'Solicitações de Estoque', (item) => {
+                    let itemsHtml = item.items.map(p => `<li>${p.quantity}x ${p.name} (Cor: ${p.color})</li>`).join('');
+                    return `<h4>Solicitante: ${item.requester} (${item.city})</h4>
+                            <p><strong>Data:</strong> ${new Date(item.timestamp).toLocaleString('pt-BR')}</p>
+                            <p><strong>Itens:</strong></p>
+                            <ul style="list-style-position: inside;">${itemsHtml}</ul>`;
+                });
+            });
+
+            document.getElementById('view-recibos-btn').addEventListener('click', () => {
+                createGenericSubmissionViewer('reciboSubmissions', 'recibosSubmissionsPage', 'recibos-submissions-list', 'recibos-submissions-title', 'Recibos Enviados', (item) => {
+                    return `<h4>Recibo de: ${item.nome} (${item.loja})</h4>
+                            <p><strong>Data do Gasto:</strong> ${item.dataGasto}</p>
+                            <p><strong>Descrição:</strong><pre>${item.gastos}</pre></p>
+                            <p><strong>Nota:</strong><pre>${item.nota || 'N/A'}</pre></p>`;
+                });
+            });
+            
+            document.getElementById('view-quiz-submissions-btn').addEventListener('click', () => {
+                createGenericSubmissionViewer('quizSubmissions', 'quizSubmissionsPage', 'quiz-submissions-list', 'quiz-submissions-title', 'Respostas do Quiz', (item) => {
+                    return `<h4>Quiz de: ${item.nome}</h4>
+                            <p><strong>1. Gostou:</strong> ${item.respostas.gostou}</p>
+                            <p><strong>2. Parte útil:</strong> ${item.respostas.parteUtil}</p>
+                            <p><strong>3. Parte confusa:</strong> ${item.respostas.parteConfusa}</p>
+                            <p><strong>4. Ajudou a preparar:</strong> ${item.respostas.ajudouPreparar}</p>
+                            <p><strong>5. Próximo tema:</strong> ${item.respostas.proximoTema}</p>
+                            <p><strong>6. Sugestão:</strong> ${item.respostas.sugestao || 'N/A'}</p>`;
+                });
+            });
+
+            document.getElementById('view-feedback-btn').addEventListener('click', () => {
+                createGenericSubmissionViewer('feedback', 'feedbackSubmissionsPage', 'feedback-submissions-list', 'feedback-submissions-title', 'Feedbacks Recebidos', (item) => {
+                    return `<h4>Feedback de: ${item.name}</h4>
+                            <p><strong>Data:</strong> ${new Date(item.timestamp).toLocaleString('pt-BR')}</p>
+                            <p><strong>Mensagem:</strong><br>${item.message}</p>`;
+                });
+            });
+
+            // Delegação de evento para os botões de deletar em todas as novas listas
+            ['stock-requests-list', 'recibos-submissions-list', 'quiz-submissions-list', 'feedback-submissions-list'].forEach(listId => {
+                document.getElementById(listId).addEventListener('click', (event) => {
+                    const deleteBtn = event.target.closest('.delete-button');
+                    if (deleteBtn) {
+                        const key = deleteBtn.dataset.key;
+                        const path = deleteBtn.dataset.path;
+                        if (confirm('Tem certeza que deseja apagar esta submissão?')) {
+                            database.ref(`${path}/${key}`).remove().then(() => {
+                                // Remove o card da tela para feedback imediato
+                                deleteBtn.closest('.employee-meta-card').remove();
+                            });
+                        }
+                    }
+                });
             });
 
             // Listeners para a página de gerenciamento de avisos
@@ -8213,6 +8302,89 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
+            // --- CÓDIGO NOVO: FUNÇÕES PARA EXIBIR E GERENCIAR SUBMISSÕES ---
+
+            const checkAllSubmissionsForUnread = async () => {
+                const submissionTypes = [
+                    { path: 'stockRequests', indicator: 'stock-indicator' },
+                    { path: 'reciboSubmissions', indicator: 'recibos-indicator' },
+                    { path: 'quizSubmissions', indicator: 'quiz-indicator' },
+                    { path: 'feedback', indicator: 'feedback-indicator' }
+                ];
+
+                let hasAnyUnread = false;
+
+                const checks = submissionTypes.map(type => 
+                    database.ref(type.path).orderByChild('read').equalTo(false).once('value')
+                        .then(snapshot => {
+                            const indicatorEl = document.getElementById(type.indicator);
+                            if (indicatorEl) { // Verifica se o elemento existe antes de manipulá-lo
+                                if (snapshot.exists()) {
+                                    hasAnyUnread = true;
+                                    indicatorEl.style.display = 'inline-flex';
+                                } else {
+                                    indicatorEl.style.display = 'none';
+                                }
+                            }
+                        })
+                );
+
+                await Promise.all(checks);
+
+                const mainGSIndicator = document.getElementById('gs-notification-indicator');
+                // Mantém o indicador principal se houver notificações de ponto OU de submissões
+                const pontoIndicatorVisible = document.getElementById('manager-notifications-section')?.style.display === 'block';
+                mainGSIndicator.style.display = (hasAnyUnread || pontoIndicatorVisible) ? 'inline-flex' : 'none';
+            };
+            
+            const markItemsAsRead = (dbPath, items) => {
+                const updates = {};
+                items.forEach(item => {
+                    if (!item.read) {
+                        updates[`${dbPath}/${item.key}/read`] = true;
+                    }
+                });
+                if (Object.keys(updates).length > 0) {
+                    database.ref().update(updates).then(() => {
+                        checkAllSubmissionsForUnread(); // Re-checa os indicadores após marcar como lido
+                    });
+                }
+            };
+            
+            const createGenericSubmissionViewer = (dbPath, pageId, listId, titleId, title, renderFunction) => {
+                showPage(pageId);
+                document.getElementById(titleId).textContent = title; // CORRIGIDO: Usa o ID do título diretamente
+                const listContainer = document.getElementById(listId);
+                listContainer.innerHTML = '<p style="text-align: center;">Carregando...</p>';
+
+                database.ref(dbPath).orderByChild('timestamp').once('value', snapshot => {
+                    listContainer.innerHTML = '';
+                    if (!snapshot.exists()) {
+                        listContainer.innerHTML = '<p style="text-align: center;">Nenhuma submissão encontrada.</p>';
+                        return;
+                    }
+
+                    const items = [];
+                    snapshot.forEach(child => {
+                        items.push({ key: child.key, ...child.val() });
+                    });
+
+                    items.reverse().forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'employee-meta-card';
+                        card.style.maxWidth = 'none';
+                        card.innerHTML = renderFunction(item) + `
+                            <button class="action-button delete-button full-width" data-key="${item.key}" data-path="${dbPath}" style="margin-top: 1rem;">
+                                <i class="fa-solid fa-trash-can"></i> Deletar
+                            </button>
+                        `;
+                        listContainer.appendChild(card);
+                    });
+                    
+                    markItemsAsRead(dbPath, items);
+                });
+            };
+            
             // --- LISTENERS DA TELA DE BUSCA ---
             document.getElementById('device-search-input').addEventListener('input', (event) => {
                 renderDeviceSearchResults(allDevicesCache, event.target.value);
@@ -8257,13 +8429,15 @@ async function calculateAndDisplayStoreRanking() {
 
             // --- INICIALIZAÇÃO DA APLICAÇÃO (NOVA LÓGICA CENTRALIZADA) ---
             const initializeApp = () => {
-                // Estatísticas de Uso
+                // Estatísticas de Uso e Checagem de Notificações
                 database.ref('statistics/appOpens').transaction(count => (count || 0) + 1);
+                checkAllSubmissionsForUnread(); // Checa as notificações na inicialização
                 setInterval(() => {
                     if (!document.hidden) { // Só conta se a aba estiver ativa
                         database.ref('statistics/totalTimeSeconds').transaction(seconds => (seconds || 0) + 15);
+                        checkAllSubmissionsForUnread(); // E checa as notificações a cada 15 segundos
                     }
-                }, 15000); // A cada 15 segundos
+                }, 15000);
 
                 const appMode = localStorage.getItem(APP_MODE_KEY);
                 const activationOverlay = document.getElementById('activation-overlay');
