@@ -3407,7 +3407,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '2.0.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '2.0.1'; // Altere este número para atualizar a versão
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -5825,39 +5825,40 @@ async function calculateAndDisplayRanking() {
         });
     };
 
-    async function determineNextPontoAction(dailyPontoData) {
-        const now = new Date();
-        const dayOfWeek = now.getDay();
-        const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
-        const todayString = getTodayDateString();
-        const isGuard = Object.values(securityGuards).includes(currentUserName);
+            async function determineNextPontoAction(dailyPontoData) {
+            const now = new Date();
+            const dayOfWeek = now.getDay();
+            const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
+            const todayString = getTodayDateString();
+            const isGuard = Object.values(securityGuards).includes(currentUserName);
 
-        const [holidaySnap, sundaySnap, dayOffSnap, justificationSnap] = await Promise.all([
-            database.ref('holidays').get(),
-            database.ref('workingSundays').get(),
-            database.ref(`scheduledDaysOff/${todayString}/${currentUserName.toLowerCase()}`).get(),
-            database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`).get()
-        ]);
+            const [holidaySnap, sundaySnap, dayOffSnap, justificationSnap] = await Promise.all([
+                database.ref('holidays').get(),
+                database.ref('workingSundays').get(),
+                database.ref(`scheduledDaysOff/${todayString}/${currentUserName.toLowerCase()}`).get(),
+                database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`).get()
+            ]);
 
-        if (dayOffSnap.exists()) {
-            return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.', nextActionTime: null };
-        }
+            if (dayOffSnap.exists()) {
+                return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.', nextActionTime: null };
+            }
 
-        if (holidaySnap.hasChild(todayString)) {
-            return { action: null, status: 'holiday', message: 'Hoje é um feriado. Ponto desativado.', nextActionTime: null };
-        }
+            if (holidaySnap.hasChild(todayString)) {
+                return { action: null, status: 'holiday', message: 'Hoje é um feriado. Ponto desativado.', nextActionTime: null };
+            }
 
-        const isWorkingSunday = sundaySnap.hasChild(todayString);
-        if (dayOfWeek === 0 && !isWorkingSunday) {
-            return { action: null, status: 'closed', message: 'Loja fechada aos domingos. Ponto desativado.', nextActionTime: null };
-        }
+            const isWorkingSunday = sundaySnap.hasChild(todayString);
+            if (dayOfWeek === 0 && !isWorkingSunday) {
+                return { action: null, status: 'closed', message: 'Loja fechada aos domingos. Ponto desativado.', nextActionTime: null };
+            }
 
-        const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
-        // ALTERADO: O horário final para bater o ponto de entrada agora é 8:30 (8 * 60 + 30)
-        const scheduleWithLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 30 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
-        const scheduleWithoutLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 30 }, saida: { start: 12 * 60 + 40 } };
-        
-        const windows = (isGuard || isWeekendShift) ? scheduleWithoutLunch : scheduleWithLunch;
+            const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
+            // Horário padrão com almoço para funcionários
+            const scheduleWithLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 30 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
+            // Horário dos seguranças (sem almoço, jornada de 12h: 07h às 19h) e funcionários no fim de semana
+            const scheduleWithoutLunch = { entrada: { start: 6 * 60 + 40, end: 7 * 60 + 30 }, saida: { start: 18 * 60 + 40 } };
+            
+            const windows = (isGuard || isWeekendShift) ? scheduleWithoutLunch : scheduleWithLunch;
         
         // --- VERIFICAÇÃO DE DADOS ANTIGOS (FAILSAFE) ---
         // Se o registro de entrada não for de hoje, ignora-o completamente.
