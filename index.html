@@ -2425,7 +2425,6 @@
 
                 <button id="burn-cdc-btn" class="action-button full-width" style="margin-top: 1rem;"><i class="fa-solid fa-fire-flame-curved"></i> Queimar Verba CDC</button>
                 <button id="recover-cdc-btn" class="action-button full-width" style="margin-top: 0.5rem;"><i class="fa-solid fa-arrows-rotate"></i> Recuperar Verba CDC</button>
-                <button id="register-expense-btn" class="action-button full-width" style="margin-top: 0.5rem;"><i class="fa-solid fa-money-bill-wave"></i> Registrar Gasto</button>
                 <a href="https://wa.me/5598991163598?text=Solicita%C3%A7%C3%A3o%20de%20Pre%C3%A7o%20especial%0A%0AMOTIVO%3A%20%0AENTRADA%20MT%3A%20%0AVENDEDOR%3A%20%0ALOJA%3A" target="_blank" class="action-button full-width" style="margin-top: 1rem;"><i class="fa-solid fa-headset"></i> Suporte Liderança</a>
                 <div id="manager-daily-expenses-list" style="margin-top: 1rem;">
                     <!-- Gastos do dia serão listados aqui -->
@@ -2963,7 +2962,6 @@ P3: R$ 299,00"></textarea>
             
             <div class="input-group"><label for="recibo-gastos">GASTOS (Descrição e Valor - Obrigatório)</label><textarea id="recibo-gastos" class="data-input" rows="4" placeholder="Ex: Almoço - R$ 15,00
 Transporte - R$ 5,00"></textarea></div>
-            <div class="input-group"><label for="recibo-nota">NOTA/CUPOM (Opcional)</label><textarea id="recibo-nota" class="data-input" rows="2" placeholder="Se houver, descreva ou cole o texto aqui."></textarea></div>
             
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
                 <button id="submit-recibo-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Recibo</button>
@@ -3411,7 +3409,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '2.0.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '2.0.6'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
@@ -4139,20 +4137,20 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
     
-    const registerExpense = () => {
-        const description = prompt("Descrição do gasto:");
-        if (!description) return;
+    const burnCdcFunds = () => {
+        const amountStr = prompt("Digite o valor a ser QUEIMADO (subtraído) da verba de CDC:");
+        if (!amountStr) return;
 
-        const valueStr = prompt("Valor do gasto (ex: 25,50):");
-        if (!valueStr) return;
-
-        const value = parseFromBRLInput(valueStr);
-        if (isNaN(value) || value <= 0) {
+        const amount = parseFromBRLInput(amountStr);
+        if (isNaN(amount) || amount <= 0) {
             alert("Valor inválido.");
             return;
         }
 
-        if (!confirm(`Confirmar gasto de ${formatBRL(value)} para "${description}"?`)) {
+        const description = prompt("Descrição da queima:");
+        if (!description) return;
+
+        if (!confirm(`Confirmar queima de ${formatBRL(amount)} para "${description}"?`)) {
             return;
         }
 
@@ -4162,18 +4160,16 @@ Transporte - R$ 5,00"></textarea></div>
         cashBoxRef.transaction(currentData => {
             let data = currentData || { currentValue: CASH_BOX_INITIAL_VALUE, expenses: {} };
             
-            if (data.currentValue < value) {
-                // Não retorna nada, o que aborta a transação
-                // O alerta será mostrado fora da transação
+            if (data.currentValue < amount) {
                 return; 
             }
             
-            data.currentValue -= value;
+            data.currentValue -= amount;
             
             const newExpenseRef = database.ref(`cashManagement/${managerKey}/expenses`).push();
             const newExpense = {
-                description,
-                value,
+                description: `QUEIMA: ${description}`,
+                value: amount,
                 timestamp: new Date().toISOString()
             };
             
@@ -4188,76 +4184,60 @@ Transporte - R$ 5,00"></textarea></div>
             if (!result.committed) {
                  alert("Saldo insuficiente na verba de crediário!");
             } else {
-                alert("Gasto registrado com sucesso!");
-                loadManagerCashBoxData(); // Recarrega os dados do caixa na tela
-            }
-        }).catch(error => {
-            alert("Ocorreu um erro ao registrar o gasto.");
-            console.error("Erro na transação de gasto:", error);
-        });
-    };
-
-    const burnCdcFunds = () => {
-        const amountStr = prompt("Digite o valor a ser QUEIMADO (subtraído) da verba de CDC:");
-        if (!amountStr) return; // User cancelled
-
-        const amount = parseFromBRLInput(amountStr);
-        if (isNaN(amount) || amount <= 0) {
-            alert("Valor inválido.");
-            return;
-        }
-
-        if (!confirm(`Tem certeza que deseja queimar ${formatBRL(amount)} da verba de CDC?`)) return;
-
-        const managerKey = currentUserName.toLowerCase();
-        const cashBoxRef = database.ref(`cashManagement/${managerKey}/currentValue`);
-
-        cashBoxRef.transaction(currentValue => {
-            let newValue = currentValue !== null ? currentValue : CASH_BOX_INITIAL_VALUE;
-            
-            if (newValue < amount) {
-                // Not enough funds, abort transaction by returning undefined
-                return;
-            }
-            
-            return newValue - amount;
-        }).then(result => {
-            if (result.committed) {
-                alert('Verba de CDC queimada com sucesso!');
+                alert("Queima de verba registrada com sucesso!");
                 loadManagerCashBoxData();
-            } else {
-                alert('Falha ao queimar verba. Saldo insuficiente.');
             }
         }).catch(error => {
-            alert('Ocorreu um erro ao queimar a verba de CDC.');
-            console.error("Erro na transação de queima de verba:", error);
+            alert("Ocorreu um erro ao registrar a queima de verba.");
+            console.error("Erro na transação:", error);
         });
     };
 
     const recoverCdcFunds = () => {
         const amountStr = prompt("Digite o valor a ser RECUPERADO (adicionado) à verba de CDC:");
-        if (!amountStr) return; // User cancelled
+        if (!amountStr) return;
 
         const amount = parseFromBRLInput(amountStr);
         if (isNaN(amount) || amount <= 0) {
             alert("Valor inválido.");
             return;
         }
+        
+        const description = prompt("Descrição da recuperação:");
+        if (!description) return;
 
-        if (!confirm(`Tem certeza que deseja recuperar ${formatBRL(amount)} para a verba de CDC?`)) return;
+        if (!confirm(`Confirmar recuperação de ${formatBRL(amount)} para "${description}"?`)) {
+            return;
+        }
 
         const managerKey = currentUserName.toLowerCase();
-        const cashBoxRef = database.ref(`cashManagement/${managerKey}/currentValue`);
+        const cashBoxRef = database.ref(`cashManagement/${managerKey}`);
 
-        cashBoxRef.transaction(currentValue => {
-            let newValue = currentValue !== null ? currentValue : CASH_BOX_INITIAL_VALUE;
-            return newValue + amount;
+        cashBoxRef.transaction(currentData => {
+            let data = currentData || { currentValue: CASH_BOX_INITIAL_VALUE, expenses: {} };
+            
+            data.currentValue += amount;
+            
+            const newExpenseRef = database.ref(`cashManagement/${managerKey}/expenses`).push();
+            const newExpense = {
+                description: `RECUPERAÇÃO: ${description}`,
+                value: amount,
+                timestamp: new Date().toISOString()
+            };
+            
+            if (!data.expenses) {
+                data.expenses = {};
+            }
+            data.expenses[newExpenseRef.key] = newExpense;
+
+            return data;
+
         }).then(() => {
-            alert('Verba de CDC recuperada com sucesso!');
+            alert("Recuperação de verba registrada com sucesso!");
             loadManagerCashBoxData();
         }).catch(error => {
-            alert('Ocorreu um erro ao recuperar a verba de CDC.');
-            console.error("Erro na transação de recuperação de verba:", error);
+            alert("Ocorreu um erro ao registrar a recuperação de verba.");
+            console.error("Erro na transação:", error);
         });
     };
 
@@ -5780,7 +5760,6 @@ Transporte - R$ 5,00"></textarea></div>
         const nome = document.getElementById('recibo-nome').value.trim();
         const loja = document.getElementById('recibo-loja').value.trim().toLowerCase();
         const gastos = document.getElementById('recibo-gastos').value.trim();
-        const nota = document.getElementById('recibo-nota').value.trim();
         const dia = document.getElementById('recibo-dia').value.trim();
         const mes = document.getElementById('recibo-mes').value.trim();
         const ano = document.getElementById('recibo-ano').value.trim();
@@ -5799,7 +5778,6 @@ Transporte - R$ 5,00"></textarea></div>
             nome,
             loja,
             gastos,
-            nota,
             dataGasto: `${dia}/${mes}/${ano}`,
             timestamp: new Date().toISOString(),
             read: false
@@ -5832,7 +5810,6 @@ Transporte - R$ 5,00"></textarea></div>
                 document.getElementById('recibo-nome').value = '';
                 document.getElementById('recibo-loja').value = '';
                 document.getElementById('recibo-gastos').value = '';
-                document.getElementById('recibo-nota').value = '';
                 document.getElementById('recibo-dia').value = '';
                 document.getElementById('recibo-mes').value = '';
                 document.getElementById('recibo-ano').value = '';
@@ -8153,7 +8130,6 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-main-from-loja').addEventListener('click', showMainPage);
             
             // --- LÓGICA DO CAIXA (GERENTE) ---
-            document.getElementById('register-expense-btn').addEventListener('click', registerExpense);
             document.getElementById('burn-cdc-btn').addEventListener('click', burnCdcFunds);
             document.getElementById('recover-cdc-btn').addEventListener('click', recoverCdcFunds);
             
@@ -8443,8 +8419,7 @@ async function calculateAndDisplayStoreRanking() {
                 createGenericSubmissionViewer('reciboSubmissions', 'recibosSubmissionsPage', 'recibos-submissions-list', 'recibos-submissions-title', 'Recibos Enviados', (item) => {
                     return `<h4>Recibo de: ${item.nome} (${item.loja})</h4>
                             <p><strong>Data do Gasto:</strong> ${item.dataGasto}</p>
-                            <p><strong>Descrição:</strong><pre>${item.gastos}</pre></p>
-                            <p><strong>Nota:</strong><pre>${item.nota || 'N/A'}</pre></p>`;
+                            <p><strong>Descrição:</strong><pre>${item.gastos}</pre></p>`;
                 });
             });
             
