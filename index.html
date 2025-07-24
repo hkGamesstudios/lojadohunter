@@ -2109,6 +2109,8 @@
             padding: 15px;
             width: 100%;
             z-index: 5;
+            align-items: center; /* Garante o alinhamento vertical dos itens */
+            flex-wrap: wrap;     /* Permite que os itens quebrem para a linha de baixo se não houver espaço */
         }
         #story-reply-input {
             flex-grow: 1;
@@ -3902,7 +3904,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.1'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
