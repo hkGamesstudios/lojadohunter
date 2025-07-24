@@ -765,7 +765,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #lollipop-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -1443,6 +1443,18 @@
             flex-direction: column;
             gap: 2rem;
         }
+
+                @keyframes modalContentExit {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+        .login-section-hiding {
+            animation: modalContentExit 0.3s ease-in forwards;
+            pointer-events: none;
+        }
+
         .chart-container {
             background: rgba(0, 0, 0, 0.2);
             padding: 1rem;
@@ -1993,6 +2005,302 @@
             overflow-x: hidden; /* Impede a rolagem horizontal */
         }
 
+                /* --- ESTILOS PARA STORIES --- */
+        #stories-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Melhora a rolagem em iOS */
+        }
+        /* Esconde a barra de rolagem */
+        #stories-container::-webkit-scrollbar {
+            display: none;
+        }
+        #stories-container {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        #stories-scroll {
+            display: flex;
+            gap: 1rem;
+            padding: 0 1rem; /* Padding nas laterais da lista */
+            white-space: nowrap; /* Impede a quebra de linha dos itens */
+        }
+
+        .story-circle-wrapper {
+            flex-shrink: 0; /* Impede que os círculos encolham */
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            padding: 3px;
+            cursor: pointer;
+        }
+        .story-circle-wrapper.has-story {
+            background: linear-gradient(45deg, #FF6B00, #ff1493); /* Laranja e Rosa */
+        }
+        .story-circle-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #372b62; /* Cor de fundo para dar separação */
+            background-color: #333;
+        }
+
+        /* --- ESTILOS PARA O VISUALIZADOR DE STORIES --- */
+        #story-progress-container {
+            position: absolute;
+            top: 5px;
+            left: 2%;
+            width: 96%;
+            display: flex;
+            gap: 4px;
+            z-index: 10;
+        }
+        .story-progress-bar {
+            flex-grow: 1;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .story-progress-bar > div {
+            width: 0;
+            height: 100%;
+            background-color: #fff;
+        }
+        #story-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px 10px 15px;
+            z-index: 5;
+            position: relative;
+        }
+        #story-user-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        #story-user-name {
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        #story-content-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #story-content-area img, #story-content-area video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        #story-reply-area {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            width: 100%;
+            z-index: 5;
+        }
+        #story-reply-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.4);
+            background-color: rgba(0,0,0,0.3);
+            color: #fff;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+        }
+        #send-story-reply-btn {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* NOVOS ESTILOS PARA CURTIDAS */
+        #like-story-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0 10px;
+            transition: transform 0.2s ease;
+        }
+        #like-story-btn:hover {
+            transform: scale(1.1);
+        }
+        #like-story-btn i.fa-solid { /* Ícone preenchido quando curtido */
+            color: #e74c3c;
+        }
+
+        #story-likes-info {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: rgba(0,0,0,0.3);
+        }
+
+        /* NOVOS ESTILOS PARA AS SETAS DE NAVEGAÇÃO */
+        .story-nav-arrow {
+            position: absolute;
+            top: 0;
+            height: calc(100% - 80px); /* Ocupa a tela inteira, exceto a área de resposta */
+            width: 30%; /* Ocupa 30% da lateral da tela */
+            z-index: 20; /* Fica acima do conteúdo, mas abaixo do header */
+            cursor: pointer;
+        }
+        #story-nav-prev {
+            left: 0;
+        }
+        #story-nav-next {
+            right: 0;
+        }
+
+        /* --- ESTILOS PARA CHAT --- */
+        .chat-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .chat-list-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .chat-list-item.reply {
+            border-left: 4px solid var(--primary-color);
+        }
+        .chat-list-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .chat-list-item-content p {
+            margin: 0;
+        }
+        .chat-list-item-content p strong {
+            font-size: 1rem;
+            color: #fff;
+        }
+        .chat-list-item-content p span {
+            font-size: 0.85rem;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            max-width: 250px;
+        }
+        .chat-message-bubble {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            margin-bottom: 0.75rem;
+            word-wrap: break-word;
+        }
+        .chat-message-bubble.sent {
+            background-color: var(--primary-color);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message-bubble.received {
+            background-color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* ESTILOS PARA A RESPOSTA DE STORY NO CHAT */
+        .story-reply-context {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+        .story-reply-context img, .story-reply-context video {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+        .story-reply-context span {
+            font-size: 0.85rem;
+            color: #ccc;
+            font-style: italic;
+        }
+        .chat-message-bubble .reply-text {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ESTILOS PARA MÍDIA NO CHAT */
+        .chat-message-bubble img, .chat-message-bubble video {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+
+        /* NOVAS REGRAS PARA O LAYOUT DA TELA DE CHAT */
+        #chat-conversation-page {
+            /* A página em si é um container flex (column) de altura 100% */
+            /* Esta regra garante que ela não role, e sim seu conteúdo interno */
+            overflow-y: hidden; 
+        }
+        #chat-messages-container {
+            /* flex-grow: 1 faz com que este container ocupe todo o espaço vertical disponível */
+            flex-grow: 1; 
+            /* min-height: 0 é um truque de flexbox para garantir que o container possa encolher se necessário, evitando que ele empurre outros elementos para fora da tela. */
+            min-height: 0;
+            /* overflow-y: auto permite que APENAS este container tenha uma barra de rolagem vertical. */
+            overflow-y: auto; 
+            /* As regras abaixo são do .collaborator-content, mas com a correção crucial do align-items */
+            padding: 1rem 1.5rem; 
+            display: flex;
+            flex-direction: column;
+            /* align-items: stretch é necessário para que o align-self das bolhas funcione */
+            align-items: stretch; 
+            justify-content: flex-start;
+            gap: 0.75rem; /* Um pouco menos de espaço entre as bolhas */
+        }
+        #chat-input-area {
+            /* flex-shrink: 0 impede que a área de digitação seja espremida */
+            flex-shrink: 0; 
+            background: rgba(30, 30, 60, 0.9);
+            backdrop-filter: blur(5px);
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center; /* Alinha o input e o botão verticalmente */
+            width: 100%;
+        }
+
 
         /* =================================================================== */
         /* --- AJUSTES PARA TELAS PEQUENAS (RESPONSIVIDADE) --- */
@@ -2020,6 +2328,30 @@
 
 </head>
 <body>
+
+    <!-- NOVA TELA DE LOGIN ÚNICO -->
+    <div id="login-overlay" class="modal-overlay" style="display: none; backdrop-filter: blur(10px); background-color: rgba(0,0,0,0.8);">
+        <div id="login-form-section" class="modal-content">
+            <h3 class="modal-title" style="font-size: 1.2rem; line-height: 1.5; margin-bottom: 2rem;">Espere um pouco! Estamos mudando algumas coisas para não pedir senha todas as vezes e verificar que é realmente você. Vamos fazer um login único.</h3>
+            
+            <div class="input-group">
+                <label for="login-user-select">Selecione quem é você</label>
+                <select id="login-user-select" class="data-input">
+                    <!-- Opções serão populadas pelo JS -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="login-password-input">Sua senha</label>
+                <input type="password" id="login-password-input" class="data-input" placeholder="Digite sua senha">
+                <p id="login-password-hint" style="font-size: 0.8rem; color: #ccc; margin-top: 5px; display: none;">Você ainda não tem uma senha. Crie uma agora.</p>
+            </div>
+            
+            <button id="login-proceed-btn" class="action-button full-width">Avançar</button>
+            <p id="login-status-message" class="status-message"></p>
+        </div>
+
+        <!-- A seção da câmera para o login foi removida conforme solicitado. -->
+    </div>
 
     <!-- TELA DE ATIVAÇÃO INICIAL -->
     <div id="activation-overlay" class="modal-overlay">
@@ -2060,6 +2392,15 @@
         </header>
 
         <main>
+            <!-- NOVA Seção de Stories -->
+            <section id="stories-section" style="padding-top: 1.5rem; padding-bottom: 0;">
+                <div id="stories-container">
+                    <div id="stories-scroll">
+                        <!-- Círculos dos stories serão inseridos aqui pelo JS -->
+                    </div>
+                </div>
+            </section>
+
             <!-- Seção de Aparelhos por Marca -->
             <section id="aparelhos">
                 <h2 class="section-title">Aparelhos</h2>
@@ -2116,9 +2457,11 @@
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-id-card"></i></div>
                         <span>Hunter Card</span>
                     </div>
-                    <div id="open-colaborador-modal" class="tool-item">
-                        <div class="tool-icon-wrapper"><i class="fa-solid fa-users"></i></div>
-                        <span>Colaborador</span>
+                    <div id="open-my-profile-btn" class="tool-item" style="position: relative;">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-user-astronaut"></i></div>
+                        <span>Meu Perfil</span>
+                        <!-- NOVO INDICADOR DE MENSAGEM -->
+                        <span id="chat-notification-indicator" class="gs-notification-bubble" style="display: none; top: 4px; right: 4px;">!</span>
                     </div>
                     <div id="previsao-btn" class="tool-item" style="cursor: pointer;">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-truck-fast"></i></div>
@@ -2143,10 +2486,6 @@
                     <div id="open-recibos-page" class="tool-item" style="cursor: pointer;">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-hand-holding-dollar"></i></div>
                         <span>Recibos</span>
-                    </div>
-                    <div id="open-gs-page" class="tool-item">
-                        <div class="tool-icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
-                        <span>GS <span id="gs-notification-indicator" style="display: none;">!</span></span>
                     </div>
                     <div id="open-send-device-page" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-paper-plane"></i></div>
@@ -2210,8 +2549,16 @@
                     <input type="number" id="crediario-entrada" class="data-input" placeholder="0.00">
                 </div>
                 <div class="input-group slider-group">
-                    <label for="crediario-parcelas">Parcelas: <span id="parcelas-value">12</span>x</label>
+                    <label for="crediario-parcelas">Parcelas (Mensal): <span id="parcelas-value">12</span>x</label>
                     <input type="range" id="crediario-parcelas" min="1" max="12" value="12" step="1" class="slider-input">
+                </div>
+                <div class="input-group slider-group">
+                    <label for="crediario-quinzena-parcelas">Parcelas (Quinzena): <span id="quinzena-value">0</span>x</label>
+                    <input type="range" id="crediario-quinzena-parcelas" min="0" max="24" value="0" step="1" class="slider-input">
+                </div>
+                <div class="input-group slider-group">
+                    <label for="crediario-semanal-parcelas">Parcelas (Semanal): <span id="semanal-value">0</span>x</label>
+                    <input type="range" id="crediario-semanal-parcelas" min="0" max="48" value="0" step="1" class="slider-input">
                 </div>
                 
                 <div id="crediario-result-container">
@@ -2442,7 +2789,12 @@
                     <i class="fa-solid fa-camera-retro"></i>
                     <span>Digitar Ponto</span>
                 </a>
-                 <a href="#" id="manager-panel-btn" class="action-button" style="display: none;">
+                <!-- NOVO BOTÃO GS DENTRO DO PERFIL -->
+                <a href="#" id="open-gs-from-profile-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Painel GS</span>
+                </a>
+                <a href="#" id="manager-panel-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-user-tie"></i>
                     <span>Painel Gerente</span>
                 </a>
@@ -2450,7 +2802,15 @@
                     <i class="fa-solid fa-cash-register"></i>
                     <span>Fechamento</span>
                 </a>
-                 <a href="#" id="change-password-btn" class="action-button">
+                <a href="#" id="add-my-story-btn" class="action-button">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Story</span>
+                </a>
+                <a href="#" id="open-chats-btn" class="action-button">
+                    <i class="fa-solid fa-comments-dollar"></i>
+                    <span>Chats</span>
+                </a>
+                <a href="#" id="change-password-btn" class="action-button">
                     <i class="fa-solid fa-key"></i>
                     <span>Alterar Senha</span>
                 </a>
@@ -2458,7 +2818,18 @@
                     <i class="fa-solid fa-camera-rotate"></i>
                     <span>Trocar Foto</span>
                 </a>
+                                 <a href="#" id="delete-my-story-btn" class="action-button" style="display: none; background-color: rgba(231, 76, 60, 0.7);">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>Apagar Story</span>
+                </a>
+                <a href="#" id="logout-btn" class="action-button" style="grid-column: 1 / -1; background-color: rgba(0,0,0,0.2);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair / Trocar Usuário</span>
+                </a>
             </div>
+
+            <input type="file" id="photo-upload-input" accept="image/*" style="display: none;">
+            <input type="file" id="story-upload-input" accept="image/*,video/*" style="display: none;">
             
             <input type="file" id="photo-upload-input" accept="image/*" style="display: none;">
             <p id="photo-upload-status" class="status-message"></p>
@@ -2489,6 +2860,7 @@
                 <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
                 <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>MT</span></button>
                 <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
+                <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Ver Perfil</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-cash-register"></i><span>CDC</span></button>
                 <button id="open-store-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-sack-dollar"></i><span>Verba Loja</span></button>
                 <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
@@ -3345,6 +3717,25 @@ Transporte - R$ 5,00"></textarea></div>
                 </div>
             </div>
 
+            <!-- CARD PARA CONTAS E SENHAS -->
+            <div class="employee-meta-card" style="max-width: none;">
+                <h4>Contas e Senhas</h4>
+                <button id="show-accounts-btn" class="action-button full-width">
+                    <i class="fa-solid fa-users"></i> Mostrar Contas
+                </button>
+                <div id="debug-accounts-container" style="margin-top: 1.5rem;">
+                    <!-- A lista de contas aparecerá aqui -->
+                </div>
+            </div>
+
+            <!-- NOVO CARD PARA AÇÕES PERIGOSAS -->
+            <div class="employee-meta-card" style="max-width: none;">
+                <h4>Ações Perigosas</h4>
+                <button id="clear-all-chats-btn" class="action-button full-width" style="background-color: rgba(231, 76, 60, 0.7);">
+                    <i class="fa-solid fa-comment-slash"></i> Limpar Todas as Mensagens de Chat
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -3397,6 +3788,107 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- TELA DE CRIAÇÃO DE STORY PELA GERÊNCIA -->
+    <div id="story-creation-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-story-creation" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Enviar Story Geral</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+            <div class="employee-meta-card" style="max-width: none;">
+                <h4>Criar novo Story (dura 24h)</h4>
+                 <div class="input-group">
+                    <label for="story-creator-name">Nome do Postador</label>
+                    <input type="text" id="story-creator-name" class="data-input" placeholder="Ex: Loja do Hunter">
+                </div>
+                <div class="input-group">
+                    <label for="story-creator-photo-upload">Foto de Perfil do Postador</label>
+                    <button id="story-creator-upload-btn" class="action-button full-width"><i class="fa-solid fa-user-plus"></i> Enviar Foto</button>
+                    <input type="file" id="story-creator-photo-upload" accept="image/*" style="display: none;">
+                    <p id="story-creator-photo-status" class="status-message" style="margin-top: 0.5rem;"></p>
+                </div>
+                 <div class="input-group">
+                    <label for="story-content-upload">Conteúdo do Story (Foto ou Vídeo)</label>
+                    <button id="story-content-upload-btn" class="action-button full-width" style="background-color: #3498db;"><i class="fa-solid fa-image"></i> Enviar Mídia</button>
+                    <input type="file" id="story-content-upload" accept="image/*,video/*" style="display: none;">
+                    <p id="story-content-status" class="status-message" style="margin-top: 0.5rem;"></p>
+                </div>
+                <button id="submit-general-story-btn" class="action-button full-width"><i class="fa-solid fa-paper-plane"></i>Enviar Story</button>
+                <p id="general-story-status-message" class="status-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DO VISUALIZADOR DE STORIES -->
+    <div id="story-viewer-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 6000; flex-direction: column;">
+        <!-- NOVAS ÁREAS DE NAVEGAÇÃO -->
+        <div id="story-nav-prev" class="story-nav-arrow"></div>
+        <div id="story-nav-next" class="story-nav-arrow"></div>
+
+        <div id="story-progress-container"></div>
+        <div id="story-header">
+            <img id="story-user-photo" src="" alt="User">
+            <span id="story-user-name"></span>
+            <button id="close-story-viewer-btn" class="modal-close-btn" style="color: #fff; top: 15px; right: 15px;">×</button>
+        </div>
+        <div id="story-content-area">
+            <!-- Imagem ou vídeo será inserido aqui -->
+        </div>
+        <div id="story-reply-area">
+            <input type="text" id="story-reply-input" placeholder="Responder...">
+            <button id="send-story-reply-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            <!-- NOVOS ELEMENTOS -->
+            <button id="like-story-btn"><i class="fa-regular fa-heart"></i></button>
+            <div id="story-likes-info" style="display: none;">
+                <span id="story-likes-count">0</span> curtidas
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE CHATS -->
+    <div id="chat-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-collab-from-chat" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Chats e Respostas</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch; gap: 1rem;">
+            <!-- Lista de conversas e respostas de stories aqui -->
+             <div id="chat-list-container">
+                <p style="text-align:center;">Carregando...</p>
+             </div>
+        </div>
+    </div>
+
+    <!-- TELA DE CONVERSA INDIVIDUAL -->
+    <!-- MODAL PARA AÇÕES DE CHAT (EDITAR/APAGAR) -->
+    <div id="chat-action-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 250px;">
+            <div id="chat-action-buttons" class="modal-button-container">
+                <button id="chat-edit-btn" class="modal-btn">Editar Mensagem</button>
+                <button id="chat-delete-btn" class="modal-btn" style="background-color: rgba(231, 76, 60, 0.7);">Apagar Mensagem</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE CONVERSA INDIVIDUAL -->
+    <div id="chat-conversation-page" style="display: none;">
+         <div class="collaborator-header">
+            <button id="back-to-chatlist-from-convo" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 id="chat-conversation-title">Conversa</h2>
+        </div>
+        <div id="chat-messages-container" class="collaborator-content">
+            <!-- Mensagens aqui -->
+        </div>
+        <div id="chat-input-area">
+            <!-- NOVO BOTÃO DE MÍDIA E INPUT OCULTO -->
+            <button id="send-media-btn" class="action-button" style="width: 50px; height: 50px; padding: 0; margin: 0; aspect-ratio: 1/1; background: #333;"><i class="fa-solid fa-paperclip"></i></button>
+            <input type="file" id="media-upload-input" accept="image/*,video/*" style="display: none;">
+            
+            <input type="text" id="chat-message-input" class="data-input" placeholder="Digite uma mensagem...">
+            <button id="send-chat-message-btn" class="action-button" style="width: 50px; height: 50px; padding: 0; margin: 0; aspect-ratio: 1/1;"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <!-- =================================================================== -->
     <!-- SCRIPTS (CARREGADOS NA ORDEM CORRETA) -->
     <!-- =================================================================== -->
@@ -3410,7 +3902,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '2.0.7'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.0'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
@@ -3443,10 +3935,12 @@ Transporte - R$ 5,00"></textarea></div>
     let pontoCheckTimeout = null; // Timer para a próxima verificação de estado
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
-        // --- ESTADO DA APLICAÇÃO ---
+                // --- ESTADO DA APLICAÇÃO ---
     const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Wedson', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo'];
-    const allUsers = [...allCollaborators]; // Lista unificada para funções genéricas
-    const managers = ['Beatriz', 'Natalia'];
+    const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
+    const storeManagers = ['Beatriz', 'Natalia']; // NOVA LISTA: Apenas gerentes de loja
+    const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
+    const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
         pinheiro: ['Beatriz', 'Marcio', 'Eliseu', 'Wedson'],
         bacabal: ['Natalia', 'Tacilio', 'Demilson', 'Leonardo']
@@ -3458,6 +3952,11 @@ Transporte - R$ 5,00"></textarea></div>
     let cameraStream = null; // Para controlar o stream da câmera
     let editingDeviceKey = null; // Para controlar se estamos editando ou criando um dispositivo
     let allDevicesCache = []; // Cache para a busca de aparelhos
+    let storiesCache = []; // Cache para os stories
+    let currentStoryUser = null; // Usuário do story que está sendo visto
+    let currentStoryIndex = 0; // Índice do story atual
+    let storyTimeout = null; // Timer para avançar o story
+    let currentOpenChatId = null; // ID da conversa de chat aberta
 
     // --- ELEMENTOS DO DOM ---
     const mainContainer = document.querySelector('.mobile-container');
@@ -3496,6 +3995,10 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('debug-page').classList.add('page');
     document.getElementById('cash-management-page').classList.add('page');
     document.getElementById('store-cash-management-page').classList.add('page');
+    document.getElementById('story-creation-page').classList.add('page');
+    document.getElementById('chat-page').classList.add('page');
+    document.getElementById('chat-conversation-page').classList.add('page');
+    document.getElementById('login-overlay').classList.add('page'); // Adiciona a tela de login
 
     // ADICIONANDO AS NOVAS PÁGINAS DE SUBMISSÃO
     document.getElementById('stock-requests-page').classList.add('page');
@@ -3507,8 +4010,7 @@ Transporte - R$ 5,00"></textarea></div>
 
 
 
-    // Mapeia os elementos para fácil acesso
-    const elements = {
+                const elements = {
         mainContainer: mainContainer,
         modal: document.getElementById('colaborador-modal'),
         collaboratorPage: document.getElementById('collaborator-page'),
@@ -3535,7 +4037,7 @@ Transporte - R$ 5,00"></textarea></div>
         holidaysManagementPage: document.getElementById('holidays-management-page'),
         sundaysManagementPage: document.getElementById('sundays-management-page'),
         dayOffManagementPage: document.getElementById('day-off-management-page'),
-        overtimeManagementPage: document.getElementById('overtime-management-page'),
+        overtimeManagementPage: document.getElementById('overtime-management-page'), // <<< LINHA ADICIONADA AQUI
         lollipopPage: document.getElementById('lollipop-page'),
         pontoPage: document.getElementById('ponto-page'),
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
@@ -3543,7 +4045,7 @@ Transporte - R$ 5,00"></textarea></div>
         searchOverlay: document.getElementById('search-overlay'),
         themeModal: document.getElementById('theme-modal'),
         deviceSearchOverlay: document.getElementById('device-search-overlay'),
-                avisosManagementPage: document.getElementById('avisos-management-page'), // Nova página
+        avisosManagementPage: document.getElementById('avisos-management-page'), // Nova página
         feedbackPage: document.getElementById('feedback-page'),
         debugPage: document.getElementById('debug-page'),
         cashManagementPage: document.getElementById('cash-management-page'),
@@ -3554,6 +4056,12 @@ Transporte - R$ 5,00"></textarea></div>
         recibosSubmissionsPage: document.getElementById('recibos-submissions-page'),
         quizSubmissionsPage: document.getElementById('quiz-submissions-page'),
         feedbackSubmissionsPage: document.getElementById('feedback-submissions-page'),
+        
+        // NOVOS ELEMENTOS PARA STORIES E CHAT
+        storyCreationPage: document.getElementById('story-creation-page'),
+        storyViewerOverlay: document.getElementById('story-viewer-overlay'),
+        chatPage: document.getElementById('chat-page'),
+        chatConversationPage: document.getElementById('chat-conversation-page'),
     };
     // --- LÓGICA DE NAVEGAÇÃO E ANIMAÇÃO (REFEITA DO ZERO) ---
     function staggerAnimate(container) {
@@ -3562,6 +4070,782 @@ Transporte - R$ 5,00"></textarea></div>
             item.style.animationDelay = `${index * 40}ms`;
         });
     }
+
+        // --- FUNÇÕES DE STORIES ---
+
+    const loadAndDisplayStories = async () => {
+        const storiesScroll = document.getElementById('stories-scroll');
+        storiesScroll.innerHTML = ''; // Limpa antes de carregar
+
+        try {
+            const storiesSnap = await database.ref('stories').get();
+            const profilesSnap = await database.ref('userProfiles').get();
+            const storiesData = storiesSnap.exists() ? storiesSnap.val() : {};
+            const profilesData = profilesSnap.exists() ? profilesSnap.val() : {};
+            const now = new Date();
+            
+            const activeStoriesByUser = {};
+
+            // 1. Filtra stories ativos (últimas 24h) e agrupa por usuário
+            for (const key in storiesData) {
+                const story = storiesData[key];
+                const storyTimestamp = new Date(story.timestamp);
+                const hoursDiff = (now - storyTimestamp) / (1000 * 60 * 60);
+                if (hoursDiff < 24) {
+                    if (!activeStoriesByUser[story.userId]) {
+                        activeStoriesByUser[story.userId] = [];
+                    }
+                    activeStoriesByUser[story.userId].push({ key, ...story });
+                }
+            }
+            
+            storiesCache = activeStoriesByUser; // Atualiza o cache global
+
+            // 2. Ordena a lista de TODOS os usuários
+            const sortedUsers = [...allUsers].sort((a, b) => {
+                const aHasStory = !!activeStoriesByUser[a.toLowerCase()];
+                const bHasStory = !!activeStoriesByUser[b.toLowerCase()];
+                // Se 'a' tem story e 'b' não, 'a' vem primeiro (-1).
+                // Se 'b' tem story e 'a' não, 'b' vem primeiro (1).
+                // Se ambos têm ou não têm, mantém a ordem original (0).
+                return bHasStory - aHasStory;
+            });
+
+            // 3. Cria os círculos na tela na ordem correta
+            sortedUsers.forEach(name => {
+                const userId = name.toLowerCase();
+                const hasStory = !!activeStoriesByUser[userId];
+                const profile = profilesData[userId];
+                const photoUrl = profile?.photoURL || 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'story-circle-wrapper';
+                if (hasStory) {
+                    wrapper.classList.add('has-story');
+                    wrapper.dataset.userId = userId;
+                }
+                wrapper.innerHTML = `<img src="${photoUrl}" alt="${name}">`;
+                storiesScroll.appendChild(wrapper);
+            });
+            
+            // Lógica do botão de apagar permanece a mesma
+            if (currentUserName) {
+                const deleteMyStoryBtn = document.getElementById('delete-my-story-btn');
+                if (deleteMyStoryBtn) {
+                    const loggedInUserKey = currentUserName.toLowerCase();
+                    deleteMyStoryBtn.style.display = storiesCache[loggedInUserKey] ? 'flex' : 'none';
+                }
+            }
+
+        } catch (error) {
+            console.error("Erro ao carregar stories:", error);
+        }
+    };
+    
+    const handleStoryUpload = (file) => {
+        if (!file) return;
+
+        alert('Enviando seu story...');
+        const userKey = currentUserName.toLowerCase();
+        const contentType = file.type.startsWith('video/') ? 'video' : 'image';
+        
+        const filePath = `stories/${userKey}/${new Date().getTime()}_${file.name}`;
+        const fileRef = storage.ref().child(filePath);
+
+        fileRef.put(file)
+            .then(snapshot => snapshot.ref.getDownloadURL())
+            .then(async (contentUrl) => {
+                const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
+                const profileData = profileSnap.exists() ? profileSnap.val() : {};
+                
+                const storyData = {
+                    userId: userKey,
+                    userName: currentUserName,
+                    userPhoto: profileData.photoURL || null,
+                    contentUrl: contentUrl,
+                    contentType: contentType,
+                    timestamp: new Date().toISOString()
+                };
+                
+                return database.ref('stories').push(storyData);
+            })
+            .then(() => {
+                alert('Story publicado com sucesso!');
+                loadAndDisplayStories();
+            })
+            .catch(error => {
+                alert('Erro ao publicar o story.');
+                console.error(error);
+            });
+    };
+    
+    const openStoryViewer = (userId) => {
+        const userStories = storiesCache[userId];
+        if (!userStories || userStories.length === 0) return;
+        
+        currentStoryUser = userId;
+        currentStoryIndex = 0;
+        
+        elements.storyViewerOverlay.style.display = 'flex';
+        renderStory();
+    };
+
+    const toggleStoryLike = async (storyKey, likeButton) => {
+        const userKey = currentUserName.toLowerCase();
+        const likeRef = database.ref(`storyLikes/${storyKey}/${userKey}`);
+        
+        try {
+            const snapshot = await likeRef.get();
+            if (snapshot.exists()) {
+                // Se já curtiu, descurte (remove o like)
+                await likeRef.remove();
+                likeButton.innerHTML = '<i class="fa-regular fa-heart"></i>'; // Coração vazio
+            } else {
+                // Se não curtiu, curte (adiciona o like)
+                await likeRef.set({ userName: currentUserName });
+                likeButton.innerHTML = '<i class="fa-solid fa-heart"></i>'; // Coração preenchido
+            }
+            // Atualiza a contagem na tela
+            const likesCountSnap = await database.ref(`storyLikes/${storyKey}`).get();
+            document.getElementById('story-likes-count').textContent = likesCountSnap.exists() ? likesCountSnap.numChildren() : 0;
+        } catch (error) {
+            console.error("Erro ao curtir/descurtir story:", error);
+        }
+    };
+
+    const showStoryLikers = async (storyKey) => {
+        try {
+            const snapshot = await database.ref(`storyLikes/${storyKey}`).get();
+            if (!snapshot.exists()) {
+                alert("Ninguém curtiu este story ainda.");
+                return;
+            }
+            const likersData = snapshot.val();
+            const likerNames = Object.values(likersData).map(like => like.userName);
+            alert(`Curtido por:\n\n- ${likerNames.join('\n- ')}`);
+        } catch (error) {
+            console.error("Erro ao buscar quem curtiu:", error);
+            alert("Não foi possível carregar a lista de curtidas.");
+        }
+    };
+
+    const renderStory = async () => {
+        clearTimeout(storyTimeout);
+        
+        const userStories = storiesCache[currentStoryUser];
+        if (!userStories || currentStoryIndex >= userStories.length) {
+            closeStoryViewer();
+            return;
+        }
+        
+        const story = userStories[currentStoryIndex];
+        const storyKey = story.key;
+        const userKey = currentUserName.toLowerCase();
+
+        // 1. Renderiza barras de progresso e header (como antes)
+        const progressContainer = document.getElementById('story-progress-container');
+        progressContainer.innerHTML = userStories.map((_, index) => {
+            const progressClass = index < currentStoryIndex ? 'style="width: 100%;"' : (index === currentStoryIndex ? 'class="active"' : '');
+            return `<div class="story-progress-bar"><div ${progressClass}></div></div>`;
+        }).join('');
+        document.getElementById('story-user-photo').src = story.userPhoto || 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+        document.getElementById('story-user-name').textContent = story.userName;
+
+        // 2. Renderiza o conteúdo
+        const contentArea = document.getElementById('story-content-area');
+        contentArea.innerHTML = ''; // Limpa conteúdo anterior para garantir reinicialização
+        
+        if (story.contentType === 'video') {
+            const video = document.createElement('video');
+            video.src = story.contentUrl;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.onended = nextStory;
+            contentArea.appendChild(video);
+        } else {
+            contentArea.innerHTML = `<img src="${story.contentUrl}" alt="Story">`;
+            storyTimeout = setTimeout(() => {
+                const progressBarFill = progressContainer.querySelector('.active');
+                if(progressBarFill) {
+                   progressBarFill.parentElement.querySelector('div').style.transition = 'width 5s linear';
+                   progressBarFill.parentElement.querySelector('div').style.width = '100%';
+                }
+                storyTimeout = setTimeout(nextStory, 5000);
+            }, 100);
+        }
+
+        // 3. Busca e renderiza os dados de curtida
+        const likeButton = document.getElementById('like-story-btn');
+        const likesInfo = document.getElementById('story-likes-info');
+        const likesCountEl = document.getElementById('story-likes-count');
+
+        try {
+            const likesSnap = await database.ref(`storyLikes/${storyKey}`).get();
+            const likesCount = likesSnap.exists() ? likesSnap.numChildren() : 0;
+            const userHasLiked = likesSnap.exists() && likesSnap.hasChild(userKey);
+
+            // Atualiza o botão de curtir
+            likeButton.innerHTML = userHasLiked ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
+            // Usa .onclick para remover listeners antigos e garantir que a key está atualizada
+            likeButton.onclick = () => toggleStoryLike(storyKey, likeButton);
+
+            // Atualiza a informação de contagem
+            if (likesCount > 0) {
+                likesCountEl.textContent = likesCount;
+                likesInfo.style.display = 'block';
+                likesInfo.onclick = () => showStoryLikers(storyKey);
+            } else {
+                likesInfo.style.display = 'none';
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados de curtida:", error);
+        }
+    };
+    
+    const nextStory = () => {
+        const userStories = storiesCache[currentStoryUser];
+        if (userStories && currentStoryIndex < userStories.length - 1) {
+            currentStoryIndex++;
+            renderStory();
+        } else {
+            closeStoryViewer(); // Fecha se for o último story
+        }
+    };
+
+    const previousStory = () => {
+        if (currentStoryIndex > 0) {
+            currentStoryIndex--;
+            renderStory();
+        }
+    };
+    
+    const closeStoryViewer = () => {
+        clearTimeout(storyTimeout);
+        elements.storyViewerOverlay.style.display = 'none';
+        const contentArea = document.getElementById('story-content-area');
+        contentArea.innerHTML = ''; // Para parar vídeos
+    };
+
+    const sendStoryReply = async () => {
+        const input = document.getElementById('story-reply-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        if (!currentUserName) {
+            alert("Erro: Você precisa estar logado para responder.");
+            return;
+        }
+        
+        const senderName = currentUserName;
+        const senderKey = senderName.toLowerCase();
+
+        try {
+            const recipientKey = currentStoryUser;
+            
+            const userStories = storiesCache[recipientKey];
+            if (!userStories || !userStories[currentStoryIndex]) {
+                alert('Erro: Não foi possível encontrar os dados deste story. Tente abrir novamente.');
+                return;
+            }
+            const storyId = userStories[currentStoryIndex].key;
+
+            // 1. Buscar os dados do story original para pegar a URL do conteúdo
+            const storySnap = await database.ref(`stories/${storyId}`).get();
+            if (!storySnap.exists()) {
+                alert('Erro: O story original não foi encontrado.');
+                return;
+            }
+            const storyData = storySnap.val();
+
+            // 2. Preparar a mensagem para ser inserida no chat
+            const chatId = [senderKey, recipientKey].sort().join('_');
+            const chatMessageData = {
+                senderId: senderKey,
+                text: text,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                type: 'story_reply', // Novo tipo de mensagem
+                storyContentUrl: storyData.contentUrl, // URL da imagem/vídeo do story
+                storyContentType: storyData.contentType
+            };
+
+            // 3. Salvar a mensagem no chat e a notificação de resposta
+            const senderProfileSnap = await database.ref(`userProfiles/${senderKey}`).get();
+            const senderProfile = senderProfileSnap.exists() ? senderProfileSnap.val() : {};
+            const replyNotificationData = {
+                senderId: senderKey,
+                senderName: senderName,
+                senderPhoto: senderProfile.photoURL || null,
+                text: text,
+                storyId: storyId,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+            
+            // Executa as duas operações em paralelo
+            await Promise.all([
+                database.ref(`chats/${chatId}/messages`).push(chatMessageData),
+                database.ref(`storyReplies/${recipientKey}`).push(replyNotificationData)
+            ]);
+
+            input.value = '';
+            alert('Resposta enviada com sucesso!');
+
+        } catch (error) {
+            alert('Ocorreu um erro ao enviar a resposta.');
+            console.error("Erro em sendStoryReply:", error);
+        }
+    };
+
+        // --- LÓGICA DO NOVO LOGIN ÚNICO ---
+    const populateLoginUserSelect = () => {
+        const select = document.getElementById('login-user-select');
+        select.innerHTML = '<option value="" disabled selected>Selecione um usuário...</option>';
+        // Usa a nova lista 'allUsers' que inclui colaboradores e admins
+        allUsers.forEach(name => {
+            select.innerHTML += `<option value="${name}">${name}</option>`;
+        });
+    };
+
+        const handleLoginAttempt = async () => {
+        const userSelect = document.getElementById('login-user-select');
+        const passwordInput = document.getElementById('login-password-input');
+        const statusEl = document.getElementById('login-status-message');
+        
+        const selectedUser = userSelect.value;
+        const enteredPassword = passwordInput.value;
+
+        if (!selectedUser) {
+            statusEl.textContent = 'Por favor, selecione um usuário.';
+            return;
+        }
+        if (!enteredPassword) {
+            statusEl.textContent = 'Por favor, digite sua senha.';
+            return;
+        }
+        
+        const userKey = selectedUser.toLowerCase();
+        
+        try {
+            // LÓGICA UNIFICADA PARA TODOS OS USUÁRIOS
+            const passwordSnap = await database.ref(`userPasswords/${userKey}`).get();
+
+            if (passwordSnap.exists()) {
+                // Usuário existente: verifica a senha do banco de dados
+                if (enteredPassword === passwordSnap.val()) {
+                    statusEl.textContent = 'Acessando...';
+                    completeLogin(selectedUser);
+                } else {
+                    statusEl.textContent = 'Senha incorreta!';
+                }
+            } else {
+                // Novo usuário: define a senha no banco de dados
+                await database.ref(`userPasswords/${userKey}`).set(enteredPassword);
+                statusEl.textContent = 'Senha definida! Acessando...';
+                completeLogin(selectedUser);
+            }
+        } catch (error) {
+            statusEl.textContent = 'Erro de conexão. Tente novamente.';
+            console.error("Erro no login:", error);
+        }
+    };
+
+    // A função startLoginCameraVerification não é mais necessária e foi removida.
+    
+    const completeLogin = (userName) => {
+        localStorage.setItem('loggedInUser', userName);
+        currentUserName = userName; // Define o usuário global
+        
+        const loginOverlay = document.getElementById('login-overlay');
+        loginOverlay.classList.add('is-exiting');
+        loginOverlay.addEventListener('animationend', () => {
+            loginOverlay.style.display = 'none';
+            loginOverlay.classList.remove('visible', 'is-exiting');
+            
+            // Carrega os dados da tela principal para o usuário logado
+            showMainPage();
+            initializeApp(true); // Chama novamente para carregar dados
+            
+        }, { once: true });
+    };
+    
+    const logout = () => {
+        if (confirm('Deseja realmente sair e voltar para a tela de login?')) {
+            localStorage.removeItem('loggedInUser');
+            window.location.reload();
+        }
+    };
+
+    const deleteMyStories = async () => {
+        const userKey = currentUserName.toLowerCase();
+        if (!confirm('Tem certeza que deseja apagar TODOS os seus stories ativos? Esta ação não pode ser desfeita.')) return;
+
+        const storiesRef = database.ref('stories');
+        const query = storiesRef.orderByChild('userId').equalTo(userKey);
+
+        try {
+            const snapshot = await query.get();
+
+            if (!snapshot.exists()) {
+                alert('Você não tem nenhum story ativo para apagar.');
+                return;
+            }
+
+            const fileDeletionPromises = [];
+            const dbUpdates = {};
+
+            snapshot.forEach(childSnapshot => {
+                const storyKey = childSnapshot.key;
+                const storyData = childSnapshot.val();
+
+                // Adiciona a operação de remoção do banco de dados ao objeto de updates
+                dbUpdates[storyKey] = null;
+
+                // Se o story tiver uma URL de conteúdo, prepara a deleção do arquivo no Storage
+                if (storyData.contentUrl) {
+                    try {
+                        const fileRef = storage.refFromURL(storyData.contentUrl);
+                        // Adiciona a promessa de deleção ao array
+                        fileDeletionPromises.push(fileRef.delete());
+                    } catch (e) {
+                        console.error(`URL inválida no story ${storyKey}, não foi possível deletar do Storage:`, e);
+                    }
+                }
+            });
+
+            // Executa todas as promessas de deleção de arquivos do Storage
+            await Promise.all(fileDeletionPromises);
+
+            // Após os arquivos serem deletados, remove as entradas do banco de dados
+            await storiesRef.update(dbUpdates);
+
+            alert('Seus stories foram apagados com sucesso!');
+            loadAndDisplayStories(); // Atualiza a interface
+
+        } catch (error) {
+            console.error("Erro ao apagar stories:", error);
+            alert('Ocorreu um erro ao apagar seus stories. Verifique o console para mais detalhes.');
+        }
+    };
+
+
+    // --- FUNÇÕES DE CHAT ---
+
+    const openChatPage = async () => {
+        showPage('chatPage');
+        const container = document.getElementById('chat-list-container');
+        container.innerHTML = '<p style="text-align:center;">Carregando conversas...</p>';
+
+        try {
+            const userKey = currentUserName.toLowerCase();
+            const profilesSnap = await database.ref('userProfiles').get();
+            const profiles = profilesSnap.exists() ? profilesSnap.val() : {};
+
+            // Pega todos os USUÁRIOS, exceto o usuário logado
+            const chatPartners = allUsers.filter(name => name.toLowerCase() !== userKey);
+
+            // Cria uma promessa para buscar os dados de cada parceiro de chat
+            const conversationPromises = chatPartners.map(async (partnerName) => {
+                const partnerKey = partnerName.toLowerCase();
+                const profile = profiles[partnerKey] || {};
+                const chatId = [userKey, partnerKey].sort().join('_'); // ID único da conversa
+
+                // Busca a última resposta de story e a última mensagem direta em paralelo
+                const lastReplyPromise = database.ref(`storyReplies/${userKey}`).orderByChild('senderId').equalTo(partnerKey).limitToLast(1).get();
+                const lastMessagePromise = database.ref(`chats/${chatId}/messages`).orderByChild('timestamp').limitToLast(1).get();
+                const [replySnap, messageSnap] = await Promise.all([lastReplyPromise, lastMessagePromise]);
+
+                let lastReply = null;
+                if (replySnap.exists()) {
+                    replySnap.forEach(snap => { lastReply = snap.val(); });
+                }
+
+                let lastMessage = null;
+                if (messageSnap.exists()) {
+                    messageSnap.forEach(snap => { lastMessage = snap.val(); });
+                }
+
+                // Determina qual é a mensagem mais recente para exibir na lista
+                let displayMessage = `Iniciar conversa com ${partnerName}`;
+                let displayTimestamp = '1970-01-01T00:00:00Z'; // Data antiga para ordenação
+                let isReply = false;
+
+                const replyTime = lastReply ? new Date(lastReply.timestamp) : new Date(0);
+                const messageTime = lastMessage ? new Date(lastMessage.timestamp) : new Date(0);
+
+                if (replyTime > messageTime) {
+                    displayMessage = `Respondeu seu story: "${lastReply.text}"`;
+                    displayTimestamp = lastReply.timestamp;
+                    isReply = true;
+                } else if (messageTime > replyTime) {
+                    const prefix = lastMessage.senderId === userKey ? "Você: " : "";
+                    displayMessage = prefix + lastMessage.text;
+                    displayTimestamp = new Date(lastMessage.timestamp).toISOString();
+                }
+
+                return {
+                    id: partnerKey,
+                    name: partnerName,
+                    photo: profile.photoURL,
+                    lastMessage: displayMessage,
+                    timestamp: displayTimestamp,
+                    isReply: isReply,
+                };
+            });
+
+            // Espera todas as buscas terminarem
+            const conversations = await Promise.all(conversationPromises);
+
+            // Ordena as conversas pela mensagem mais recente
+            conversations.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            container.innerHTML = '';
+            if (conversations.length > 0) {
+                conversations.forEach(convo => {
+                    const item = document.createElement('div');
+                    item.className = 'chat-list-item';
+                    if (convo.isReply) item.classList.add('reply');
+                    item.dataset.chatPartnerId = convo.id;
+                    
+                    item.innerHTML = `
+                        <img src="${convo.photo || 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg'}" alt="${convo.name}">
+                        <div class="chat-list-item-content">
+                            <p><strong>${convo.name}</strong></p>
+                            <p><span>${convo.lastMessage}</span></p>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            } else {
+                container.innerHTML = '<p style="text-align:center;">Nenhum colaborador encontrado para iniciar uma conversa.</p>';
+            }
+        } catch (error) {
+            console.error("Erro ao carregar a página de chat:", error);
+            container.innerHTML = '<p style="text-align:center;">Ocorreu um erro ao carregar as conversas.</p>';
+        }
+    };
+    
+    const handleMediaUpload = (file) => {
+        if (!file || !currentOpenChatId) return;
+
+        alert('Enviando mídia...');
+        const contentType = file.type.startsWith('video/') ? 'video' : 'media_video'; // Renomeado para evitar conflito com story
+        const imageType = 'media_image';
+
+        const filePath = `chat_media/${currentOpenChatId}/${new Date().getTime()}_${file.name}`;
+        const fileRef = storage.ref().child(filePath);
+
+        fileRef.put(file)
+            .then(snapshot => snapshot.ref.getDownloadURL())
+            .then(contentUrl => {
+                const messageData = {
+                    senderId: currentUserName.toLowerCase(),
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    type: file.type.startsWith('image/') ? imageType : contentType,
+                    contentUrl: contentUrl
+                };
+                return database.ref(`chats/${currentOpenChatId}/messages`).push(messageData);
+            })
+            .then(() => {
+                // O listener 'child_added' cuidará de exibir a mídia.
+            })
+            .catch(error => {
+                alert('Erro ao enviar a mídia.');
+                console.error(error);
+            });
+    };
+
+    const editChatMessage = (messageKey) => {
+        const messageRef = database.ref(`chats/${currentOpenChatId}/messages/${messageKey}`);
+        messageRef.once('value', snapshot => {
+            const currentText = snapshot.val().text;
+            const newText = prompt("Edite sua mensagem:", currentText);
+            if (newText && newText.trim() !== "" && newText !== currentText) {
+                messageRef.update({ text: newText.trim() });
+            }
+        });
+    };
+
+    const deleteChatMessage = (messageKey) => {
+        if (confirm("Tem certeza que deseja apagar esta mensagem?")) {
+            database.ref(`chats/${currentOpenChatId}/messages/${messageKey}`).remove();
+        }
+    };
+    
+    const openConversation = (partnerId) => {
+        const userKey = currentUserName.toLowerCase();
+        const partnerName = allCollaborators.find(n => n.toLowerCase() === partnerId) || partnerId;
+        
+        currentOpenChatId = [userKey, partnerId].sort().join('_');
+        
+        document.getElementById('chat-conversation-title').textContent = partnerName;
+        showPage('chatConversationPage');
+        
+        const messagesContainer = document.getElementById('chat-messages-container');
+        messagesContainer.innerHTML = '';
+
+        const messagesRef = database.ref(`chats/${currentOpenChatId}/messages`).orderByChild('timestamp');
+        
+        // Listener para NOVAS mensagens
+        messagesRef.on('child_added', snapshot => {
+            const msg = snapshot.val();
+            const msgKey = snapshot.key;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-message-bubble';
+            bubble.dataset.messageKey = msgKey; // Essencial para editar/apagar
+            bubble.dataset.senderId = msg.senderId;
+            
+            // --- LÓGICA DE RENDERIZAÇÃO MELHORADA ---
+            switch (msg.type) {
+                case 'story_reply':
+                    const storyMediaTag = msg.storyContentType === 'video' ? `<video src="${msg.storyContentUrl}" muted autoplay loop playsinline></video>` : `<img src="${msg.storyContentUrl}" alt="Story Preview">`;
+                    bubble.innerHTML = `
+                        <div class="story-reply-context">${storyMediaTag}<span>Respondeu ao story</span></div>
+                        <p class="reply-text">${msg.text}</p>`;
+                    break;
+                case 'media_image':
+                    bubble.innerHTML = `<img src="${msg.contentUrl}" alt="Imagem enviada">`;
+                    break;
+                case 'media_video':
+                    bubble.innerHTML = `<video src="${msg.contentUrl}" controls playsinline></video>`;
+                    break;
+                default: // Mensagem de texto normal
+                    bubble.textContent = msg.text || '';
+                    break;
+            }
+
+            if (msg.senderId === userKey) {
+                bubble.classList.add('sent');
+            } else {
+                bubble.classList.add('received');
+            }
+            messagesContainer.appendChild(bubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+
+        // Listener para MENSAGENS EDITADAS
+        messagesRef.on('child_changed', snapshot => {
+            const msgKey = snapshot.key;
+            const newText = snapshot.val().text;
+            const bubbleToUpdate = messagesContainer.querySelector(`[data-message-key="${msgKey}"]`);
+            if (bubbleToUpdate && newText) {
+                // Se for uma resposta de story, atualiza só o texto
+                const replyTextEl = bubbleToUpdate.querySelector('.reply-text');
+                if (replyTextEl) {
+                    replyTextEl.textContent = newText;
+                } else {
+                    bubbleToUpdate.textContent = newText;
+                }
+            }
+        });
+
+        // Listener para MENSAGENS APAGADAS
+        messagesRef.on('child_removed', snapshot => {
+            const msgKey = snapshot.key;
+            const bubbleToRemove = messagesContainer.querySelector(`[data-message-key="${msgKey}"]`);
+            if (bubbleToRemove) {
+                bubbleToRemove.remove();
+            }
+        });
+
+        // Marca as mensagens e respostas como lidas ao abrir a conversa
+        const updates = {};
+        database.ref(`storyReplies/${userKey}`).orderByChild('senderId').equalTo(partnerId).once('value', snapshot => {
+            snapshot.forEach(child => {
+                if (!child.val().read) updates[`/storyReplies/${userKey}/${child.key}/read`] = true;
+            });
+            // Depois checa as mensagens de chat
+            messagesRef.once('value', snapshot => {
+                snapshot.forEach(child => {
+                    if (child.val().senderId !== userKey && child.val().read !== true) {
+                        updates[`/chats/${currentOpenChatId}/messages/${child.key}/read`] = true;
+                    }
+                });
+                // Aplica todas as atualizações de uma vez
+                if (Object.keys(updates).length > 0) {
+                    database.ref().update(updates).then(() => checkForUnreadMessages());
+                }
+            });
+        });
+    };
+    
+    const sendChatMessage = () => {
+        const input = document.getElementById('chat-message-input');
+        const text = input.value.trim();
+        if (!text || !currentOpenChatId) return;
+        
+        const messageData = {
+            senderId: currentUserName.toLowerCase(),
+            text: text,
+            timestamp: firebase.database.ServerValue.TIMESTAMP // Usa o timestamp do servidor
+        };
+        
+        database.ref(`chats/${currentOpenChatId}/messages`).push(messageData);
+        input.value = '';
+    };
+
+    const clearAllChatMessages = async () => {
+        const confirmation = prompt('Esta ação é IRREVERSÍVEL e apagará TODAS as conversas de TODOS os usuários. Para confirmar, digite "APAGAR TUDO" em maiúsculas.');
+        if (confirmation !== 'APAGAR TUDO') {
+            alert('Ação cancelada.');
+            return;
+        }
+
+        try {
+            await database.ref('chats').remove();
+            alert('Todas as mensagens de chat foram apagadas com sucesso!');
+        } catch (error) {
+            alert('Ocorreu um erro ao apagar os chats.');
+            console.error('Erro ao limpar chats:', error);
+        }
+    };
+
+    const checkForUnreadMessages = async () => {
+        if (!currentUserName) return; // Não faz nada se não estiver logado
+        
+        const userKey = currentUserName.toLowerCase();
+        const indicator = document.getElementById('chat-notification-indicator');
+        let hasUnread = false;
+
+        try {
+            // Verifica respostas de stories não lidas
+            const repliesSnap = await database.ref(`storyReplies/${userKey}`).orderByChild('read').equalTo(false).get();
+            if (repliesSnap.exists()) {
+                hasUnread = true;
+            }
+
+            // Se já encontrou, não precisa checar o resto
+            if (hasUnread) {
+                indicator.style.display = 'inline-flex';
+                return;
+            }
+
+            // Verifica mensagens de chat não lidas (lógica mais complexa)
+            // Precisamos checar cada chat onde o usuário está envolvido
+            const chatPartners = allUsers.filter(name => name.toLowerCase() !== userKey);
+            for (const partner of chatPartners) {
+                const partnerKey = partner.toLowerCase();
+                const chatId = [userKey, partnerKey].sort().join('_');
+                const lastMessageSnap = await database.ref(`chats/${chatId}/messages`).orderByKey().limitToLast(1).get();
+                
+                if (lastMessageSnap.exists()) {
+                    const lastMessage = Object.values(lastMessageSnap.val())[0];
+                    // Se a última mensagem não foi lida e foi enviada por outra pessoa
+                    if (lastMessage.read !== true && lastMessage.senderId !== userKey) {
+                        hasUnread = true;
+                        break; // Sai do loop assim que encontrar a primeira não lida
+                    }
+                }
+            }
+
+            indicator.style.display = hasUnread ? 'inline-flex' : 'none';
+
+        } catch (error) {
+            console.error("Erro ao verificar mensagens não lidas:", error);
+        }
+    };
+
+
 
     function showScreen(screenElement) {
         if (isNavigating) return;
@@ -3575,7 +4859,10 @@ Transporte - R$ 5,00"></textarea></div>
 
         if (currentScreen) {
             currentScreen.classList.add('is-exiting');
-            currentScreen.addEventListener('animationend', () => {
+            currentScreen.addEventListener('animationend', (e) => {
+                // ESTA VERIFICAÇÃO IMPEDE QUE ANIMAÇÕES DE FILHOS ATIVEM O CÓDIGO PREMATURAMENTE
+                if (e.target !== currentScreen) return; 
+                
                 currentScreen.classList.remove('visible', 'is-exiting');
                 screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
                 requestAnimationFrame(() => {
@@ -4394,33 +5681,28 @@ Transporte - R$ 5,00"></textarea></div>
         // Adiciona a classe que dispara a animação de SAÍDA.
         modal.classList.add('is-exiting');
 
-        // Escuta o fim da ANIMAÇÃO no próprio modal-overlay. Esta é a animação principal.
+        // Escuta o fim da ANIMAÇÃO no próprio modal-overlay.
         modal.addEventListener('animationend', (e) => {
-            // ESSA VERIFICAÇÃO É CRUCIAL.
-            // Garante que estamos reagindo ao fim da animação do 'modal-overlay'
-            // e não de alguma outra animação interna que possa ter acontecido.
             if (e.target === modal) {
-                // Esconde o modal completamente e limpa todas as classes.
+                // Esconde o modal e limpa as classes de animação.
                 modal.style.display = 'none';
                 modal.classList.remove('visible', 'is-exiting');
-                isNavigating = false;
 
-                // Executa a função de callback, que irá abrir a página do colaborador.
+                // Se houver um callback (como abrir outra página), ele é executado.
+                // A flag 'isNavigating' permanecerá 'true', pois a função de callback a gerenciará.
                 if (typeof onClosedCallback === 'function') {
                     onClosedCallback();
+                } else {
+                    // Se NÃO houver callback, a navegação termina aqui, então liberamos a flag.
+                    isNavigating = false;
                 }
             }
         }, { once: true });
     };
 
-    // --- FUNÇÃO DE VERIFICAÇÃO DE SENHA ---
-    const checkPassword = () => {
-        const userInput = prompt("Por favor, digite a senha de acesso:");
-        if (userInput === null) return false;
-        if (userInput === PASSWORD) return true;
-        alert("Senha incorreta!");
-        return false;
-    };
+    // --- FUNÇÃO DE VERIFICAÇÃO DE SENHA (REMOVIDA/OBSOLETA) ---
+    // A lógica de senha agora é centralizada no login inicial.
+    // A função checkPassword() não é mais necessária para operações do dia a dia.
     
     // --- FUNÇÕES AUXILIARES DE FORMATAÇÃO DE MOEDA ---
     const formatToBRLInput = (value) => {
@@ -4819,32 +6101,19 @@ Transporte - R$ 5,00"></textarea></div>
 
 
         const handleParabensClick = async (recipientName) => {
-        const senderName = prompt("Para enviar, digite SEU nome:");
-        if (!senderName || !allUsers.map(u => u.toLowerCase()).includes(senderName.trim().toLowerCase())) {
-            if (senderName) alert("Nome inválido. Por favor, digite seu nome corretamente.");
+        // A função agora usa o usuário logado (currentUserName) em vez de pedir o nome.
+        if (!currentUserName) {
+            alert("Erro: Nenhum usuário logado para enviar parabéns.");
             return;
         }
 
-        const senderKey = senderName.trim().toLowerCase();
+        const senderName = currentUserName;
+        const senderKey = senderName.toLowerCase();
 
-        const passwordSnap = await database.ref(`userPasswords/${senderKey}`).get();
-        let passwordCorrect = false;
-
-        if (passwordSnap.exists()) {
-            const correctPassword = passwordSnap.val();
-            const enteredPassword = prompt(`Olá, ${senderName.trim()}! Digite sua senha para confirmar:`);
-            if (enteredPassword === correctPassword || enteredPassword === PASSWORD) {
-                passwordCorrect = true;
-            }
-        } else {
-            // Se o usuário não tem senha, permite enviar
-            passwordCorrect = true; 
-        }
-
-        if (passwordCorrect) {
+        try {
             const todayString = getTodayDateString();
             const recipientKey = recipientName.toLowerCase();
-            
+
             // Incrementa o contador de "Parabéns" recebidos
             const receivedCountRef = database.ref(`userProfiles/${recipientKey}/parabensReceivedCount`);
             receivedCountRef.transaction(count => {
@@ -4854,17 +6123,18 @@ Transporte - R$ 5,00"></textarea></div>
                 }
                 return newCount;
             });
-            
+
             // Envia a notificação
             const parabensRef = database.ref(`parabens/${todayString}/${recipientKey}`).push();
-            await parabensRef.set({ sender: senderName.trim() });
-            
+            await parabensRef.set({ sender: senderName });
+
             // Concede a conquista para o remetente
             await awardAchievement(senderKey, 'colega_de_equipe');
 
             alert(`Obrigado! Seu "Parabéns!" foi enviado para ${recipientName}.`);
-        } else {
-            alert("Senha incorreta. Ação cancelada.");
+        } catch (error) {
+            console.error("Erro ao enviar parabéns:", error);
+            alert("Ocorreu um erro ao enviar seu reconhecimento.");
         }
     };
 
@@ -6430,14 +7700,13 @@ async function calculateAndDisplayRanking() {
     function loadManagerNotifications() {
         const section = document.getElementById('manager-notifications-section');
         const listContainer = document.getElementById('manager-notifications-list');
-        const indicator = document.getElementById('gs-notification-indicator');
-        const clearAllBtn = document.getElementById('clear-all-notifications-btn'); // Pega o novo botão
+        // O elemento 'gs-notification-indicator' foi removido do HTML, então removemos a referência a ele aqui.
+        const clearAllBtn = document.getElementById('clear-all-notifications-btn');
         const notificationsRef = database.ref('managerNotifications').orderByChild('timestamp').limitToLast(20);
 
         notificationsRef.on('value', snapshot => {
             listContainer.innerHTML = '';
-            let hasUnread = false;
-            let notificationCount = 0; // Conta o número de notificações
+            let notificationCount = 0;
 
             if (snapshot.exists()) {
                 notificationCount = snapshot.numChildren();
@@ -6445,14 +7714,10 @@ async function calculateAndDisplayRanking() {
                 
                 const notifications = [];
                 snapshot.forEach(childSnapshot => {
-                    const notificationData = childSnapshot.val();
-                    if (!notificationData.read) {
-                        hasUnread = true;
-                    }
-                    notifications.push({ key: childSnapshot.key, ...notificationData });
+                    notifications.push({ key: childSnapshot.key, ...childSnapshot.val() });
                 });
 
-                indicator.style.display = hasUnread ? 'inline-flex' : 'none';
+                // Não precisamos mais manipular o indicador 'gs-notification-indicator' aqui.
 
                 notifications.reverse().forEach(notification => {
                     const notificationItem = document.createElement('div');
@@ -6470,10 +7735,8 @@ async function calculateAndDisplayRanking() {
                 });
             } else {
                 section.style.display = 'none';
-                indicator.style.display = 'none';
             }
 
-            // Mostra ou esconde o botão "Limpar Todas" baseado na contagem
             if (notificationCount > 0) {
                 clearAllBtn.style.display = 'block';
             } else {
@@ -6565,16 +7828,15 @@ async function calculateAndDisplayRanking() {
     };
 
     function uploadProfilePicture(file) {
-        // Determina qual status e imagem atualizar com base na tela visível
-        const isSecurityMode = elements.securityProfilePage.classList.contains('visible');
-        const statusEl = document.getElementById(isSecurityMode ? 'security-photo-upload-status' : 'photo-upload-status');
-        const imgElement = document.getElementById(isSecurityMode ? 'security-profile-pic' : 'collaborator-profile-pic');
+        // A lógica antiga que verificava 'securityProfilePage' foi removida.
+        // A função agora assume que o upload sempre acontece a partir da tela de perfil.
+        const statusEl = document.getElementById('photo-upload-status');
+        const imgElement = document.getElementById('collaborator-profile-pic');
         const userKey = currentUserName.toLowerCase();
 
         statusEl.textContent = 'Enviando foto...';
 
         // 1. Cria uma referência para o local onde a foto será salva no Firebase Storage.
-        // O caminho inclui o nome do usuário e a data/hora para garantir que cada foto seja única.
         const filePath = `profile_pictures/${userKey}/${new Date().getTime()}_${file.name}`;
         const fileRef = storage.ref().child(filePath);
 
@@ -6590,17 +7852,21 @@ async function calculateAndDisplayRanking() {
                 // 4. Salva a URL da imagem no Firebase Database, no perfil do usuário.
                 return database.ref(`userProfiles/${userKey}/photoURL`).set(imageUrl);
             })
-            .then(() => {
+            .then(async (imageUrl) => { // Modificado para pegar a URL retornada
                 statusEl.textContent = 'Foto atualizada com sucesso!';
-                imgElement.src = fileRef.getDownloadURL().toString(); // Atualiza a imagem na tela imediatamente
                 
-                // Recarrega os rankings para refletir a nova foto
+                // Pega a URL novamente de forma segura para garantir que está correta
+                const newUrl = await fileRef.getDownloadURL();
+                imgElement.src = newUrl; // Atualiza a imagem na tela imediatamente
+
+                // Recarrega os dados que usam a foto
                 calculateAndDisplayRanking();
                 calculateAndDisplayStoreRanking();
+                loadAndDisplayStories();
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
             })
             .catch(error => {
-                // Captura qualquer erro no processo (upload, get URL, ou salvar no DB)
+                // Captura qualquer erro no processo
                 console.error("Erro no processo de upload de foto:", error);
                 statusEl.textContent = 'Erro ao enviar a foto. Tente novamente.';
             });
@@ -7456,33 +8722,61 @@ async function calculateAndDisplayStoreRanking() {
     };
 
     // --- Calculadora de Crediário ---
-    const calculateCrediario = () => {
+    const calculateCrediario = (source = 'mensal') => {
         const valorProduto = parseFloat(document.getElementById('crediario-valor-produto').value) || 0;
         const entrada = parseFloat(document.getElementById('crediario-entrada').value) || 0;
-        const parcelas = parseInt(document.getElementById('crediario-parcelas').value, 10);
+        
+        const parcelasSlider = document.getElementById('crediario-parcelas');
+        const quinzenaSlider = document.getElementById('crediario-quinzena-parcelas');
+        const semanalSlider = document.getElementById('crediario-semanal-parcelas');
+
+        // Zera as outras barras quando uma é movida
+        if (source === 'mensal') {
+            quinzenaSlider.value = 0;
+            semanalSlider.value = 0;
+        } else if (source === 'quinzena') {
+            parcelasSlider.value = 1; // Mínimo do mensal é 1
+            semanalSlider.value = 0;
+        } else if (source === 'semanal') {
+            parcelasSlider.value = 1; // Mínimo do mensal é 1
+            quinzenaSlider.value = 0;
+        }
+
+        const parcelas = parseInt(parcelasSlider.value, 10);
+        const quinzenas = parseInt(quinzenaSlider.value, 10);
+        const semanas = parseInt(semanalSlider.value, 10);
+        
         document.getElementById('parcelas-value').textContent = parcelas;
+        document.getElementById('quinzena-value').textContent = quinzenas;
+        document.getElementById('semanal-value').textContent = semanas;
 
-        // Lógica de cálculo replicada EXATAMENTE do seu código Velo.
         const valorFinanciado = valorProduto - entrada;
-        // AQUI ESTÁ A ALTERAÇÃO: A taxa agora é de 8.9% ao mês.
-        const taxaJurosMensal = 0.089; // 8.9% ao mês.
+        const taxaJurosMensal = 0.089;
 
-        if (valorFinanciado <= 0 || parcelas === 0) {
+        let valorParcela = 0;
+        let totalAPrazo = 0;
+        
+        if (valorFinanciado <= 0) {
             document.getElementById('result-parcela').textContent = formatBRL(0);
             document.getElementById('result-total-prazo').textContent = formatBRL(valorProduto);
             return;
         }
-        
-        // 1. Calcula o valor futuro total (montante) com juros compostos.
-        const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosMensal, parcelas);
-        
-        // 2. Divide o valor futuro pelo número de parcelas para obter a parcela mensal.
-        const valorParcela = valorFinalComJuros / parcelas;
 
-        // Os totais são calculados com base no novo valor da parcela.
-        const valorTotalFinanciadoComJuros = valorParcela * parcelas;
-        // O "Total a Prazo" agora representa apenas o que falta pagar (o valor financiado com juros).
-        const totalAPrazo = valorTotalFinanciadoComJuros; 
+        if (source === 'mensal' && parcelas > 0) {
+            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosMensal, parcelas);
+            valorParcela = valorFinalComJuros / parcelas;
+            totalAPrazo = valorFinalComJuros;
+        } else if (source === 'quinzena' && quinzenas > 0) {
+            const taxaQuinzena = taxaJurosMensal / 2;
+            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaQuinzena, quinzenas);
+            valorParcela = valorFinalComJuros / quinzenas;
+            totalAPrazo = valorFinalComJuros;
+        } else if (source === 'semanal' && semanas > 0) {
+            const taxaSemanal = taxaJurosMensal / 4; // Aproximação
+            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaSemanal, semanas);
+            valorParcela = valorFinalComJuros / semanas;
+            totalAPrazo = valorFinalComJuros;
+        }
 
         document.getElementById('result-parcela').textContent = formatBRL(valorParcela);
         document.getElementById('result-total-prazo').textContent = formatBRL(totalAPrazo);
@@ -7492,7 +8786,9 @@ async function calculateAndDisplayStoreRanking() {
         document.getElementById('crediario-valor-produto').value = '';
         document.getElementById('crediario-entrada').value = '';
         document.getElementById('crediario-parcelas').value = 12;
-        calculateCrediario();
+        document.getElementById('crediario-quinzena-parcelas').value = 0;
+        document.getElementById('crediario-semanal-parcelas').value = 0;
+        calculateCrediario('mensal');
     };
 
     // --- Calculadora de Parcelamento de Loja ---
@@ -7603,8 +8899,11 @@ async function calculateAndDisplayStoreRanking() {
 
     const loadDebugPage = async () => {
         const statsContainer = document.getElementById('debug-stats-container');
+        const accountsContainer = document.getElementById('debug-accounts-container');
         
+        // Limpa os containers ao abrir a página
         statsContainer.innerHTML = `<p>Carregando estatísticas...</p>`;
+        accountsContainer.innerHTML = ''; // Limpa a lista de contas
 
         // Carregar Estatísticas
         try {
@@ -7628,6 +8927,56 @@ async function calculateAndDisplayStoreRanking() {
             console.error(error);
         }
     };
+
+    const loadAndDisplayAccountPasswords = async () => {
+        const container = document.getElementById('debug-accounts-container');
+        container.innerHTML = '<p style="text-align: center;">Carregando contas...</p>';
+
+        try {
+            const passwordsSnap = await database.ref('userPasswords').get();
+
+            if (!passwordsSnap.exists()) {
+                container.innerHTML = '<p style="text-align: center;">Nenhuma senha de colaborador encontrada.</p>';
+                return;
+            }
+
+            container.innerHTML = ''; // Limpa antes de adicionar
+            const passwords = passwordsSnap.val();
+
+            for (const userKey in passwords) {
+                const password = passwords[userKey];
+                // Converte a chave (ex: 'beatriz') para o nome formatado (ex: 'Beatriz')
+                const userName = userKey.charAt(0).toUpperCase() + userKey.slice(1);
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'mt-list-item'; // Reutilizando um estilo de lista existente
+                itemDiv.style.justifyContent = 'space-between'; // Garante espaçamento
+                
+                itemDiv.innerHTML = `
+                    <span class="mt-list-item-text"><strong>${userName}</strong></span>
+                    <span style="font-family: monospace; color: #f1c40f; font-weight: bold;">${password}</span>
+                `;
+                container.appendChild(itemDiv);
+            }
+
+        } catch (error) {
+            container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Erro ao carregar as contas.</p>';
+            console.error("Erro ao buscar senhas no modo debug:", error);
+        }
+    };
+
+    // ... (no bloco de listeners do DOMContentLoaded, adicione este) ...
+    document.getElementById('debug-page').addEventListener('click', (event) => {
+        const showAccountsBtn = event.target.closest('#show-accounts-btn');
+        if (showAccountsBtn) {
+            loadAndDisplayAccountPasswords();
+        }
+
+        const clearChatsBtn = event.target.closest('#clear-all-chats-btn');
+        if (clearChatsBtn) {
+            clearAllChatMessages();
+        }
+    });
 
     const deleteFeedbackItem = (key) => {
         if (confirm('Tem certeza que deseja apagar este feedback?')) {
@@ -7837,8 +9186,22 @@ async function calculateAndDisplayStoreRanking() {
                 applyFastMode(!isCurrentlyFast);
             });
             
+            // --- LISTENERS DA TELA DE LOGIN ---
+            document.getElementById('login-proceed-btn').addEventListener('click', handleLoginAttempt);
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            document.getElementById('login-user-select').addEventListener('change', async (e) => {
+                const userKey = e.target.value.toLowerCase();
+                const hint = document.getElementById('login-password-hint');
+                if (userKey) {
+                    const passSnap = await database.ref(`userPasswords/${userKey}`).get();
+                    hint.style.display = passSnap.exists() ? 'none' : 'block';
+                } else {
+                    hint.style.display = 'none';
+                }
+            });
 
-            // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
+
+                        // --- NAVEGAÇÃO PRINCIPAL E FERRAMENTAS ---
             document.getElementById('open-feedback-page').addEventListener('click', () => showPage('feedbackPage'));
             document.getElementById('open-debug-page').addEventListener('click', () => {
                 const userInput = prompt("Digite a senha de acesso ao Debug:");
@@ -7877,45 +9240,145 @@ async function calculateAndDisplayStoreRanking() {
                 }, 150); // 150 milissegundos de delay
             });
 
-            document.getElementById('open-colaborador-modal').addEventListener('click', openModal);
-            document.getElementById('open-gs-page').addEventListener('click', () => { 
-                if (checkPassword()) { 
-                    loadDashboardData(); 
-                    loadManagerNotifications();
-                    loadMaintenanceModeStatus();
-                    markNotificationsAsRead();
-                    showPage('gsPage'); 
+                                    const loadAndShowCollaboratorProfile = (userName) => {
+                // Define o usuário atual para que todas as funções internas funcionem corretamente
+                currentUserName = userName; 
+                const userKey = userName.toLowerCase();
+                document.getElementById('collaborator-name-display').textContent = userName;
 
-                    // Atribui os listeners apenas uma vez quando a página GS é carregada
-                                        // para garantir que os elementos existam no DOM.
-                    document.getElementById('open-settings-page').onclick = () => { buildAndLoadMetasPage(); showPage('metasConfigPage'); };
-                    document.getElementById('open-correction-page').onclick = () => { buildAndLoadCorrectionPage(); showPage('correctionPage'); };
-                    document.getElementById('open-mt-management-page').onclick = loadAndShowMtManagementPage;
-                    document.getElementById('open-cash-management-page').onclick = () => { loadCashManagementPage(); };
-                    document.getElementById('open-store-cash-management-page').onclick = () => { openStoreCashManagementPage(); };
-                    document.getElementById('verificar-ponto-btn').onclick = showPontoVerificationList;
-                    document.getElementById('clear-ponto-status-btn').onclick = clearPontoStatusForUser;
-                    document.getElementById('open-overtime-management-page').onclick = openOvertimeManagementPage;
-                    document.getElementById('open-holidays-management-page').onclick = () => {
-                        loadAndRenderList('holidays', 'holidays-list-container', 'Feriado');
-                        showPage('holidaysManagementPage');
-                    };
-                    document.getElementById('open-sundays-management-page').onclick = () => {
-                        loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho');
-                        showPage('sundaysManagementPage');
-                    };
-                    document.getElementById('open-day-off-management-page').onclick = () => {
-                        populateEmployeeSelect();
-                        loadAndRenderDaysOff();
-                        showPage('dayOffManagementPage');
-                    };
-                     document.getElementById('open-avisos-management-page').onclick = () => {
-                        loadAndManageAvisos();
-                        showPage('avisosManagementPage');
-                    };
-                } 
+                // --- LÓGICA DE VISIBILIDADE DE ELEMENTOS ---
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                const isViewingOwnProfile = (loggedInUser === userName);
+                const isProfileOfAdmin = newAdmins.includes(userName); // Verifica se o perfil é de um admin
+
+                // Seleciona todos os elementos que devem ser escondidos para admins
+                const pontoBtn = document.getElementById('bater-ponto-btn');
+                const pontoNotificationArea = document.getElementById('ponto-notification-area');
+                const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
+                const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
+                const salesDataContainer = document.getElementById('individual-sales-data');
+                const salesHistoryContainer = document.getElementById('personal-sales-history');
+                const metasBtn = document.getElementById('view-metas-btn');
+                const achievementsSection = document.getElementById('achievements-section');
+
+                // Se o perfil for de um admin, esconde tudo relacionado a vendas e ponto
+                if (isProfileOfAdmin) {
+                    pontoBtn.style.display = 'none';
+                    pontoNotificationArea.style.display = 'none';
+                    pontoCountdownTimer.style.display = 'none';
+                    pontoLiveCountdown.style.display = 'none';
+                    salesDataContainer.style.display = 'none';
+                    salesHistoryContainer.style.display = 'none';
+                    metasBtn.style.display = 'none';
+                    achievementsSection.style.display = 'none';
+                    stopCountdownTimer();
+                    pontoLiveCountdown.innerHTML = '';
+                } else {
+                    // Se for um colaborador normal, mostra os painéis de vendas
+                    salesDataContainer.style.display = 'block';
+                    metasBtn.style.display = 'flex';
+                    achievementsSection.style.display = 'block'; // Assumindo que deve ser visível por padrão
+                    
+                    // E só mostra os controles de ponto se ele estiver vendo o próprio perfil
+                    const showPontoElements = isViewingOwnProfile;
+                    pontoBtn.style.display = showPontoElements ? 'flex' : 'none';
+                    pontoNotificationArea.style.display = showPontoElements ? 'block' : 'none';
+                    pontoCountdownTimer.style.display = showPontoElements ? 'block' : 'none';
+                    pontoLiveCountdown.style.display = showPontoElements ? 'block' : 'none';
+
+                    if (showPontoElements) {
+                        checkPontoStatusAndDisplayWarnings();
+                    } else {
+                        stopCountdownTimer();
+                        pontoLiveCountdown.innerHTML = '';
+                    }
+                    
+                    // Carrega os dados de vendas e metas que foram escondidos para os admins
+                    loadAndDisplayIndividualSalesData();
+                    loadPersonalSalesHistoryChart();
+                    displayAchievements(userKey);
+                }
+
+                const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
+                profileOpenRef.transaction(count => { return (count || 0) + 1; });
+
+                const managerBtn = document.getElementById('manager-panel-btn');
+                const closingBtn = document.getElementById('closing-btn');
+                const cashBoxSection = document.getElementById('manager-cash-box-section');
+                const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
+                
+                // O botão GS no perfil aparece para todos os 'managers' (gerentes de loja + admins)
+                if (managers.includes(userName)) {
+                    gsBtnInProfile.style.display = 'flex';
+                } else {
+                    gsBtnInProfile.style.display = 'none';
+                }
+
+                // Botões de Painel Gerente e Fechamento continuam sendo apenas para gerentes de loja
+                if (storeManagers.includes(userName)) {
+                    managerBtn.style.display = 'flex';
+                    closingBtn.style.display = 'flex';
+                    loadManagerCashBoxData(); // Carrega e exibe a seção do caixa
+                } else {
+                    managerBtn.style.display = 'none';
+                    closingBtn.style.display = 'none';
+                    cashBoxSection.style.display = 'none'; // Esconde a seção do caixa para os outros
+                }
+
+                document.getElementById('photo-upload-status').textContent = '';
+                checkAndDisplayMaintenanceNotice();
+                checkForParabens(userKey);
+                loadCollaboratorProfilePicture();
+                loadAndDisplayCollaboratorStatus();
+                initiateLollipopCapture();
+                loadAndDisplayStories();
+
+                showPage('collaboratorPage');
+            };
+
+            const openCollaboratorProfileAsGS = () => {
+                const userList = allCollaborators.map((name, index) => `${index + 1}. ${name}`).join('\n');
+                const selectedIndexStr = prompt(`Selecione o colaborador para ver o perfil:\n\n${userList}`);
+
+                if (selectedIndexStr === null || selectedIndexStr.trim() === '') {
+                    return; // Usuário cancelou
+                }
+
+                const selectedIndex = parseInt(selectedIndexStr, 10) - 1;
+
+                if (isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= allCollaborators.length) {
+                    alert('Seleção inválida.');
+                    return;
+                }
+
+                const selectedUserName = allCollaborators[selectedIndex];
+                loadAndShowCollaboratorProfile(selectedUserName);
+            };
+
+            // Listener do novo botão "Meu Perfil"
+            document.getElementById('open-my-profile-btn').addEventListener('click', () => {
+                if (!currentUserName) {
+                    alert("Você precisa fazer login primeiro.");
+                    return;
+                }
+                loadAndShowCollaboratorProfile(currentUserName);
             });
-            document.getElementById('open-send-device-page').addEventListener('click', () => { if (checkPassword()) { showPage('sendDevicePage'); } });
+
+            // O listener para 'open-gs-page' foi removido, pois o botão não existe mais.
+            // ... (resto dos seus listeners)
+            
+            // O Listener duplicado e quebrado foi removido daqui.
+            // Listener para o novo botão GS dentro do perfil
+            document.getElementById('open-gs-from-profile-btn').addEventListener('click', () => {
+                // A senha não é mais necessária aqui, pois o botão só é visível para usuários autorizados
+                loadDashboardData();
+                loadManagerNotifications();
+                loadMaintenanceModeStatus();
+                markNotificationsAsRead();
+                showPage('gsPage');
+            });
+
+            document.getElementById('open-send-device-page').addEventListener('click', () => showPage('sendDevicePage'));
             document.querySelectorAll('.brand-button').forEach(button => button.addEventListener('click', () => loadBrandDevices(button.dataset.brand)));
             document.getElementById('open-device-search').addEventListener('click', openDeviceSearch);
             document.getElementById('previsao-btn').addEventListener('click', calculateDeliveryPrediction);
@@ -7930,76 +9393,10 @@ async function calculateAndDisplayStoreRanking() {
             elements.modal.addEventListener('click', (event) => { if (event.target === elements.modal) closeModal(); });
             document.getElementById('btn-pinheiro').addEventListener('click', () => { document.getElementById('colaborador-cidades').style.display = 'none'; document.getElementById('colaborador-pinheiro').style.display = 'block'; });
             document.getElementById('btn-bacabal').addEventListener('click', () => { document.getElementById('colaborador-cidades').style.display = 'none'; document.getElementById('colaborador-bacabal').style.display = 'block'; });
-            document.querySelectorAll('.collaborator-link').forEach(link => link.addEventListener('click', (event) => {
-                event.preventDefault();
-                const selectedUserName = event.currentTarget.dataset.name;
-                const userKey = selectedUserName.toLowerCase();
-
-                            const openCollaboratorPanel = () => {
-                currentUserName = selectedUserName;
-                document.getElementById('collaborator-name-display').textContent = currentUserName;
-                
-                // Rastreia a abertura do perfil para a conquista
-                const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
-                profileOpenRef.transaction(count => {
-                    const newCount = (count || 0) + 1;
-                    if (newCount >= 50) {
-                        awardAchievement(userKey, 'frequentador_assiduo');
-                    }
-                    return newCount;
-                });
-
-                closeModal(() => {
-                    const managerBtn = document.getElementById('manager-panel-btn');
-                    const closingBtn = document.getElementById('closing-btn');
-                    const cashBoxSection = document.getElementById('manager-cash-box-section');
-                    if (managers.includes(currentUserName)) {
-                        // CORREÇÃO AQUI: Usar 'flex' para corresponder ao estilo do CSS.
-                        managerBtn.style.display = 'flex'; 
-                        closingBtn.style.display = 'flex';
-                        loadManagerCashBoxData();
-                    } else {
-                        managerBtn.style.display = 'none';
-                        closingBtn.style.display = 'none';
-                        cashBoxSection.style.display = 'none';
-                    }
-                    
-                    document.getElementById('photo-upload-status').textContent = '';
-
-                    checkAndDisplayMaintenanceNotice(); 
-                    loadAndDisplayIndividualSalesData();
-                    loadPersonalSalesHistoryChart(); 
-                    displayAchievements(userKey); 
-                    checkForParabens(userKey); // Adicionado para checar os parabéns
-                    loadCollaboratorProfilePicture(); 
-                    loadAndDisplayCollaboratorStatus(); 
-                    checkPontoStatusAndDisplayWarnings();
-                    initiateLollipopCapture();
-
-                    showPage('collaboratorPage');
-                });
-            };
-
-                database.ref('userPasswords/' + userKey).get().then(snapshot => {
-                    // A correção está aqui: verificamos se o snapshot EXISTE
-                    if (snapshot.exists()) {
-                        const personalPassword = snapshot.val();
-                        // Se existe uma senha, pede a validação
-                        const userInput = prompt("Digite a senha de acesso para " + selectedUserName + ":");
-                        if (userInput === personalPassword || userInput === PASSWORD) {
-                            openCollaboratorPanel();
-                        } else if (userInput !== null) {
-                            alert("Senha incorreta!");
-                        }
-                    } else {
-                        // Se NÃO existe senha, abre o painel diretamente
-                        openCollaboratorPanel();
-                    }
-                }).catch(error => { 
-                    alert("Erro de conexão ao verificar a senha. Tente novamente."); 
-                    console.error(error); 
-                });
-            }));
+            // O código dentro deste listener está correto, mas o erro de sintaxe pode estar
+            // no listener do botão GS. Removi a lógica duplicada e incorreta de lá.
+            // Este listener aqui já está obsoleto por causa do novo sistema de login,
+            // então não precisa de alteração. O problema real está no próximo bloco.
 
             // --- PÁGINA DO COLABORADOR ---
             document.getElementById('view-metas-btn').addEventListener('click', () => { loadAndDisplayCollaboratorMetas(); showPage('metasDisplayPage'); });
@@ -8108,7 +9505,26 @@ async function calculateAndDisplayStoreRanking() {
             const valorProdutoInput = document.getElementById('crediario-valor-produto');
             const entradaInput = document.getElementById('crediario-entrada');
             const parcelasSlider = document.getElementById('crediario-parcelas');
-            [valorProdutoInput, entradaInput, parcelasSlider].forEach(element => { element.addEventListener('input', calculateCrediario); });
+            const quinzenaSlider = document.getElementById('crediario-quinzena-parcelas');
+            const semanalSlider = document.getElementById('crediario-semanal-parcelas');
+
+            const recalculateCrediario = () => {
+                // Ao alterar valor ou entrada, recalcula baseado na barra que não está zerada
+                if (parseInt(quinzenaSlider.value, 10) > 0) {
+                    calculateCrediario('quinzena');
+                } else if (parseInt(semanalSlider.value, 10) > 0) {
+                    calculateCrediario('semanal');
+                } else {
+                    calculateCrediario('mensal');
+                }
+            };
+
+            valorProdutoInput.addEventListener('input', recalculateCrediario);
+            entradaInput.addEventListener('input', recalculateCrediario);
+            parcelasSlider.addEventListener('input', () => calculateCrediario('mensal'));
+            quinzenaSlider.addEventListener('input', () => calculateCrediario('quinzena'));
+            semanalSlider.addEventListener('input', () => calculateCrediario('semanal'));
+            
             document.getElementById('clear-crediario-btn').addEventListener('click', clearCrediario);
             document.getElementById('open-crediario-calculator').addEventListener('click', () => { clearCrediario(); showPage('crediarioCalculatorPage'); });
             document.getElementById('back-to-main-from-crediario').addEventListener('click', showMainPage);
@@ -8353,6 +9769,38 @@ async function calculateAndDisplayStoreRanking() {
                 e.preventDefault();
                 document.getElementById('photo-upload-input').click();
             });
+
+            // --- LISTENERS PARA STORIES E CHAT ---
+            document.getElementById('add-my-story-btn').addEventListener('click', () => {
+                document.getElementById('story-upload-input').click();
+            });
+            document.getElementById('story-upload-input').addEventListener('change', (e) => {
+                handleStoryUpload(e.target.files[0]);
+            });
+            document.getElementById('stories-scroll').addEventListener('click', (e) => {
+                const wrapper = e.target.closest('.story-circle-wrapper.has-story');
+                if (wrapper) {
+                    openStoryViewer(wrapper.dataset.userId);
+                }
+            });
+            document.getElementById('close-story-viewer-btn').addEventListener('click', closeStoryViewer);
+            document.getElementById('send-story-reply-btn').addEventListener('click', sendStoryReply);
+            document.getElementById('back-to-gs-from-story-creation').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('delete-my-story-btn').addEventListener('click', deleteMyStories);
+            document.getElementById('open-chats-btn').addEventListener('click', openChatPage);
+            document.getElementById('back-to-collab-from-chat').addEventListener('click', () => showPage('collaboratorPage'));
+            document.getElementById('back-to-chatlist-from-convo').addEventListener('click', () => {
+                database.ref(`chats/${currentOpenChatId}/messages`).off(); // Para de ouvir mensagens antigas
+                currentOpenChatId = null;
+                showPage('chatPage');
+            });
+            document.getElementById('chat-list-container').addEventListener('click', (e) => {
+                const item = e.target.closest('.chat-list-item');
+                if(item) {
+                    openConversation(item.dataset.chatPartnerId);
+                }
+            });
+            document.getElementById('send-chat-message-btn').addEventListener('click', sendChatMessage);
             document.getElementById('collaborator-profile-pic').addEventListener('click', () => {
                  document.getElementById('photo-upload-input').click();
             });
@@ -8664,15 +10112,12 @@ async function calculateAndDisplayStoreRanking() {
                     { path: 'feedback', indicator: 'feedback-indicator' }
                 ];
 
-                let hasAnyUnread = false;
-
                 const checks = submissionTypes.map(type => 
                     database.ref(type.path).orderByChild('read').equalTo(false).once('value')
                         .then(snapshot => {
                             const indicatorEl = document.getElementById(type.indicator);
                             if (indicatorEl) { // Verifica se o elemento existe antes de manipulá-lo
                                 if (snapshot.exists()) {
-                                    hasAnyUnread = true;
                                     indicatorEl.style.display = 'inline-flex';
                                 } else {
                                     indicatorEl.style.display = 'none';
@@ -8683,10 +10128,8 @@ async function calculateAndDisplayStoreRanking() {
 
                 await Promise.all(checks);
 
-                const mainGSIndicator = document.getElementById('gs-notification-indicator');
-                // Mantém o indicador principal se houver notificações de ponto OU de submissões
-                const pontoIndicatorVisible = document.getElementById('manager-notifications-section')?.style.display === 'block';
-                mainGSIndicator.style.display = (hasAnyUnread || pontoIndicatorVisible) ? 'inline-flex' : 'none';
+                // O bloco de código que tentava acessar 'gs-notification-indicator' foi removido,
+                // pois o elemento não existe mais no HTML. A função agora termina aqui.
             };
             
             const markItemsAsRead = (dbPath, items) => {
@@ -8779,41 +10222,61 @@ async function calculateAndDisplayStoreRanking() {
             });
 
 
-            // --- INICIALIZAÇÃO DA APLICAÇÃO (NOVA LÓGICA CENTRALIZADA) ---
-            const initializeApp = () => {
-                // Estatísticas de Uso e Checagem de Notificações
+
+
+
+
+            // --- INICIALIZAÇÃO DA APLICAÇÃO (REFEITA COM LOGIN) ---
+                        const initializeApp = (isLoggedIn = false) => {
+                // Se a função for chamada para um usuário já logado, só carrega os dados
+                if (isLoggedIn) {
+                    calculateAndDisplayRanking();
+                    calculateAndDisplayStoreRanking();
+                    loadManagerNotifications();
+                    loadAndDisplayOvertime();
+                    loadAndDisplayAvisos();
+                    loadAndDisplayStories();
+                    checkForUnreadMessages(); // Adicionada a checagem de mensagens
+                    
+                    // Mostra ou esconde botão de acesso restrito (Enviar Dispositivo)
+                    const sendDeviceBtn = document.getElementById('open-send-device-page');
+                    const isManager = managers.includes(currentUserName);
+
+                    // A referência ao botão 'gsBtn' foi removida pois ele não existe mais na tela principal.
+                    if (isManager) {
+                        sendDeviceBtn.style.display = 'flex';
+                    } else {
+                        sendDeviceBtn.style.display = 'none';
+                    }
+                    return;
+                }
+                
+                // Lógica que roda apenas na primeira vez que a página carrega
+                document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
                 database.ref('statistics/appOpens').transaction(count => (count || 0) + 1);
-                checkAllSubmissionsForUnread(); // Checa as notificações na inicialização
-                setInterval(() => {
-                    if (!document.hidden) { // Só conta se a aba estiver ativa
+                 setInterval(() => {
+                    if (!document.hidden) {
                         database.ref('statistics/totalTimeSeconds').transaction(seconds => (seconds || 0) + 15);
-                        checkAllSubmissionsForUnread(); // E checa as notificações a cada 15 segundos
+                        checkAllSubmissionsForUnread();
                     }
                 }, 15000);
 
+                const loggedInUser = localStorage.getItem('loggedInUser');
                 const appMode = localStorage.getItem(APP_MODE_KEY);
-                const activationOverlay = document.getElementById('activation-overlay');
-
-                // Exibe a versão em todos os casos
-                document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
-
-                switch (appMode) {
-                    case 'employee':
-                        // Modo funcionário: Roda a inicialização normal
-                        activationOverlay.style.display = 'none';
-                        showMainPage();
-                        calculateAndDisplayRanking();
-                        calculateAndDisplayStoreRanking();
-                        loadManagerNotifications();
-                        loadAndDisplayOvertime();
-                        loadAndDisplayAvisos(); // ADICIONADO: Carrega os avisos gerais na tela principal
-                        break;
-
-                    default:
-                        // Nenhum modo definido: Mostra a tela de ativação
-                        activationOverlay.style.display = 'flex';
-                        activationOverlay.classList.add('visible');
-                        break;
+                
+                if (appMode !== 'employee') {
+                    document.getElementById('activation-overlay').style.display = 'flex';
+                    document.getElementById('activation-overlay').classList.add('visible');
+                } else if (loggedInUser) {
+                    currentUserName = loggedInUser;
+                    showMainPage();
+                    initializeApp(true); // Chama a si mesma para carregar os dados
+                } else {
+                    // Se não está ativado e não tem login, mostra a tela de login
+                    const loginOverlay = document.getElementById('login-overlay');
+                    populateLoginUserSelect();
+                    loginOverlay.style.display = 'flex';
+                    loginOverlay.classList.add('visible');
                 }
             };
 
@@ -8869,6 +10332,61 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
+            // --- LISTENERS PARA ENVIO DE MÍDIA E AÇÕES DE CHAT ---
+            document.getElementById('send-media-btn').addEventListener('click', () => {
+                document.getElementById('media-upload-input').click();
+            });
+
+            document.getElementById('media-upload-input').addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    handleMediaUpload(e.target.files[0]);
+                }
+                e.target.value = null; // Permite selecionar o mesmo arquivo de novo
+            });
+            
+            let pressTimer;
+            const chatMessagesContainer = document.getElementById('chat-messages-container');
+            const chatActionModal = document.getElementById('chat-action-modal');
+
+            chatMessagesContainer.addEventListener('mousedown', (e) => {
+                const bubble = e.target.closest('.chat-message-bubble');
+                if (bubble && bubble.dataset.senderId === currentUserName.toLowerCase()) {
+                    pressTimer = setTimeout(() => {
+                        // Armazena a chave da mensagem na própria modal para os botões usarem
+                        chatActionModal.dataset.messageKey = bubble.dataset.messageKey;
+                        // Mostra a modal
+                        chatActionModal.style.display = 'flex';
+                        chatActionModal.classList.add('visible');
+                    }, 700); // 700ms para long press
+                }
+            });
+            // Limpa o timer se o mouse for solto ou sair da bolha
+            chatMessagesContainer.addEventListener('mouseup', () => clearTimeout(pressTimer));
+            chatMessagesContainer.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+
+            // Fechar a modal de ação
+            chatActionModal.addEventListener('click', (e) => {
+                if (e.target === chatActionModal) {
+                    chatActionModal.style.display = 'none';
+                    chatActionModal.classList.remove('visible');
+                }
+            });
+            
+            // Ações dos botões da modal
+            document.getElementById('chat-edit-btn').addEventListener('click', () => {
+                const key = chatActionModal.dataset.messageKey;
+                if (key) editChatMessage(key);
+                chatActionModal.style.display = 'none';
+                chatActionModal.classList.remove('visible');
+            });
+            document.getElementById('chat-delete-btn').addEventListener('click', () => {
+                const key = chatActionModal.dataset.messageKey;
+                if (key) deleteChatMessage(key);
+                chatActionModal.style.display = 'none';
+                chatActionModal.classList.remove('visible');
+            });
+
+
             // --- LISTENER PARA O BOTÃO DE INFORMAÇÃO DO BÔNUS (?) ---
             ['ranking-container', 'store-ranking-container'].forEach(id => {
                 document.getElementById(id).addEventListener('click', (event) => {
@@ -8878,6 +10396,11 @@ async function calculateAndDisplayStoreRanking() {
                     }
                 });
             });
+
+            // --- LISTENERS PARA NAVEGAÇÃO DE STORIES ---
+            document.getElementById('story-nav-next').addEventListener('click', nextStory);
+            document.getElementById('story-nav-prev').addEventListener('click', previousStory);
+
 
             // --- LÓGICA PARA EXIBIR TOOLTIP DA CONQUISTA NO CLIQUE ---
             document.addEventListener('click', (e) => {
