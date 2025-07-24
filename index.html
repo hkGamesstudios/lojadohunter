@@ -3907,7 +3907,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.5'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
@@ -8756,7 +8756,11 @@ async function calculateAndDisplayStoreRanking() {
         document.getElementById('semanal-value').textContent = semanas;
 
         const valorFinanciado = valorProduto - entrada;
-        const taxaJurosMensal = 0.089;
+        
+        // Novas taxas de juros específicas
+        const taxaJurosMensal = 0.089;  // 8.9%
+        const taxaJurosQuinzena = 0.079; // 7.9%
+        const taxaJurosSemanal = 0.069;  // 6.9%
 
         let valorParcela = 0;
         let totalAPrazo = 0;
@@ -8772,13 +8776,11 @@ async function calculateAndDisplayStoreRanking() {
             valorParcela = valorFinalComJuros / parcelas;
             totalAPrazo = valorFinalComJuros;
         } else if (source === 'quinzena' && quinzenas > 0) {
-            const taxaQuinzena = taxaJurosMensal / 2;
-            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaQuinzena, quinzenas);
+            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosQuinzena, quinzenas);
             valorParcela = valorFinalComJuros / quinzenas;
             totalAPrazo = valorFinalComJuros;
         } else if (source === 'semanal' && semanas > 0) {
-            const taxaSemanal = taxaJurosMensal / 4; // Aproximação
-            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaSemanal, semanas);
+            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosSemanal, semanas);
             valorParcela = valorFinalComJuros / semanas;
             totalAPrazo = valorFinalComJuros;
         }
