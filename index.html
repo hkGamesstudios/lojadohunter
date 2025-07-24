@@ -2554,16 +2554,16 @@
                     <input type="number" id="crediario-entrada" class="data-input" placeholder="0.00">
                 </div>
                 <div class="input-group slider-group">
-                    <label for="crediario-parcelas">Parcelas (Mensal): <span id="parcelas-value">12</span>x</label>
-                    <input type="range" id="crediario-parcelas" min="1" max="12" value="12" step="1" class="slider-input">
+                    <label for="crediario-parcelas">Parcelas (Mensal): <span id="parcelas-value">10</span>x</label>
+                    <input type="range" id="crediario-parcelas" min="1" max="10" value="10" step="1" class="slider-input">
                 </div>
                 <div class="input-group slider-group">
                     <label for="crediario-quinzena-parcelas">Parcelas (Quinzena): <span id="quinzena-value">0</span>x</label>
-                    <input type="range" id="crediario-quinzena-parcelas" min="0" max="24" value="0" step="1" class="slider-input">
+                    <input type="range" id="crediario-quinzena-parcelas" min="0" max="20" value="0" step="1" class="slider-input">
                 </div>
                 <div class="input-group slider-group">
                     <label for="crediario-semanal-parcelas">Parcelas (Semanal): <span id="semanal-value">0</span>x</label>
-                    <input type="range" id="crediario-semanal-parcelas" min="0" max="48" value="0" step="1" class="slider-input">
+                    <input type="range" id="crediario-semanal-parcelas" min="0" max="40" value="0" step="1" class="slider-input">
                 </div>
                 
                 <div id="crediario-result-container">
@@ -3907,7 +3907,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.2'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.4'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
@@ -8790,7 +8790,7 @@ async function calculateAndDisplayStoreRanking() {
     const clearCrediario = () => {
         document.getElementById('crediario-valor-produto').value = '';
         document.getElementById('crediario-entrada').value = '';
-        document.getElementById('crediario-parcelas').value = 12;
+        document.getElementById('crediario-parcelas').value = 10;
         document.getElementById('crediario-quinzena-parcelas').value = 0;
         document.getElementById('crediario-semanal-parcelas').value = 0;
         calculateCrediario('mensal');
