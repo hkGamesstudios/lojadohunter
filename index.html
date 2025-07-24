@@ -2143,6 +2143,7 @@
             cursor: pointer;
             padding: 0 10px;
             transition: transform 0.2s ease;
+            flex-shrink: 0; /* Impede que o botão seja espremido */
         }
         #like-story-btn:hover {
             transform: scale(1.1);
@@ -2159,6 +2160,8 @@
             padding: 8px;
             border-radius: 8px;
             background-color: rgba(0,0,0,0.3);
+            flex-shrink: 0; /* Impede que a caixa de curtidas seja espremida */
+            white-space: nowrap; /* Impede que o texto "10 curtidas" quebre a linha */
         }
 
         /* NOVOS ESTILOS PARA AS SETAS DE NAVEGAÇÃO */
@@ -3904,7 +3907,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.2'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
