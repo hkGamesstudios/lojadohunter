@@ -8757,10 +8757,9 @@ async function calculateAndDisplayStoreRanking() {
 
         const valorFinanciado = valorProduto - entrada;
         
-        // Novas taxas de juros específicas
-        const taxaJurosMensal = 0.089;  // 8.9%
-        const taxaJurosQuinzena = 0.079; // 7.9%
-        const taxaJurosSemanal = 0.069;  // 6.9%
+        const taxaJurosMensal = 0.089;  // 8.9% ao mês
+        const taxaJurosQuinzena = 0.079; // 7.9% ao mês
+        const taxaJurosSemanal = 0.069;  // 6.9% ao mês
 
         let valorParcela = 0;
         let totalAPrazo = 0;
@@ -8772,17 +8771,16 @@ async function calculateAndDisplayStoreRanking() {
         }
 
         if (source === 'mensal' && parcelas > 0) {
-            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosMensal, parcelas);
-            valorParcela = valorFinalComJuros / parcelas;
-            totalAPrazo = valorFinalComJuros;
+            totalAPrazo = valorFinanciado * Math.pow(1 + taxaJurosMensal, parcelas);
+            valorParcela = totalAPrazo / parcelas;
         } else if (source === 'quinzena' && quinzenas > 0) {
-            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosQuinzena, quinzenas);
-            valorParcela = valorFinalComJuros / quinzenas;
-            totalAPrazo = valorFinalComJuros;
+            const mesesEquivalentes = quinzenas / 2;
+            totalAPrazo = valorFinanciado * Math.pow(1 + taxaJurosQuinzena, mesesEquivalentes);
+            valorParcela = totalAPrazo / quinzenas;
         } else if (source === 'semanal' && semanas > 0) {
-            const valorFinalComJuros = valorFinanciado * Math.pow(1 + taxaJurosSemanal, semanas);
-            valorParcela = valorFinalComJuros / semanas;
-            totalAPrazo = valorFinalComJuros;
+            const mesesEquivalentes = semanas / 4;
+            totalAPrazo = valorFinanciado * Math.pow(1 + taxaJurosSemanal, mesesEquivalentes);
+            valorParcela = totalAPrazo / semanas;
         }
 
         document.getElementById('result-parcela').textContent = formatBRL(valorParcela);
