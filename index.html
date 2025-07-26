@@ -619,8 +619,8 @@
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
             height: 14px; /* Altura da barra reduzida */
-            margin-top: 0.4rem;
-            overflow: hidden;
+            margin-top: 0.4rem; /* VOLTOU AO VALOR ORIGINAL */
+            overflow: visible;  /* MANTIDO: Permite que o ícone vaze para fora */
             position: relative;
         }
 
@@ -2307,6 +2307,35 @@
         }
 
 
+                /* --- ANIMAÇÃO PARA O ÍCONE DE FOGO DO RANKING --- */
+        @keyframes fire-animation {
+            0%, 100% {
+                /* Centraliza o ícone em seu próprio eixo X e Y */
+                transform: translate(-50%, -50%) scale(1);
+                color: #ff6b00;
+            }
+            50% {
+                /* Mantém a centralização ao escalar */
+                transform: translate(-50%, -50%) scale(1.2);
+                color: #ffdd00;
+            }
+        }
+
+        /* O container da barra agora é o ponto de referência para o ícone */
+        .progress-bar-container {
+            position: relative; /* Essencial para o posicionamento absoluto do filho */
+        }
+
+        .fire-icon {
+            position: absolute;
+            top: 50%; /* POSICIONA O ÍCONE NO MEIO VERTICAL DA BARRA */
+            font-size: 1.2rem;
+            animation: fire-animation 1.5s ease-in-out infinite;
+            text-shadow: 0 0 8px rgba(255, 107, 0, 0.7);
+            z-index: 2;
+            pointer-events: none;
+        }
+
         /* =================================================================== */
         /* --- AJUSTES PARA TELAS PEQUENAS (RESPONSIVIDADE) --- */
         /* =================================================================== */
@@ -3907,7 +3936,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.6'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.7'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
 
@@ -7349,6 +7378,27 @@ async function calculateAndDisplayRanking() {
                 }
                 // --- FIM DA LÓGICA DA BOLHA ---
 
+                let fireIconHtml = '';
+                if (rank === 1) {
+                    awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
+                    // Limita a posição do ícone em 98% para não sair da tela em 100%
+                    const firePosition = Math.min(progressBarWidth, 98); 
+                    // Gera o ícone com a posição 'left' calculada dinamicamente
+                    fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%;"></i>`;
+                    
+                    if(dailyBonusData && dailyBonusData.userKey === collab.name.toLowerCase()) {
+                        dailyBonusHTML = `
+                            <span class="daily-bonus-value">+ ${formatBRL(dailyBonusData.amount)}</span> 
+                            <span class="bonus-info-btn">?</span>`;
+                    }
+                } else if (rank <= 3) {
+                     if(dailyBonusData && dailyBonusData.userKey === collab.name.toLowerCase()) {
+                        dailyBonusHTML = `
+                            <span class="daily-bonus-value">+ ${formatBRL(dailyBonusData.amount)}</span> 
+                            <span class="bonus-info-btn">?</span>`;
+                    }
+                }
+
                 rankItem.innerHTML = `
                     <div class="rank-photo-container">
                         ${crownHtml}
@@ -7366,6 +7416,7 @@ async function calculateAndDisplayRanking() {
                         <div class="progress-bar-container">
                             <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
                             <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                            ${fireIconHtml}
                         </div>
                     </div>
                 `;
@@ -9312,8 +9363,8 @@ async function calculateAndDisplayStoreRanking() {
                 const cashBoxSection = document.getElementById('manager-cash-box-section');
                 const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
                 
-                // O botão GS no perfil aparece para todos os 'managers' (gerentes de loja + admins)
-                if (managers.includes(userName)) {
+                // O botão GS no perfil agora aparece apenas para os 'newAdmins'
+                if (newAdmins.includes(userName)) {
                     gsBtnInProfile.style.display = 'flex';
                 } else {
                     gsBtnInProfile.style.display = 'none';
@@ -9372,14 +9423,75 @@ async function calculateAndDisplayStoreRanking() {
             // O listener para 'open-gs-page' foi removido, pois o botão não existe mais.
             // ... (resto dos seus listeners)
             
-            // O Listener duplicado e quebrado foi removido daqui.
-            // Listener para o novo botão GS dentro do perfil
+            // Flag para garantir que os listeners sejam adicionados apenas uma vez.
+            let gsListenersAttached = false;
+            
+            function setupGSPageListeners() {
+                // Se os listeners já foram adicionados, não faz nada.
+                if (gsListenersAttached) return;
+
+                // Adiciona os listeners para cada botão da página GS.
+                document.getElementById('open-settings-page').addEventListener('click', () => {
+                    buildAndLoadMetasPage(); 
+                    showPage('metasConfigPage');
+                });
+                
+                document.getElementById('open-correction-page').addEventListener('click', () => {
+                    buildAndLoadCorrectionPage(); 
+                    showPage('correctionPage');
+                });
+
+                document.getElementById('open-mt-management-page').addEventListener('click', loadAndShowMtManagementPage);
+                
+                document.getElementById('verificar-ponto-btn').addEventListener('click', showPontoVerificationList);
+                
+                document.getElementById('open-collaborator-profile-btn').addEventListener('click', openCollaboratorProfileAsGS);
+
+                document.getElementById('open-cash-management-page').addEventListener('click', loadCashManagementPage);
+                
+                document.getElementById('open-store-cash-management-page').addEventListener('click', openStoreCashManagementPage);
+                
+                document.getElementById('open-overtime-management-page').addEventListener('click', openOvertimeManagementPage);
+                
+                document.getElementById('open-holidays-management-page').addEventListener('click', () => {
+                    loadAndRenderList('holidays', 'holidays-list-container', 'Feriado'); 
+                    showPage('holidaysManagementPage');
+                });
+
+                document.getElementById('open-sundays-management-page').addEventListener('click', () => {
+                    loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho'); 
+                    showPage('sundaysManagementPage');
+                });
+
+                document.getElementById('open-day-off-management-page').addEventListener('click', () => {
+                    populateEmployeeSelect(); 
+                    loadAndRenderDaysOff(); 
+                    showPage('dayOffManagementPage');
+                });
+
+                document.getElementById('open-avisos-management-page').addEventListener('click', () => {
+                    loadAndManageAvisos();
+                    showPage('avisosManagementPage');
+                });
+                
+                document.getElementById('clear-ponto-status-btn').addEventListener('click', clearPontoStatusForUser);
+
+                // Marca que os listeners foram adicionados.
+                gsListenersAttached = true;
+            }
+
+            // Listener para o botão GS dentro do perfil
             document.getElementById('open-gs-from-profile-btn').addEventListener('click', () => {
-                // A senha não é mais necessária aqui, pois o botão só é visível para usuários autorizados
+                // Carrega todos os dados necessários para o dashboard.
                 loadDashboardData();
                 loadManagerNotifications();
                 loadMaintenanceModeStatus();
                 markNotificationsAsRead();
+
+                // Chama a função que garante que todos os botões da página GS funcionarão.
+                setupGSPageListeners();
+
+                // Mostra a página GS.
                 showPage('gsPage');
             });
 
