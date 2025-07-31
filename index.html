@@ -2897,7 +2897,7 @@
                 <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Ver Perfil</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-cash-register"></i><span>CDC</span></button>
                 <button id="open-store-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-sack-dollar"></i><span>Verba Loja</span></button>
-                <button id="open-venda-remota-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-rocket"></i><span>Verba V. Remota</span></button> <!-- NOVO BOTÃO -->
+                <button id="open-venda-remota-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-rocket"></i><span>Verba Site</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
                 <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
                 <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
@@ -3618,7 +3618,7 @@ Transporte - R$ 5,00"></textarea></div>
     <div id="venda-remota-cash-management-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-gs-from-venda-remota-cash" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Gestão de Verba Venda Remota/Site</h2>
+            <h2>Gestão de Verba de Site</h2>
         </div>
         <div id="venda-remota-cash-management-content" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
             <!-- O JS vai popular esta área -->
@@ -3948,7 +3948,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.2.6 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.2.7 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5630,7 +5630,7 @@ Transporte - R$ 5,00"></textarea></div>
                         <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba CDC
                     </button>
                     <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" data-type="vendaRemota" style="margin-top: 0.5rem; background-color: #8e44ad;">
-                        <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba V. Remota
+                        <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba de Site
                     </button>
                 `;
                 statusContainer.appendChild(card);
@@ -5678,7 +5678,7 @@ Transporte - R$ 5,00"></textarea></div>
         } else if (type === 'vendaRemota') {
             dbPath = `cashManagement/${managerKey}/currentVendaRemotaValue`;
             initialValue = SITE_CASH_BOX_INITIAL_VALUE;
-            verbaName = "Venda Remota";
+            verbaName = "de Site";
         } else {
             return;
         }
@@ -5837,7 +5837,7 @@ Transporte - R$ 5,00"></textarea></div>
                         <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
                         <div class="meta-group-title">Premiações 💰</div>
                         <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="text" id="premio-p1p2-${key}" class="data-input" value="${formatToBRLInput(metasData.premioP1P2)}"></div>
-                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (R$)</label><input type="text" id="premio-seguro-${key}" class="data-input" value="${formatToBRLInput(metasData.premioSeguro)}"></div>
+                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (%)</label><input type="number" id="premio-seguro-${key}" class="data-input" value="${metasData.premioSeguro || ''}"></div>
                         <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="text" id="premio-cartao-${key}" class="data-input" value="${formatToBRLInput(metasData.premioCartao)}"></div>
                         <div class="input-group"><label for="premio-venda-remota-${key}">Venda Remota (R$)</label><input type="text" id="premio-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.premioVendaRemota)}"></div>
                     </div>`;
@@ -5866,7 +5866,7 @@ Transporte - R$ 5,00"></textarea></div>
                 p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
                 cartao: document.getElementById(`cartao-${key}`).value,
                 premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
-                premioSeguro: parseFromBRLInput(document.getElementById(`premio-seguro-${key}`).value),
+                premioSeguro: parseInt(document.getElementById(`premio-seguro-${key}`).value, 10) || 0,
                 premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
                 premioVendaRemota: parseFromBRLInput(document.getElementById(`premio-venda-remota-${key}`).value),
             };
@@ -5917,7 +5917,7 @@ Transporte - R$ 5,00"></textarea></div>
                     <h3>PREMIAÇÕES 💰💰💰</h3>
                     <p><strong>1% SOBRE A VENDA</strong></p>
                     <p><strong>P1/P2 50%:</strong> ${formatBRL(data.premioP1P2)}</p>
-                    <p><strong>SEGURO:</strong> ${formatBRL(data.premioSeguro)}</p>
+                    <p><strong>SEGURO:</strong> ${data.premioSeguro || 0}%</p>
                     <p><strong>CARTÃO 2%+:</strong> ${formatBRL(data.premioCartao)}</p>
                     <p><strong>VENDA REMOTA:</strong> ${formatBRL(data.premioVendaRemota)}</p>
                 `;
@@ -9851,7 +9851,7 @@ async function calculateAndDisplayStoreRanking() {
                 const card = document.createElement('div');
                 card.className = 'employee-meta-card';
                 card.innerHTML = `
-                     <h4>${name} - Verba Venda Remota/Site</h4>
+                     <h4>${name} - Verba de Site</h4>
                      <div class="input-group">
                         <label for="venda-remota-cash-input-${key}">Valor Atual (R$)</label>
                         <input type="text" id="venda-remota-cash-input-${key}" class="data-input" value="${formatToBRLInput(remoteSaleValue)}">
@@ -9888,7 +9888,7 @@ async function calculateAndDisplayStoreRanking() {
 
         database.ref().update(updates)
             .then(() => {
-                statusEl.textContent = 'Verba de Venda Remota atualizada!';
+                statusEl.textContent = 'Verba de Site atualizada!';
                 setTimeout(() => {
                      statusEl.textContent = '';
                 }, 3000);
