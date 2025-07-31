@@ -3942,7 +3942,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.1.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.1.6'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -9352,8 +9352,8 @@ async function calculateAndDisplayStoreRanking() {
                     window.location.href = intentUrl;
 
                 } else {
-                    // Para outros links (como Brasil Card), o comportamento antigo é mantido
-                    window.location.href = url;
+                    // Abre o link em uma nova aba/janela do sistema (navegador externo)
+                    window.open(url, '_blank');
                 }
 
                 // Tenta fechar o aplicativo após um pequeno delay
