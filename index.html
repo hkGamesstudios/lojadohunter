@@ -2898,6 +2898,7 @@
                 <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Ver Perfil</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-cash-register"></i><span>CDC</span></button>
                 <button id="open-store-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-sack-dollar"></i><span>Verba Loja</span></button>
+                <button id="open-venda-remota-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-rocket"></i><span>Verba V. Remota</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
                 <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
                 <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
@@ -3614,6 +3615,17 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- NOVA TELA DE GERENCIAMENTO DE VERBA DE VENDA REMOTA -->
+    <div id="venda-remota-cash-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-venda-remota-cash" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gestão de Verba Venda Remota/Site</h2>
+        </div>
+        <div id="venda-remota-cash-management-content" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <!-- O JS vai popular esta área -->
+        </div>
+    </div>
+
      <!-- TELA DE GERENCIAMENTO DE HORAS EXTRAS -->
     <div id="overtime-management-page" style="display: none;">
         <div class="collaborator-header">
@@ -3937,7 +3949,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.1.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.2.0'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -4086,6 +4098,7 @@ Transporte - R$ 5,00"></textarea></div>
         debugPage: document.getElementById('debug-page'),
         cashManagementPage: document.getElementById('cash-management-page'),
         storeCashManagementPage: document.getElementById('store-cash-management-page'),
+        vendaRemotaCashManagementPage: document.getElementById('venda-remota-cash-management-page'), // NOVA PÁGINA
 
         // ADICIONANDO AS NOVAS PÁGINAS DE SUBMISSÃO
         stockRequestsPage: document.getElementById('stock-requests-page'),
@@ -5886,12 +5899,18 @@ Transporte - R$ 5,00"></textarea></div>
         const key = currentUserName.toLowerCase(); // CORREÇÃO AQUI
         container.innerHTML = `<p>Carregando suas metas...</p>`;
         database.ref(`metas/${key}`).get().then(snapshot => {
-            if (snapshot.exists()) {
+                        if (snapshot.exists()) {
                 const data = snapshot.val();
-                                container.innerHTML = `
+                let managerMetasHtml = '';
+                if (managers.includes(currentUserName)) {
+                    managerMetasHtml = `<p><strong>🎯 META V. REMOTA LOJA:</strong> ${formatBRL(data.metaVendaRemotaLoja || 0)}</p>`;
+                }
+
+                container.innerHTML = `
                     <h3>METAS</h3>
                     <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
-                    <p><strong>📡 V. REMOTA:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>
+                    <p><strong>📡 V. REMOTA INDIVIDUAL:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>
+                    ${managerMetasHtml}
                     <p><strong>🔧 SEGURO:</strong> ${data.seguro || 0}</p>
                     <p><strong>🔱 P1 50%:</strong> ${formatBRL(data.p1)}</p>
                     <p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p>
@@ -5901,6 +5920,7 @@ Transporte - R$ 5,00"></textarea></div>
                     <p><strong>P1/P2 50%:</strong> ${formatBRL(data.premioP1P2)}</p>
                     <p><strong>SEGURO:</strong> ${formatBRL(data.premioSeguro)}</p>
                     <p><strong>CARTÃO 2%+:</strong> ${formatBRL(data.premioCartao)}</p>
+                    <p><strong>VENDA REMOTA:</strong> ${formatBRL(data.premioVendaRemota)}</p>
                 `;
             } else {
                 container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
@@ -6595,7 +6615,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
 
-    const clearClosingForm = (store) => {
+        const clearClosingForm = (store) => {
         const employees = storeMapping[store];
         employees.forEach(name => {
             const key = name.toLowerCase();
@@ -6603,7 +6623,6 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById(`closing-cartao-${key}`).value = '';
             document.getElementById(`closing-seguro-${key}`).value = '';
             document.getElementById(`closing-p1p2-${key}`).value = '';
-            document.getElementById(`closing-site-${key}`).value = '';
             document.getElementById(`closing-preco-site-${key}`).value = '';
             document.getElementById(`closing-venda-remota-${key}`).value = '';
         });
@@ -9518,6 +9537,7 @@ async function calculateAndDisplayStoreRanking() {
                 document.getElementById('open-cash-management-page').addEventListener('click', loadCashManagementPage);
                 
                 document.getElementById('open-store-cash-management-page').addEventListener('click', openStoreCashManagementPage);
+                document.getElementById('open-venda-remota-cash-management-page').addEventListener('click', openVendaRemotaCashManagementPage); // NOVO LISTENER
                 
                 document.getElementById('open-overtime-management-page').addEventListener('click', openOvertimeManagementPage);
                 
@@ -9667,8 +9687,9 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-main-from-quiz').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-feedback').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-debug').addEventListener('click', showMainPage);
-            document.getElementById('back-to-gs-from-cash').addEventListener('click', () => showPage('gsPage'));
-            document.getElementById('back-to-gs-from-store-cash').addEventListener('click', () => showPage('gsPage'));
+                document.getElementById('back-to-gs-from-cash').addEventListener('click', () => showPage('gsPage'));
+    document.getElementById('back-to-gs-from-store-cash').addEventListener('click', () => showPage('gsPage'));
+    document.getElementById('back-to-gs-from-venda-remota-cash').addEventListener('click', () => showPage('gsPage')); // NOVO BOTÃO DE VOLTAR
 
             // Adicionando listeners de "voltar" para as novas páginas de submissão
             document.getElementById('back-to-gs-from-stock-requests').addEventListener('click', () => showPage('gsPage'));
@@ -9790,6 +9811,71 @@ async function calculateAndDisplayStoreRanking() {
         database.ref().update(updates)
             .then(() => {
                 statusEl.textContent = 'Verba de loja atualizada!';
+                setTimeout(() => {
+                     statusEl.textContent = '';
+                }, 3000);
+            })
+            .catch(error => {
+                statusEl.textContent = 'Erro ao salvar!';
+                console.error(error);
+            });
+    };
+
+    // --- NOVAS FUNÇÕES PARA GERENCIAR VERBA DE VENDA REMOTA ---
+    const openVendaRemotaCashManagementPage = async () => {
+        showPage('vendaRemotaCashManagementPage');
+        const container = document.getElementById('venda-remota-cash-management-content');
+        container.innerHTML = '<p style="text-align: center;">Carregando...</p>';
+
+        try {
+            const cashSnap = await database.ref('cashManagement').get();
+            const cashData = cashSnap.exists() ? cashSnap.val() : {};
+            container.innerHTML = '';
+
+            managers.forEach(name => {
+                const key = name.toLowerCase();
+                const remoteSaleValue = cashData[key]?.currentVendaRemotaValue !== undefined ? cashData[key].currentVendaRemotaValue : SITE_CASH_BOX_INITIAL_VALUE;
+                const card = document.createElement('div');
+                card.className = 'employee-meta-card';
+                card.innerHTML = `
+                     <h4>${name} - Verba Venda Remota/Site</h4>
+                     <div class="input-group">
+                        <label for="venda-remota-cash-input-${key}">Valor Atual (R$)</label>
+                        <input type="text" id="venda-remota-cash-input-${key}" class="data-input" value="${formatToBRLInput(remoteSaleValue)}">
+                    </div>`;
+                container.appendChild(card);
+            });
+
+            container.innerHTML += `
+                <button id="save-venda-remota-cash-btn" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Alterações</button>
+                <p id="venda-remota-cash-status-message" class="status-message"></p>
+            `;
+            document.getElementById('save-venda-remota-cash-btn').addEventListener('click', saveVendaRemotaCashChanges);
+
+        } catch (error) {
+            container.innerHTML = '<p style="text-align: center;">Erro ao carregar dados da verba de Venda Remota.</p>';
+            console.error(error);
+        }
+    };
+
+    const saveVendaRemotaCashChanges = () => {
+        const statusEl = document.getElementById('venda-remota-cash-status-message');
+        statusEl.textContent = 'Salvando...';
+
+        const updates = {};
+        managers.forEach(name => {
+            const key = name.toLowerCase();
+            const input = document.getElementById(`venda-remota-cash-input-${key}`);
+            const newValue = parseFromBRLInput(input.value);
+
+            if (!isNaN(newValue)) {
+                updates[`/cashManagement/${key}/currentVendaRemotaValue`] = newValue;
+            }
+        });
+
+        database.ref().update(updates)
+            .then(() => {
+                statusEl.textContent = 'Verba de Venda Remota atualizada!';
                 setTimeout(() => {
                      statusEl.textContent = '';
                 }, 3000);
