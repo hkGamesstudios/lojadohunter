@@ -3942,7 +3942,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.1.6'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.1.7'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -9352,8 +9352,8 @@ async function calculateAndDisplayStoreRanking() {
                     window.location.href = intentUrl;
 
                 } else {
-                    // Abre o link em uma nova aba/janela do sistema (navegador externo)
-                    window.open(url, '_blank');
+                    // Para outros links (como Brasil Card), o comportamento antigo é mantido
+                    window.location.href = url;
                 }
 
                 // Tenta fechar o aplicativo após um pequeno delay
@@ -9572,7 +9572,10 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('open-device-search').addEventListener('click', openDeviceSearch);
             document.getElementById('previsao-btn').addEventListener('click', calculateDeliveryPrediction);
             document.getElementById('suporte-externo-link').addEventListener('click', function(event) {
-                openExternalLinkAndExit(event.currentTarget.dataset.url);
+                const url = event.currentTarget.dataset.url;
+                if (url) {
+                    window.open(url, '_blank'); // Abre o link de suporte no navegador externo.
+                }
             });
             document.getElementById('suporte-lideranca-btn').addEventListener('click', function(event) {
                 openExternalLinkAndExit(event.currentTarget.dataset.url);
