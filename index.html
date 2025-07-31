@@ -2505,7 +2505,7 @@
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                         <span>Assistência Técnica (OS)</span>
                     </div>
-                    <div id="open-suporte-modal" class="tool-item" style="cursor: pointer;">
+                    <div data-url="https://wa.me/553535732600?text=CNPJ%20PHO%2052524851000137%0ACNPJ%20BAC%2057269647000130" id="suporte-externo-link" class="tool-item" style="cursor: pointer;">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-headset"></i></div>
                         <span>Suporte</span>
                     </div>
@@ -2583,15 +2583,15 @@
                     <input type="number" id="crediario-entrada" class="data-input" placeholder="0.00">
                 </div>
                 <div class="input-group slider-group">
-                    <label for="crediario-parcelas">Parcelas (Mensal): <span id="parcelas-value">10</span>x</label>
+                    <label for="crediario-parcelas">Parcelas (a cada 30 dias): <span id="parcelas-value">10</span>x</label>
                     <input type="range" id="crediario-parcelas" min="1" max="10" value="10" step="1" class="slider-input">
                 </div>
                 <div class="input-group slider-group">
-                    <label for="crediario-quinzena-parcelas">Parcelas (Quinzena): <span id="quinzena-value">0</span>x</label>
+                    <label for="crediario-quinzena-parcelas">Parcelas (a cada 15 dias): <span id="quinzena-value">0</span>x</label>
                     <input type="range" id="crediario-quinzena-parcelas" min="0" max="20" value="0" step="1" class="slider-input">
                 </div>
                 <div class="input-group slider-group">
-                    <label for="crediario-semanal-parcelas">Parcelas (Semanal): <span id="semanal-value">0</span>x</label>
+                    <label for="crediario-semanal-parcelas">Parcelas (a cada 7 dias): <span id="semanal-value">0</span>x</label>
                     <input type="range" id="crediario-semanal-parcelas" min="0" max="40" value="0" step="1" class="slider-input">
                 </div>
                 
@@ -2801,13 +2801,19 @@
                 
                 <h4>Verba de Loja</h4>
                 <p style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;" id="store-cash-box-value">R$ 1.000,00</p>
-                <div class="progress-bar-container" style="height: 20px;">
+                <div class="progress-bar-container" style="height: 20px; margin-bottom: 1.5rem;">
                     <div id="store-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #2980b9;"></div>
+                </div>
+
+                <h4>Preço de Site</h4>
+                <p style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;" id="site-cash-box-value">R$ 5.000,00</p>
+                <div class="progress-bar-container" style="height: 20px;">
+                    <div id="site-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #8e44ad;"></div>
                 </div>
 
                 <button id="burn-cdc-btn" class="action-button full-width" style="margin-top: 1rem;"><i class="fa-solid fa-fire-flame-curved"></i> Queimar Verba CDC</button>
                 <button id="recover-cdc-btn" class="action-button full-width" style="margin-top: 0.5rem;"><i class="fa-solid fa-arrows-rotate"></i> Recuperar Verba CDC</button>
-                <a href="https://wa.me/5598991163598?text=Solicita%C3%A7%C3%A3o%20de%20Pre%C3%A7o%20especial%0A%0AMOTIVO%3A%20%0AENTRADA%20MT%3A%20%0AVENDEDOR%3A%20%0ALOJA%3A" target="_blank" class="action-button full-width" style="margin-top: 1rem;"><i class="fa-solid fa-headset"></i> Suporte Liderança</a>
+                <div id="suporte-lideranca-btn" data-url="https://wa.me/5598991163598?text=Solicita%C3%A7%C3%A3o%20de%20Pre%C3%A7o%20especial%0A%0AMOTIVO%3A%20%0AENTRADA%20MT%3A%20%0AVENDEDOR%3A%20%0ALOJA%3A" class="action-button full-width" style="margin-top: 1rem; cursor:pointer;"><i class="fa-solid fa-headset"></i> Suporte Liderança</div>
                 <div id="manager-daily-expenses-list" style="margin-top: 1rem;">
                     <!-- Gastos do dia serão listados aqui -->
                 </div>
@@ -3936,9 +3942,10 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.7'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.8'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
+    const SITE_CASH_BOX_INITIAL_VALUE = 5000;
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -5401,7 +5408,10 @@ Transporte - R$ 5,00"></textarea></div>
         // Verba de Loja
         const storeValueEl = document.getElementById('store-cash-box-value');
         const storeProgressEl = document.getElementById('store-cash-box-progress-bar');
-        
+        // Preço de Site
+        const siteValueEl = document.getElementById('site-cash-box-value');
+        const siteProgressEl = document.getElementById('site-cash-box-progress-bar');
+
         const dailyListEl = document.getElementById('manager-daily-expenses-list');
         const managerKey = currentUserName.toLowerCase();
         
@@ -5409,7 +5419,8 @@ Transporte - R$ 5,00"></textarea></div>
             const cashBoxRef = database.ref(`cashManagement/${managerKey}`);
             const snapshot = await cashBoxRef.get();
             let cdcCurrentValue = CASH_BOX_INITIAL_VALUE;
-            let storeCurrentValue = CASH_BOX_INITIAL_VALUE; // Assuming same initial value
+            let storeCurrentValue = CASH_BOX_INITIAL_VALUE;
+            let siteCurrentValue = SITE_CASH_BOX_INITIAL_VALUE;
             
             dailyListEl.innerHTML = ''; // Limpa a lista de gastos do dia
             
@@ -5417,6 +5428,7 @@ Transporte - R$ 5,00"></textarea></div>
                 const data = snapshot.val();
                 cdcCurrentValue = data.currentValue !== undefined ? data.currentValue : CASH_BOX_INITIAL_VALUE;
                 storeCurrentValue = data.currentStoreValue !== undefined ? data.currentStoreValue : CASH_BOX_INITIAL_VALUE;
+                siteCurrentValue = data.currentSiteValue !== undefined ? data.currentSiteValue : SITE_CASH_BOX_INITIAL_VALUE;
 
                 // Carrega os gastos do dia (CDC)
                 if (data.expenses) {
@@ -5449,7 +5461,15 @@ Transporte - R$ 5,00"></textarea></div>
             storeProgressEl.style.width = `${Math.max(0, storePercentage)}%`;
              if (storePercentage < 25) storeProgressEl.style.backgroundColor = '#e74c3c';
             else if (storePercentage < 50) storeProgressEl.style.backgroundColor = '#f1c40f';
-            else storeProgressEl.style.backgroundColor = '#2980b9'; // Cor azul para diferenciar
+            else storeProgressEl.style.backgroundColor = '#2980b9';
+
+            // Atualiza a barra de Preço de Site
+            const sitePercentage = (siteCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
+            siteValueEl.textContent = formatBRL(siteCurrentValue);
+            siteProgressEl.style.width = `${Math.max(0, sitePercentage)}%`;
+             if (sitePercentage < 25) siteProgressEl.style.backgroundColor = '#e74c3c';
+            else if (sitePercentage < 50) siteProgressEl.style.backgroundColor = '#f1c40f';
+            else siteProgressEl.style.backgroundColor = '#8e44ad'; // Roxo para diferenciar
             
             section.style.display = 'block';
 
@@ -5775,6 +5795,8 @@ Transporte - R$ 5,00"></textarea></div>
                         <div class="input-group" style="background-color: rgba(255,107,0,0.1); padding: 0.5rem; border-radius: 8px;">
                            <label for="metaLoja-${key}" style="font-weight: 700; color: #FF6B00;">🎯 META DA LOJA (R$)</label>
                            <input type="text" id="metaLoja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaLoja)}">
+                           <label for="meta-venda-remota-loja-${key}" style="font-weight: 700; color: #FF6B00; margin-top: 0.5rem;">📡 META V. REMOTA LOJA (R$)</label>
+                           <input type="text" id="meta-venda-remota-loja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemotaLoja)}">
                         </div>
                     `;
                 }
@@ -5785,6 +5807,7 @@ Transporte - R$ 5,00"></textarea></div>
                         ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
                         <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
+                        <div class="input-group"><label for="venda-remota-${key}">📡 Venda Remota (R$)</label><input type="text" id="venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
                         <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
                         <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
                         <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
@@ -5813,6 +5836,7 @@ Transporte - R$ 5,00"></textarea></div>
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
+                metaVendaRemota: parseFromBRLInput(document.getElementById(`venda-remota-${key}`).value),
                 seguro: document.getElementById(`seguro-${key}`).value,
                 p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
                 cartao: document.getElementById(`cartao-${key}`).value,
@@ -5826,6 +5850,10 @@ Transporte - R$ 5,00"></textarea></div>
                 const metaLojaInput = document.getElementById(`metaLoja-${key}`);
                 if (metaLojaInput) {
                     data.metaLoja = parseFromBRLInput(metaLojaInput.value);
+                }
+                const metaVendaRemotaLojaInput = document.getElementById(`meta-venda-remota-loja-${key}`);
+                if (metaVendaRemotaLojaInput) {
+                    data.metaVendaRemotaLoja = parseFromBRLInput(metaVendaRemotaLojaInput.value);
                 }
             }
             
@@ -5849,6 +5877,7 @@ Transporte - R$ 5,00"></textarea></div>
                 container.innerHTML = `
                     <h3>METAS</h3>
                     <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
+                    <p><strong>📡 V. REMOTA:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>
                     <p><strong>🔧 SEGURO:</strong> ${data.seguro || 0}</p>
                     <p><strong>🔱 P1 50%:</strong> ${formatBRL(data.p1)}</p>
                     <p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p>
@@ -6478,6 +6507,7 @@ Transporte - R$ 5,00"></textarea></div>
                             <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
                             <p>🔧 SEGURO: ${data.seguro || '0'}</p>
                             <p>💳 CARTÃO: ${data.cartao || '0'}</p>
+                            <p>📡 V. REMOTA: ${formatBRL(data.vendaRemota || 0)}</p>
                         </div>
                     `;
                 } else {
@@ -6559,6 +6589,9 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById(`closing-cartao-${key}`).value = '';
             document.getElementById(`closing-seguro-${key}`).value = '';
             document.getElementById(`closing-p1p2-${key}`).value = '';
+            document.getElementById(`closing-site-${key}`).value = '';
+            document.getElementById(`closing-preco-site-${key}`).value = '';
+            document.getElementById(`closing-venda-remota-${key}`).value = '';
         });
     };
     
@@ -6575,43 +6608,49 @@ Transporte - R$ 5,00"></textarea></div>
 
         const now = new Date();
         const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-        const todayString = getTodayDateString(); // Função que já existe
+        const todayString = getTodayDateString();
 
         Promise.all([
             database.ref('salesData').get(),
             database.ref(`monthlySales/${currentMonthKey}`).get(),
-            database.ref(`dailySales/${todayString}`).get() // Busca os dados do dia
+            database.ref(`dailySales/${todayString}`).get()
         ]).then(([salesSnapshot, monthlySalesSnapshot, dailySalesSnapshot]) => {
             const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
             const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
             let totalVendasDoFechamento = 0;
+            let totalPrecoSiteDoFechamento = 0;
 
             const updates = {};
             
             employeesForStore.forEach(name => {
                 const key = name.toLowerCase();
-                const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 };
+                const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0, site: 0, precoSite: 0, vendaRemota: 0 };
                 const currentDailyData = existingDailySales[key] || { vendas: 0 };
 
                 const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
                 const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
                 const newSeguro = parseInt(document.getElementById(`closing-seguro-${key}`).value, 10) || 0;
                 const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
+                const newSite = parseInt(document.getElementById(`closing-site-${key}`).value, 10) || 0;
+                const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
+                const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
 
-                totalVendasDoFechamento += newVenda;
+                totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
+                totalPrecoSiteDoFechamento += newPrecoSite;
 
-                // Atualiza o total do MÊS
                 existingSales[key] = {
-                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda,
+                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
                     p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
-                    seguro: (parseFloat(currentData.seguro) || 0) + newSeguro,
-                    cartao: (parseFloat(currentData.cartao) || 0) + newCartao,
+                    seguro: (parseInt(currentData.seguro) || 0) + newSeguro,
+                    cartao: (parseInt(currentData.cartao) || 0) + newCartao,
+                    site: (parseInt(currentData.site) || 0) + newSite,
+                    precoSite: (parseFloat(currentData.precoSite) || 0) + newPrecoSite,
+                    vendaRemota: (parseFloat(currentData.vendaRemota) || 0) + newVendaRemota,
                 };
                 
-                // Salva o registro do DIA
                 updates[`/dailySales/${todayString}/${key}`] = {
-                    vendas: (currentDailyData.vendas || 0) + newVenda
+                    vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
                 };
             });
 
@@ -6620,9 +6659,18 @@ Transporte - R$ 5,00"></textarea></div>
             updates['/salesData'] = existingSales;
             updates[`/monthlySales/${currentMonthKey}/totalVendas`] = monthlyTotalVendas;
 
+            // Encontra a gerente da loja para descontar da verba
+            const managerName = store === 'pinheiro' ? 'Beatriz' : 'Natalia';
+            const managerKey = managerName.toLowerCase();
+            const siteCashRef = database.ref(`cashManagement/${managerKey}/currentSiteValue`);
+            
+            // Usa transação para subtrair o valor da verba de site
+            siteCashRef.transaction(currentValue => {
+                return (currentValue || SITE_CASH_BOX_INITIAL_VALUE) - totalPrecoSiteDoFechamento;
+            });
+
             database.ref().update(updates).then(() => {
                 statusEl.textContent = 'Fechamento salvo com sucesso!';
-                // Verifica conquistas para todos os funcionários da loja após o fechamento
                 employeesForStore.forEach(name => checkAndAwardAchievements(name.toLowerCase()));
                 clearClosingForm(store);
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
@@ -6715,6 +6763,9 @@ Transporte - R$ 5,00"></textarea></div>
                             <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
                             <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
                             <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
+                            <div class="input-group"><label for="correction-site-${key}">🌐 SITE</label><input type="number" id="correction-site-${key}" class="data-input" value="${salesData.site || ''}"></div>
+                            <div class="input-group"><label for="correction-preco-site-${key}">💰 PREÇO DE SITE (R$)</label><input type="text" id="correction-preco-site-${key}" class="data-input" value="${formatToBRLInput(salesData.precoSite)}"></div>
+                            <div class="input-group"><label for="correction-venda-remota-${key}">📡 VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
                         </div>
                     `;
                 });
@@ -6784,6 +6835,9 @@ Transporte - R$ 5,00"></textarea></div>
                 p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
                 seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
                 cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
+                site: document.getElementById(`correction-site-${key}`).value || 0,
+                precoSite: parseFromBRLInput(document.getElementById(`correction-preco-site-${key}`).value),
+                vendaRemota: parseFromBRLInput(document.getElementById(`correction-venda-remota-${key}`).value),
             };
         });
 
@@ -9269,31 +9323,22 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
-            document.getElementById('hunter-card-link').addEventListener('click', function(event) {
-                const originalUrl = event.currentTarget.dataset.url;
-                if (!originalUrl) return;
-
-                // Remove o "https://" ou "http://" da URL para montar a Intent
-                const urlWithoutScheme = originalUrl.replace(/^https?:\/\//, '');
-
-                // Cria uma Intent URL que mira especificamente o pacote do Google Chrome
+            const openExternalLinkAndExit = (url) => {
+                if (!url) return;
+                const urlWithoutScheme = url.replace(/^https?:\/\//, '');
                 const chromeIntentUrl = `intent://${urlWithoutScheme}#Intent;scheme=https;package=com.android.chrome;end`;
-                
-                // Dispara a Intent para abrir o Chrome
                 window.location.href = chromeIntentUrl;
-
-                // Adiciona um pequeno delay para dar tempo ao sistema de processar a Intent
-                // e então tenta fechar o aplicativo.
                 setTimeout(() => {
-                    // navigator.app.exitApp() é a forma padrão de fechar um app híbrido (Cordova/Phonegap etc.)
                     if (navigator.app && navigator.app.exitApp) {
                         navigator.app.exitApp();
                     } else {
-                        // Se a função acima não existir, tenta o método window.close() como um fallback
-                        // (pode não funcionar em todos os casos)
                         window.close();
                     }
-                }, 150); // 150 milissegundos de delay
+                }, 150);
+            };
+
+            document.getElementById('hunter-card-link').addEventListener('click', function(event) {
+                openExternalLinkAndExit(event.currentTarget.dataset.url);
             });
 
                                     const loadAndShowCollaboratorProfile = (userName) => {
@@ -9499,7 +9544,12 @@ async function calculateAndDisplayStoreRanking() {
             document.querySelectorAll('.brand-button').forEach(button => button.addEventListener('click', () => loadBrandDevices(button.dataset.brand)));
             document.getElementById('open-device-search').addEventListener('click', openDeviceSearch);
             document.getElementById('previsao-btn').addEventListener('click', calculateDeliveryPrediction);
-            document.getElementById('open-suporte-modal').addEventListener('click', openSuporteModal);
+            document.getElementById('suporte-externo-link').addEventListener('click', function(event) {
+                openExternalLinkAndExit(event.currentTarget.dataset.url);
+            });
+            document.getElementById('suporte-lideranca-btn').addEventListener('click', function(event) {
+                openExternalLinkAndExit(event.currentTarget.dataset.url);
+            });
             document.getElementById('open-os-modal').addEventListener('click', openOsModal);
             document.getElementById('open-request-stock-page').addEventListener('click', openStockRequestPage);
             document.getElementById('open-recibos-page').addEventListener('click', () => showPage('recibosPage'));
@@ -9569,6 +9619,9 @@ async function calculateAndDisplayStoreRanking() {
                             <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
                             <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="number" id="closing-seguro-${key}" class="data-input" placeholder="0"></div>
                             <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
+                            <div class="input-group"><label for="closing-site-${key}">SITE 🌐</label><input type="number" id="closing-site-${key}" class="data-input" placeholder="0"></div>
+                            <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 💰</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
+                            <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📡</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
                         </div>
                     `;
                 });
