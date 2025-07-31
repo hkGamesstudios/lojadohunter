@@ -3942,7 +3942,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.1.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.1.2'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -9337,17 +9337,19 @@ async function calculateAndDisplayStoreRanking() {
             const openExternalLinkAndExit = (url) => {
                 if (!url) return;
 
-                // window.open(url, '_blank') é a forma mais robusta de solicitar ao sistema
-                // para abrir uma URL em um novo contexto (geralmente o navegador padrão).
-                window.open(url, '_blank');
-                
-                // Mantemos a tentativa de fechar o app como um "melhor esforço",
-                // pois isso só funciona em ambientes de aplicativos híbridos (como Cordova).
+                // Esta é a mudança principal. Em vez de abrir uma nova aba,
+                // nós navegamos a janela atual para a URL externa.
+                // O sistema operacional interceptará isso e abrirá o navegador padrão.
+                window.location.href = url;
+
+                // Mantemos a tentativa de fechar o app como um "melhor esforço".
+                // Em um ambiente de aplicativo híbrido, isso fechará o app depois de
+                // entregar o link para o navegador.
                 setTimeout(() => {
                     if (navigator.app && navigator.app.exitApp) {
                         navigator.app.exitApp();
                     }
-                }, 200); // Um pequeno delay para garantir que a nova aba seja aberta primeiro.
+                }, 500); // Aumentamos o delay para dar tempo ao navegador de abrir.
             };
 
             document.getElementById('hunter-card-link').addEventListener('click', function(event) {
