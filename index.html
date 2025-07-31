@@ -3949,7 +3949,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.2.2 -> 1.5.2 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.2.3 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5832,9 +5832,9 @@ Transporte - R$ 5,00"></textarea></div>
                         ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
                                                 <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
-                        <div class="input-group"><label for="meta-venda-remota-${key}">📡 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
-                        <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
                         <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
+                        <div class="input-group"><label for="meta-venda-remota-${key}">📲 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
+                        <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
                         <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
                         <div class="meta-group-title">Premiações 💰</div>
                         <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="text" id="premio-p1p2-${key}" class="data-input" value="${formatToBRLInput(metasData.premioP1P2)}"></div>
@@ -6526,9 +6526,9 @@ Transporte - R$ 5,00"></textarea></div>
                         <h4>Resultados Atuais (Loja)</h4>
                         <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
                         <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
+                        <p>📲 V. REMOTA (Loja): ${formatBRL(totalVendaRemotaDaLoja)}</p>
                         <p>🔧 SEGURO: ${totalSeguroDaLoja}</p>
                         <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
-                        <p>📲 V. REMOTA (Loja): ${formatBRL(totalVendaRemotaDaLoja)}</p>
                     </div>
                 `;
             });
@@ -6542,9 +6542,9 @@ Transporte - R$ 5,00"></textarea></div>
                             <h4>Resultados Atuais</h4>
                             <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
                             <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
+                            <p>📲 V. REMOTA: ${formatBRL(data.vendaRemota || 0)}</p>
                             <p>🔧 SEGURO: ${data.seguro || '0'}</p>
                             <p>💳 CARTÃO: ${data.cartao || '0'}</p>
-                            <p>📡 V. REMOTA: ${formatBRL(data.vendaRemota || 0)}</p>
                         </div>
                     `;
                 } else {
@@ -6607,6 +6607,7 @@ Transporte - R$ 5,00"></textarea></div>
                             <h4>${employeeName}</h4>
                             <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
                             <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
+                            <p>📲 V. REMOTA: ${formatBRL(data.vendaRemota || 0)}</p>
                             <p>🔧 SEGURO: ${data.seguro || '0'}</p>
                             <p>💳 CARTÃO: ${data.cartao || '0'}</p>
                         </div>
@@ -6796,9 +6797,9 @@ Transporte - R$ 5,00"></textarea></div>
                             <h4>${name}</h4>
                             <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
                             <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
+                            <div class="input-group"><label for="correction-venda-remota-${key}">📲 VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
                             <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
                             <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
-                            <div class="input-group"><label for="correction-venda-remota-${key}">📡 SITE/VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
                         </div>
                     `;
                 });
