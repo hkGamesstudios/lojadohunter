@@ -2801,10 +2801,10 @@
                     <div id="store-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #2980b9;"></div>
                 </div>
 
-                <h4>Site/Venda Remota</h4>
-                <p style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;" id="venda-remota-cash-box-value">R$ 5.000,00</p>
+                <h4>Preço de Site</h4>
+                <p style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;" id="preco-site-cash-box-value">R$ 5.000,00</p>
                 <div class="progress-bar-container" style="height: 20px;">
-                    <div id="venda-remota-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #8e44ad;"></div>
+                    <div id="preco-site-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #8e44ad;"></div>
                 </div>
 
                 <button id="burn-cdc-btn" class="action-button full-width" style="margin-top: 1rem;"><i class="fa-solid fa-fire-flame-curved"></i> Queimar Verba CDC</button>
@@ -3949,7 +3949,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.2.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.2.1 -> 1.5.2 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5471,7 +5471,7 @@ Transporte - R$ 5,00"></textarea></div>
             else if (storePercentage < 50) storeProgressEl.style.backgroundColor = '#f1c40f';
             else storeProgressEl.style.backgroundColor = '#2980b9';
 
-            // Atualiza a barra de Site/Venda Remota
+            // Atualiza a barra de Preço de Site
             const vendaRemotaPercentage = (vendaRemotaCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
             vendaRemotaValueEl.textContent = formatBRL(vendaRemotaCurrentValue);
             vendaRemotaProgressEl.style.width = `${Math.max(0, vendaRemotaPercentage)}%`;
@@ -6624,7 +6624,6 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById(`closing-seguro-${key}`).value = '';
             document.getElementById(`closing-p1p2-${key}`).value = '';
             document.getElementById(`closing-preco-site-${key}`).value = '';
-            document.getElementById(`closing-venda-remota-${key}`).value = '';
         });
     };
     
@@ -6652,7 +6651,7 @@ Transporte - R$ 5,00"></textarea></div>
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
             const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
             let totalVendasDoFechamento = 0;
-            let totalPrecoSiteDoFechamento = 0; // Alterado
+            let totalPrecoSiteDoFechamento = 0; 
 
             const updates = {};
             
@@ -6666,21 +6665,22 @@ Transporte - R$ 5,00"></textarea></div>
                 const newSeguro = parseInt(document.getElementById(`closing-seguro-${key}`).value, 10) || 0;
                 const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
                 const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
-                const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
-
-                totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
+                
+                // Venda Remota foi removida, então a lógica agora soma apenas venda + preço de site
+                totalVendasDoFechamento += (newVenda + newPrecoSite);
                 totalPrecoSiteDoFechamento += newPrecoSite;
 
                 existingSales[key] = {
-                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
+                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite,
                     p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
                     seguro: (parseInt(currentData.seguro) || 0) + newSeguro,
                     cartao: (parseInt(currentData.cartao) || 0) + newCartao,
-                    vendaRemota: (parseFloat(currentData.vendaRemota) || 0) + newVendaRemota,
+                    // Mantemos o campo vendaRemota para compatibilidade, mas não o incrementamos mais aqui
+                    vendaRemota: (parseFloat(currentData.vendaRemota) || 0),
                 };
                 
                 updates[`/dailySales/${todayString}/${key}`] = {
-                    vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
+                    vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite
                 };
             });
 
@@ -6692,11 +6692,13 @@ Transporte - R$ 5,00"></textarea></div>
             // Encontra a gerente da loja para descontar da verba de Preço de Site
             const managerName = store === 'pinheiro' ? 'Beatriz' : 'Natalia';
             const managerKey = managerName.toLowerCase();
-            const vendaRemotaCashRef = database.ref(`cashManagement/${managerKey}/currentVendaRemotaValue`);
+            const precoSiteCashRef = database.ref(`cashManagement/${managerKey}/currentVendaRemotaValue`);
             
-            // Usa transação para subtrair o valor da verba de site/venda remota
-            vendaRemotaCashRef.transaction(currentValue => {
-                return (currentValue || SITE_CASH_BOX_INITIAL_VALUE) - totalPrecoSiteDoFechamento;
+            // Usa transação para subtrair o valor da verba de site
+            precoSiteCashRef.transaction(currentValue => {
+                // Se o valor não existir, usa o valor inicial como base
+                const baseValue = currentValue !== null ? currentValue : SITE_CASH_BOX_INITIAL_VALUE;
+                return baseValue - totalPrecoSiteDoFechamento;
             });
 
             database.ref().update(updates).then(() => {
@@ -9657,7 +9659,6 @@ async function calculateAndDisplayStoreRanking() {
                             <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="number" id="closing-seguro-${key}" class="data-input" placeholder="0"></div>
                             <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
                             <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 📡</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
-                            <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📲</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
                         </div>
                     `;
                 });
