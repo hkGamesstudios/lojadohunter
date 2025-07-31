@@ -2805,10 +2805,10 @@
                     <div id="store-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #2980b9;"></div>
                 </div>
 
-                <h4>Preço de Site</h4>
-                <p style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;" id="site-cash-box-value">R$ 5.000,00</p>
+                <h4>Site/Venda Remota</h4>
+                <p style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;" id="venda-remota-cash-box-value">R$ 5.000,00</p>
                 <div class="progress-bar-container" style="height: 20px;">
-                    <div id="site-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #8e44ad;"></div>
+                    <div id="venda-remota-cash-box-progress-bar" class="progress-bar" style="width: 100%; background-color: #8e44ad;"></div>
                 </div>
 
                 <button id="burn-cdc-btn" class="action-button full-width" style="margin-top: 1rem;"><i class="fa-solid fa-fire-flame-curved"></i> Queimar Verba CDC</button>
@@ -3942,7 +3942,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.0.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.0.9'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5408,9 +5408,9 @@ Transporte - R$ 5,00"></textarea></div>
         // Verba de Loja
         const storeValueEl = document.getElementById('store-cash-box-value');
         const storeProgressEl = document.getElementById('store-cash-box-progress-bar');
-        // Preço de Site
-        const siteValueEl = document.getElementById('site-cash-box-value');
-        const siteProgressEl = document.getElementById('site-cash-box-progress-bar');
+        // Site/Venda Remota
+            const vendaRemotaValueEl = document.getElementById('venda-remota-cash-box-value');
+            const vendaRemotaProgressEl = document.getElementById('venda-remota-cash-box-progress-bar');
 
         const dailyListEl = document.getElementById('manager-daily-expenses-list');
         const managerKey = currentUserName.toLowerCase();
@@ -5420,7 +5420,7 @@ Transporte - R$ 5,00"></textarea></div>
             const snapshot = await cashBoxRef.get();
             let cdcCurrentValue = CASH_BOX_INITIAL_VALUE;
             let storeCurrentValue = CASH_BOX_INITIAL_VALUE;
-            let siteCurrentValue = SITE_CASH_BOX_INITIAL_VALUE;
+            let vendaRemotaCurrentValue = SITE_CASH_BOX_INITIAL_VALUE;
             
             dailyListEl.innerHTML = ''; // Limpa a lista de gastos do dia
             
@@ -5428,7 +5428,7 @@ Transporte - R$ 5,00"></textarea></div>
                 const data = snapshot.val();
                 cdcCurrentValue = data.currentValue !== undefined ? data.currentValue : CASH_BOX_INITIAL_VALUE;
                 storeCurrentValue = data.currentStoreValue !== undefined ? data.currentStoreValue : CASH_BOX_INITIAL_VALUE;
-                siteCurrentValue = data.currentSiteValue !== undefined ? data.currentSiteValue : SITE_CASH_BOX_INITIAL_VALUE;
+               vendaRemotaCurrentValue = data.currentVendaRemotaValue !== undefined ? data.currentVendaRemotaValue : SITE_CASH_BOX_INITIAL_VALUE;
 
                 // Carrega os gastos do dia (CDC)
                 if (data.expenses) {
@@ -5463,13 +5463,13 @@ Transporte - R$ 5,00"></textarea></div>
             else if (storePercentage < 50) storeProgressEl.style.backgroundColor = '#f1c40f';
             else storeProgressEl.style.backgroundColor = '#2980b9';
 
-            // Atualiza a barra de Preço de Site
-            const sitePercentage = (siteCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
-            siteValueEl.textContent = formatBRL(siteCurrentValue);
-            siteProgressEl.style.width = `${Math.max(0, sitePercentage)}%`;
-             if (sitePercentage < 25) siteProgressEl.style.backgroundColor = '#e74c3c';
-            else if (sitePercentage < 50) siteProgressEl.style.backgroundColor = '#f1c40f';
-            else siteProgressEl.style.backgroundColor = '#8e44ad'; // Roxo para diferenciar
+            // Atualiza a barra de Site/Venda Remota
+            const vendaRemotaPercentage = (vendaRemotaCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
+            vendaRemotaValueEl.textContent = formatBRL(vendaRemotaCurrentValue);
+            vendaRemotaProgressEl.style.width = `${Math.max(0, vendaRemotaPercentage)}%`;
+             if (vendaRemotaPercentage < 25) vendaRemotaProgressEl.style.backgroundColor = '#e74c3c';
+            else if (vendaRemotaPercentage < 50) vendaRemotaProgressEl.style.backgroundColor = '#f1c40f';
+            else vendaRemotaProgressEl.style.backgroundColor = '#8e44ad'; // Roxo para diferenciar
             
             section.style.display = 'block';
 
@@ -5619,8 +5619,11 @@ Transporte - R$ 5,00"></textarea></div>
                 card.innerHTML = `
                     <h4>CDC - ${managerName}</h4>
                     <p style="font-size: 1.5rem; text-align: center; font-weight: 700;">${formatBRL(currentValue)}</p>
-                    <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" style="margin-top: 1rem; background-color: #2980b9;">
-                        <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba
+                    <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" data-type="cdc" style="margin-top: 1rem; background-color: #2980b9;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba CDC
+                    </button>
+                    <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" data-type="vendaRemota" style="margin-top: 0.5rem; background-color: #8e44ad;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba V. Remota
                     </button>
                 `;
                 statusContainer.appendChild(card);
@@ -5658,17 +5661,31 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
 
-    const resetCashBox = (managerKey) => {
-        if (!confirm(`Tem certeza que deseja resetar a verba de CDC de ${managerKey} para ${formatBRL(CASH_BOX_INITIAL_VALUE)}?`)) {
+    const resetCashBox = (managerKey, type) => {
+        let dbPath, initialValue, verbaName;
+
+        if (type === 'cdc') {
+            dbPath = `cashManagement/${managerKey}/currentValue`;
+            initialValue = CASH_BOX_INITIAL_VALUE;
+            verbaName = "CDC";
+        } else if (type === 'vendaRemota') {
+            dbPath = `cashManagement/${managerKey}/currentVendaRemotaValue`;
+            initialValue = SITE_CASH_BOX_INITIAL_VALUE;
+            verbaName = "Venda Remota";
+        } else {
             return;
         }
-        database.ref(`cashManagement/${managerKey}/currentValue`).set(CASH_BOX_INITIAL_VALUE)
+
+        if (!confirm(`Tem certeza que deseja resetar a verba de ${verbaName} de ${managerKey} para ${formatBRL(initialValue)}?`)) {
+            return;
+        }
+        database.ref(dbPath).set(initialValue)
         .then(() => {
-            alert("Verba de CDC resetada com sucesso!");
+            alert(`Verba de ${verbaName} resetada com sucesso!`);
             loadCashManagementPage(); // Recarrega a página
         })
         .catch(err => {
-            alert("Erro ao resetar a verba de CDC.");
+            alert(`Erro ao resetar a verba de ${verbaName}.`);
             console.error(err);
         });
     };
@@ -5807,7 +5824,7 @@ Transporte - R$ 5,00"></textarea></div>
                         ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
                         <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
-                        <div class="input-group"><label for="venda-remota-${key}">📡 Venda Remota (R$)</label><input type="text" id="venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
+                        <div class="input-group"><label for="meta-venda-remota-${key}">📡 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
                         <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
                         <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
                         <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
@@ -5815,6 +5832,7 @@ Transporte - R$ 5,00"></textarea></div>
                         <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="text" id="premio-p1p2-${key}" class="data-input" value="${formatToBRLInput(metasData.premioP1P2)}"></div>
                         <div class="input-group"><label for="premio-seguro-${key}">Seguro (R$)</label><input type="text" id="premio-seguro-${key}" class="data-input" value="${formatToBRLInput(metasData.premioSeguro)}"></div>
                         <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="text" id="premio-cartao-${key}" class="data-input" value="${formatToBRLInput(metasData.premioCartao)}"></div>
+                        <div class="input-group"><label for="premio-venda-remota-${key}">Venda Remota (R$)</label><input type="text" id="premio-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.premioVendaRemota)}"></div>
                     </div>`;
             });
 
@@ -5836,13 +5854,14 @@ Transporte - R$ 5,00"></textarea></div>
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
-                metaVendaRemota: parseFromBRLInput(document.getElementById(`venda-remota-${key}`).value),
+                metaVendaRemota: parseFromBRLInput(document.getElementById(`meta-venda-remota-${key}`).value),
                 seguro: document.getElementById(`seguro-${key}`).value,
                 p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
                 cartao: document.getElementById(`cartao-${key}`).value,
                 premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
                 premioSeguro: parseFromBRLInput(document.getElementById(`premio-seguro-${key}`).value),
                 premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
+                premioVendaRemota: parseFromBRLInput(document.getElementById(`premio-venda-remota-${key}`).value),
             };
 
             // Se for gerente, salva também a meta da loja
@@ -6595,7 +6614,7 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
     
-        const submitClosingData = () => {
+                const submitClosingData = () => {
         const statusEl = document.getElementById('closing-status-message');
         if (!confirm('Tem certeza que deseja enviar esses dados? A ação não pode ser desfeita.')) {
             return;
@@ -6619,38 +6638,34 @@ Transporte - R$ 5,00"></textarea></div>
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
             const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
             let totalVendasDoFechamento = 0;
-            let totalPrecoSiteDoFechamento = 0;
+            let totalVendaRemotaDoFechamento = 0;
 
             const updates = {};
             
             employeesForStore.forEach(name => {
                 const key = name.toLowerCase();
-                const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0, site: 0, precoSite: 0, vendaRemota: 0 };
+                               const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0, vendaRemota: 0 };
                 const currentDailyData = existingDailySales[key] || { vendas: 0 };
 
                 const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
                 const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
                 const newSeguro = parseInt(document.getElementById(`closing-seguro-${key}`).value, 10) || 0;
                 const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
-                const newSite = parseInt(document.getElementById(`closing-site-${key}`).value, 10) || 0;
-                const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
                 const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
 
-                totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
-                totalPrecoSiteDoFechamento += newPrecoSite;
+                totalVendasDoFechamento += (newVenda + newVendaRemota);
+                totalVendaRemotaDoFechamento += newVendaRemota;
 
                 existingSales[key] = {
-                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
+                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newVendaRemota,
                     p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
                     seguro: (parseInt(currentData.seguro) || 0) + newSeguro,
                     cartao: (parseInt(currentData.cartao) || 0) + newCartao,
-                    site: (parseInt(currentData.site) || 0) + newSite,
-                    precoSite: (parseFloat(currentData.precoSite) || 0) + newPrecoSite,
                     vendaRemota: (parseFloat(currentData.vendaRemota) || 0) + newVendaRemota,
                 };
                 
                 updates[`/dailySales/${todayString}/${key}`] = {
-                    vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
+                    vendas: (currentDailyData.vendas || 0) + newVenda + newVendaRemota
                 };
             });
 
@@ -6662,11 +6677,11 @@ Transporte - R$ 5,00"></textarea></div>
             // Encontra a gerente da loja para descontar da verba
             const managerName = store === 'pinheiro' ? 'Beatriz' : 'Natalia';
             const managerKey = managerName.toLowerCase();
-            const siteCashRef = database.ref(`cashManagement/${managerKey}/currentSiteValue`);
+            const vendaRemotaCashRef = database.ref(`cashManagement/${managerKey}/currentVendaRemotaValue`);
             
-            // Usa transação para subtrair o valor da verba de site
-            siteCashRef.transaction(currentValue => {
-                return (currentValue || SITE_CASH_BOX_INITIAL_VALUE) - totalPrecoSiteDoFechamento;
+            // Usa transação para subtrair o valor da verba de site/venda remota
+            vendaRemotaCashRef.transaction(currentValue => {
+                return (currentValue || SITE_CASH_BOX_INITIAL_VALUE) - totalVendaRemotaDoFechamento;
             });
 
             database.ref().update(updates).then(() => {
@@ -6756,16 +6771,14 @@ Transporte - R$ 5,00"></textarea></div>
                 allCollaborators.forEach(name => {
                     const key = name.toLowerCase();
                     const salesData = allSales[key] || {};
-                    container.innerHTML += `
+                                        container.innerHTML += `
                         <div class="employee-meta-card">
                             <h4>${name}</h4>
                             <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
                             <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
                             <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO</label><input type="number" id="correction-seguro-${key}" class="data-input" value="${salesData.seguro || ''}"></div>
                             <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
-                            <div class="input-group"><label for="correction-site-${key}">🌐 SITE</label><input type="number" id="correction-site-${key}" class="data-input" value="${salesData.site || ''}"></div>
-                            <div class="input-group"><label for="correction-preco-site-${key}">💰 PREÇO DE SITE (R$)</label><input type="text" id="correction-preco-site-${key}" class="data-input" value="${formatToBRLInput(salesData.precoSite)}"></div>
-                            <div class="input-group"><label for="correction-venda-remota-${key}">📡 VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
+                            <div class="input-group"><label for="correction-venda-remota-${key}">📡 SITE/VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
                         </div>
                     `;
                 });
@@ -6830,13 +6843,11 @@ Transporte - R$ 5,00"></textarea></div>
             const key = name.toLowerCase();
             
             // Lê os valores dos campos de cada colaborador e os adiciona ao objeto que será salvo.
-            dataToSave[key] = {
+                        dataToSave[key] = {
                 vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
                 p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
                 seguro: document.getElementById(`correction-seguro-${key}`).value || 0,
                 cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
-                site: document.getElementById(`correction-site-${key}`).value || 0,
-                precoSite: parseFromBRLInput(document.getElementById(`correction-preco-site-${key}`).value),
                 vendaRemota: parseFromBRLInput(document.getElementById(`correction-venda-remota-${key}`).value),
             };
         });
@@ -9240,8 +9251,8 @@ async function calculateAndDisplayStoreRanking() {
 
 
             // --- LÓGICA DE ATIVAÇÃO (A SER USADA PELA NOVA FUNÇÃO DE INICIALIZAÇÃO) ---
-            const EMPLOYEE_ACTIVATION_CODE = '48362';
-            const APP_MODE_KEY = 'appMode_v1';
+            const EMPLOYEE_ACTIVATION_CODE = '91734';
+            const APP_MODE_KEY = 'appMode_v2';
             
             document.getElementById('submit-activation-code').addEventListener('click', () => {
                 const input = document.getElementById('activation-code-input');
@@ -9602,7 +9613,7 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('submit-recibo-btn').addEventListener('click', submitRecibo);
             document.getElementById('submit-quiz-btn').addEventListener('click', submitQuiz);
 
-            // --- FECHAMENTO (seleção de loja e geração de formulário) ---
+                        // --- FECHAMENTO (seleção de loja e geração de formulário) ---
             const showClosingForm = (store) => {
                 const formContainerId = `closing-form-${store}`;
                 const formContainer = document.getElementById(formContainerId);
@@ -9619,9 +9630,7 @@ async function calculateAndDisplayStoreRanking() {
                             <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
                             <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="number" id="closing-seguro-${key}" class="data-input" placeholder="0"></div>
                             <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
-                            <div class="input-group"><label for="closing-site-${key}">SITE 🌐</label><input type="number" id="closing-site-${key}" class="data-input" placeholder="0"></div>
-                            <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 💰</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
-                            <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📡</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
+                            <div class="input-group"><label for="closing-venda-remota-${key}">SITE/VENDA REMOTA 📡</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
                         </div>
                     `;
                 });
@@ -9788,7 +9797,7 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('cash-management-page').addEventListener('click', (event) => {
                 const resetBtn = event.target.closest('.reset-cash-btn');
                 if (resetBtn) {
-                    resetCashBox(resetBtn.dataset.managerKey);
+                    resetCashBox(resetBtn.dataset.managerKey, resetBtn.dataset.type);
                     return;
                 }
 
