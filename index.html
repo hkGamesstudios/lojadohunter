@@ -3937,7 +3937,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.1.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.1.9'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5611,7 +5611,7 @@ Transporte - R$ 5,00"></textarea></div>
                 
                 const card = document.createElement('div');
                 card.className = 'employee-meta-card';
-                card.innerHTML = `
+                                card.innerHTML = `
                     <h4>CDC - ${managerName}</h4>
                     <p style="font-size: 1.5rem; text-align: center; font-weight: 700;">${formatBRL(currentValue)}</p>
                     <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" data-type="cdc" style="margin-top: 1rem; background-color: #2980b9;">
@@ -5818,7 +5818,7 @@ Transporte - R$ 5,00"></textarea></div>
                         <h4>Metas e Prêmios: ${name}</h4>
                         ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
-                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
+                                                <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
                         <div class="input-group"><label for="meta-venda-remota-${key}">📡 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
                         <div class="input-group"><label for="seguro-${key}">🔧 Seguro</label><input type="number" id="seguro-${key}" class="data-input" value="${metasData.seguro || ''}"></div>
                         <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
@@ -5845,7 +5845,7 @@ Transporte - R$ 5,00"></textarea></div>
         statusMessage.textContent = 'Salvando dados...';
         const metasDataToSave = {};
 
-        allCollaborators.forEach(name => {
+                allCollaborators.forEach(name => {
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
@@ -5888,7 +5888,7 @@ Transporte - R$ 5,00"></textarea></div>
         database.ref(`metas/${key}`).get().then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                container.innerHTML = `
+                                container.innerHTML = `
                     <h3>METAS</h3>
                     <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
                     <p><strong>📡 V. REMOTA:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>
@@ -6515,7 +6515,7 @@ Transporte - R$ 5,00"></textarea></div>
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     container.innerHTML = `
-                        <div class="sales-data-card">
+                                                <div class="sales-data-card">
                             <h4>Resultados Atuais</h4>
                             <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
                             <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
@@ -6633,26 +6633,27 @@ Transporte - R$ 5,00"></textarea></div>
             let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
             const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
             let totalVendasDoFechamento = 0;
-            let totalVendaRemotaDoFechamento = 0;
+            let totalPrecoSiteDoFechamento = 0; // Alterado
 
             const updates = {};
             
             employeesForStore.forEach(name => {
                 const key = name.toLowerCase();
-                               const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0, vendaRemota: 0 };
+                const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0, vendaRemota: 0 };
                 const currentDailyData = existingDailySales[key] || { vendas: 0 };
 
                 const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
                 const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
                 const newSeguro = parseInt(document.getElementById(`closing-seguro-${key}`).value, 10) || 0;
                 const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
+                const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
                 const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
 
-                totalVendasDoFechamento += (newVenda + newVendaRemota);
-                totalVendaRemotaDoFechamento += newVendaRemota;
+                totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
+                totalPrecoSiteDoFechamento += newPrecoSite;
 
                 existingSales[key] = {
-                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newVendaRemota,
+                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
                     p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
                     seguro: (parseInt(currentData.seguro) || 0) + newSeguro,
                     cartao: (parseInt(currentData.cartao) || 0) + newCartao,
@@ -6660,7 +6661,7 @@ Transporte - R$ 5,00"></textarea></div>
                 };
                 
                 updates[`/dailySales/${todayString}/${key}`] = {
-                    vendas: (currentDailyData.vendas || 0) + newVenda + newVendaRemota
+                    vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
                 };
             });
 
@@ -6669,14 +6670,14 @@ Transporte - R$ 5,00"></textarea></div>
             updates['/salesData'] = existingSales;
             updates[`/monthlySales/${currentMonthKey}/totalVendas`] = monthlyTotalVendas;
 
-            // Encontra a gerente da loja para descontar da verba
+            // Encontra a gerente da loja para descontar da verba de Preço de Site
             const managerName = store === 'pinheiro' ? 'Beatriz' : 'Natalia';
             const managerKey = managerName.toLowerCase();
             const vendaRemotaCashRef = database.ref(`cashManagement/${managerKey}/currentVendaRemotaValue`);
             
             // Usa transação para subtrair o valor da verba de site/venda remota
             vendaRemotaCashRef.transaction(currentValue => {
-                return (currentValue || SITE_CASH_BOX_INITIAL_VALUE) - totalVendaRemotaDoFechamento;
+                return (currentValue || SITE_CASH_BOX_INITIAL_VALUE) - totalPrecoSiteDoFechamento;
             });
 
             database.ref().update(updates).then(() => {
@@ -9635,7 +9636,8 @@ async function calculateAndDisplayStoreRanking() {
                             <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
                             <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="number" id="closing-seguro-${key}" class="data-input" placeholder="0"></div>
                             <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
-                            <div class="input-group"><label for="closing-venda-remota-${key}">SITE/VENDA REMOTA 📡</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
+                            <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 📡</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
+                            <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📲</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
                         </div>
                     `;
                 });
