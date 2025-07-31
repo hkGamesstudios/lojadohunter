@@ -3949,7 +3949,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.2.4 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.2.5 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5416,9 +5416,9 @@ Transporte - R$ 5,00"></textarea></div>
         // Verba de Loja
         const storeValueEl = document.getElementById('store-cash-box-value');
         const storeProgressEl = document.getElementById('store-cash-box-progress-bar');
-        // Site/Venda Remota
-            const vendaRemotaValueEl = document.getElementById('venda-remota-cash-box-value');
-            const vendaRemotaProgressEl = document.getElementById('venda-remota-cash-box-progress-bar');
+        // Preço de Site (CORRIGIDO)
+        const precoSiteValueEl = document.getElementById('preco-site-cash-box-value');
+        const precoSiteProgressEl = document.getElementById('preco-site-cash-box-progress-bar');
 
         const dailyListEl = document.getElementById('manager-daily-expenses-list');
         const managerKey = currentUserName.toLowerCase();
@@ -5471,13 +5471,13 @@ Transporte - R$ 5,00"></textarea></div>
             else if (storePercentage < 50) storeProgressEl.style.backgroundColor = '#f1c40f';
             else storeProgressEl.style.backgroundColor = '#2980b9';
 
-            // Atualiza a barra de Preço de Site
-            const vendaRemotaPercentage = (vendaRemotaCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
-            vendaRemotaValueEl.textContent = formatBRL(vendaRemotaCurrentValue);
-            vendaRemotaProgressEl.style.width = `${Math.max(0, vendaRemotaPercentage)}%`;
-             if (vendaRemotaPercentage < 25) vendaRemotaProgressEl.style.backgroundColor = '#e74c3c';
-            else if (vendaRemotaPercentage < 50) vendaRemotaProgressEl.style.backgroundColor = '#f1c40f';
-            else vendaRemotaProgressEl.style.backgroundColor = '#8e44ad'; // Roxo para diferenciar
+            // Atualiza a barra de Preço de Site (CORRIGIDO)
+            const precoSitePercentage = (vendaRemotaCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
+            precoSiteValueEl.textContent = formatBRL(vendaRemotaCurrentValue);
+            precoSiteProgressEl.style.width = `${Math.max(0, precoSitePercentage)}%`;
+             if (precoSitePercentage < 25) precoSiteProgressEl.style.backgroundColor = '#e74c3c';
+            else if (precoSitePercentage < 50) precoSiteProgressEl.style.backgroundColor = '#f1c40f';
+            else precoSiteProgressEl.style.backgroundColor = '#8e44ad'; // Roxo para diferenciar
             
             section.style.display = 'block';
 
@@ -9463,10 +9463,18 @@ async function calculateAndDisplayStoreRanking() {
                     gsBtnInProfile.style.display = 'none';
                 }
 
-                // Botões de Painel Gerente e Fechamento continuam sendo apenas para gerentes de loja
-                if (storeManagers.includes(userName)) {
-                    managerBtn.style.display = 'flex';
-                    closingBtn.style.display = 'flex';
+                // Botões e seção de caixa agora são visíveis para TODOS os gerentes
+                if (managers.includes(userName)) {
+                    // Apenas gerentes de loja podem ver os botões de Painel e Fechamento
+                    if (storeManagers.includes(userName)) {
+                        managerBtn.style.display = 'flex';
+                        closingBtn.style.display = 'flex';
+                    } else {
+                        managerBtn.style.display = 'none';
+                        closingBtn.style.display = 'none';
+                    }
+                    // Todos os gerentes veem a seção de caixa
+                    cashBoxSection.style.display = 'block'; 
                     loadManagerCashBoxData(); // Carrega e exibe a seção do caixa
                 } else {
                     managerBtn.style.display = 'none';
