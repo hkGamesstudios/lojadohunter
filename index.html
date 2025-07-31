@@ -3948,7 +3948,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.2.7 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.2.8 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5852,19 +5852,19 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
         });
     };
-        const saveAllMetas = () => {
+            const saveAllMetas = () => {
         const statusMessage = document.getElementById('metas-status-message');
         statusMessage.textContent = 'Salvando dados...';
         const metasDataToSave = {};
 
-                allCollaborators.forEach(name => {
+        allCollaborators.forEach(name => {
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
                 metaVendaRemota: parseFromBRLInput(document.getElementById(`meta-venda-remota-${key}`).value),
                 seguro: parseFromBRLInput(document.getElementById(`seguro-${key}`).value),
                 p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
-                cartao: document.getElementById(`cartao-${key}`).value,
+                cartao: parseInt(document.getElementById(`cartao-${key}`).value, 10) || 0, // CORREÇÃO AQUI
                 premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
                 premioSeguro: parseInt(document.getElementById(`premio-seguro-${key}`).value, 10) || 0,
                 premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
