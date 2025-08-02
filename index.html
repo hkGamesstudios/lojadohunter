@@ -3948,7 +3948,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.2.8 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.0 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -5629,9 +5629,6 @@ Transporte - R$ 5,00"></textarea></div>
                     <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" data-type="cdc" style="margin-top: 1rem; background-color: #2980b9;">
                         <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba CDC
                     </button>
-                    <button class="action-button full-width reset-cash-btn" data-manager-key="${managerKey}" data-type="vendaRemota" style="margin-top: 0.5rem; background-color: #8e44ad;">
-                        <i class="fa-solid fa-arrows-rotate"></i> Resetar Verba de Site
-                    </button>
                 `;
                 statusContainer.appendChild(card);
             });
@@ -5814,15 +5811,21 @@ Transporte - R$ 5,00"></textarea></div>
                 const metasData = allMetas[key] || {};
                 
                 let managerMetaField = '';
+                let individualVendaRemotaField = `
+                    <div class="input-group"><label for="meta-venda-remota-${key}">📲 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
+                `;
+
                 if (managers.includes(name)) {
                     managerMetaField = `
                         <div class="input-group" style="background-color: rgba(255,107,0,0.1); padding: 0.5rem; border-radius: 8px;">
                            <label for="metaLoja-${key}" style="font-weight: 700; color: #FF6B00;">🎯 META DA LOJA (R$)</label>
                            <input type="text" id="metaLoja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaLoja)}">
-                           <label for="meta-venda-remota-loja-${key}" style="font-weight: 700; color: #FF6B00; margin-top: 0.5rem;">📡 META V. REMOTA LOJA (R$)</label>
+                           <label for="meta-venda-remota-loja-${key}" style="font-weight: 700; color: #FF6B00; margin-top: 0.5rem;">📲 META VENDA REMOTA (R$)</label>
                            <input type="text" id="meta-venda-remota-loja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemotaLoja)}">
                         </div>
                     `;
+                    // Para gerentes, o campo de venda remota individual não aparece
+                    individualVendaRemotaField = '';
                 }
                 
                 container.innerHTML += `
@@ -5830,9 +5833,9 @@ Transporte - R$ 5,00"></textarea></div>
                         <h4>Metas e Prêmios: ${name}</h4>
                         ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
-                                                <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
+                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
                         <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
-                        <div class="input-group"><label for="meta-venda-remota-${key}">📲 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
+                        ${individualVendaRemotaField}
                         <div class="input-group"><label for="seguro-${key}">🔧 Seguro (R$)</label><input type="text" inputmode="decimal" id="seguro-${key}" class="data-input" value="${formatToBRLInput(metasData.seguro)}"></div>
                         <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
                         <div class="meta-group-title">Premiações 💰</div>
@@ -5861,17 +5864,16 @@ Transporte - R$ 5,00"></textarea></div>
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
-                metaVendaRemota: parseFromBRLInput(document.getElementById(`meta-venda-remota-${key}`).value),
                 seguro: parseFromBRLInput(document.getElementById(`seguro-${key}`).value),
                 p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
-                cartao: parseInt(document.getElementById(`cartao-${key}`).value, 10) || 0, // CORREÇÃO AQUI
+                cartao: parseInt(document.getElementById(`cartao-${key}`).value, 10) || 0,
                 premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
                 premioSeguro: parseInt(document.getElementById(`premio-seguro-${key}`).value, 10) || 0,
                 premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
                 premioVendaRemota: parseFromBRLInput(document.getElementById(`premio-venda-remota-${key}`).value),
             };
 
-            // Se for gerente, salva também a meta da loja
+            // Se for gerente, salva as metas específicas de gerente
             if (managers.includes(name)) {
                 const metaLojaInput = document.getElementById(`metaLoja-${key}`);
                 if (metaLojaInput) {
@@ -5880,6 +5882,12 @@ Transporte - R$ 5,00"></textarea></div>
                 const metaVendaRemotaLojaInput = document.getElementById(`meta-venda-remota-loja-${key}`);
                 if (metaVendaRemotaLojaInput) {
                     data.metaVendaRemotaLoja = parseFromBRLInput(metaVendaRemotaLojaInput.value);
+                }
+            } else {
+                // Se não for gerente, salva a meta de venda remota individual
+                const metaVendaRemotaInput = document.getElementById(`meta-venda-remota-${key}`);
+                if (metaVendaRemotaInput) {
+                    data.metaVendaRemota = parseFromBRLInput(metaVendaRemotaInput.value);
                 }
             }
             
@@ -5895,21 +5903,26 @@ Transporte - R$ 5,00"></textarea></div>
     };
     const loadAndDisplayCollaboratorMetas = () => {
         const container = document.getElementById('metas-display-content');
-        const key = currentUserName.toLowerCase(); // CORREÇÃO AQUI
+        const key = currentUserName.toLowerCase();
         container.innerHTML = `<p>Carregando suas metas...</p>`;
         database.ref(`metas/${key}`).get().then(snapshot => {
-                        if (snapshot.exists()) {
+            if (snapshot.exists()) {
                 const data = snapshot.val();
-                let managerMetasHtml = '';
+                let vendaRemotaHtml = '';
+                
+                // Se for gerente, mostra a meta de venda remota da loja
                 if (managers.includes(currentUserName)) {
-                    managerMetasHtml = `<p><strong>🎯 META V. REMOTA LOJA:</strong> ${formatBRL(data.metaVendaRemotaLoja || 0)}</p>`;
+                    vendaRemotaHtml = `<p><strong>📲 META VENDA REMOTA:</strong> ${formatBRL(data.metaVendaRemotaLoja || 0)}</p>`;
+                } 
+                // Se não for gerente, mostra a meta individual
+                else {
+                    vendaRemotaHtml = `<p><strong>📲 V. REMOTA INDIVIDUAL:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>`;
                 }
 
                 container.innerHTML = `
                     <h3>METAS</h3>
                     <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
-                    <p><strong>📡 V. REMOTA INDIVIDUAL:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>
-                    ${managerMetasHtml}
+                    ${vendaRemotaHtml}
                     <p><strong>🔧 SEGURO (R$):</strong> ${formatBRL(data.seguro || 0)}</p>
                     <p><strong>🔱 P1 50%:</strong> ${formatBRL(data.p1)}</p>
                     <p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p>
