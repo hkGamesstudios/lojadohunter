@@ -2780,6 +2780,9 @@
             <!-- Painel de vendas individuais -->
             <div id="individual-sales-data"></div>
 
+            <!-- NOVO: Painel de vendas diárias da loja (para gerentes) -->
+            <div id="daily-store-sales-data" style="width: 100%; max-width: 380px; display: none;"></div>
+
             <!-- Histórico de Vendas Pessoal -->
             <div id="personal-sales-history" class="chart-container" style="width: 100%; max-width: 380px; display: none;">
                  <h4>Vendas nos Últimos 7 Dias</h4>
@@ -2822,6 +2825,10 @@
                 <a href="#" id="bater-ponto-btn" class="action-button">
                     <i class="fa-solid fa-camera-retro"></i>
                     <span>Digitar Ponto</span>
+                </a>
+                <a href="#" id="customer-register-btn" class="action-button">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Cadastrar Cliente</span>
                 </a>
                 <!-- NOVO BOTÃO GS DENTRO DO PERFIL -->
                 <a href="#" id="open-gs-from-profile-btn" class="action-button" style="display: none;">
@@ -3948,7 +3955,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.0 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.1 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -3983,14 +3990,14 @@ Transporte - R$ 5,00"></textarea></div>
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
                 // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo'];
+    const allCollaborators = ['Beatriz', 'Marcio', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Beatriz', 'Natalia']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
         pinheiro: ['Beatriz', 'Marcio', 'Eliseu'],
-        bacabal: ['Natalia', 'Tacilio', 'Demilson', 'Leonardo']
+        bacabal: ['Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose']
     };
     let currntUserName = ''; // Variável unificada para o usuário logado
     let currentBrand = '';
@@ -6527,7 +6534,7 @@ Transporte - R$ 5,00"></textarea></div>
                     const employeeData = allSales[employeeKey] || {};
                     totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
                     totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
-                    totalSeguroDaLoja += parseInt(employeeData.seguro || 0, 10);
+                    totalSeguroDaLoja += parseFloat(employeeData.seguro || 0);
                     totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
                     totalVendaRemotaDaLoja += parseFloat(employeeData.vendaRemota || 0); // Soma a venda remota
                 });
@@ -6539,7 +6546,7 @@ Transporte - R$ 5,00"></textarea></div>
                         <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
                         <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
                         <p>📲 V. REMOTA (Loja): ${formatBRL(totalVendaRemotaDaLoja)}</p>
-                        <p>🔧 SEGURO: ${totalSeguroDaLoja}</p>
+                        <p>🔧 SEGURO: ${formatBRL(totalSeguroDaLoja)}</p>
                         <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
                     </div>
                 `;
@@ -6592,7 +6599,7 @@ Transporte - R$ 5,00"></textarea></div>
                 const employeeData = allSales[employeeKey] || {};
                 totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
                 totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
-                totalSeguroDaLoja += parseInt(employeeData.seguro || 0, 10);
+                totalSeguroDaLoja += parseFloat(employeeData.seguro || 0);
                 totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
             });
 
@@ -6606,7 +6613,7 @@ Transporte - R$ 5,00"></textarea></div>
                             <h4>${employeeName} (Total Loja)</h4>
                             <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
                             <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
-                            <p>🔧 SEGURO: ${totalSeguroDaLoja}</p>
+                            <p>🔧 SEGURO: ${formatBRL(totalSeguroDaLoja)}</p>
                             <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
                         </div>
                     `;
@@ -9401,109 +9408,138 @@ async function calculateAndDisplayStoreRanking() {
                 openExternalLinkAndExit(event.currentTarget.dataset.url);
             });
 
-                                    const loadAndShowCollaboratorProfile = (userName) => {
-                // Define o usuário atual para que todas as funções internas funcionem corretamente
-                currentUserName = userName; 
-                const userKey = userName.toLowerCase();
-                document.getElementById('collaborator-name-display').textContent = userName;
+                                    const loadAndDisplayDailyStoreSales = async () => {
+        const container = document.getElementById('daily-store-sales-data');
+        if (!storeManagers.includes(currentUserName)) {
+            container.style.display = 'none';
+            return;
+        }
 
-                // --- LÓGICA DE VISIBILIDADE DE ELEMENTOS ---
-                const loggedInUser = localStorage.getItem('loggedInUser');
-                const isViewingOwnProfile = (loggedInUser === userName);
-                const isProfileOfAdmin = newAdmins.includes(userName); // Verifica se o perfil é de um admin
+        container.innerHTML = `<div class="sales-data-card"><p>Carregando vendas do dia...</p></div>`;
+        container.style.display = 'block'; // Make it visible
 
-                // Seleciona todos os elementos que devem ser escondidos para admins
-                const pontoBtn = document.getElementById('bater-ponto-btn');
-                const pontoNotificationArea = document.getElementById('ponto-notification-area');
-                const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
-                const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
-                const salesDataContainer = document.getElementById('individual-sales-data');
-                const salesHistoryContainer = document.getElementById('personal-sales-history');
-                const metasBtn = document.getElementById('view-metas-btn');
-                const achievementsSection = document.getElementById('achievements-section');
+        const todayString = getTodayDateString();
+        const storeEmployees = storeMapping.pinheiro.includes(currentUserName)
+            ? storeMapping.pinheiro
+            : storeMapping.bacabal;
 
-                // Se o perfil for de um admin, esconde tudo relacionado a vendas e ponto
-                if (isProfileOfAdmin) {
-                    pontoBtn.style.display = 'none';
-                    pontoNotificationArea.style.display = 'none';
-                    pontoCountdownTimer.style.display = 'none';
-                    pontoLiveCountdown.style.display = 'none';
-                    salesDataContainer.style.display = 'none';
-                    salesHistoryContainer.style.display = 'none';
-                    metasBtn.style.display = 'none';
-                    achievementsSection.style.display = 'none';
-                    stopCountdownTimer();
-                    pontoLiveCountdown.innerHTML = '';
-                } else {
-                    // Se for um colaborador normal, mostra os painéis de vendas
-                    salesDataContainer.style.display = 'block';
-                    metasBtn.style.display = 'flex';
-                    achievementsSection.style.display = 'block'; // Assumindo que deve ser visível por padrão
-                    
-                    // E só mostra os controles de ponto se ele estiver vendo o próprio perfil
-                    const showPontoElements = isViewingOwnProfile;
-                    pontoBtn.style.display = showPontoElements ? 'flex' : 'none';
-                    pontoNotificationArea.style.display = showPontoElements ? 'block' : 'none';
-                    pontoCountdownTimer.style.display = showPontoElements ? 'block' : 'none';
-                    pontoLiveCountdown.style.display = showPontoElements ? 'block' : 'none';
+        try {
+            const dailySalesSnap = await database.ref(`dailySales/${todayString}`).get();
+            const allDailySales = dailySalesSnap.exists() ? dailySalesSnap.val() : {};
 
-                    if (showPontoElements) {
-                        checkPontoStatusAndDisplayWarnings();
-                    } else {
-                        stopCountdownTimer();
-                        pontoLiveCountdown.innerHTML = '';
-                    }
-                    
-                    // Carrega os dados de vendas e metas que foram escondidos para os admins
-                    loadAndDisplayIndividualSalesData();
-                    loadPersonalSalesHistoryChart();
-                    displayAchievements(userKey);
-                }
+            let totalVendasDoDia = 0;
 
-                const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
-                profileOpenRef.transaction(count => { return (count || 0) + 1; });
+            storeEmployees.forEach(employeeName => {
+                const employeeKey = employeeName.toLowerCase();
+                const employeeDailyData = allDailySales[employeeKey] || {};
+                totalVendasDoDia += parseFloat(employeeDailyData.vendas || 0);
+            });
 
-                const managerBtn = document.getElementById('manager-panel-btn');
-                const closingBtn = document.getElementById('closing-btn');
-                const cashBoxSection = document.getElementById('manager-cash-box-section');
-                const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
-                
-                // O botão GS no perfil agora aparece apenas para os 'newAdmins'
-                if (newAdmins.includes(userName)) {
-                    gsBtnInProfile.style.display = 'flex';
-                } else {
-                    gsBtnInProfile.style.display = 'none';
-                }
+            container.innerHTML = `
+                <div class="sales-data-card" style="border-left-color: #2ecc71;">
+                    <h4>Vendas do Dia (Loja)</h4>
+                    <p style="font-size: 1.5rem; text-align: center; font-weight: 700;">${formatBRL(totalVendasDoDia)}</p>
+                </div>
+            `;
 
-                // Botões e seção de caixa agora são visíveis para TODOS os gerentes
-                if (managers.includes(userName)) {
-                    // Apenas gerentes de loja podem ver os botões de Painel e Fechamento
-                    if (storeManagers.includes(userName)) {
-                        managerBtn.style.display = 'flex';
-                        closingBtn.style.display = 'flex';
-                    } else {
-                        managerBtn.style.display = 'none';
-                        closingBtn.style.display = 'none';
-                    }
-                    // Todos os gerentes veem a seção de caixa
-                    cashBoxSection.style.display = 'block'; 
-                    loadManagerCashBoxData(); // Carrega e exibe a seção do caixa
-                } else {
-                    managerBtn.style.display = 'none';
-                    closingBtn.style.display = 'none';
-                    cashBoxSection.style.display = 'none'; // Esconde a seção do caixa para os outros
-                }
+        } catch (error) {
+            console.error("Erro ao carregar vendas do dia da loja:", error);
+            container.innerHTML = `<div class="sales-data-card"><p>Erro ao carregar vendas do dia.</p></div>`;
+        }
+    };
 
-                document.getElementById('photo-upload-status').textContent = '';
-                checkAndDisplayMaintenanceNotice();
-                checkForParabens(userKey);
-                loadCollaboratorProfilePicture();
-                loadAndDisplayCollaboratorStatus();
-                initiateLollipopCapture();
-                loadAndDisplayStories();
+    const loadAndShowCollaboratorProfile = (userName) => {
+        // Define o usuário atual para que todas as funções internas funcionem corretamente
+        currentUserName = userName;
+        const userKey = userName.toLowerCase();
+        document.getElementById('collaborator-name-display').textContent = userName;
 
-                showPage('collaboratorPage');
-            };
+        // --- LÓGICA DE VISIBILIDADE DE ELEMENTOS ---
+        const isProfileOwner = (localStorage.getItem('loggedInUser') === userName);
+        const isManagerProfile = managers.includes(userName);
+        const isStoreManagerProfile = storeManagers.includes(userName);
+        const isAdminProfile = newAdmins.includes(userName);
+        const isCollaboratorProfile = !isAdminProfile; // Qualquer um que não seja admin é considerado um colaborador para fins de vendas/ponto.
+
+        // Get all elements that need their visibility managed
+        const managerBtn = document.getElementById('manager-panel-btn');
+        const closingBtn = document.getElementById('closing-btn');
+        const cashBoxSection = document.getElementById('manager-cash-box-section');
+        const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
+        const dailySalesContainer = document.getElementById('daily-store-sales-data');
+        const salesDataContainer = document.getElementById('individual-sales-data');
+        const salesHistoryContainer = document.getElementById('personal-sales-history');
+        const metasBtn = document.getElementById('view-metas-btn');
+        const achievementsSection = document.getElementById('achievements-section');
+        const pontoBtn = document.getElementById('bater-ponto-btn');
+        const pontoNotificationArea = document.getElementById('ponto-notification-area');
+        const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
+        const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
+
+        // Reset all optional elements to a hidden state first
+        [managerBtn, closingBtn, cashBoxSection, gsBtnInProfile, dailySalesContainer, salesDataContainer, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => el.style.display = 'none');
+        salesHistoryContainer.style.display = 'none'; // This one is handled by its own loading function
+
+        // Show Admin-specific elements
+        if (isAdminProfile) {
+            gsBtnInProfile.style.display = 'flex';
+        }
+        
+        // Show Manager-specific elements (includes Store Managers and Admins)
+        if (isManagerProfile) {
+            cashBoxSection.style.display = 'block';
+            loadManagerCashBoxData();
+        }
+
+        // Show Store Manager-specific elements
+        if (isStoreManagerProfile) {
+            managerBtn.style.display = 'flex';
+            closingBtn.style.display = 'flex';
+            loadAndDisplayDailyStoreSales(); // Call the new function
+        }
+        
+        // Show Collaborator-specific elements (non-admins)
+        if (isCollaboratorProfile) {
+            salesDataContainer.style.display = 'block';
+            metasBtn.style.display = 'flex';
+            achievementsSection.style.display = 'block';
+
+            loadAndDisplayIndividualSalesData();
+            loadPersonalSalesHistoryChart();
+            displayAchievements(userKey);
+            
+            // Ponto controls are only for the profile owner
+            const showPontoElements = isProfileOwner;
+            pontoBtn.style.display = showPontoElements ? 'flex' : 'none';
+            pontoNotificationArea.style.display = showPontoElements ? 'block' : 'none';
+            pontoCountdownTimer.style.display = showPontoElements ? 'block' : 'none';
+            pontoLiveCountdown.style.display = showPontoElements ? 'block' : 'none';
+
+            if (showPontoElements) {
+                checkPontoStatusAndDisplayWarnings();
+            } else {
+                stopCountdownTimer();
+                pontoLiveCountdown.innerHTML = '';
+            }
+        } else {
+            // Se for admin, garante que o timer de ponto seja limpo
+            stopCountdownTimer();
+            pontoLiveCountdown.innerHTML = '';
+        }
+
+        // --- CARREGAMENTO GERAL DE DADOS (EXECUTADO PARA TODOS) ---
+        const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
+        profileOpenRef.transaction(count => { return (count || 0) + 1; });
+        document.getElementById('photo-upload-status').textContent = '';
+        checkAndDisplayMaintenanceNotice();
+        checkForParabens(userKey);
+        loadCollaboratorProfilePicture();
+        loadAndDisplayCollaboratorStatus();
+        initiateLollipopCapture();
+        loadAndDisplayStories();
+
+        showPage('collaboratorPage');
+    };
 
             const openCollaboratorProfileAsGS = () => {
                 const userList = allCollaborators.map((name, index) => `${index + 1}. ${name}`).join('\n');
@@ -9628,10 +9664,29 @@ async function calculateAndDisplayStoreRanking() {
             // Este listener aqui já está obsoleto por causa do novo sistema de login,
             // então não precisa de alteração. O problema real está no próximo bloco.
 
-            // --- PÁGINA DO COLABORADOR ---
+// --- PÁGINA DO COLABORADOR ---
             document.getElementById('view-metas-btn').addEventListener('click', () => { loadAndDisplayCollaboratorMetas(); showPage('metasDisplayPage'); });
             document.getElementById('manager-panel-btn').addEventListener('click', loadManagerPanel);
             document.getElementById('change-password-btn').addEventListener('click', changePassword);
+            document.getElementById('customer-register-btn').addEventListener('click', () => {
+                const password = prompt("Digite a senha para acessar o cadastro:");
+                if (password === null) return; // Usuário cancelou
+
+                if (password.toUpperCase() === 'HUNTER') {
+                    const pinheiroLink = 'https://www.paymobi.com.br/create_customer_self.php?pageToken=f5f212c1-1419-4929-97cc-451e1d034613';
+                    const bacabalLink = 'https://www.paymobi.com.br/create_customer_self.php?pageToken=f2be057f-d8a7-4e4b-979e-152c1f03acdc';
+
+                    if (storeMapping.pinheiro.includes(currentUserName)) {
+                        window.location.href = pinheiroLink;
+                    } else if (storeMapping.bacabal.includes(currentUserName)) {
+                        window.location.href = bacabalLink;
+                    } else {
+                        alert('Erro: Não foi possível determinar sua loja.');
+                    }
+                } else {
+                    alert('Senha incorreta!');
+                }
+            });
             document.getElementById('closing-btn').addEventListener('click', () => {
                 document.getElementById('closing-store-selection').style.display = 'block';
                 document.getElementById('closing-form-pinheiro').style.display = 'none';
