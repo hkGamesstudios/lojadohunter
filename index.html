@@ -2729,7 +2729,6 @@
                 <h3 class="modal-title">Colaboradores - Pinheiro</h3>
                 <div class="modal-button-container">
                     <a href="#" class="modal-btn collaborator-link" data-name="Beatriz">Beatriz</a>
-                    <a href="#" class="modal-btn collaborator-link" data-name="Marcio">Marcio</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Mayara">Mayara</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Eliseu">Eliseu</a>
                 </div>
@@ -3956,7 +3955,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.2 '; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.3 '; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -3991,13 +3990,13 @@ Transporte - R$ 5,00"></textarea></div>
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
                 // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Beatriz', 'Marcio', 'Mayara', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
+    const allCollaborators = ['Beatriz', 'Mayara', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Beatriz', 'Natalia']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
-        pinheiro: ['Beatriz', 'Marcio','Mayara', 'Eliseu'],
+        pinheiro: ['Beatriz','Mayara', 'Eliseu'],
         bacabal: ['Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose']
     };
     let currntUserName = ''; // Variável unificada para o usuário logado
