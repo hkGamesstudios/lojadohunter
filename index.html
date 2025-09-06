@@ -3955,7 +3955,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.4'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.5'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -6126,11 +6126,18 @@ Transporte - R$ 5,00"></textarea></div>
         });
     };
     const deleteDevice = (key) => {
-        if (!checkPassword()) return;
-        if (!confirm('Tem certeza?')) return;
+        // A verificação de senha foi removida pois o novo sistema de login já autentica o usuário.
+        if (!confirm('Tem certeza que deseja deletar este dispositivo?')) return;
+        
         database.ref(`devices/${currentBrand}/${key}`).remove()
-            .then(() => { alert('Deletado!'); loadBrandDevices(currentBrand); })
-            .catch(() => { alert('Erro ao deletar.'); });
+            .then(() => { 
+                alert('Dispositivo deletado com sucesso!'); 
+                loadBrandDevices(currentBrand); // Recarrega a lista de dispositivos da marca
+            })
+            .catch((error) => { 
+                alert('Erro ao deletar o dispositivo.'); 
+                console.error("Erro ao deletar dispositivo:", error);
+            });
     };
 
     const editDevice = (key) => {
