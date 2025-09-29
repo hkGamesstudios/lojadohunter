@@ -194,6 +194,37 @@
             color: var(--primary-color);
         }
 
+        /* Estilo para os toggles de visibilidade */
+        .visibility-toggle {
+            -webkit-appearance: none;
+            appearance: none;
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 11px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .visibility-toggle::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s ease-in-out;
+        }
+        .visibility-toggle:checked {
+            background-color: var(--primary-color);
+        }
+        .visibility-toggle:checked::before {
+            transform: translateX(18px);
+        }
+
+
         /* --- TEMA LGBT --- */
                 body.theme-lgbt {
             background-color: #1a1a1a; /* Cinza bem escuro */
@@ -2714,7 +2745,6 @@
 
             
 
-    <!-- Janela Modal para Colaboradores -->
     <div id="colaborador-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close-btn">×</button>
@@ -2728,9 +2758,9 @@
             <div id="colaborador-pinheiro" class="modal-view" style="display: none;">
                 <h3 class="modal-title">Colaboradores - Pinheiro</h3>
                 <div class="modal-button-container">
-                    <a href="#" class="modal-btn collaborator-link" data-name="Beatriz">Beatriz</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Mainara">Mainara</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Eliseu">Eliseu</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Eduardo">Eduardo</a>
                 </div>
             </div>
             <div id="colaborador-bacabal" class="modal-view" style="display: none;">
@@ -2826,10 +2856,6 @@
                     <i class="fa-solid fa-camera-retro"></i>
                     <span>Digitar Ponto</span>
                 </a>
-                <a href="#" id="customer-register-btn" class="action-button">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <span>Cadastrar Cliente</span>
-                </a>
                 <!-- NOVO BOTÃO GS DENTRO DO PERFIL -->
                 <a href="#" id="open-gs-from-profile-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-chart-pie"></i>
@@ -2850,6 +2876,10 @@
                 <a href="#" id="open-chats-btn" class="action-button">
                     <i class="fa-solid fa-comments-dollar"></i>
                     <span>Chats</span>
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/1aza6F8WR5MpB-VDgsoIv1A6cE6I1hsPe9dul3tKJUJU/edit?usp=drivesdk" target="_blank" id="cupons-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Cupons</span>
                 </a>
                 <a href="#" id="change-password-btn" class="action-button">
                     <i class="fa-solid fa-key"></i>
@@ -3015,6 +3045,51 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Seção de Configurações de Visibilidade -->
+            <div class="charts-section" id="visibility-settings-section" style="display: none;">
+                <div class="chart-container">
+                    <h4>Configurações de Visibilidade</h4>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Ranking de Vendedores</span>
+                            <input type="checkbox" id="visibility-ranking-toggle" data-key="ranking" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Ranking de Gerentes</span>
+                            <input type="checkbox" id="visibility-store-ranking-toggle" data-key="storeRanking" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Verba (Caixa) do Gerente</span>
+                            <input type="checkbox" id="visibility-cash-box-toggle" data-key="cashBox" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Vendas do Dia (Gerente)</span>
+                            <input type="checkbox" id="visibility-daily-sales-toggle" data-key="dailySales" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Resultados Atuais (Vendedores)</span>
+                            <input type="checkbox" id="visibility-individual-sales-toggle" data-key="individualSales" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Vendas nos Últimos 7 Dias</span>
+                            <input type="checkbox" id="visibility-sales-history-toggle" data-key="salesHistory" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <p id="visibility-status-message" class="status-message"></p>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -3143,10 +3218,14 @@
                 <label for="device-name">Nome do Dispositivo</label>
                 <input type="text" id="device-name" class="data-input" placeholder="Ex: Infinix Hot 60i">
             </div>
-            <div class="input-group">
-                <label for="device-image-url">URL da Imagem Principal</label>
-                <input type="text" id="device-image-url" class="data-input" placeholder="Cole o link da imagem aqui">
-            </div>
+             <div class="input-group">
+                <label for="device-image-upload">Imagem Principal (Obrigatório)</label>
+                <button id="device-upload-btn" class="action-button full-width"><i class="fa-solid fa-upload"></i> Enviar Imagem</button>
+                <input type="file" id="device-image-upload" accept="image/*" style="display: none;">
+                <p id="device-image-status" class="status-message" style="margin-top: 0.5rem;"></p>
+                <!-- Input oculto para armazenar a URL da imagem (útil para edição) -->
+                <input type="hidden" id="device-image-url">
+             </div>
             <div class="input-group">
                 <label for="device-tech-specs">⚙️ Ficha Técnica</label>
                 <textarea id="device-tech-specs" class="data-input" rows="5" placeholder="Processador: Snapdragon 8 Gen 1
@@ -3955,7 +4034,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.5'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.6'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -3989,16 +4068,16 @@ Transporte - R$ 5,00"></textarea></div>
     let pontoCheckTimeout = null; // Timer para a próxima verificação de estado
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
-                // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Beatriz', 'Mainara', 'Eliseu', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
+                                // --- ESTADO DA APLICAÇÃO ---
+    const allCollaborators = ['Beatriz', 'Mainara', 'Eliseu', 'Eduardo', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Beatriz', 'Natalia']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
-        pinheiro: ['Beatriz','Mainara', 'Eliseu'],
+        pinheiro: ['Beatriz','Mainara', 'Eliseu', 'Eduardo'],
         bacabal: ['Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose']
-    };
+    };;
     let currntUserName = ''; // Variável unificada para o usuário logado
     let currentBrand = '';
     let isNavigating = false; // Flag para prevenir cliques duplos durante animações
@@ -4156,8 +4235,8 @@ Transporte - R$ 5,00"></textarea></div>
             
             storiesCache = activeStoriesByUser; // Atualiza o cache global
 
-            // 2. Ordena a lista de TODOS os usuários
-            const sortedUsers = [...allUsers].sort((a, b) => {
+            // 2. Ordena a lista de TODOS os usuários, FILTRANDO a Beatriz
+            const sortedUsers = [...allUsers].filter(name => name !== 'Beatriz').sort((a, b) => {
                 const aHasStory = !!activeStoriesByUser[a.toLowerCase()];
                 const bHasStory = !!activeStoriesByUser[b.toLowerCase()];
                 // Se 'a' tem story e 'b' não, 'a' vem primeiro (-1).
@@ -5813,7 +5892,7 @@ Transporte - R$ 5,00"></textarea></div>
             const allMetas = metasSnapshot.exists() ? metasSnapshot.val() : {};
             container.innerHTML = '';
 
-            allCollaborators.forEach(name => {
+            allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
                 const key = name.toLowerCase();
                 const metasData = allMetas[key] || {};
                 
@@ -5957,50 +6036,78 @@ Transporte - R$ 5,00"></textarea></div>
         editingDeviceKey = null;
     };
 
-    const saveDevice = () => {
+    const saveDevice = async () => {
         const statusEl = document.getElementById('send-device-status');
+        const imageStatusEl = document.getElementById('device-image-status');
         const brand = document.getElementById('device-brand').value;
         const name = document.getElementById('device-name').value.trim();
-        const imageUrl = document.getElementById('device-image-url').value.trim();
         const techSpecs = document.getElementById('device-tech-specs').value.trim();
+        const imageUploadInput = document.getElementById('device-image-upload');
+        const imageUrlInput = document.getElementById('device-image-url');
+        const file = imageUploadInput.files[0];
 
-        if (!brand || !name || !imageUrl || !techSpecs) {
-            statusEl.textContent = 'Marca, Nome, URL da Imagem e Ficha Técnica são obrigatórios!';
+        let finalImageUrl = imageUrlInput.value.trim(); // Pega a URL existente (para edição)
+
+        // Validação básica dos campos de texto
+        if (!brand || !name || !techSpecs) {
+            statusEl.textContent = 'Marca, Nome e Ficha Técnica são obrigatórios!';
             return;
         }
+
+        // Validação da imagem: precisa de uma nova ou de uma já existente (no modo de edição)
+        if (!file && !finalImageUrl) {
+            statusEl.textContent = 'Por favor, envie uma imagem para o dispositivo!';
+            return;
+        }
+        
         statusEl.textContent = 'Salvando...';
 
+        // Se um novo arquivo foi selecionado, faz o upload
+        if (file) {
+            try {
+                imageStatusEl.textContent = 'Enviando imagem...';
+                const filePath = `device_images/${brand}/${new Date().getTime()}_${file.name}`;
+                const fileRef = storage.ref().child(filePath);
+                const snapshot = await fileRef.put(file);
+                finalImageUrl = await snapshot.ref.getDownloadURL();
+                imageStatusEl.textContent = 'Imagem enviada com sucesso!';
+            } catch (error) {
+                console.error("Erro no upload da imagem do dispositivo:", error);
+                statusEl.textContent = 'Erro ao enviar a imagem!';
+                imageStatusEl.textContent = 'Falha no upload. Tente novamente.';
+                return;
+            }
+        }
+        
+        // Objeto de dados final com a URL da imagem correta
         const deviceData = {
             name,
-            imageUrl,
+            imageUrl: finalImageUrl,
             techSpecs,
             priceTable: document.getElementById('device-price-table').value.trim(),
             insuranceTable: document.getElementById('device-insurance-table').value.trim()
         };
 
-        if (editingDeviceKey) {
-            // --- MODO DE ATUALIZAÇÃO ---
-            const keyToUpdate = editingDeviceKey;
-            database.ref(`devices/${brand}/${keyToUpdate}`).update(deviceData).then(() => {
+        // Lógica de salvar (criar novo ou atualizar existente)
+        try {
+            if (editingDeviceKey) {
+                // MODO DE ATUALIZAÇÃO
+                await database.ref(`devices/${brand}/${editingDeviceKey}`).update(deviceData);
                 statusEl.textContent = 'Dispositivo atualizado com sucesso!';
                 setTimeout(() => {
                     resetSendDeviceForm();
                     // Retorna para a página de detalhes do dispositivo editado
-                    loadDeviceDetails(keyToUpdate);
+                    loadDeviceDetails(editingDeviceKey, brand);
                 }, 1500);
-            }).catch((error) => {
-                statusEl.textContent = 'Erro ao atualizar!';
-                console.error(error);
-            });
-        } else {
-            // --- MODO DE CRIAÇÃO ---
-            database.ref(`devices/${brand}`).push(deviceData).then(() => {
+            } else {
+                // MODO DE CRIAÇÃO
+                await database.ref(`devices/${brand}`).push(deviceData);
                 statusEl.textContent = 'Dispositivo salvo com sucesso!';
                 resetSendDeviceForm();
-            }).catch((error) => {
-                statusEl.textContent = 'Erro ao salvar!';
-                console.error(error);
-            });
+            }
+        } catch (error) {
+            statusEl.textContent = 'Erro ao salvar os dados no banco!';
+            console.error(error);
         }
     };
     const renderDeviceSearchResults = (devices, filterText = '') => {
@@ -6466,7 +6573,7 @@ Transporte - R$ 5,00"></textarea></div>
         const ctx = document.getElementById('employee-sales-chart').getContext('2d');
         
         // 1. Criar um array de objetos com nome e vendas para cada colaborador.
-        const employeePerformance = allCollaborators.map(name => {
+        const employeePerformance = allCollaborators.filter(name => name !== 'Beatriz').map(name => {
             return {
                 name: name,
                 sales: parseFloat(salesData[name.toLowerCase()]?.vendas || 0)
@@ -8046,7 +8153,7 @@ async function calculateAndDisplayRanking() {
     function populateEmployeeSelect() {
         const select = document.getElementById('day-off-employee-select');
         select.innerHTML = '<option value="" disabled selected>Selecione...</option>';
-        allCollaborators.forEach(name => {
+        allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
             select.innerHTML += `<option value="${name.toLowerCase()}">${name}</option>`;
         });
     };
@@ -8212,7 +8319,7 @@ async function calculateAndDisplayRanking() {
         container.innerHTML = '';
         const profiles = profilesSnap.val();
 
-        allCollaborators.forEach(name => {
+        allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
             const key = name.toLowerCase();
             const overtimeMinutes = profiles[key]?.overtimeMinutes || 0;
             const hours = Math.floor(overtimeMinutes / 60);
@@ -8245,7 +8352,7 @@ async function calculateAndDisplayRanking() {
         container.innerHTML = '';
         const profiles = profilesSnap.val();
 
-        allCollaborators.forEach(name => {
+        allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
             const key = name.toLowerCase();
             const overtimeMinutes = profiles[key]?.overtimeMinutes || 0;
             const card = document.createElement('div');
@@ -8304,7 +8411,7 @@ async function calculateAndDisplayRanking() {
     const loadPersonalSalesHistoryChart = async () => {
         const historyContainer = document.getElementById('personal-sales-history');
         const ctx = document.getElementById('personal-sales-chart').getContext('2d');
-        historyContainer.style.display = 'none';
+        // A visibilidade agora é controlada pela função applyVisibilitySettings
 
         const labels = [];
         const data = [];
@@ -8326,10 +8433,8 @@ async function calculateAndDisplayRanking() {
             }
         }
         
-        // Só mostra o gráfico se houver alguma venda nos últimos 7 dias
+        // Só renderiza o gráfico se houver alguma venda nos últimos 7 dias
         if (data.some(v => v > 0)) {
-            historyContainer.style.display = 'block';
-
             if (personalSalesChartInstance) {
                 personalSalesChartInstance.destroy();
             }
@@ -8785,7 +8890,7 @@ async function calculateAndDisplayStoreRanking() {
         }, 'image/jpeg', 0.8);
     };
 
-    const showPontoVerificationList = () => {
+        const showPontoVerificationList = () => {
         const listContainer = document.getElementById('ponto-employee-list');
         listContainer.innerHTML = '';
         
@@ -8807,6 +8912,75 @@ async function calculateAndDisplayStoreRanking() {
 
         listContainer.appendChild(grid);
         showPage('pontoVerificationPage');
+    };
+
+    // --- FUNÇÕES DE VISIBILIDADE ---
+
+    const applyVisibilitySettings = async () => {
+        try {
+            const snapshot = await database.ref('globalSettings/visibility').get();
+            const settings = snapshot.exists() ? snapshot.val() : {};
+
+            // Mapeia a chave da configuração para o ID do elemento na tela
+            const visibilityMap = {
+                ranking: 'ranking',
+                storeRanking: 'store-ranking',
+                cashBox: 'manager-cash-box-section',
+                dailySales: 'daily-store-sales-data',
+                individualSales: 'individual-sales-data',
+                salesHistory: 'personal-sales-history'
+            };
+
+            for (const key in visibilityMap) {
+                const elementId = visibilityMap[key];
+                const element = document.getElementById(elementId);
+                if (element) {
+                    // O padrão é ser visível (true). Se a configuração for explicitamente 'false', esconde.
+                    const isVisible = settings[key] !== false; 
+                    element.style.display = isVisible ? 'block' : 'none'; // 'block' é o padrão para sections
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao aplicar configurações de visibilidade:", error);
+        }
+    };
+
+    const loadVisibilitySettings = async () => {
+        const container = document.getElementById('visibility-settings-section');
+        const isAdmin = newAdmins.includes(currentUserName);
+
+        // Mostra a seção de configurações apenas para administradores
+        container.style.display = isAdmin ? 'block' : 'none';
+        if (!isAdmin) return;
+
+        try {
+            const snapshot = await database.ref('globalSettings/visibility').get();
+            const settings = snapshot.exists() ? snapshot.val() : {};
+            
+            document.querySelectorAll('.visibility-toggle').forEach(toggle => {
+                const key = toggle.dataset.key;
+                // O padrão é true. Fica desmarcado apenas se estiver explicitamente 'false'.
+                toggle.checked = settings[key] !== false;
+            });
+
+        } catch (error) {
+            console.error("Erro ao carregar configurações de visibilidade:", error);
+            document.getElementById('visibility-status-message').textContent = 'Erro ao carregar.';
+        }
+    };
+
+    const saveVisibilitySetting = (key, value) => {
+        const statusEl = document.getElementById('visibility-status-message');
+        statusEl.textContent = 'Salvando...';
+        database.ref(`globalSettings/visibility/${key}`).set(value)
+            .then(() => {
+                statusEl.textContent = 'Salvo!';
+                setTimeout(() => statusEl.textContent = '', 1500);
+            })
+            .catch(error => {
+                statusEl.textContent = 'Erro!';
+                console.error("Erro ao salvar visibilidade:", error);
+            });
     };
 
     const showPontoHistory = (name) => {
@@ -8920,9 +9094,9 @@ async function calculateAndDisplayStoreRanking() {
 
         const valorFinanciado = valorProduto - entrada;
         
-        const taxaJurosMensal = 0.089;  // 8.9% ao mês
-        const taxaJurosQuinzena = 0.079; // 7.9% ao mês
-        const taxaJurosSemanal = 0.069;  // 6.9% ao mês
+        const taxaJurosMensal = 0.059;  // 5.9% ao mês
+        const taxaJurosQuinzena = 0.059; // 5.9% ao mês
+        const taxaJurosSemanal = 0.059;  // 5.9% ao mês
 
         let valorParcela = 0;
         let totalAPrazo = 0;
@@ -9418,12 +9592,12 @@ async function calculateAndDisplayStoreRanking() {
                                     const loadAndDisplayDailyStoreSales = async () => {
         const container = document.getElementById('daily-store-sales-data');
         if (!storeManagers.includes(currentUserName)) {
-            container.style.display = 'none';
+            // container.style.display = 'none'; // Deixa a função de visibilidade global controlar isso
             return;
         }
 
         container.innerHTML = `<div class="sales-data-card"><p>Carregando vendas do dia...</p></div>`;
-        container.style.display = 'block'; // Make it visible
+        // container.style.display = 'block'; // Deixa a função de visibilidade global controlar isso
 
         const todayString = getTodayDateString();
         const storeEmployees = storeMapping.pinheiro.includes(currentUserName)
@@ -9471,30 +9645,31 @@ async function calculateAndDisplayStoreRanking() {
         // Get all elements that need their visibility managed
         const managerBtn = document.getElementById('manager-panel-btn');
         const closingBtn = document.getElementById('closing-btn');
-        const cashBoxSection = document.getElementById('manager-cash-box-section');
         const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
-        const dailySalesContainer = document.getElementById('daily-store-sales-data');
-        const salesDataContainer = document.getElementById('individual-sales-data');
-        const salesHistoryContainer = document.getElementById('personal-sales-history');
         const metasBtn = document.getElementById('view-metas-btn');
         const achievementsSection = document.getElementById('achievements-section');
         const pontoBtn = document.getElementById('bater-ponto-btn');
         const pontoNotificationArea = document.getElementById('ponto-notification-area');
         const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
         const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
+        const cuponsBtn = document.getElementById('cupons-btn'); // Get the new button
 
         // Reset all optional elements to a hidden state first
-        [managerBtn, closingBtn, cashBoxSection, gsBtnInProfile, dailySalesContainer, salesDataContainer, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => el.style.display = 'none');
-        salesHistoryContainer.style.display = 'none'; // This one is handled by its own loading function
-
+        [managerBtn, closingBtn, gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown, cuponsBtn].forEach(el => el.style.display = 'none'); // Add button to the reset list
+        
         // Show Admin-specific elements
         if (isAdminProfile) {
             gsBtnInProfile.style.display = 'flex';
         }
         
+        // Show "Cupons" button specifically for Natalia
+        if (userName === 'Natalia') {
+            cuponsBtn.style.display = 'flex';
+        }
+
         // Show Manager-specific elements (includes Store Managers and Admins)
         if (isManagerProfile) {
-            cashBoxSection.style.display = 'block';
+            // A visibilidade do cashBox é controlada pela função global
             loadManagerCashBoxData();
         }
 
@@ -9502,12 +9677,11 @@ async function calculateAndDisplayStoreRanking() {
         if (isStoreManagerProfile) {
             managerBtn.style.display = 'flex';
             closingBtn.style.display = 'flex';
-            loadAndDisplayDailyStoreSales(); // Call the new function
+            loadAndDisplayDailyStoreSales(); // Carrega os dados, a visibilidade é controlada globalmente
         }
         
         // Show Collaborator-specific elements (non-admins)
         if (isCollaboratorProfile) {
-            salesDataContainer.style.display = 'block';
             metasBtn.style.display = 'flex';
             achievementsSection.style.display = 'block';
 
@@ -9535,6 +9709,7 @@ async function calculateAndDisplayStoreRanking() {
         }
 
         // --- CARREGAMENTO GERAL DE DADOS (EXECUTADO PARA TODOS) ---
+        applyVisibilitySettings(); // Aplica as regras de visibilidade globais
         const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
         profileOpenRef.transaction(count => { return (count || 0) + 1; });
         document.getElementById('photo-upload-status').textContent = '';
@@ -9647,6 +9822,7 @@ async function calculateAndDisplayStoreRanking() {
 
                 // Chama a função que garante que todos os botões da página GS funcionarão.
                 setupGSPageListeners();
+                loadVisibilitySettings(); // Carrega as configurações de visibilidade
 
                 // Mostra a página GS.
                 showPage('gsPage');
@@ -9675,25 +9851,6 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('view-metas-btn').addEventListener('click', () => { loadAndDisplayCollaboratorMetas(); showPage('metasDisplayPage'); });
             document.getElementById('manager-panel-btn').addEventListener('click', loadManagerPanel);
             document.getElementById('change-password-btn').addEventListener('click', changePassword);
-            document.getElementById('customer-register-btn').addEventListener('click', () => {
-                const password = prompt("Digite a senha para acessar o cadastro:");
-                if (password === null) return; // Usuário cancelou
-
-                if (password.toUpperCase() === 'HUNTER') {
-                    const pinheiroLink = 'https://www.paymobi.com.br/create_customer_self.php?pageToken=f5f212c1-1419-4929-97cc-451e1d034613';
-                    const bacabalLink = 'https://www.paymobi.com.br/create_customer_self.php?pageToken=f2be057f-d8a7-4e4b-979e-152c1f03acdc';
-
-                    if (storeMapping.pinheiro.includes(currentUserName)) {
-                        window.location.href = pinheiroLink;
-                    } else if (storeMapping.bacabal.includes(currentUserName)) {
-                        window.location.href = bacabalLink;
-                    } else {
-                        alert('Erro: Não foi possível determinar sua loja.');
-                    }
-                } else {
-                    alert('Senha incorreta!');
-                }
-            });
             document.getElementById('closing-btn').addEventListener('click', () => {
                 document.getElementById('closing-store-selection').style.display = 'block';
                 document.getElementById('closing-form-pinheiro').style.display = 'none';
@@ -9712,6 +9869,22 @@ async function calculateAndDisplayStoreRanking() {
 
             // --- PÁGINA DE ENVIO DE DISPOSITIVO ---
             document.getElementById('save-device-btn').addEventListener('click', saveDevice);
+
+            // Listener para o botão de upload de imagem do dispositivo
+            document.getElementById('device-upload-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('device-image-upload').click();
+            });
+            document.getElementById('device-image-upload').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const statusEl = document.getElementById('device-image-status');
+                if (file) {
+                    statusEl.textContent = `Arquivo selecionado: ${file.name}`;
+                } else {
+                    statusEl.textContent = '';
+                }
+            });
+
             // Listeners para o código de acesso Lollipop
             document.getElementById('device-brand').addEventListener('input', checkLollipopCode);
             document.getElementById('device-name').addEventListener('input', checkLollipopCode);
@@ -10608,6 +10781,9 @@ async function calculateAndDisplayStoreRanking() {
                     } else {
                         sendDeviceBtn.style.display = 'none';
                     }
+
+                    // Aplica as configurações de visibilidade na tela principal
+                    applyVisibilitySettings();
                     return;
                 }
                 
@@ -10760,6 +10936,16 @@ async function calculateAndDisplayStoreRanking() {
             // --- LISTENERS PARA NAVEGAÇÃO DE STORIES ---
             document.getElementById('story-nav-next').addEventListener('click', nextStory);
             document.getElementById('story-nav-prev').addEventListener('click', previousStory);
+
+            // --- LISTENER PARA OS TOGGLES DE VISIBILIDADE ---
+            document.getElementById('visibility-settings-section').addEventListener('change', (event) => {
+                const toggle = event.target.closest('.visibility-toggle');
+                if (toggle) {
+                    const key = toggle.dataset.key;
+                    const isVisible = toggle.checked;
+                    saveVisibilitySetting(key, isVisible);
+                }
+            });
 
 
             // --- LÓGICA PARA EXIBIR TOOLTIP DA CONQUISTA NO CLIQUE ---
