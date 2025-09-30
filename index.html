@@ -2581,7 +2581,7 @@
                     </div>
                     <a href="https://docs.google.com/spreadsheets/d/1p_6eMNt5u5y_skusz9qH7nOK8rOJrCUxl72uZfJ2x6M/edit?usp=drivesdk" target="_blank" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-gem"></i></div>
-                        <span>MT</span>
+                        <span>Entradas</span>
                     </a>
                 </div>
             </section>
@@ -2929,7 +2929,7 @@
             <div class="gs-actions-grid">
                 <button id="open-settings-page" class="gs-action-btn"><i class="fa-solid fa-bullseye"></i><span>Metas</span></button>
                 <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
-                <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>MT</span></button>
+                <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>Entradas</span></button>
                 <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
                 <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Ver Perfil</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-cash-register"></i><span>CDC</span></button>
@@ -3105,11 +3105,11 @@
         </div>
     </div>
 
-        <!-- TELA DE VISUALIZAÇÃO DO MOSTRUÁRIO (MT) -->
+        <!-- TELA DE VISUALIZAÇÃO DO MOSTRUÁRIO (ENTRADAS) -->
     <div id="mt-display-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-main-from-mt-display" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Mostruário (MT)</h2>
+            <h2>Mostruário (Entradas)</h2>
         </div>
         <div class="collaborator-content" style="align-items: stretch; gap: 1rem;">
             <div class="input-group" style="max-width: none; margin-bottom: 0;">
@@ -3134,17 +3134,17 @@
         </div>
     </div>
 
-    <!-- TELA DE gsMENTO DO MOSTRUÁRIO (MT) -->
+        <!-- TELA DE GERENCIAMENTO DO MOSTRUÁRIO (ENTRADAS) -->
     <div id="mt-management-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-gs-from-mt-management" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>gsr MT</h2>
+            <h2>Gerenciar Entradas</h2>
         </div>
         <div class="collaborator-content" style="align-items: stretch;">
 
             <!-- Seção para Adicionar Novo Item -->
             <div class="employee-meta-card">
-                <h4>Adicionar Novo Item ao MT</h4>
+                <h4>Adicionar Novo Item</h4>
                 <div class="input-group">
                     <label for="mt-add-brand">Marca</label>
                     <select id="mt-add-brand" class="data-input">
@@ -4046,7 +4046,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.9'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
