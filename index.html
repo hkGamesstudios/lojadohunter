@@ -2579,10 +2579,10 @@
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-store"></i></div>
                         <span>Parcelamento de Loja</span>
                     </div>
-                    <div id="open-mt-display-page" class="tool-item">
+                    <a href="https://docs.google.com/spreadsheets/d/1p_6eMNt5u5y_skusz9qH7nOK8rOJrCUxl72uZfJ2x6M/edit?usp=drivesdk" target="_blank" class="tool-item">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-gem"></i></div>
                         <span>MT</span>
-                    </div>
+                    </a>
                 </div>
             </section>
 
@@ -2877,7 +2877,7 @@
                     <i class="fa-solid fa-comments-dollar"></i>
                     <span>Chats</span>
                 </a>
-                <a href="https://docs.google.com/spreadsheets/d/1aza6F8WR5MpB-VDgsoIv1A6cE6I1hsPe9dul3tKJUJU/edit?usp=drivesdk" target="_blank" id="cupons-btn" class="action-button" style="display: none;">
+                <a href="https://docs.google.com/spreadsheets/d/1lMJYoI2NZWXmRLe33i3JDN4EU_aLvYYxYik3DL3oe88/edit?usp=drivesdk" target="_blank" id="cupons-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-ticket"></i>
                     <span>Cupons</span>
                 </a>
@@ -3078,6 +3078,18 @@
                         <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                             <span>Resultados Atuais (Vendedores)</span>
                             <input type="checkbox" id="visibility-individual-sales-toggle" data-key="individualSales" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Painel da Gerente</span>
+                            <input type="checkbox" id="visibility-manager-panel-toggle" data-key="managerPanel" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Fechamento</span>
+                            <input type="checkbox" id="visibility-closing-toggle" data-key="closing" class="visibility-toggle">
                         </label>
                     </div>
                     <div class="input-group" style="margin-bottom: 0;">
@@ -4034,7 +4046,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.7'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.3.8'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -8928,7 +8940,9 @@ async function calculateAndDisplayStoreRanking() {
                 cashBox: 'manager-cash-box-section',
                 dailySales: 'daily-store-sales-data',
                 individualSales: 'individual-sales-data',
-                salesHistory: 'personal-sales-history'
+                salesHistory: 'personal-sales-history',
+                managerPanel: 'manager-panel-btn',
+                closing: 'closing-btn'
             };
 
             for (const key in visibilityMap) {
@@ -8936,8 +8950,18 @@ async function calculateAndDisplayStoreRanking() {
                 const element = document.getElementById(elementId);
                 if (element) {
                     // O padrão é ser visível (true). Se a configuração for explicitamente 'false', esconde.
-                    const isVisible = settings[key] !== false; 
-                    element.style.display = isVisible ? 'block' : 'none'; // 'block' é o padrão para sections
+                    const isVisible = settings[key] !== false;
+                    
+                    if (isVisible) {
+                        // Verifica se é um botão que precisa de display flex
+                        if (element.classList.contains('action-button')) {
+                            element.style.display = 'flex';
+                        } else {
+                            element.style.display = 'block'; // Padrão para seções
+                        }
+                    } else {
+                        element.style.display = 'none';
+                    }
                 }
             }
         } catch (error) {
@@ -10163,12 +10187,8 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
-            // --- LÓGICA DO MOSTRUÁRIO (MT) ---
-            document.getElementById('open-mt-display-page').addEventListener('click', () => {
-                document.getElementById('mt-brand-filter').value = "";
-                document.getElementById('mt-content-area').innerHTML = `<p style="text-align: center;">Selecione uma marca para ver os itens.</p>`;
-                showPage('mtDisplayPage');
-            });
+                        // --- LÓGICA DO MOSTRUÁRIO (MT) ---
+            // O event listener foi removido pois o botão MT agora é um link direto.
             document.getElementById('mt-brand-filter').addEventListener('change', (event) => displayMtForBrand(event.target.value));
             document.getElementById('back-to-main-from-mt-display').addEventListener('click', showMainPage);
             document.getElementById('back-to-gs-from-mt-management').addEventListener('click', () => showPage('gsPage'));
