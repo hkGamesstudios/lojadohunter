@@ -4250,7 +4250,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.4.2'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.4.4'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6543,19 +6543,19 @@ const loadDeviceDetails = (key, brand) => {
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
                 
-                <h3>💰 Preço de Venda <span class="price-update-indicator" id="venda-indicator"></span></h3>
+                <h3>Preço de venda ✅ <span class="price-update-indicator" id="venda-indicator"></span></h3>
                 <pre id="device-price-venda">...</pre>
                 
-                <h3>Preço Limite <span class="price-update-indicator" id="limite-indicator"></span></h3>
+                <h3>Preço limite 🚨 <span class="price-update-indicator" id="limite-indicator"></span></h3>
                 <pre id="device-price-limite">...</pre>
                 
-                <h3>Entrada Mínima <span class="price-update-indicator" id="entrada-indicator"></span></h3>
+                <h3>Entrada mínima ( Crediário ) 📑 <span class="price-update-indicator" id="entrada-indicator"></span></h3>
                 <pre id="device-price-entrada">...</pre>
 
-                <h3>🛡️ Seguro Contra Queda <span class="price-update-indicator" id="seguro-queda-indicator"></span></h3>
+                <h3>Seguro Contra queda 🛡 <span class="price-update-indicator" id="seguro-queda-indicator"></span></h3>
                 <pre id="device-seguro-queda">...</pre>
                 
-                <h3>🔧 Garantia Estendida (1 Ano) <span class="price-update-indicator" id="garantia-estendida-indicator"></span></h3>
+                <h3>Garantia Estendida (+1 Ano) ⚙ <span class="price-update-indicator" id="garantia-estendida-indicator"></span></h3>
                 <pre id="device-garantia-estendida">...</pre>
 
                 <h3>⚙️ Ficha Técnica</h3>
