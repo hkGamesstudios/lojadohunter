@@ -3459,12 +3459,6 @@ Câmera: 108MP..."></textarea>
                 <label for="device-price-table">💰 Tabela de Preços</label>
                 <textarea id="device-price-table" class="data-input" rows="4" placeholder="Os dados da planilha aparecerão aqui..."></textarea>
             </div>
-            <div class="input-group">
-                <label for="device-insurance-table">🔧 Tabela de Seguro</label>
-                <textarea id="device-insurance-table" class="data-input" rows="4" placeholder="P1: R$ 339,00
-P2: R$ 309,00
-P3: R$ 299,00"></textarea>
-            </div>
             <button id="save-device-btn" class="action-button" style="margin-top: 1rem;"><i class="fa-solid fa-save"></i>Salvar Dispositivo</button>
             <p id="send-device-status" class="status-message"></p>
             <!-- Placeholder para o botão de acesso -->
@@ -4256,7 +4250,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.4.1'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.4.2'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6313,8 +6307,7 @@ Transporte - R$ 5,00"></textarea></div>
             name,
             imageUrl: finalImageUrl,
             techSpecs,
-            priceTable: document.getElementById('device-price-table').value.trim(),
-            insuranceTable: document.getElementById('device-insurance-table').value.trim()
+            priceTable: document.getElementById('device-price-table').value.trim()
         };
 
         // Lógica de salvar (criar novo ou atualizar existente)
@@ -6441,61 +6434,100 @@ Transporte - R$ 5,00"></textarea></div>
         return response;
     };
 
-    const fetchAndDisplayPriceForDevice = async (deviceName) => {
-        const pricePlaceholder = document.getElementById('device-price-placeholder');
-        if (!pricePlaceholder) return;
+    let priceCache = {}; // Cache global para os preços
+
+const fetchAndDisplayPriceForDevice = async (deviceName) => {
+        // Pega a referência para todos os campos que vêm da planilha
+        const vendaEl = document.getElementById('device-price-venda');
+        const limiteEl = document.getElementById('device-price-limite');
+        const entradaEl = document.getElementById('device-price-entrada');
+        const seguroQuedaEl = document.getElementById('device-seguro-queda');
+        const garantiaEstendidaEl = document.getElementById('device-garantia-estendida');
+        
+        // Pega os indicadores de atualização
+        const vendaIndicator = document.getElementById('venda-indicator');
+        const limiteIndicator = document.getElementById('limite-indicator');
+        const entradaIndicator = document.getElementById('entrada-indicator');
+        const seguroQuedaIndicator = document.getElementById('seguro-queda-indicator');
+        const garantiaEstendidaIndicator = document.getElementById('garantia-estendida-indicator');
+
+        const allElements = [vendaEl, limiteEl, entradaEl, seguroQuedaEl, garantiaEstendidaEl];
+        if (allElements.some(el => !el)) return; // Para se algum elemento não for encontrado
+
+        // Guarda os valores atuais da tela (do cache)
+        const oldValues = {
+            venda: vendaEl.textContent,
+            limite: limiteEl.textContent,
+            entrada: entradaEl.textContent,
+            seguroQueda: seguroQuedaEl.textContent,
+            garantiaEstendida: garantiaEstendidaEl.textContent
+        };
+        
+        // Mostra que está atualizando
+        const allIndicators = [vendaIndicator, limiteIndicator, entradaIndicator, seguroQuedaIndicator, garantiaEstendidaIndicator];
+        allIndicators.forEach(el => { if(el) el.textContent = '(atualizando...)'; });
 
         try {
-            // Usa a nova função com timeout
             const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`, {
-                timeout: 10000 // 10 segundos
+                timeout: 10000 
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Erro de rede: ${response.status}. Verifique a API.`);
-            }
+            if (!response.ok) throw new Error(`Erro de rede: ${response.status}.`);
 
-            const responseClone = response.clone();
-            let data;
-            try {
-                data = await response.json();
-            } catch (jsonError) {
-                const rawText = await responseClone.text();
-                console.error("A resposta da API não é um JSON válido:", rawText);
-                throw new Error(`A resposta da planilha não pôde ser lida. Resposta: ${rawText.substring(0, 100)}...`);
-            }
-            
-            if (data.error) {
-                throw new Error(data.error);
-            }
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
 
-            const precoVenda = data.precoDeVenda || 'Não informado';
-            const precoLimite = data.precoLimite || 'Não informado';
-            const entradaMinima = data.entradaMinima || 'Não informado';
+            // CORREÇÃO: Usa as chaves exatas que o Google Apps Script está enviando
+            const newValues = {
+                precoVenda: data.precoDeVenda || 'Não informado',
+                precoLimite: data.precoLimite || 'Não informado',
+                entradaMinima: data.entradaMinima || 'Não informado',
+                seguroQueda: data.seguroContraQueda || 'Não informado', // Chave corrigida
+                garantiaEstendida: data.garantiaEstendidaDe1Ano || 'Não informado' // Chave corrigida
+            };
+
+            // Salva os novos dados no cache
+            priceCache[deviceName] = newValues;
+
+            // Atualiza a tela
+            vendaEl.textContent = newValues.precoVenda;
+            limiteEl.textContent = newValues.precoLimite;
+            entradaEl.textContent = newValues.entradaMinima;
+            seguroQuedaEl.textContent = newValues.seguroQueda;
+            garantiaEstendidaEl.textContent = newValues.garantiaEstendida;
             
-            const priceTableText = `Preço de Venda: ${precoVenda}\nPreço Limite: ${precoLimite}\nEntrada Mínima: ${entradaMinima}`;
+            // Compara com os valores antigos e mostra o indicador se mudou
+            if (oldValues.venda !== 'Carregando...' && oldValues.venda !== newValues.precoVenda) vendaIndicator.textContent = '(Atualizado!)'; else vendaIndicator.textContent = '';
+            if (oldValues.limite !== 'Carregando...' && oldValues.limite !== newValues.precoLimite) limiteIndicator.textContent = '(Atualizado!)'; else limiteIndicator.textContent = '';
+            if (oldValues.entrada !== 'Carregando...' && oldValues.entrada !== newValues.entradaMinima) entradaIndicator.textContent = '(Atualizado!)'; else entradaIndicator.textContent = '';
+            if (oldValues.seguroQueda !== 'Carregando...' && oldValues.seguroQueda !== newValues.seguroQueda) seguroQuedaIndicator.textContent = '(Atualizado!)'; else seguroQuedaIndicator.textContent = '';
+            if (oldValues.garantiaEstendida !== 'Carregando...' && oldValues.garantiaEstendida !== newValues.garantiaEstendida) garantiaEstendidaIndicator.textContent = '(Atualizado!)'; else garantiaEstendidaIndicator.textContent = '';
             
-            pricePlaceholder.textContent = priceTableText;
+            // Limpa os indicadores após alguns segundos
+            setTimeout(() => {
+                 allIndicators.forEach(el => { if(el) el.textContent = ''; });
+            }, 4000);
 
         } catch (error) {
-            // Adiciona uma verificação específica para o erro de timeout
+            let errorMessage = '(falha ao atualizar)';
             if (error.name === 'AbortError') {
-                pricePlaceholder.textContent = `Não foi possível carregar os preços.\nErro: A solicitação demorou muito para responder (Timeout).`;
+                console.error("Timeout ao buscar preços da planilha para:", deviceName);
             } else {
-                pricePlaceholder.textContent = `Não foi possível carregar os preços.\nErro: ${error.message}`;
+                console.error("Erro ao buscar dados da planilha para detalhes do dispositivo:", error);
             }
-            console.error("Erro ao buscar dados da planilha para detalhes do dispositivo:", error);
+            allIndicators.forEach(el => { if(el) el.textContent = errorMessage; });
+            setTimeout(() => {
+                allIndicators.forEach(el => { if(el) el.textContent = ''; });
+            }, 4000);
         }
     };
 
     // Função modificada para aceitar a marca como parâmetro
-    const loadDeviceDetails = (key, brand) => {
+const loadDeviceDetails = (key, brand) => {
         currentBrand = brand; // Atualiza a marca atual para o botão de voltar funcionar
         database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
             if (!snapshot.exists()) {
                 alert('Este dispositivo não foi encontrado. Pode ter sido excluído.');
-                // Tenta voltar para a página de marcas, se a marca for válida
                 if (brand) {
                     loadBrandDevices(brand);
                 } else {
@@ -6507,24 +6539,57 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('device-detail-title').textContent = device.name;
             const contentContainer = document.getElementById('device-detail-content');
 
+            // Estrutura HTML atualizada com as novas seções
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
-                <h3>💰 Tabela de Preços</h3><pre id="device-price-placeholder">Carregando preços...</pre>
-                <h3>🔧 Seguro Opcional</h3><pre>${device.insuranceTable || 'Não informado.'}</pre>
-                <h3>⚙️ Ficha Técnica</h3><pre>${device.techSpecs || 'Não informado.'}</pre>
+                
+                <h3>💰 Preço de Venda <span class="price-update-indicator" id="venda-indicator"></span></h3>
+                <pre id="device-price-venda">...</pre>
+                
+                <h3>Preço Limite <span class="price-update-indicator" id="limite-indicator"></span></h3>
+                <pre id="device-price-limite">...</pre>
+                
+                <h3>Entrada Mínima <span class="price-update-indicator" id="entrada-indicator"></span></h3>
+                <pre id="device-price-entrada">...</pre>
+
+                <h3>🛡️ Seguro Contra Queda <span class="price-update-indicator" id="seguro-queda-indicator"></span></h3>
+                <pre id="device-seguro-queda">...</pre>
+                
+                <h3>🔧 Garantia Estendida (1 Ano) <span class="price-update-indicator" id="garantia-estendida-indicator"></span></h3>
+                <pre id="device-garantia-estendida">...</pre>
+
+                <h3>⚙️ Ficha Técnica</h3>
+                <pre>${device.techSpecs || 'Não informado.'}</pre>
+
                 <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
                 <button id="delete-device-btn" class="action-button delete-button"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
             `;
             
+            // Lógica de cache para exibição imediata
+            const cachedData = priceCache[device.name];
+            if (cachedData) {
+                document.getElementById('device-price-venda').textContent = cachedData.precoVenda || 'Não informado.';
+                document.getElementById('device-price-limite').textContent = cachedData.precoLimite || 'Não informado.';
+                document.getElementById('device-price-entrada').textContent = cachedData.entradaMinima || 'Não informado.';
+                document.getElementById('device-seguro-queda').textContent = cachedData.seguroQueda || 'Não informado.';
+                document.getElementById('device-garantia-estendida').textContent = cachedData.garantiaEstendida || 'Não informado.';
+            } else {
+                // Se não houver cache, exibe "Carregando..."
+                 document.getElementById('device-price-venda').textContent = 'Carregando...';
+                 document.getElementById('device-price-limite').textContent = 'Carregando...';
+                 document.getElementById('device-price-entrada').textContent = 'Carregando...';
+                 document.getElementById('device-seguro-queda').textContent = 'Carregando...';
+                 document.getElementById('device-garantia-estendida').textContent = 'Carregando...';
+            }
+
             showPage('deviceDetailPage');
             
-            // NOVA CHAMADA: Busca os preços da planilha em tempo real
+            // Busca a atualização da planilha em segundo plano
             fetchAndDisplayPriceForDevice(device.name);
 
-            // Adiciona os listeners DEPOIS que a página é mostrada e o conteúdo existe
+            // Adiciona os listeners
             document.getElementById('edit-device-btn').addEventListener('click', () => editDevice(key));
             document.getElementById('delete-device-btn').addEventListener('click', () => deleteDevice(key));
-            // O botão de voltar da página de detalhes também é configurado aqui
             document.getElementById('back-to-brand-from-detail').addEventListener('click', () => showPage('brandDevicesPage'));
         });
     };
@@ -6722,7 +6787,6 @@ Transporte - R$ 5,00"></textarea></div>
                 document.getElementById('device-image-url').value = device.imageUrl;
                 document.getElementById('device-tech-specs').value = device.techSpecs || '';
                 document.getElementById('device-price-table').value = device.priceTable || '';
-                document.getElementById('device-insurance-table').value = device.insuranceTable || '';
 
                 showPage('sendDevicePage');
             } else {
