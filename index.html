@@ -4256,7 +4256,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.4.0'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.4.1'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6426,6 +6426,70 @@ Transporte - R$ 5,00"></textarea></div>
     };
     
     // Função modificada para aceitar a marca como parâmetro
+    const fetchWithTimeout = async (resource, options = {}) => {
+        const { timeout = 10000 } = options; // Timeout padrão de 10 segundos
+      
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+      
+        const response = await fetch(resource, {
+          ...options,
+          signal: controller.signal  
+        });
+        clearTimeout(id);
+      
+        return response;
+    };
+
+    const fetchAndDisplayPriceForDevice = async (deviceName) => {
+        const pricePlaceholder = document.getElementById('device-price-placeholder');
+        if (!pricePlaceholder) return;
+
+        try {
+            // Usa a nova função com timeout
+            const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`, {
+                timeout: 10000 // 10 segundos
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Erro de rede: ${response.status}. Verifique a API.`);
+            }
+
+            const responseClone = response.clone();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                const rawText = await responseClone.text();
+                console.error("A resposta da API não é um JSON válido:", rawText);
+                throw new Error(`A resposta da planilha não pôde ser lida. Resposta: ${rawText.substring(0, 100)}...`);
+            }
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            const precoVenda = data.precoDeVenda || 'Não informado';
+            const precoLimite = data.precoLimite || 'Não informado';
+            const entradaMinima = data.entradaMinima || 'Não informado';
+            
+            const priceTableText = `Preço de Venda: ${precoVenda}\nPreço Limite: ${precoLimite}\nEntrada Mínima: ${entradaMinima}`;
+            
+            pricePlaceholder.textContent = priceTableText;
+
+        } catch (error) {
+            // Adiciona uma verificação específica para o erro de timeout
+            if (error.name === 'AbortError') {
+                pricePlaceholder.textContent = `Não foi possível carregar os preços.\nErro: A solicitação demorou muito para responder (Timeout).`;
+            } else {
+                pricePlaceholder.textContent = `Não foi possível carregar os preços.\nErro: ${error.message}`;
+            }
+            console.error("Erro ao buscar dados da planilha para detalhes do dispositivo:", error);
+        }
+    };
+
+    // Função modificada para aceitar a marca como parâmetro
     const loadDeviceDetails = (key, brand) => {
         currentBrand = brand; // Atualiza a marca atual para o botão de voltar funcionar
         database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
@@ -6445,7 +6509,7 @@ Transporte - R$ 5,00"></textarea></div>
 
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
-                <h3>💰 Tabela de Preços</h3><pre>${device.priceTable || 'Não informado.'}</pre>
+                <h3>💰 Tabela de Preços</h3><pre id="device-price-placeholder">Carregando preços...</pre>
                 <h3>🔧 Seguro Opcional</h3><pre>${device.insuranceTable || 'Não informado.'}</pre>
                 <h3>⚙️ Ficha Técnica</h3><pre>${device.techSpecs || 'Não informado.'}</pre>
                 <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
@@ -6454,6 +6518,9 @@ Transporte - R$ 5,00"></textarea></div>
             
             showPage('deviceDetailPage');
             
+            // NOVA CHAMADA: Busca os preços da planilha em tempo real
+            fetchAndDisplayPriceForDevice(device.name);
+
             // Adiciona os listeners DEPOIS que a página é mostrada e o conteúdo existe
             document.getElementById('edit-device-btn').addEventListener('click', () => editDevice(key));
             document.getElementById('delete-device-btn').addEventListener('click', () => deleteDevice(key));
