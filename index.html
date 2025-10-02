@@ -187,13 +187,6 @@
         .theme-claro #monthly-sales-list-container p {
             border-bottom-color: rgba(0,0,0,0.1);
         }
-        .theme-claro .fast-mode-toggle i {
-            color: var(--secondary-color);
-        }
-        .theme-claro .fast-mode .fast-mode-toggle i {
-            color: var(--primary-color);
-        }
-
         /* Estilo para os toggles de visibilidade */
         .visibility-toggle {
             -webkit-appearance: none;
@@ -248,7 +241,7 @@
             background: transparent;
         }
 
-        /* --- TEMA CINZA X --- */
+<!-- TEMA CINZA X -->
         @keyframes floatUp {
             from { transform: translateY(0) rotate(var(--start-rot)); }
             to { transform: translateY(-120vh) rotate(var(--end-rot)); }
@@ -456,9 +449,103 @@
             text-decoration: none;
         }
         
+        .header-profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 0.75rem;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            vertical-align: middle; /* Alinha com os outros ícones */
+        }
+        
         /* --- Seções --- */
         section {
             padding: 2rem 1rem; /* Diminui o padding lateral para dar mais espaço */
+        }
+        
+        /* --- Estilos do Carrossel de Destaques --- */
+        #promo-carousel-container {
+            width: 100%;
+            max-width: 420px;
+            margin: 1.5rem auto 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        #promo-carousel-slides {
+            position: relative;
+            width: 100%;
+            height: 140px; /* Altura aumentada */
+        }
+
+        .promo-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* Ocupa toda a altura do container */
+            background: linear-gradient(135deg, #453880, #2980b9); /* Cor Padrão Ajustada */
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            gap: 1rem;
+            color: white;
+            opacity: 0; /* Começa invisível */
+            pointer-events: none; /* Não pode ser clicado quando invisível */
+            transition: opacity 0.8s ease-in-out; /* Transição de desvanecer */
+        }
+
+        .promo-slide-icon {
+            font-size: 2.5rem;
+            transform: rotate(-15deg);
+            opacity: 0.8;
+        }
+
+        .promo-slide-content h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .promo-slide-content p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* Cores do Carrossel por Tema */
+        .theme-hunter .promo-slide {
+            background: linear-gradient(135deg, #e67e22, #a15000);
+        }
+        .theme-rosa .promo-slide {
+            background: linear-gradient(135deg, #ff69b4, #c83a7d);
+        }
+        .theme-black .promo-slide {
+            background: linear-gradient(135deg, #00BFFF, #111);
+        }
+        .theme-lgbt .promo-slide {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(5px);
+        }
+        .theme-grayx .promo-slide {
+            background: linear-gradient(135deg, #4a4a4a, #111);
+        }
+        .theme-claro .promo-slide {
+            background: #ffffff;
+            color: var(--secondary-color);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .theme-claro .promo-slide-icon, .theme-claro .promo-slide-content h3 {
+            color: var(--primary-color);
+        }
+        .theme-claro .promo-slide-content p {
+            color: var(--text-light);
+            opacity: 1;
         }
         
         .section-title {
@@ -2445,14 +2532,13 @@
 
     <div class="mobile-container page">
 
-        <header>
+                <header>
             <div class="logo">
-                <i class="fa-solid fa-mobile-screen-button"></i>
                 LOJA DO HUNTER
             </div>
             <nav class="header-icons">
-                <a href="#" id="fast-mode-toggle"><i class="fa-solid fa-person-running"></i></a>
                 <a href="#" id="theme-toggle"><i class="fa-solid fa-palette"></i></a>
+                <img src="" id="header-profile-pic" class="header-profile-icon" alt="Perfil">
             </nav>
         </header>
 
@@ -2483,6 +2569,114 @@
                     <div class="brand-button" data-brand="tecno">Tecno</div>
                     <div class="brand-button" data-brand="infinix">Infinix</div>
                     <div class="brand-button" data-brand="honor">Honor</div>
+                </div>
+            </section>
+
+            <!-- Seção de Destaques (Carousel) -->
+            <section id="destaques" style="padding-top: 0; padding-bottom: 0;">
+                <div id="promo-carousel-container">
+                    <div id="promo-carousel-slides">
+                        <!-- Slide 1: Poste um Story -->
+                        <div class="promo-slide" data-target="add-my-story-btn">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-camera-retro"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Poste um Story</h3>
+                                <p>Compartilhe seu dia a dia com a equipe por 24 horas.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 2: Calculadora Crediário -->
+                        <div class="promo-slide" data-target="open-crediario-calculator">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-sliders"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Calculadora Crediário</h3>
+                                <p>Simule parcelamentos e veja os valores em tempo real.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 3: Previsão de Entrega -->
+                        <div class="promo-slide" data-target="previsao-btn">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Previsão de Entrega</h3>
+                                <p>Calcule a data estimada de chegada para novos pedidos.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 4: Parcelar no Site -->
+                        <div class="promo-slide" data-target="open-site-calculator">
+                             <div class="promo-slide-icon">
+                                <i class="fa-solid fa-desktop"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Parcelar no Site</h3>
+                                <p>Veja as condições de parcelamento para vendas online.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 5: Meu Perfil -->
+                        <div class="promo-slide" data-target="open-my-profile-btn">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-user-astronaut"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Acesse seu Perfil</h3>
+                                <p>Veja suas metas, ponto, chats e muito mais.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 6: Enviar Sugestão -->
+                        <div class="promo-slide" data-target="open-feedback-page">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-lightbulb"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Tem uma Ideia?</h3>
+                                <p>Nos ajude a melhorar o app enviando sua sugestão ou erro.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 7: Parcelamento de Loja -->
+                        <div class="promo-slide" data-target="open-loja-calculator">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-store"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Parcelamento de Loja</h3>
+                                <p>Calcule as parcelas para vendas físicas com e sem seguro.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 8: Enviar Recibos -->
+                        <div class="promo-slide" data-target="open-recibos-page">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Enviar Recibos</h3>
+                                <p>Digitalize e envie seus recibos de gastos diários facilmente.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 9: Buscar Aparelhos -->
+                        <div class="promo-slide" data-target="open-device-search">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Buscar Aparelhos</h3>
+                                <p>Encontre qualquer dispositivo em nosso catálogo rapidamente.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 10: Mudar o Tema -->
+                        <div class="promo-slide" data-target="theme-toggle">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-palette"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Personalize o App</h3>
+                                <p>Escolha um novo tema e deixe o sistema com a sua cara.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -3615,6 +3809,7 @@ Transporte - R$ 5,00"></textarea></div>
             <h3 class="modal-title">Escolha um Tema</h3>
             <div class="modal-button-container">
                 <button class="modal-btn theme-select-btn" data-theme="default">Padrão</button>
+                <button class="modal-btn theme-select-btn" data-theme="theme-gamer">Gamer</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-hunter">Hunter (Laranja)</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-rosa">Rosa</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-black">Black</button>
@@ -8284,18 +8479,18 @@ async function calculateAndDisplayRanking() {
     };
 
     function loadCollaboratorProfilePicture() {
-        const imgElement = document.getElementById('collaborator-profile-pic');
+        const mainImgElement = document.getElementById('collaborator-profile-pic');
+        const headerImgElement = document.getElementById('header-profile-pic'); // Nova imagem do cabeçalho
         const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
-        const userKey = currentUserName.toLowerCase(); // USA A NOVA VARIÁVEL
+        const userKey = currentUserName.toLowerCase();
         
         database.ref(`userProfiles/${userKey}/photoURL`).get().then(snapshot => {
-            if (snapshot.exists()) {
-                imgElement.src = snapshot.val();
-            } else {
-                imgElement.src = defaultPhoto;
-            }
+            const photoUrl = snapshot.exists() ? snapshot.val() : defaultPhoto;
+            if(mainImgElement) mainImgElement.src = photoUrl; // Se o elemento existir na página atual
+            if(headerImgElement) headerImgElement.src = photoUrl; // Atualiza a foto do cabeçalho também
         }).catch(() => {
-            imgElement.src = defaultPhoto;
+            if(mainImgElement) mainImgElement.src = defaultPhoto;
+            if(headerImgElement) headerImgElement.src = defaultPhoto;
         });
     };
 
@@ -8327,9 +8522,10 @@ async function calculateAndDisplayRanking() {
             .then(async (imageUrl) => { // Modificado para pegar a URL retornada
                 statusEl.textContent = 'Foto atualizada com sucesso!';
                 
-                // Pega a URL novamente de forma segura para garantir que está correta
+// Pega a URL novamente de forma segura para garantir que está correta
                 const newUrl = await fileRef.getDownloadURL();
-                imgElement.src = newUrl; // Atualiza a imagem na tela imediatamente
+                imgElement.src = newUrl; // Atualiza a imagem na tela do perfil
+                document.getElementById('header-profile-pic').src = newUrl; // Atualiza a imagem no header
 
                 // Recarrega os dados que usam a foto
                 calculateAndDisplayRanking();
@@ -9709,33 +9905,7 @@ async function calculateAndDisplayStoreRanking() {
             });
 
 
-            // --- LÓGICA DO MODO RÁPIDO ---
-            const fastModeToggle = document.getElementById('fast-mode-toggle');
-            const fastModeIcon = fastModeToggle.querySelector('i');
-
-            const applyFastMode = (isFast) => {
-                if (isFast) {
-                    document.body.classList.add('fast-mode');
-                    fastModeIcon.style.color = 'var(--primary-color)';
-                    localStorage.setItem('fastMode', 'true');
-                } else {
-                    document.body.classList.remove('fast-mode');
-                    // O seletor de tema claro cuida da cor do ícone no tema claro
-                    if (!document.body.classList.contains('theme-claro')) {
-                       fastModeIcon.style.color = 'var(--white)';
-                    }
-                    localStorage.setItem('fastMode', 'false');
-                }
-            };
-
-            const savedFastMode = localStorage.getItem('fastMode') === 'true';
-            applyFastMode(savedFastMode);
-
-            fastModeToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                const isCurrentlyFast = document.body.classList.contains('fast-mode');
-                applyFastMode(!isCurrentlyFast);
-            });
+            
             
             // --- LISTENERS DA TELA DE LOGIN ---
             document.getElementById('login-proceed-btn').addEventListener('click', handleLoginAttempt);
@@ -9748,6 +9918,12 @@ async function calculateAndDisplayStoreRanking() {
                     hint.style.display = passSnap.exists() ? 'none' : 'block';
                 } else {
                     hint.style.display = 'none';
+                }
+            });
+
+            document.getElementById('header-profile-pic').addEventListener('click', () => {
+                if (currentUserName) {
+                    loadAndShowCollaboratorProfile(currentUserName);
                 }
             });
 
@@ -10970,6 +11146,7 @@ async function calculateAndDisplayStoreRanking() {
                         const initializeApp = (isLoggedIn = false) => {
                 // Se a função for chamada para um usuário já logado, só carrega os dados
                 if (isLoggedIn) {
+                    loadCollaboratorProfilePicture(); // Carrega a foto de perfil imediatamente
                     calculateAndDisplayRanking();
                     calculateAndDisplayStoreRanking();
                     loadManagerNotifications();
@@ -11180,6 +11357,55 @@ async function calculateAndDisplayStoreRanking() {
                     });
                 }
             });
+
+            // --- LÓGICA DO CARROSSEL DE DESTAQUES ---
+            let promoCarouselInterval = null;
+            let currentPromoIndex = 0;
+            const promoSlides = document.querySelectorAll('.promo-slide');
+
+            function showPromoSlide(index) {
+                promoSlides.forEach((slide, slideIndex) => {
+                    if (slideIndex === index) {
+                        slide.style.opacity = '1';
+                        slide.style.pointerEvents = 'auto'; // Torna o slide ativo clicável
+                    } else {
+                        slide.style.opacity = '0';
+                        slide.style.pointerEvents = 'none'; // Impede cliques em slides inativos
+                    }
+                });
+                currentPromoIndex = index;
+            }
+
+            function nextPromoSlide() {
+                let newIndex = currentPromoIndex + 1;
+                if (newIndex >= promoSlides.length) {
+                    newIndex = 0;
+                }
+                showPromoSlide(newIndex);
+            }
+
+            function setupPromoCarousel() {
+                if (promoSlides.length === 0) return;
+
+                // Adiciona listener de clique para cada slide
+                promoSlides.forEach(slide => {
+                    slide.addEventListener('click', () => {
+                        const targetId = slide.dataset.target;
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            // Simula um clique no elemento alvo
+                            targetElement.click();
+                        }
+                    });
+                });
+
+                // Inicia o carrossel
+                showPromoSlide(0);
+                clearInterval(promoCarouselInterval); // Limpa qualquer intervalo antigo
+                promoCarouselInterval = setInterval(nextPromoSlide, 6000); // Duração de 6 segundos
+            }
+
+            setupPromoCarousel();
         });
     </script>
 
