@@ -3228,8 +3228,25 @@
             </div>
             <div class="input-group">
                 <label for="device-name">Nome do Dispositivo</label>
-                <input type="text" id="device-name" class="data-input" placeholder="Ex: Infinix Hot 60i">
+                <!-- Elemento clicável que parece um input -->
+                <div id="device-name-display" class="data-input" style="cursor: pointer; color: #aaa; padding-top: 12px; padding-bottom: 12px;">Clique para selecionar da planilha...</div>
+                <!-- Input oculto para armazenar o valor -->
+                <input type="hidden" id="device-name">
             </div>
+
+    <!-- TELA DE SELEÇÃO DE DISPOSITIVO DA PLANILHA -->
+    <div id="sheet-device-selection-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-sheet-device-modal-btn" class="modal-close-btn">×</button>
+            <h3 class="modal-title">Selecione um Dispositivo</h3>
+            <div class="input-group" style="margin-bottom: 1rem;">
+                <input type="text" id="sheet-device-search-input" class="data-input" placeholder="Filtrar dispositivos...">
+            </div>
+            <div id="sheet-device-list-container" style="max-height: 60vh; overflow-y: auto;">
+                <!-- A lista de dispositivos será inserida aqui pelo JS -->
+            </div>
+        </div>
+    </div>
              <div class="input-group">
                 <label for="device-image-upload">Imagem Principal (Obrigatório)</label>
                 <button id="device-upload-btn" class="action-button full-width"><i class="fa-solid fa-upload"></i> Enviar Imagem</button>
@@ -3246,9 +3263,7 @@ Câmera: 108MP..."></textarea>
             </div>
             <div class="input-group">
                 <label for="device-price-table">💰 Tabela de Preços</label>
-                <textarea id="device-price-table" class="data-input" rows="4" placeholder="P1 ✅ R$ 1.399,00
-P2 ⚠️ R$ 1.319,00
-P3 🚨 R$ 1.249,00"></textarea>
+                <textarea id="device-price-table" class="data-input" rows="4" placeholder="Os dados da planilha aparecerão aqui..."></textarea>
             </div>
             <div class="input-group">
                 <label for="device-insurance-table">🔧 Tabela de Seguro</label>
@@ -4046,7 +4061,8 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.3.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.4.0'; // Altere este número para atualizar a versão
+    const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -6044,6 +6060,12 @@ Transporte - R$ 5,00"></textarea></div>
             if (el.tagName !== 'SELECT') el.value = '';
             else el.selectedIndex = 0;
         });
+        
+        // Reseta o display do nome do dispositivo
+        const displayName = document.getElementById('device-name-display');
+        displayName.textContent = 'Clique para selecionar da planilha...';
+        displayName.style.color = '#aaa';
+
         document.getElementById('send-device-status').textContent = '';
         editingDeviceKey = null;
     };
@@ -6244,6 +6266,162 @@ Transporte - R$ 5,00"></textarea></div>
             document.getElementById('back-to-brand-from-detail').addEventListener('click', () => showPage('brandDevicesPage'));
         });
     };
+
+    // Cache para armazenar a lista de dispositivos da planilha
+    let sheetDeviceListCache = [];
+
+    const renderSheetDeviceList = (filter = '', brandFilter = '') => {
+        const listContainer = document.getElementById('sheet-device-list-container');
+        listContainer.innerHTML = '';
+        const lowerCaseFilter = filter.toLowerCase();
+        const lowerCaseBrand = brandFilter.toLowerCase();
+
+        const filteredList = sheetDeviceListCache.filter(name => {
+            const lowerCaseName = name.toLowerCase();
+            // Condição 1: O nome do aparelho DEVE começar com o nome da marca.
+            const matchesBrand = brandFilter ? lowerCaseName.startsWith(lowerCaseBrand) : true;
+            // Condição 2: O nome do aparelho DEVE incluir o texto digitado na busca.
+            const matchesSearch = filter ? lowerCaseName.includes(lowerCaseFilter) : true;
+            return matchesBrand && matchesSearch;
+        });
+
+        if (filteredList.length === 0) {
+            listContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Nenhum dispositivo encontrado para esta marca.</p>';
+            return;
+        }
+
+        filteredList.forEach(name => {
+            const button = document.createElement('button');
+            button.className = 'modal-btn';
+            button.textContent = name;
+            listContainer.appendChild(button);
+        });
+    };
+
+        const openDeviceSelectionModal = async () => {
+        const selectedBrand = document.getElementById('device-brand').value;
+        if (!selectedBrand) {
+            alert('Por favor, selecione uma marca primeiro!');
+            return;
+        }
+
+        const modal = document.getElementById('sheet-device-selection-modal');
+        const listContainer = document.getElementById('sheet-device-list-container');
+        const searchInput = document.getElementById('sheet-device-search-input');
+        
+        searchInput.value = '';
+        searchInput.disabled = true;
+        searchInput.placeholder = 'Carregando lista...';
+
+        modal.style.display = 'flex';
+        modal.classList.add('visible');
+        
+        const renderAndEnable = () => {
+            renderSheetDeviceList('', selectedBrand); // Filtra a lista pela marca ao renderizar
+            searchInput.disabled = false;
+            searchInput.placeholder = `Filtrar em ${selectedBrand}...`;
+        };
+        
+        if (sheetDeviceListCache.length > 0) {
+            renderAndEnable();
+            return;
+        }
+
+        listContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Buscando lista na planilha...</p>';
+        try {
+            const response = await fetch(`${GOOGLE_SHEET_API_URL}?action=getList`);
+            if (!response.ok) throw new Error('Erro de rede.');
+            const deviceList = await response.json();
+            if (deviceList.error) throw new Error(deviceList.error);
+
+            sheetDeviceListCache = deviceList.sort();
+            renderAndEnable();
+
+        } catch (error) {
+            listContainer.innerHTML = `<p style="text-align: center; padding: 1rem; color: #e74c3c;">Erro ao buscar lista: ${error.message}</p>`;
+            searchInput.placeholder = 'Erro ao carregar a lista';
+        }
+    };
+
+    const fetchSpreadsheetData = async (deviceName) => {
+        const statusEl = document.getElementById('send-device-status');
+        const priceTableTextarea = document.getElementById('device-price-table');
+
+        if (!deviceName) {
+            statusEl.textContent = 'Selecione um dispositivo da lista primeiro!';
+            return;
+        }
+
+        statusEl.textContent = `Buscando dados de "${deviceName}"...`;
+        priceTableTextarea.value = ''; // Limpa a área de texto enquanto busca
+
+        try {
+            const response = await fetch(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`);
+            if (!response.ok) {
+                throw new Error(`Erro na rede: ${response.statusText}`);
+            }
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Usa as chaves corretas que o novo script vai gerar (ex: precoDeVenda)
+            const precoVenda = data.precoDeVenda || 'Não informado';
+            const precoLimite = data.precoLimite || 'Não informado';
+            const entradaMinima = data.entradaMinima || 'Não informado';
+            
+            // Cria o texto formatado e insere na área de texto
+            const priceTableText = `Preço de Venda: ${precoVenda}\nPreço Limite: ${precoLimite}\nEntrada Mínima: ${entradaMinima}`;
+            
+            priceTableTextarea.value = priceTableText;
+            statusEl.textContent = 'Dados da planilha carregados!';
+
+        } catch (error) {
+            statusEl.textContent = `Erro: ${error.message}`;
+            priceTableTextarea.value = `Não foi possível carregar os dados. Verifique a planilha e a conexão.\n\nErro: ${error.message}`;
+            console.error("Erro ao buscar dados da planilha:", error);
+        }
+    };
+
+    // ... (resto do seu código)
+
+    // DENTRO DO document.addEventListener('DOMContentLoaded', () => { ... });
+    // Adicione estes novos listeners:
+    
+            document.getElementById('device-name-display').addEventListener('click', openDeviceSelectionModal);
+
+            const sheetDeviceModal = document.getElementById('sheet-device-selection-modal');
+            
+            document.getElementById('close-sheet-device-modal-btn').addEventListener('click', () => {
+                sheetDeviceModal.style.display = 'none';
+                sheetDeviceModal.classList.remove('visible');
+            });
+
+            document.getElementById('sheet-device-search-input').addEventListener('input', (e) => {
+                const selectedBrand = document.getElementById('device-brand').value;
+                renderSheetDeviceList(e.target.value, selectedBrand);
+            });
+
+            document.getElementById('sheet-device-list-container').addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-btn')) {
+                    const selectedName = e.target.textContent;
+                    // Atualiza o valor do input oculto
+                    document.getElementById('device-name').value = selectedName;
+                    // Atualiza o texto do div visível
+                    const displayName = document.getElementById('device-name-display');
+                    displayName.textContent = selectedName;
+                    displayName.style.color = 'var(--white)'; // Muda a cor para a de texto normal
+
+                    // Fecha a modal
+                    sheetDeviceModal.style.display = 'none';
+                    sheetDeviceModal.classList.remove('visible');
+                    
+                    // AÇÃO AUTOMÁTICA: Busca os dados do aparelho selecionado
+                    fetchSpreadsheetData(selectedName);
+                }
+            });
+
     const deleteDevice = (key) => {
         // A verificação de senha foi removida pois o novo sistema de login já autentica o usuário.
         if (!confirm('Tem certeza que deseja deletar este dispositivo?')) return;
@@ -6271,7 +6449,14 @@ Transporte - R$ 5,00"></textarea></div>
 
                 // Preenche o formulário com os dados existentes
                 document.getElementById('device-brand').value = currentBrand;
-                document.getElementById('device-name').value = device.name;
+                
+                // Preenche tanto o input oculto quanto o div visível
+                const deviceName = device.name;
+                document.getElementById('device-name').value = deviceName;
+                const displayName = document.getElementById('device-name-display');
+                displayName.textContent = deviceName;
+                displayName.style.color = 'var(--white)'; // Cor de texto normal
+                
                 document.getElementById('device-image-url').value = device.imageUrl;
                 document.getElementById('device-tech-specs').value = device.techSpecs || '';
                 document.getElementById('device-price-table').value = device.priceTable || '';
@@ -9909,9 +10094,11 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
-            // Listeners para o código de acesso Lollipop
+                        // Listeners para o código de acesso Lollipop
             document.getElementById('device-brand').addEventListener('input', checkLollipopCode);
             document.getElementById('device-name').addEventListener('input', checkLollipopCode);
+
+            
 
 
             // --- MODAIS DE FERRAMENTAS ---
