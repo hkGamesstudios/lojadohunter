@@ -2775,10 +2775,6 @@
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-store"></i></div>
                         <span>Parcelamento de Loja</span>
                     </div>
-                    <a href="https://docs.google.com/spreadsheets/d/1p_6eMNt5u5y_skusz9qH7nOK8rOJrCUxl72uZfJ2x6M/edit?usp=drivesdk" target="_blank" class="tool-item">
-                        <div class="tool-icon-wrapper"><i class="fa-solid fa-gem"></i></div>
-                        <span>Entradas</span>
-                    </a>
                 </div>
             </section>
 
@@ -4255,7 +4251,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.4.6'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.4.7'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6118,39 +6114,22 @@ Transporte - R$ 5,00"></textarea></div>
                 const key = name.toLowerCase();
                 const metasData = allMetas[key] || {};
                 
-                let managerMetaField = '';
-                let individualVendaRemotaField = `
-                    <div class="input-group"><label for="meta-venda-remota-${key}">📲 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
-                `;
-
-                if (managers.includes(name)) {
-                    managerMetaField = `
-                        <div class="input-group" style="background-color: rgba(255,107,0,0.1); padding: 0.5rem; border-radius: 8px;">
-                           <label for="metaLoja-${key}" style="font-weight: 700; color: #FF6B00;">🎯 META DA LOJA (R$)</label>
-                           <input type="text" id="metaLoja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaLoja)}">
-                           <label for="meta-venda-remota-loja-${key}" style="font-weight: 700; color: #FF6B00; margin-top: 0.5rem;">📲 META VENDA REMOTA (R$)</label>
-                           <input type="text" id="meta-venda-remota-loja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemotaLoja)}">
-                        </div>
-                    `;
-                    // Para gerentes, o campo de venda remota individual não aparece
-                    individualVendaRemotaField = '';
-                }
-                
                 container.innerHTML += `
                     <div class="employee-meta-card">
                         <h4>Metas e Prêmios: ${name}</h4>
-                        ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
-                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
-                        <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
-                        ${individualVendaRemotaField}
-                        <div class="input-group"><label for="seguro-${key}">🔧 Seguro (R$)</label><input type="text" inputmode="decimal" id="seguro-${key}" class="data-input" value="${formatToBRLInput(metasData.seguro)}"></div>
-                        <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
-                        <div class="meta-group-title">Premiações 💰</div>
-                        <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="text" id="premio-p1p2-${key}" class="data-input" value="${formatToBRLInput(metasData.premioP1P2)}"></div>
-                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (%)</label><input type="number" id="premio-seguro-${key}" class="data-input" value="${metasData.premioSeguro || ''}"></div>
-                        <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="text" id="premio-cartao-${key}" class="data-input" value="${formatToBRLInput(metasData.premioCartao)}"></div>
-                        <div class="input-group"><label for="premio-venda-remota-${key}">Venda Remota (R$)</label><input type="text" id="premio-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.premioVendaRemota)}"></div>
+                        <div class="input-group"><label for="venda-${key}">Meta de Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
+                        <div class="input-group"><label for="meta-seguro-queda-${key}">Meta de Seguro Contra Queda (R$)</label><input type="text" inputmode="decimal" id="meta-seguro-queda-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_seguro_queda)}"></div>
+                        <div class="input-group"><label for="meta-garantia-estendida-${key}">Meta de Garantia Estendida (R$)</label><input type="text" inputmode="decimal" id="meta-garantia-estendida-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_garantia_estendida)}"></div>
+                        
+                        <div class="meta-group-title">Premiações</div>
+                        <p style="font-size: 0.9rem; line-height: 1.6;">
+                            - 1% sobre a venda<br>
+                            - 10% sobre seguro de queda<br>
+                            - 10% sobre garantia estendida<br>
+                            - 2% de tudo vendido no cartão hunter card<br>
+                            - Máximo de desconto 6%:500
+                        </p>
                     </div>`;
             });
 
@@ -6172,33 +6151,9 @@ Transporte - R$ 5,00"></textarea></div>
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
-                seguro: parseFromBRLInput(document.getElementById(`seguro-${key}`).value),
-                p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
-                cartao: parseInt(document.getElementById(`cartao-${key}`).value, 10) || 0,
-                premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
-                premioSeguro: parseInt(document.getElementById(`premio-seguro-${key}`).value, 10) || 0,
-                premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
-                premioVendaRemota: parseFromBRLInput(document.getElementById(`premio-venda-remota-${key}`).value),
+                meta_seguro_queda: parseFromBRLInput(document.getElementById(`meta-seguro-queda-${key}`).value),
+                meta_garantia_estendida: parseFromBRLInput(document.getElementById(`meta-garantia-estendida-${key}`).value)
             };
-
-            // Se for gerente, salva as metas específicas de gerente
-            if (managers.includes(name)) {
-                const metaLojaInput = document.getElementById(`metaLoja-${key}`);
-                if (metaLojaInput) {
-                    data.metaLoja = parseFromBRLInput(metaLojaInput.value);
-                }
-                const metaVendaRemotaLojaInput = document.getElementById(`meta-venda-remota-loja-${key}`);
-                if (metaVendaRemotaLojaInput) {
-                    data.metaVendaRemotaLoja = parseFromBRLInput(metaVendaRemotaLojaInput.value);
-                }
-            } else {
-                // Se não for gerente, salva a meta de venda remota individual
-                const metaVendaRemotaInput = document.getElementById(`meta-venda-remota-${key}`);
-                if (metaVendaRemotaInput) {
-                    data.metaVendaRemota = parseFromBRLInput(metaVendaRemotaInput.value);
-                }
-            }
-            
             metasDataToSave[key] = data;
         });
 
@@ -6216,31 +6171,20 @@ Transporte - R$ 5,00"></textarea></div>
         database.ref(`metas/${key}`).get().then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
-                let vendaRemotaHtml = '';
-                
-                // Se for gerente, mostra a meta de venda remota da loja
-                if (managers.includes(currentUserName)) {
-                    vendaRemotaHtml = `<p><strong>📲 META VENDA REMOTA:</strong> ${formatBRL(data.metaVendaRemotaLoja || 0)}</p>`;
-                } 
-                // Se não for gerente, mostra a meta individual
-                else {
-                    vendaRemotaHtml = `<p><strong>📲 V. REMOTA INDIVIDUAL:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>`;
-                }
-
                 container.innerHTML = `
                     <h3>METAS</h3>
-                    <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
-                    ${vendaRemotaHtml}
-                    <p><strong>🔧 SEGURO (R$):</strong> ${formatBRL(data.seguro || 0)}</p>
-                    <p><strong>🔱 P1 50%:</strong> ${formatBRL(data.p1)}</p>
-                    <p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p>
+                    <p><strong>Meta de Venda:</strong> ${formatBRL(data.venda)}</p>
+                    <p><strong>Meta de Seguro Contra Queda:</strong> ${formatBRL(data.meta_seguro_queda || 0)}</p>
+                    <p><strong>Meta de Garantia Estendida:</strong> ${formatBRL(data.meta_garantia_estendida || 0)}</p>
                     <br>
-                    <h3>PREMIAÇÕES 💰💰💰</h3>
-                    <p><strong>1% SOBRE A VENDA</strong></p>
-                    <p><strong>P1/P2 50%:</strong> ${formatBRL(data.premioP1P2)}</p>
-                    <p><strong>SEGURO:</strong> ${data.premioSeguro || 0}%</p>
-                    <p><strong>CARTÃO 2%+:</strong> ${formatBRL(data.premioCartao)}</p>
-                    <p><strong>VENDA REMOTA:</strong> ${formatBRL(data.premioVendaRemota)}</p>
+                    <h3>PREMIAÇÕES</h3>
+                    <p style="font-size: 0.9rem; line-height: 1.6; background: transparent; padding: 0;">
+                        - 1% sobre a venda<br>
+                        - 10% sobre seguro de queda<br>
+                        - 10% sobre garantia estendida<br>
+                        - 2% de tudo vendido no cartão hunter card<br>
+                        - Máximo de desconto 6%:500
+                    </p>
                 `;
             } else {
                 container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
