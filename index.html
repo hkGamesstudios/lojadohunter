@@ -3069,10 +3069,6 @@
                     <i class="fa-solid fa-comments-dollar"></i>
                     <span>Chats</span>
                 </a>
-                <a href="https://docs.google.com/spreadsheets/d/1lMJYoI2NZWXmRLe33i3JDN4EU_aLvYYxYik3DL3oe88/edit?usp=drivesdk" target="_blank" id="cupons-btn" class="action-button" style="display: none;">
-                    <i class="fa-solid fa-ticket"></i>
-                    <span>Cupons</span>
-                </a>
                 <a href="#" id="change-password-btn" class="action-button">
                     <i class="fa-solid fa-key"></i>
                     <span>Alterar Senha</span>
@@ -4251,7 +4247,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.4.8'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.4.9'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10117,21 +10113,15 @@ async function calculateAndDisplayStoreRanking() {
         const pontoNotificationArea = document.getElementById('ponto-notification-area');
         const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
         const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
-        const cuponsBtn = document.getElementById('cupons-btn'); // Get the new button
 
         // Reset all optional elements to a hidden state first
-        [managerBtn, closingBtn, gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown, cuponsBtn].forEach(el => el.style.display = 'none'); // Add button to the reset list
+        [managerBtn, closingBtn, gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => el.style.display = 'none');
         
         // Show Admin-specific elements
         if (isAdminProfile) {
             gsBtnInProfile.style.display = 'flex';
         }
         
-        // Show "Cupons" button specifically for Natalia
-        if (userName === 'Natalia') {
-            cuponsBtn.style.display = 'flex';
-        }
-
         // Show Manager-specific elements (includes Store Managers and Admins)
         if (isManagerProfile) {
             // A visibilidade do cashBox é controlada pela função global
