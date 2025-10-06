@@ -187,6 +187,13 @@
         .theme-claro #monthly-sales-list-container p {
             border-bottom-color: rgba(0,0,0,0.1);
         }
+        .theme-claro .fast-mode-toggle i {
+            color: var(--secondary-color);
+        }
+        .theme-claro .fast-mode .fast-mode-toggle i {
+            color: var(--primary-color);
+        }
+
         /* Estilo para os toggles de visibilidade */
         .visibility-toggle {
             -webkit-appearance: none;
@@ -241,7 +248,7 @@
             background: transparent;
         }
 
-<!-- TEMA CINZA X -->
+        /* --- TEMA CINZA X --- */
         @keyframes floatUp {
             from { transform: translateY(0) rotate(var(--start-rot)); }
             to { transform: translateY(-120vh) rotate(var(--end-rot)); }
@@ -449,103 +456,9 @@
             text-decoration: none;
         }
         
-        .header-profile-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-left: 0.75rem;
-            cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            vertical-align: middle; /* Alinha com os outros ícones */
-        }
-        
         /* --- Seções --- */
         section {
             padding: 2rem 1rem; /* Diminui o padding lateral para dar mais espaço */
-        }
-        
-        /* --- Estilos do Carrossel de Destaques --- */
-        #promo-carousel-container {
-            width: 100%;
-            max-width: 420px;
-            margin: 1.5rem auto 0 auto;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-        }
-
-        #promo-carousel-slides {
-            position: relative;
-            width: 100%;
-            height: 140px; /* Altura aumentada */
-        }
-
-        .promo-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%; /* Ocupa toda a altura do container */
-            background: linear-gradient(135deg, #453880, #2980b9); /* Cor Padrão Ajustada */
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            gap: 1rem;
-            color: white;
-            opacity: 0; /* Começa invisível */
-            pointer-events: none; /* Não pode ser clicado quando invisível */
-            transition: opacity 0.8s ease-in-out; /* Transição de desvanecer */
-        }
-
-        .promo-slide-icon {
-            font-size: 2.5rem;
-            transform: rotate(-15deg);
-            opacity: 0.8;
-        }
-
-        .promo-slide-content h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 0 0 0.25rem 0;
-        }
-
-        .promo-slide-content p {
-            font-size: 0.85rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        /* Cores do Carrossel por Tema */
-        .theme-hunter .promo-slide {
-            background: linear-gradient(135deg, #e67e22, #a15000);
-        }
-        .theme-rosa .promo-slide {
-            background: linear-gradient(135deg, #ff69b4, #c83a7d);
-        }
-        .theme-black .promo-slide {
-            background: linear-gradient(135deg, #00BFFF, #111);
-        }
-        .theme-lgbt .promo-slide {
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(5px);
-        }
-        .theme-grayx .promo-slide {
-            background: linear-gradient(135deg, #4a4a4a, #111);
-        }
-        .theme-claro .promo-slide {
-            background: #ffffff;
-            color: var(--secondary-color);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .theme-claro .promo-slide-icon, .theme-claro .promo-slide-content h3 {
-            color: var(--primary-color);
-        }
-        .theme-claro .promo-slide-content p {
-            color: var(--text-light);
-            opacity: 1;
         }
         
         .section-title {
@@ -2532,13 +2445,14 @@
 
     <div class="mobile-container page">
 
-                <header>
+        <header>
             <div class="logo">
+                <i class="fa-solid fa-mobile-screen-button"></i>
                 LOJA DO HUNTER
             </div>
             <nav class="header-icons">
+                <a href="#" id="fast-mode-toggle"><i class="fa-solid fa-person-running"></i></a>
                 <a href="#" id="theme-toggle"><i class="fa-solid fa-palette"></i></a>
-                <img src="" id="header-profile-pic" class="header-profile-icon" alt="Perfil">
             </nav>
         </header>
 
@@ -2561,124 +2475,14 @@
                     </button>
                 </div>
                 <div class="brand-list">
-                    <div class="brand-button" data-brand="xiaomi">XIAOMI</div>
-                    <div class="brand-button" data-brand="poco">POCO</div>
-                    <div class="brand-button" data-brand="realme">REALME</div>
-                    <div class="brand-button" data-brand="umidigi">UMIDIGI</div>
-                    <div class="brand-button" data-brand="itel">ITEL</div>
-                    <div class="brand-button" data-brand="infinix">INFINIX</div>
-                    <div class="brand-button" data-brand="honor">HONOR</div>
-                    <div class="brand-button" data-brand="tecno-">TECNO</div>
-                    <div class="brand-button" data-brand="samsung">SAMSUNG</div>
-                    <div class="brand-button" data-brand="apple">APPLE</div>
-                </div>
-            </section>
-
-            <!-- Seção de Destaques (Carousel) -->
-            <section id="destaques" style="padding-top: 0; padding-bottom: 0;">
-                <div id="promo-carousel-container">
-                    <div id="promo-carousel-slides">
-                        <!-- Slide 1: Poste um Story -->
-                        <div class="promo-slide" data-target="add-my-story-btn">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-camera-retro"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Poste um Story</h3>
-                                <p>Compartilhe seu dia a dia com a equipe por 24 horas.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 2: Calculadora Crediário -->
-                        <div class="promo-slide" data-target="open-crediario-calculator">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-sliders"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Calculadora Crediário</h3>
-                                <p>Simule parcelamentos e veja os valores em tempo real.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 3: Previsão de Entrega -->
-                        <div class="promo-slide" data-target="previsao-btn">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-truck-fast"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Previsão de Entrega</h3>
-                                <p>Calcule a data estimada de chegada para novos pedidos.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 4: Parcelar no Site -->
-                        <div class="promo-slide" data-target="open-site-calculator">
-                             <div class="promo-slide-icon">
-                                <i class="fa-solid fa-desktop"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Parcelar no Site</h3>
-                                <p>Veja as condições de parcelamento para vendas online.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 5: Meu Perfil -->
-                        <div class="promo-slide" data-target="open-my-profile-btn">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-user-astronaut"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Acesse seu Perfil</h3>
-                                <p>Veja suas metas, ponto, chats e muito mais.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 6: Enviar Sugestão -->
-                        <div class="promo-slide" data-target="open-feedback-page">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-lightbulb"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Tem uma Ideia?</h3>
-                                <p>Nos ajude a melhorar o app enviando sua sugestão ou erro.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 7: Parcelamento de Loja -->
-                        <div class="promo-slide" data-target="open-loja-calculator">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-store"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Parcelamento de Loja</h3>
-                                <p>Calcule as parcelas para vendas físicas com e sem seguro.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 8: Enviar Recibos -->
-                        <div class="promo-slide" data-target="open-recibos-page">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-hand-holding-dollar"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Enviar Recibos</h3>
-                                <p>Digitalize e envie seus recibos de gastos diários facilmente.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 9: Buscar Aparelhos -->
-                        <div class="promo-slide" data-target="open-device-search">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Buscar Aparelhos</h3>
-                                <p>Encontre qualquer dispositivo em nosso catálogo rapidamente.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 10: Mudar o Tema -->
-                        <div class="promo-slide" data-target="theme-toggle">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-palette"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Personalize o App</h3>
-                                <p>Escolha um novo tema e deixe o sistema com a sua cara.</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="brand-button" data-brand="xiaomi">Xiaomi</div>
+                    <div class="brand-button" data-brand="poco">Poco</div>
+                    <div class="brand-button" data-brand="realme">Realme</div>
+                    <div class="brand-button" data-brand="umidigi">Umidigi</div>
+                    <div class="brand-button" data-brand="itel">Itel</div>
+                    <div class="brand-button" data-brand="tecno">Tecno</div>
+                    <div class="brand-button" data-brand="infinix">Infinix</div>
+                    <div class="brand-button" data-brand="honor">Honor</div>
                 </div>
             </section>
 
@@ -2774,6 +2578,10 @@
                      <div id="open-loja-calculator" class="tool-item" style="cursor: pointer;">
                         <div class="tool-icon-wrapper"><i class="fa-solid fa-store"></i></div>
                         <span>Parcelamento de Loja</span>
+                    </div>
+                    <div id="open-mt-display-page" class="tool-item">
+                        <div class="tool-icon-wrapper"><i class="fa-solid fa-gem"></i></div>
+                        <span>MT</span>
                     </div>
                 </div>
             </section>
@@ -3069,6 +2877,10 @@
                     <i class="fa-solid fa-comments-dollar"></i>
                     <span>Chats</span>
                 </a>
+                <a href="https://docs.google.com/spreadsheets/d/1aza6F8WR5MpB-VDgsoIv1A6cE6I1hsPe9dul3tKJUJU/edit?usp=drivesdk" target="_blank" id="cupons-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>Cupons</span>
+                </a>
                 <a href="#" id="change-password-btn" class="action-button">
                     <i class="fa-solid fa-key"></i>
                     <span>Alterar Senha</span>
@@ -3117,7 +2929,7 @@
             <div class="gs-actions-grid">
                 <button id="open-settings-page" class="gs-action-btn"><i class="fa-solid fa-bullseye"></i><span>Metas</span></button>
                 <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
-                <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>Entradas</span></button>
+                <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>MT</span></button>
                 <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
                 <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Ver Perfil</span></button> <!-- NOVO BOTÃO -->
                 <button id="open-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-cash-register"></i><span>CDC</span></button>
@@ -3268,18 +3080,6 @@
                             <input type="checkbox" id="visibility-individual-sales-toggle" data-key="individualSales" class="visibility-toggle">
                         </label>
                     </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Painel da Gerente</span>
-                            <input type="checkbox" id="visibility-manager-panel-toggle" data-key="managerPanel" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Fechamento</span>
-                            <input type="checkbox" id="visibility-closing-toggle" data-key="closing" class="visibility-toggle">
-                        </label>
-                    </div>
                     <div class="input-group" style="margin-bottom: 0;">
                         <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                             <span>Vendas nos Últimos 7 Dias</span>
@@ -3293,27 +3093,26 @@
         </div>
     </div>
 
-        <!-- TELA DE VISUALIZAÇÃO DO MOSTRUÁRIO (ENTRADAS) -->
+        <!-- TELA DE VISUALIZAÇÃO DO MOSTRUÁRIO (MT) -->
     <div id="mt-display-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-main-from-mt-display" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Mostruário (Entradas)</h2>
+            <h2>Mostruário (MT)</h2>
         </div>
         <div class="collaborator-content" style="align-items: stretch; gap: 1rem;">
-                        <div class="input-group" style="max-width: none; margin-bottom: 0;">
+            <div class="input-group" style="max-width: none; margin-bottom: 0;">
                 <label for="mt-brand-filter">Filtrar por Marca</label>
                 <select id="mt-brand-filter" class="data-input">
                     <option value="" selected>Selecione uma marca...</option>
-                    <option value="apple">APPLE</option>
-                    <option value="samsung">SAMSUNG</option>
-                    <option value="xiaomi">XIAOMI</option>
-                    <option value="poco">POCO</option>
-                    <option value="realme">REALME</option>
-                    <option value="umidigi">UMIDIGI</option>
-                    <option value="itel">ITEL</option>
-                    <option value="infinix">INFINIX</option>
-                    <option value="honor">HONOR</option>
-                    <option value="tecno-">TECNO</option>
+                    <option value="apple">Apple</option> <!-- Adicionado -->
+                    <option value="xiaomi">Xiaomi</option>
+                    <option value="poco">Poco</option>
+                    <option value="realme">Realme</option>
+                    <option value="umidigi">Umidigi</option>
+                    <option value="itel">Itel</option>
+                    <option value="tecno">Tecno</option>
+                    <option value="infinix">Infinix</option>
+                    <option value="honor">Honor</option>
                 </select>
             </div>
             <div id="mt-content-area" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
@@ -3323,31 +3122,30 @@
         </div>
     </div>
 
-        <!-- TELA DE GERENCIAMENTO DO MOSTRUÁRIO (ENTRADAS) -->
+    <!-- TELA DE gsMENTO DO MOSTRUÁRIO (MT) -->
     <div id="mt-management-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-gs-from-mt-management" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Gerenciar Entradas</h2>
+            <h2>gsr MT</h2>
         </div>
         <div class="collaborator-content" style="align-items: stretch;">
 
             <!-- Seção para Adicionar Novo Item -->
             <div class="employee-meta-card">
-                <h4>Adicionar Novo Item</h4>
+                <h4>Adicionar Novo Item ao MT</h4>
                 <div class="input-group">
                     <label for="mt-add-brand">Marca</label>
                     <select id="mt-add-brand" class="data-input">
                         <option value="" disabled selected>Selecione a marca...</option>
-                        <option value="apple">APPLE</option>
-                        <option value="samsung">SAMSUNG</option>
-                        <option value="xiaomi">XIAOMI</option>
-                        <option value="poco">POCO</option>
-                        <option value="realme">REALME</option>
-                        <option value="umidigi">UMIDIGI</option>
-                        <option value="itel">ITEL</option>
-                        <option value="infinix">INFINIX</option>
-                        <option value="honor">HONOR</option>
-                        <option value="tecno-">TECNO</option>
+                        <option value="apple">Apple</option> <!-- Adicionado -->
+                        <option value="xiaomi">Xiaomi</option>
+                        <option value="poco">Poco</option>
+                        <option value="realme">Realme</option>
+                        <option value="umidigi">Umidigi</option>
+                        <option value="itel">Itel</option>
+                        <option value="tecno">Tecno</option>
+                        <option value="infinix">Infinix</option>
+                        <option value="honor">Honor</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -3405,39 +3203,21 @@
                 <label for="device-brand">Marca</label>
                 <select id="device-brand" class="data-input">
                     <option value="" disabled selected>Selecione a marca...</option>
-                    <option value="apple">APPLE</option>
-                    <option value="samsung">SAMSUNG</option>
-                    <option value="xiaomi">XIAOMI</option>
-                    <option value="poco">POCO</option>
-                    <option value="realme">REALME</option>
-                    <option value="umidigi">UMIDIGI</option>
-                    <option value="itel">ITEL</option>
-                    <option value="infinix">INFINIX</option>
-                    <option value="honor">HONOR</option>
-                    <option value="tecno-">TECNO</option>
+                    <option value="apple">Apple</option> <!-- Adicionado -->
+                    <option value="xiaomi">Xiaomi</option>
+                    <option value="poco">Poco</option>
+                    <option value="realme">Realme</option>
+                    <option value="umidigi">Umidigi</option>
+                    <option value="itel">Itel</option>
+                    <option value="tecno">Tecno</option>
+                    <option value="infinix">Infinix</option>
+                    <option value="honor">Honor</option>
                 </select>
             </div>
             <div class="input-group">
                 <label for="device-name">Nome do Dispositivo</label>
-                <!-- Elemento clicável que parece um input -->
-                <div id="device-name-display" class="data-input" style="cursor: pointer; color: #aaa; padding-top: 12px; padding-bottom: 12px;">Clique para selecionar da planilha...</div>
-                <!-- Input oculto para armazenar o valor -->
-                <input type="hidden" id="device-name">
+                <input type="text" id="device-name" class="data-input" placeholder="Ex: Infinix Hot 60i">
             </div>
-
-    <!-- TELA DE SELEÇÃO DE DISPOSITIVO DA PLANILHA -->
-    <div id="sheet-device-selection-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="close-sheet-device-modal-btn" class="modal-close-btn">×</button>
-            <h3 class="modal-title">Selecione um Dispositivo</h3>
-            <div class="input-group" style="margin-bottom: 1rem;">
-                <input type="text" id="sheet-device-search-input" class="data-input" placeholder="Filtrar dispositivos...">
-            </div>
-            <div id="sheet-device-list-container" style="max-height: 60vh; overflow-y: auto;">
-                <!-- A lista de dispositivos será inserida aqui pelo JS -->
-            </div>
-        </div>
-    </div>
              <div class="input-group">
                 <label for="device-image-upload">Imagem Principal (Obrigatório)</label>
                 <button id="device-upload-btn" class="action-button full-width"><i class="fa-solid fa-upload"></i> Enviar Imagem</button>
@@ -3454,7 +3234,15 @@ Câmera: 108MP..."></textarea>
             </div>
             <div class="input-group">
                 <label for="device-price-table">💰 Tabela de Preços</label>
-                <textarea id="device-price-table" class="data-input" rows="4" placeholder="Os dados da planilha aparecerão aqui..."></textarea>
+                <textarea id="device-price-table" class="data-input" rows="4" placeholder="P1 ✅ R$ 1.399,00
+P2 ⚠️ R$ 1.319,00
+P3 🚨 R$ 1.249,00"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="device-insurance-table">🔧 Tabela de Seguro</label>
+                <textarea id="device-insurance-table" class="data-input" rows="4" placeholder="P1: R$ 339,00
+P2: R$ 309,00
+P3: R$ 299,00"></textarea>
             </div>
             <button id="save-device-btn" class="action-button" style="margin-top: 1rem;"><i class="fa-solid fa-save"></i>Salvar Dispositivo</button>
             <p id="send-device-status" class="status-message"></p>
@@ -3800,7 +3588,6 @@ Transporte - R$ 5,00"></textarea></div>
             <h3 class="modal-title">Escolha um Tema</h3>
             <div class="modal-button-container">
                 <button class="modal-btn theme-select-btn" data-theme="default">Padrão</button>
-                <button class="modal-btn theme-select-btn" data-theme="theme-gamer">Gamer</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-hunter">Hunter (Laranja)</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-rosa">Rosa</button>
                 <button class="modal-btn theme-select-btn" data-theme="theme-black">Black</button>
@@ -4247,9 +4034,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.5.2'; // Altere este número para atualizar a versão
-    // A LINHA ABAIXO FOI REMOVIDA, NÃO USAMOS MAIS A PLANILHA
-    // const GOOGLE_SHEET_API_URL = '...'; 
+    const APP_VERSION = '3.3.7'; // Altere este número para atualizar a versão
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
@@ -4300,7 +4085,6 @@ Transporte - R$ 5,00"></textarea></div>
     let cameraStream = null; // Para controlar o stream da câmera
     let editingDeviceKey = null; // Para controlar se estamos editando ou criando um dispositivo
     let allDevicesCache = []; // Cache para a busca de aparelhos
-    let deviceCatalogCache = []; // NOVO CACHE PARA O CATÁLOGO DE PRODUTOS DO FIREBASE
     let storiesCache = []; // Cache para os stories
     let currentStoryUser = null; // Usuário do story que está sendo visto
     let currentStoryIndex = 0; // Índice do story atual
@@ -6112,22 +5896,39 @@ Transporte - R$ 5,00"></textarea></div>
                 const key = name.toLowerCase();
                 const metasData = allMetas[key] || {};
                 
+                let managerMetaField = '';
+                let individualVendaRemotaField = `
+                    <div class="input-group"><label for="meta-venda-remota-${key}">📲 Meta Venda Remota (R$)</label><input type="text" id="meta-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemota)}"></div>
+                `;
+
+                if (managers.includes(name)) {
+                    managerMetaField = `
+                        <div class="input-group" style="background-color: rgba(255,107,0,0.1); padding: 0.5rem; border-radius: 8px;">
+                           <label for="metaLoja-${key}" style="font-weight: 700; color: #FF6B00;">🎯 META DA LOJA (R$)</label>
+                           <input type="text" id="metaLoja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaLoja)}">
+                           <label for="meta-venda-remota-loja-${key}" style="font-weight: 700; color: #FF6B00; margin-top: 0.5rem;">📲 META VENDA REMOTA (R$)</label>
+                           <input type="text" id="meta-venda-remota-loja-${key}" class="data-input" value="${formatToBRLInput(metasData.metaVendaRemotaLoja)}">
+                        </div>
+                    `;
+                    // Para gerentes, o campo de venda remota individual não aparece
+                    individualVendaRemotaField = '';
+                }
+                
                 container.innerHTML += `
                     <div class="employee-meta-card">
                         <h4>Metas e Prêmios: ${name}</h4>
+                        ${managerMetaField}
                         <div class="meta-group-title">Metas</div>
-                        <div class="input-group"><label for="venda-${key}">Meta de Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
-                        <div class="input-group"><label for="meta-seguro-queda-${key}">Meta de Seguro Contra Queda (R$)</label><input type="text" inputmode="decimal" id="meta-seguro-queda-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_seguro_queda)}"></div>
-                        <div class="input-group"><label for="meta-garantia-estendida-${key}">Meta de Garantia Estendida (R$)</label><input type="text" inputmode="decimal" id="meta-garantia-estendida-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_garantia_estendida)}"></div>
-                        
-                        <div class="meta-group-title">Premiações</div>
-                        <p style="font-size: 0.9rem; line-height: 1.6;">
-                            - 1% sobre a venda<br>
-                            - 10% sobre seguro de queda<br>
-                            - 10% sobre garantia estendida<br>
-                            - 2% de tudo vendido no cartão hunter card<br>
-                            - Máximo de desconto 6%:500
-                        </p>
+                        <div class="input-group"><label for="venda-${key}">📈 Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
+                        <div class="input-group"><label for="p1-${key}">🔱 P1 50% (R$)</label><input type="text" id="p1-${key}" class="data-input" value="${formatToBRLInput(metasData.p1)}"></div>
+                        ${individualVendaRemotaField}
+                        <div class="input-group"><label for="seguro-${key}">🔧 Seguro (R$)</label><input type="text" inputmode="decimal" id="seguro-${key}" class="data-input" value="${formatToBRLInput(metasData.seguro)}"></div>
+                        <div class="input-group"><label for="cartao-${key}">💳 Cartão</label><input type="number" id="cartao-${key}" class="data-input" value="${metasData.cartao || ''}"></div>
+                        <div class="meta-group-title">Premiações 💰</div>
+                        <div class="input-group"><label for="premio-p1p2-${key}">P1/P2 50% (R$)</label><input type="text" id="premio-p1p2-${key}" class="data-input" value="${formatToBRLInput(metasData.premioP1P2)}"></div>
+                        <div class="input-group"><label for="premio-seguro-${key}">Seguro (%)</label><input type="number" id="premio-seguro-${key}" class="data-input" value="${metasData.premioSeguro || ''}"></div>
+                        <div class="input-group"><label for="premio-cartao-${key}">Cartão 2%+ (R$)</label><input type="text" id="premio-cartao-${key}" class="data-input" value="${formatToBRLInput(metasData.premioCartao)}"></div>
+                        <div class="input-group"><label for="premio-venda-remota-${key}">Venda Remota (R$)</label><input type="text" id="premio-venda-remota-${key}" class="data-input" value="${formatToBRLInput(metasData.premioVendaRemota)}"></div>
                     </div>`;
             });
 
@@ -6149,9 +5950,33 @@ Transporte - R$ 5,00"></textarea></div>
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
-                meta_seguro_queda: parseFromBRLInput(document.getElementById(`meta-seguro-queda-${key}`).value),
-                meta_garantia_estendida: parseFromBRLInput(document.getElementById(`meta-garantia-estendida-${key}`).value)
+                seguro: parseFromBRLInput(document.getElementById(`seguro-${key}`).value),
+                p1: parseFromBRLInput(document.getElementById(`p1-${key}`).value),
+                cartao: parseInt(document.getElementById(`cartao-${key}`).value, 10) || 0,
+                premioP1P2: parseFromBRLInput(document.getElementById(`premio-p1p2-${key}`).value),
+                premioSeguro: parseInt(document.getElementById(`premio-seguro-${key}`).value, 10) || 0,
+                premioCartao: parseFromBRLInput(document.getElementById(`premio-cartao-${key}`).value),
+                premioVendaRemota: parseFromBRLInput(document.getElementById(`premio-venda-remota-${key}`).value),
             };
+
+            // Se for gerente, salva as metas específicas de gerente
+            if (managers.includes(name)) {
+                const metaLojaInput = document.getElementById(`metaLoja-${key}`);
+                if (metaLojaInput) {
+                    data.metaLoja = parseFromBRLInput(metaLojaInput.value);
+                }
+                const metaVendaRemotaLojaInput = document.getElementById(`meta-venda-remota-loja-${key}`);
+                if (metaVendaRemotaLojaInput) {
+                    data.metaVendaRemotaLoja = parseFromBRLInput(metaVendaRemotaLojaInput.value);
+                }
+            } else {
+                // Se não for gerente, salva a meta de venda remota individual
+                const metaVendaRemotaInput = document.getElementById(`meta-venda-remota-${key}`);
+                if (metaVendaRemotaInput) {
+                    data.metaVendaRemota = parseFromBRLInput(metaVendaRemotaInput.value);
+                }
+            }
+            
             metasDataToSave[key] = data;
         });
 
@@ -6169,20 +5994,31 @@ Transporte - R$ 5,00"></textarea></div>
         database.ref(`metas/${key}`).get().then(snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
+                let vendaRemotaHtml = '';
+                
+                // Se for gerente, mostra a meta de venda remota da loja
+                if (managers.includes(currentUserName)) {
+                    vendaRemotaHtml = `<p><strong>📲 META VENDA REMOTA:</strong> ${formatBRL(data.metaVendaRemotaLoja || 0)}</p>`;
+                } 
+                // Se não for gerente, mostra a meta individual
+                else {
+                    vendaRemotaHtml = `<p><strong>📲 V. REMOTA INDIVIDUAL:</strong> ${formatBRL(data.metaVendaRemota || 0)}</p>`;
+                }
+
                 container.innerHTML = `
                     <h3>METAS</h3>
-                    <p><strong>Meta de Venda:</strong> ${formatBRL(data.venda)}</p>
-                    <p><strong>Meta de Seguro Contra Queda:</strong> ${formatBRL(data.meta_seguro_queda || 0)}</p>
-                    <p><strong>Meta de Garantia Estendida:</strong> ${formatBRL(data.meta_garantia_estendida || 0)}</p>
+                    <p><strong>📈 VENDA:</strong> ${formatBRL(data.venda)}</p>
+                    ${vendaRemotaHtml}
+                    <p><strong>🔧 SEGURO (R$):</strong> ${formatBRL(data.seguro || 0)}</p>
+                    <p><strong>🔱 P1 50%:</strong> ${formatBRL(data.p1)}</p>
+                    <p><strong>💳 CARTÃO:</strong> ${data.cartao || 0}</p>
                     <br>
-                    <h3>PREMIAÇÕES</h3>
-                    <p style="font-size: 0.9rem; line-height: 1.6; background: transparent; padding: 0;">
-                        - 1% sobre a venda<br>
-                        - 10% sobre seguro de queda<br>
-                        - 10% sobre garantia estendida<br>
-                        - 2% de tudo vendido no cartão hunter card<br>
-                        - Máximo de desconto 6%:500
-                    </p>
+                    <h3>PREMIAÇÕES 💰💰💰</h3>
+                    <p><strong>1% SOBRE A VENDA</strong></p>
+                    <p><strong>P1/P2 50%:</strong> ${formatBRL(data.premioP1P2)}</p>
+                    <p><strong>SEGURO:</strong> ${data.premioSeguro || 0}%</p>
+                    <p><strong>CARTÃO 2%+:</strong> ${formatBRL(data.premioCartao)}</p>
+                    <p><strong>VENDA REMOTA:</strong> ${formatBRL(data.premioVendaRemota)}</p>
                 `;
             } else {
                 container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
@@ -6196,12 +6032,6 @@ Transporte - R$ 5,00"></textarea></div>
             if (el.tagName !== 'SELECT') el.value = '';
             else el.selectedIndex = 0;
         });
-        
-        // Reseta o display do nome do dispositivo
-        const displayName = document.getElementById('device-name-display');
-        displayName.textContent = 'Clique para selecionar da planilha...';
-        displayName.style.color = '#aaa';
-
         document.getElementById('send-device-status').textContent = '';
         editingDeviceKey = null;
     };
@@ -6254,22 +6084,24 @@ Transporte - R$ 5,00"></textarea></div>
             name,
             imageUrl: finalImageUrl,
             techSpecs,
-            priceTable: document.getElementById('device-price-table').value.trim()
+            priceTable: document.getElementById('device-price-table').value.trim(),
+            insuranceTable: document.getElementById('device-insurance-table').value.trim()
         };
 
         // Lógica de salvar (criar novo ou atualizar existente)
         try {
             if (editingDeviceKey) {
-                // MODO DE ATUALIZAÇÃO: Atualiza no novo caminho centralizado
-                await database.ref(`deviceCatalog/${editingDeviceKey}`).update(deviceData);
+                // MODO DE ATUALIZAÇÃO
+                await database.ref(`devices/${brand}/${editingDeviceKey}`).update(deviceData);
                 statusEl.textContent = 'Dispositivo atualizado com sucesso!';
                 setTimeout(() => {
                     resetSendDeviceForm();
+                    // Retorna para a página de detalhes do dispositivo editado
                     loadDeviceDetails(editingDeviceKey, brand);
                 }, 1500);
             } else {
-                // MODO DE CRIAÇÃO: Adiciona no novo caminho centralizado
-                await database.ref('deviceCatalog').push(deviceData);
+                // MODO DE CRIAÇÃO
+                await database.ref(`devices/${brand}`).push(deviceData);
                 statusEl.textContent = 'Dispositivo salvo com sucesso!';
                 resetSendDeviceForm();
             }
@@ -6340,66 +6172,37 @@ Transporte - R$ 5,00"></textarea></div>
 
     const loadBrandDevices = (brand) => {
         currentBrand = brand;
-        document.getElementById('brand-page-title').textContent = brand.toUpperCase().replace('-', '');
+        document.getElementById('brand-page-title').textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
         const grid = document.getElementById('brand-devices-grid');
-        grid.innerHTML = ''; // Limpa o grid
+        grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Carregando dispositivos...</p>';
         showPage('brandDevicesPage');
-
-        // Filtra os aparelhos do cache que já foi carregado na memória
-        const devicesOfBrand = deviceCatalogCache.filter(device => device.brand === brand);
-
-        if (devicesOfBrand.length > 0) {
-            devicesOfBrand.forEach(device => {
-                const card = document.createElement('div');
-                card.className = 'device-card';
-                card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
-                // A chave (key) do aparelho agora vem diretamente do objeto do cache
-                card.addEventListener('click', () => loadDeviceDetails(device.key, device.brand));
-                grid.appendChild(card);
-            });
-        } else {
-            grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Nenhum dispositivo cadastrado para esta marca.</p>';
-        }
-        staggerAnimate(grid.parentElement);
+        database.ref(`devices/${brand}`).once('value', snapshot => {
+            grid.innerHTML = '';
+            if (snapshot.exists()) {
+                const devices = snapshot.val();
+                Object.keys(devices).forEach(key => {
+                    const device = devices[key];
+                    const card = document.createElement('div');
+                    card.className = 'device-card';
+                    card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
+                    // A chamada agora passa a marca, que já está na variável global 'currentBrand'
+                    card.addEventListener('click', () => loadDeviceDetails(key, currentBrand));
+                    grid.appendChild(card);
+                });
+            } else {
+                grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Nenhum dispositivo cadastrado para esta marca.</p>';
+            }
+            staggerAnimate(grid.parentElement);
+        });
     };
     
-    // A FUNÇÃO fetchWithTimeout E `priceCache` FORAM REMOVIDAS, POIS NÃO SÃO MAIS NECESSÁRIAS
-
-    const fetchAndDisplayPriceForDevice = (deviceName) => {
-        // Pega a referência para os elementos do HTML
-        const vendaEl = document.getElementById('device-price-venda');
-        const limiteEl = document.getElementById('device-price-limite');
-        const entradaEl = document.getElementById('device-price-entrada');
-        const seguroQuedaEl = document.getElementById('device-seguro-queda');
-        const garantiaEstendidaEl = document.getElementById('device-garantia-estendida');
-
-        // Busca o aparelho no cache de produtos que foi carregado do Firebase
-        const deviceData = deviceCatalogCache.find(d => d.name.toUpperCase() === deviceName.trim().toUpperCase());
-
-        if (deviceData) {
-            // Se encontrou o aparelho no cache, exibe os preços
-            vendaEl.textContent = deviceData.precoVenda || 'Não informado';
-            limiteEl.textContent = deviceData.precoLimite || 'Não informado';
-            entradaEl.textContent = deviceData.entradaMinima || 'Não informado';
-            seguroQuedaEl.textContent = deviceData.seguroContraQueda || 'Não informado';
-            garantiaEstendidaEl.textContent = deviceData.garantiaEstendidaDe1Ano || 'Não informado';
-        } else {
-            // Se não encontrou, exibe uma mensagem de erro
-            const errorMsg = 'Preço não encontrado';
-            vendaEl.textContent = errorMsg;
-            limiteEl.textContent = errorMsg;
-            entradaEl.textContent = errorMsg;
-            seguroQuedaEl.textContent = errorMsg;
-            garantiaEstendidaEl.textContent = errorMsg;
-        }
-    };
-
-    // Função modificada para usar o novo caminho do banco de dados
-const loadDeviceDetails = (key, brand) => {
-        currentBrand = brand; // Mantém a marca atual para o botão "voltar" funcionar
-        database.ref(`deviceCatalog/${key}`).once('value', snapshot => {
+    // Função modificada para aceitar a marca como parâmetro
+    const loadDeviceDetails = (key, brand) => {
+        currentBrand = brand; // Atualiza a marca atual para o botão de voltar funcionar
+        database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
             if (!snapshot.exists()) {
                 alert('Este dispositivo não foi encontrado. Pode ter sido excluído.');
+                // Tenta voltar para a página de marcas, se a marca for válida
                 if (brand) {
                     loadBrandDevices(brand);
                 } else {
@@ -6407,175 +6210,36 @@ const loadDeviceDetails = (key, brand) => {
                 }
                 return;
             }
-            const device = { ...snapshot.val(), key: snapshot.key }; // Adiciona a chave ao objeto
+            const device = snapshot.val();
             document.getElementById('device-detail-title').textContent = device.name;
             const contentContainer = document.getElementById('device-detail-content');
-            
+
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
-                
-                <h3>Preço de venda ✅</h3>
-                <pre>${device.precoVenda || 'Não informado'}</pre>
-                
-                <h3>Preço limite 🚨</h3>
-                <pre>${device.precoLimite || 'Não informado'}</pre>
-                
-                <h3>Entrada mínima ( Crediário ) 📑</h3>
-                <pre>${device.entradaMinima || 'Não informado'}</pre>
-
-                <h3>Seguro Contra queda 🛡</h3>
-                <pre>${device.seguroContraQueda || 'Não informado'}</pre>
-                
-                <h3>Garantia Estendida (+1 Ano) ⚙</h3>
-                <pre>${device.garantiaEstendidaDe1Ano || 'Não informado'}</pre>
-
-                <h3>⚙️ Ficha Técnica</h3>
-                <pre>${device.techSpecs || 'Não informado.'}</pre>
-
+                <h3>💰 Tabela de Preços</h3><pre>${device.priceTable || 'Não informado.'}</pre>
+                <h3>🔧 Seguro Opcional</h3><pre>${device.insuranceTable || 'Não informado.'}</pre>
+                <h3>⚙️ Ficha Técnica</h3><pre>${device.techSpecs || 'Não informado.'}</pre>
                 <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
                 <button id="delete-device-btn" class="action-button delete-button"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
             `;
             
             showPage('deviceDetailPage');
-
-            // Adiciona os listeners
+            
+            // Adiciona os listeners DEPOIS que a página é mostrada e o conteúdo existe
             document.getElementById('edit-device-btn').addEventListener('click', () => editDevice(key));
             document.getElementById('delete-device-btn').addEventListener('click', () => deleteDevice(key));
+            // O botão de voltar da página de detalhes também é configurado aqui
             document.getElementById('back-to-brand-from-detail').addEventListener('click', () => showPage('brandDevicesPage'));
         });
     };
-
-    // O cache `sheetDeviceListCache` foi removido, pois agora usamos `deviceCatalogCache`
-
-    const renderSheetDeviceList = (filter = '', brandFilter = '') => {
-        const listContainer = document.getElementById('sheet-device-list-container');
-        listContainer.innerHTML = '';
-        const lowerCaseFilter = filter.toLowerCase();
-        const lowerCaseBrand = brandFilter.toLowerCase();
-
-        const filteredList = sheetDeviceListCache.filter(name => {
-            const lowerCaseName = name.toLowerCase();
-            // Condição 1: O nome do aparelho DEVE começar com o nome da marca.
-            const matchesBrand = brandFilter ? lowerCaseName.startsWith(lowerCaseBrand) : true;
-            // Condição 2: O nome do aparelho DEVE incluir o texto digitado na busca.
-            const matchesSearch = filter ? lowerCaseName.includes(lowerCaseFilter) : true;
-            return matchesBrand && matchesSearch;
-        });
-
-        if (filteredList.length === 0) {
-            listContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Nenhum dispositivo encontrado para esta marca.</p>';
-            return;
-        }
-
-        filteredList.forEach(name => {
-            const button = document.createElement('button');
-            button.className = 'modal-btn';
-            button.textContent = name;
-            listContainer.appendChild(button);
-        });
-    };
-
-        const openDeviceSelectionModal = () => {
-        const selectedBrand = document.getElementById('device-brand').value;
-        if (!selectedBrand) {
-            alert('Por favor, selecione uma marca primeiro!');
-            return;
-        }
-
-        const modal = document.getElementById('sheet-device-selection-modal');
-        const searchInput = document.getElementById('sheet-device-search-input');
-        
-        searchInput.value = '';
-        modal.style.display = 'flex';
-        modal.classList.add('visible');
-
-        // Filtra a lista de aparelhos do cache do Firebase pela marca selecionada
-        const listContainer = document.getElementById('sheet-device-list-container');
-        listContainer.innerHTML = '';
-        const devicesOfBrand = deviceCatalogCache.filter(d => d.brand === selectedBrand);
-
-        if (devicesOfBrand.length === 0) {
-            listContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Nenhum aparelho cadastrado para esta marca.</p>';
-            return;
-        }
-
-        devicesOfBrand.forEach(device => {
-            const button = document.createElement('button');
-            button.className = 'modal-btn';
-            button.textContent = device.name;
-            listContainer.appendChild(button);
-        });
-    };
-
-    const fetchSpreadsheetData = (deviceName) => {
-        const statusEl = document.getElementById('send-device-status');
-        const priceTableTextarea = document.getElementById('device-price-table');
-
-        if (!deviceName) {
-            statusEl.textContent = 'Selecione um dispositivo da lista primeiro!';
-            return;
-        }
-
-        statusEl.textContent = `Carregando dados de "${deviceName}"...`;
-        
-        const deviceData = deviceCatalogCache.find(d => d.name.toUpperCase() === deviceName.trim().toUpperCase());
-        
-        if (deviceData) {
-            const priceTableText = `Preço de Venda: ${deviceData.precoVenda || 'Não informado'}\nPreço Limite: ${deviceData.precoLimite || 'Não informado'}\nEntrada Mínima: ${deviceData.entradaMinima || 'Não informado'}`;
-            priceTableTextarea.value = priceTableText;
-            statusEl.textContent = 'Dados carregados!';
-        } else {
-            statusEl.textContent = 'Erro: Aparelho não encontrado no catálogo.';
-            priceTableTextarea.value = 'Não foi possível carregar os dados.';
-        }
-    };
-
-    // ... (resto do seu código)
-
-    // DENTRO DO document.addEventListener('DOMContentLoaded', () => { ... });
-    // Adicione estes novos listeners:
-    
-            document.getElementById('device-name-display').addEventListener('click', openDeviceSelectionModal);
-
-            const sheetDeviceModal = document.getElementById('sheet-device-selection-modal');
-            
-            document.getElementById('close-sheet-device-modal-btn').addEventListener('click', () => {
-                sheetDeviceModal.style.display = 'none';
-                sheetDeviceModal.classList.remove('visible');
-            });
-
-            document.getElementById('sheet-device-search-input').addEventListener('input', (e) => {
-                const selectedBrand = document.getElementById('device-brand').value;
-                renderSheetDeviceList(e.target.value, selectedBrand);
-            });
-
-            document.getElementById('sheet-device-list-container').addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal-btn')) {
-                    const selectedName = e.target.textContent;
-                    // Atualiza o valor do input oculto
-                    document.getElementById('device-name').value = selectedName;
-                    // Atualiza o texto do div visível
-                    const displayName = document.getElementById('device-name-display');
-                    displayName.textContent = selectedName;
-                    displayName.style.color = 'var(--white)'; // Muda a cor para a de texto normal
-
-                    // Fecha a modal
-                    sheetDeviceModal.style.display = 'none';
-                    sheetDeviceModal.classList.remove('visible');
-                    
-                    // AÇÃO AUTOMÁTICA: Busca os dados do aparelho selecionado
-                    fetchSpreadsheetData(selectedName);
-                }
-            });
-
     const deleteDevice = (key) => {
+        // A verificação de senha foi removida pois o novo sistema de login já autentica o usuário.
         if (!confirm('Tem certeza que deseja deletar este dispositivo?')) return;
         
-        // Apaga do novo caminho centralizado
-        database.ref(`deviceCatalog/${key}`).remove()
+        database.ref(`devices/${currentBrand}/${key}`).remove()
             .then(() => { 
                 alert('Dispositivo deletado com sucesso!'); 
-                loadBrandDevices(currentBrand); // Recarrega a lista da marca
+                loadBrandDevices(currentBrand); // Recarrega a lista de dispositivos da marca
             })
             .catch((error) => { 
                 alert('Erro ao deletar o dispositivo.'); 
@@ -6585,31 +6249,26 @@ const loadDeviceDetails = (key, brand) => {
 
     const editDevice = (key) => {
         editingDeviceKey = key; // Define a chave global para o modo de edição
-        // Busca o aparelho no novo caminho do banco de dados
-        database.ref(`deviceCatalog/${key}`).once('value', snapshot => {
+        database.ref(`devices/${currentBrand}/${key}`).once('value', snapshot => {
             if (snapshot.exists()) {
                 const device = snapshot.val();
                 
+                // Muda a UI para o modo de edição
                 document.querySelector('#send-device-page h2').textContent = 'Editar Dispositivo';
                 document.getElementById('save-device-btn').textContent = 'Salvar Alterações';
 
-                document.getElementById('device-brand').value = device.brand;
+                // Preenche o formulário com os dados existentes
+                document.getElementById('device-brand').value = currentBrand;
                 document.getElementById('device-name').value = device.name;
-                const displayName = document.getElementById('device-name-display');
-                displayName.textContent = device.name;
-                displayName.style.color = 'var(--white)';
-                
                 document.getElementById('device-image-url').value = device.imageUrl;
                 document.getElementById('device-tech-specs').value = device.techSpecs || '';
-                
-                // Monta a tabela de preços a partir dos dados do catálogo
-                const priceTableText = `Preço de Venda: ${device.precoVenda || ''}\nPreço Limite: ${device.precoLimite || ''}\nEntrada Mínima: ${device.entradaMinima || ''}`;
-                document.getElementById('device-price-table').value = priceTableText;
+                document.getElementById('device-price-table').value = device.priceTable || '';
+                document.getElementById('device-insurance-table').value = device.insuranceTable || '';
 
                 showPage('sendDevicePage');
             } else {
                 alert('Dispositivo não encontrado. Pode ter sido deletado.');
-                editingDeviceKey = null;
+                editingDeviceKey = null; // Reseta caso não encontre
             }
         });
     };
@@ -7544,7 +7203,7 @@ const loadDeviceDetails = (key, brand) => {
             for (const brand in allDevicesByBrand) {
                 const brandHeader = document.createElement('h3');
                 brandHeader.className = 'stock-brand-header';
-                brandHeader.textContent = brand.toUpperCase().replace('-', '');
+                brandHeader.textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
                 listContainer.appendChild(brandHeader);
 
                 const devices = allDevicesByBrand[brand];
@@ -7779,14 +7438,14 @@ const loadDeviceDetails = (key, brand) => {
         const mtListContainer = document.getElementById('mt-list-container');
         mtListContainer.innerHTML = `<p style="text-align:center;">Carregando...</p>`;
 
-                database.ref('mostruario').get().then(snapshot => {
+        database.ref('mostruario').get().then(snapshot => {
             mtListContainer.innerHTML = '';
             if (snapshot.exists()) {
                 snapshot.forEach(brandSnapshot => {
                     const brand = brandSnapshot.key;
                     const brandTitle = document.createElement('h4');
                     brandTitle.className = 'meta-group-title';
-                    brandTitle.textContent = brand.toUpperCase().replace('-', '');
+                    brandTitle.textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
                     mtListContainer.appendChild(brandTitle);
 
                     brandSnapshot.forEach(itemSnapshot => {
@@ -8428,18 +8087,18 @@ async function calculateAndDisplayRanking() {
     };
 
     function loadCollaboratorProfilePicture() {
-        const mainImgElement = document.getElementById('collaborator-profile-pic');
-        const headerImgElement = document.getElementById('header-profile-pic'); // Nova imagem do cabeçalho
+        const imgElement = document.getElementById('collaborator-profile-pic');
         const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
-        const userKey = currentUserName.toLowerCase();
+        const userKey = currentUserName.toLowerCase(); // USA A NOVA VARIÁVEL
         
         database.ref(`userProfiles/${userKey}/photoURL`).get().then(snapshot => {
-            const photoUrl = snapshot.exists() ? snapshot.val() : defaultPhoto;
-            if(mainImgElement) mainImgElement.src = photoUrl; // Se o elemento existir na página atual
-            if(headerImgElement) headerImgElement.src = photoUrl; // Atualiza a foto do cabeçalho também
+            if (snapshot.exists()) {
+                imgElement.src = snapshot.val();
+            } else {
+                imgElement.src = defaultPhoto;
+            }
         }).catch(() => {
-            if(mainImgElement) mainImgElement.src = defaultPhoto;
-            if(headerImgElement) headerImgElement.src = defaultPhoto;
+            imgElement.src = defaultPhoto;
         });
     };
 
@@ -8471,10 +8130,9 @@ async function calculateAndDisplayRanking() {
             .then(async (imageUrl) => { // Modificado para pegar a URL retornada
                 statusEl.textContent = 'Foto atualizada com sucesso!';
                 
-// Pega a URL novamente de forma segura para garantir que está correta
+                // Pega a URL novamente de forma segura para garantir que está correta
                 const newUrl = await fileRef.getDownloadURL();
-                imgElement.src = newUrl; // Atualiza a imagem na tela do perfil
-                document.getElementById('header-profile-pic').src = newUrl; // Atualiza a imagem no header
+                imgElement.src = newUrl; // Atualiza a imagem na tela imediatamente
 
                 // Recarrega os dados que usam a foto
                 calculateAndDisplayRanking();
@@ -9270,9 +8928,7 @@ async function calculateAndDisplayStoreRanking() {
                 cashBox: 'manager-cash-box-section',
                 dailySales: 'daily-store-sales-data',
                 individualSales: 'individual-sales-data',
-                salesHistory: 'personal-sales-history',
-                managerPanel: 'manager-panel-btn',
-                closing: 'closing-btn'
+                salesHistory: 'personal-sales-history'
             };
 
             for (const key in visibilityMap) {
@@ -9280,18 +8936,8 @@ async function calculateAndDisplayStoreRanking() {
                 const element = document.getElementById(elementId);
                 if (element) {
                     // O padrão é ser visível (true). Se a configuração for explicitamente 'false', esconde.
-                    const isVisible = settings[key] !== false;
-                    
-                    if (isVisible) {
-                        // Verifica se é um botão que precisa de display flex
-                        if (element.classList.contains('action-button')) {
-                            element.style.display = 'flex';
-                        } else {
-                            element.style.display = 'block'; // Padrão para seções
-                        }
-                    } else {
-                        element.style.display = 'none';
-                    }
+                    const isVisible = settings[key] !== false; 
+                    element.style.display = isVisible ? 'block' : 'none'; // 'block' é o padrão para sections
                 }
             }
         } catch (error) {
@@ -9854,7 +9500,33 @@ async function calculateAndDisplayStoreRanking() {
             });
 
 
-            
+            // --- LÓGICA DO MODO RÁPIDO ---
+            const fastModeToggle = document.getElementById('fast-mode-toggle');
+            const fastModeIcon = fastModeToggle.querySelector('i');
+
+            const applyFastMode = (isFast) => {
+                if (isFast) {
+                    document.body.classList.add('fast-mode');
+                    fastModeIcon.style.color = 'var(--primary-color)';
+                    localStorage.setItem('fastMode', 'true');
+                } else {
+                    document.body.classList.remove('fast-mode');
+                    // O seletor de tema claro cuida da cor do ícone no tema claro
+                    if (!document.body.classList.contains('theme-claro')) {
+                       fastModeIcon.style.color = 'var(--white)';
+                    }
+                    localStorage.setItem('fastMode', 'false');
+                }
+            };
+
+            const savedFastMode = localStorage.getItem('fastMode') === 'true';
+            applyFastMode(savedFastMode);
+
+            fastModeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isCurrentlyFast = document.body.classList.contains('fast-mode');
+                applyFastMode(!isCurrentlyFast);
+            });
             
             // --- LISTENERS DA TELA DE LOGIN ---
             document.getElementById('login-proceed-btn').addEventListener('click', handleLoginAttempt);
@@ -9867,12 +9539,6 @@ async function calculateAndDisplayStoreRanking() {
                     hint.style.display = passSnap.exists() ? 'none' : 'block';
                 } else {
                     hint.style.display = 'none';
-                }
-            });
-
-            document.getElementById('header-profile-pic').addEventListener('click', () => {
-                if (currentUserName) {
-                    loadAndShowCollaboratorProfile(currentUserName);
                 }
             });
 
@@ -9986,15 +9652,21 @@ async function calculateAndDisplayStoreRanking() {
         const pontoNotificationArea = document.getElementById('ponto-notification-area');
         const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
         const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
+        const cuponsBtn = document.getElementById('cupons-btn'); // Get the new button
 
         // Reset all optional elements to a hidden state first
-        [managerBtn, closingBtn, gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => el.style.display = 'none');
+        [managerBtn, closingBtn, gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown, cuponsBtn].forEach(el => el.style.display = 'none'); // Add button to the reset list
         
         // Show Admin-specific elements
         if (isAdminProfile) {
             gsBtnInProfile.style.display = 'flex';
         }
         
+        // Show "Cupons" button specifically for Natalia
+        if (userName === 'Natalia') {
+            cuponsBtn.style.display = 'flex';
+        }
+
         // Show Manager-specific elements (includes Store Managers and Admins)
         if (isManagerProfile) {
             // A visibilidade do cashBox é controlada pela função global
@@ -10213,11 +9885,9 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
-                        // Listeners para o código de acesso Lollipop
+            // Listeners para o código de acesso Lollipop
             document.getElementById('device-brand').addEventListener('input', checkLollipopCode);
             document.getElementById('device-name').addEventListener('input', checkLollipopCode);
-
-            
 
 
             // --- MODAIS DE FERRAMENTAS ---
@@ -10493,8 +10163,12 @@ async function calculateAndDisplayStoreRanking() {
                 }
             });
 
-                        // --- LÓGICA DO MOSTRUÁRIO (MT) ---
-            // O event listener foi removido pois o botão MT agora é um link direto.
+            // --- LÓGICA DO MOSTRUÁRIO (MT) ---
+            document.getElementById('open-mt-display-page').addEventListener('click', () => {
+                document.getElementById('mt-brand-filter').value = "";
+                document.getElementById('mt-content-area').innerHTML = `<p style="text-align: center;">Selecione uma marca para ver os itens.</p>`;
+                showPage('mtDisplayPage');
+            });
             document.getElementById('mt-brand-filter').addEventListener('change', (event) => displayMtForBrand(event.target.value));
             document.getElementById('back-to-main-from-mt-display').addEventListener('click', showMainPage);
             document.getElementById('back-to-gs-from-mt-management').addEventListener('click', () => showPage('gsPage'));
@@ -11085,31 +10759,10 @@ async function calculateAndDisplayStoreRanking() {
 
 
 
-           // --- INICIALIZAÇÃO DA APLICAÇÃO (REFEITA COM LOGIN) ---
+            // --- INICIALIZAÇÃO DA APLICAÇÃO (REFEITA COM LOGIN) ---
                         const initializeApp = (isLoggedIn = false) => {
-                
-                // NOVA FUNÇÃO PARA CARREGAR O CATÁLOGO DE APARELHOS DO FIREBASE
-                const loadDeviceCatalog = () => {
-                    database.ref('deviceCatalog').on('value', (snapshot) => {
-                        deviceCatalogCache = [];
-                        if(snapshot.exists()){
-                             snapshot.forEach(child => {
-                                deviceCatalogCache.push({ key: child.key, ...child.val() });
-                            });
-                        }
-                        // Ordena o cache por nome para exibição consistente
-                        deviceCatalogCache.sort((a, b) => a.name.localeCompare(b.name));
-                        
-                        // Atualiza a lista de busca de aparelhos se ela estiver aberta
-                        if (document.getElementById('device-search-overlay').style.display !== 'none') {
-                            openDeviceSearch();
-                        }
-                    });
-                };
-                
                 // Se a função for chamada para um usuário já logado, só carrega os dados
                 if (isLoggedIn) {
-                    loadCollaboratorProfilePicture(); // Carrega a foto de perfil imediatamente
                     calculateAndDisplayRanking();
                     calculateAndDisplayStoreRanking();
                     loadManagerNotifications();
@@ -11136,7 +10789,6 @@ async function calculateAndDisplayStoreRanking() {
                 
                 // Lógica que roda apenas na primeira vez que a página carrega
                 document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
-                loadDeviceCatalog(); // **CHAMADA IMPORTANTE: Carrega o catálogo de aparelhos assim que o app abre.
                 database.ref('statistics/appOpens').transaction(count => (count || 0) + 1);
                  setInterval(() => {
                     if (!document.hidden) {
@@ -11321,55 +10973,6 @@ async function calculateAndDisplayStoreRanking() {
                     });
                 }
             });
-
-            // --- LÓGICA DO CARROSSEL DE DESTAQUES ---
-            let promoCarouselInterval = null;
-            let currentPromoIndex = 0;
-            const promoSlides = document.querySelectorAll('.promo-slide');
-
-            function showPromoSlide(index) {
-                promoSlides.forEach((slide, slideIndex) => {
-                    if (slideIndex === index) {
-                        slide.style.opacity = '1';
-                        slide.style.pointerEvents = 'auto'; // Torna o slide ativo clicável
-                    } else {
-                        slide.style.opacity = '0';
-                        slide.style.pointerEvents = 'none'; // Impede cliques em slides inativos
-                    }
-                });
-                currentPromoIndex = index;
-            }
-
-            function nextPromoSlide() {
-                let newIndex = currentPromoIndex + 1;
-                if (newIndex >= promoSlides.length) {
-                    newIndex = 0;
-                }
-                showPromoSlide(newIndex);
-            }
-
-            function setupPromoCarousel() {
-                if (promoSlides.length === 0) return;
-
-                // Adiciona listener de clique para cada slide
-                promoSlides.forEach(slide => {
-                    slide.addEventListener('click', () => {
-                        const targetId = slide.dataset.target;
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            // Simula um clique no elemento alvo
-                            targetElement.click();
-                        }
-                    });
-                });
-
-                // Inicia o carrossel
-                showPromoSlide(0);
-                clearInterval(promoCarouselInterval); // Limpa qualquer intervalo antigo
-                promoCarouselInterval = setInterval(nextPromoSlide, 6000); // Duração de 6 segundos
-            }
-
-            setupPromoCarousel();
         });
     </script>
 
