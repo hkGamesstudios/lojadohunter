@@ -2571,6 +2571,7 @@
                     <div class="brand-button" data-brand="tecno-">tecno-</div>
                     <div class="brand-button" data-brand="samsung">Samsung</div>
                     <div class="brand-button" data-brand="apple">Apple</div>
+                    <div class="brand-button" data-brand="clock">Clock</div>
                 </div>
             </section>
 
@@ -2676,6 +2677,26 @@
                             <div class="promo-slide-content">
                                 <h3>Personalize o App</h3>
                                 <p>Escolha um novo tema e deixe o sistema com a sua cara.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 11: Ofereça Seguro Queda -->
+                        <div class="promo-slide">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Ofereça Seguro Contra Queda</h3>
+                                <p>Proteja o investimento do seu cliente e aumente seu lucro.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 12: Ofereça Garantia Estendida -->
+                        <div class="promo-slide">
+                            <div class="promo-slide-icon">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                            </div>
+                            <div class="promo-slide-content">
+                                <h3>Ofereça Garantia Estendida</h3>
+                                <p>Mais tranquilidade para o cliente e mais comissão para você.</p>
                             </div>
                         </div>
                     </div>
@@ -3314,6 +3335,7 @@
                     <option value="infinix">Infinix</option>
                     <option value="honor">Honor</option>
                     <option value="tecno-">tecno-</option>
+                    <option value="clock">Clock</option>
                 </select>
             </div>
             <div id="mt-content-area" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
@@ -3413,8 +3435,9 @@
                     <option value="umidigi">Umidigi</option>
                     <option value="itel">Itel</option>
                     <option value="infinix">Infinix</option>
-                    <option value="honor">Honor</option>
+                                        <option value="honor">Honor</option>
                     <option value="tecno-">tecno-</option>
+                    <option value="clock">Clock</option>
                 </select>
             </div>
             <div class="input-group">
@@ -4247,7 +4270,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.4.9'; // Altere este número para atualizar a versão
+    const APP_VERSION = '3.5.0 - New'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6143,7 +6166,7 @@ Transporte - R$ 5,00"></textarea></div>
         statusMessage.textContent = 'Salvando dados...';
         const metasDataToSave = {};
 
-        allCollaborators.forEach(name => {
+        allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
             const key = name.toLowerCase();
             const data = {
                 venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
