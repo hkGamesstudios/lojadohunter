@@ -55,6 +55,22 @@
             --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* Curva para animação com "overshoot" */
         }
 
+        /* Classe para desativar cliques durante a navegação */
+        body.navigating * {
+            pointer-events: none !important;
+            cursor: progress !important;
+        }
+
+        /* ================================================= */
+        /* == ESTILOS DOS TEMAS                           == */
+        /* ================================================= */
+            --background-color: #f4f4f4; /* Cinza claro para o fundo */
+            --card-bg-color: #FFFFFF; /* Branco para os cards */
+            --text-light: #666;
+            --white: #FFFFFF;
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* Curva para animação com "overshoot" */
+        }
+
         /* ================================================= */
         /* == ESTILOS DOS TEMAS                           == */
         /* ================================================= */
@@ -4303,7 +4319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '4.0.1 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '4.0.2 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5250,37 +5266,42 @@ item.className = 'chat-list-item';
 
 
 
-    function showScreen(screenElement) {
+function showScreen(screenElement) {
+        // 1. Se uma navegação já está em andamento, ignora o novo clique.
         if (isNavigating) return;
+        
+        // 2. Inicia a navegação, bloqueando cliques futuros e ativando o cursor de carregamento via CSS.
         isNavigating = true;
+        document.body.classList.add('navigating');
 
         const currentScreen = document.querySelector('.visible');
 
-        const transitionEnd = () => {
+        // 5. Agenda a liberação do bloqueio para daqui a 800ms, que é o tempo total da animação.
+        setTimeout(() => {
             isNavigating = false;
-        };
+            document.body.classList.remove('navigating');
+        }, 1400); // 400ms para sair + 400ms para entrar
 
+        // 3. Lógica para animar a saída da tela atual (se houver).
         if (currentScreen) {
             currentScreen.classList.add('is-exiting');
             currentScreen.addEventListener('animationend', (e) => {
-                // ESTA VERIFICAÇÃO IMPEDE QUE ANIMAÇÕES DE FILHOS ATIVEM O CÓDIGO PREMATURAMENTE
-                if (e.target !== currentScreen) return; 
-                
+                if (e.target !== currentScreen) return;
                 currentScreen.classList.remove('visible', 'is-exiting');
+                
+                // 4. Inicia a exibição da nova tela APÓS a antiga sumir.
                 screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
                 requestAnimationFrame(() => {
                     screenElement.classList.add('visible');
                     staggerAnimate(screenElement);
-                    transitionEnd();
                 });
             }, { once: true });
         } else {
-            // Nenhuma tela visível, apenas mostra a nova
+            // Se não há tela atual, apenas exibe a nova.
             screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
             requestAnimationFrame(() => {
                 screenElement.classList.add('visible');
                 staggerAnimate(screenElement);
-                transitionEnd();
             });
         }
     }
