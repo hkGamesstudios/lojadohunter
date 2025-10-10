@@ -2605,18 +2605,18 @@
                     </button>
                 </div>
                 <div class="brand-list">
-                    <div class="brand-button" data-brand="xiaomi">Xiaomi</div>
-                    <div class="brand-button" data-brand="poco">Poco</div>
-                    <div class="brand-button" data-brand="realme">Realme</div>
-                    <div class="brand-button" data-brand="umidigi">Umidigi</div>
-                    <div class="brand-button" data-brand="itel">Itel</div>
-                                        <div class="brand-button" data-brand="infinix">Infinix</div>
-                    <div class="brand-button" data-brand="honor">Honor</div>
-                    <div class="brand-button" data-brand="joog">Joog</div>
-                    <div class="brand-button" data-brand="meizu">Meizu</div>
-                    <div class="brand-button" data-brand="tecno">Tecno</div>
-                    <div class="brand-button" data-brand="samsung">Samsung</div>
-                    <div class="brand-button" data-brand="apple">Apple</div>
+                    <div class="brand-button" data-brand="xiaomi">XIAOMI</div>
+                    <div class="brand-button" data-brand="poco">POCO</div>
+                    <div class="brand-button" data-brand="realme">REALME</div>
+                    <div class="brand-button" data-brand="umidigi">UMIDIGI</div>
+                    <div class="brand-button" data-brand="itel">ITEL</div>
+                    <div class="brand-button" data-brand="infinix">INFINIX</div>
+                    <div class="brand-button" data-brand="honor">HONOR</div>
+                    <div class="brand-button" data-brand="meizu">MEIZU</div>
+                    <div class="brand-button" data-brand="tecno">TECNO</div>
+                    <div class="brand-button" data-brand="samsung">SAMSUNG</div>
+                    <div class="brand-button" data-brand="apple">APPLE</div>
+                    <div class="brand-button" data-brand="joog">JOOG</div>
                 </div>
             </section>
 
@@ -4319,7 +4319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '4.0.2 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '4.0.3 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10747,51 +10747,81 @@ async function calculateAndDisplayStoreRanking() {
             
             // Listeners para troca de foto de perfil
             const loadAndDisplayCollaboratorStatus = async () => {
-const profileDisplayContainer = document.getElementById('collaborator-status-display-container');
-const mainDisplaySection = document.getElementById('main-status-display-section');
-const mainDisplayContainer = document.getElementById('main-status-bubble-container');
-if (profileDisplayContainer) profileDisplayContainer.innerHTML = '';
-            if (mainDisplayContainer) mainDisplayContainer.innerHTML = '';
-            if (mainDisplaySection) mainDisplaySection.style.display = 'none';
-            if (!currentUserName) return;
-
-            const userKey = currentUserName.toLowerCase();
-            const statusRef = database.ref(`userStatuses/${userKey}`);
-
-            try {
-                const statusSnapshot = await statusRef.get();
-                if (statusSnapshot.exists()) {
-                    const statusData = statusSnapshot.val();
-                    const statusTimestamp = new Date(statusData.timestamp);
-                    const now = new Date();
-                    const hoursDiff = (now - statusTimestamp) / (1000 * 60 * 60);
-
-                    if (hoursDiff < 24) {
-                        // Busca a foto do perfil do usuário
-                        const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
-                        const photoUrl = profileSnap.exists() && profileSnap.val().photoURL ? profileSnap.val().photoURL : DEFAULT_PROFILE_PHOTO;
-
-                        // Cria a nova estrutura HTML com a foto e o texto
-                        const bubbleHtml = `
-                            <div class="profile-status-bubble">
-                                <img src="${photoUrl}" class="status-bubble-photo">
-                                <span class="status-bubble-text">${statusData.text}</span>
-                            </div>
-                        `;
-                        
-                        if (profileDisplayContainer) {
-                            profileDisplayContainer.innerHTML = bubbleHtml;
+                // Parte 1: Carrega o status pessoal APENAS na página de perfil do usuário.
+                const profileDisplayContainer = document.getElementById('collaborator-status-display-container');
+                if (profileDisplayContainer && currentUserName) {
+                    profileDisplayContainer.innerHTML = ''; // Limpa antes de carregar
+                    const userKey = currentUserName.toLowerCase();
+                    try {
+                        const statusSnapshot = await database.ref(`userStatuses/${userKey}`).get();
+                        if (statusSnapshot.exists()) {
+                            const statusData = statusSnapshot.val();
+                            const statusTimestamp = new Date(statusData.timestamp);
+                            const now = new Date();
+                            if ((now - statusTimestamp) / (1000 * 60 * 60) < 24) { // Se o status for das últimas 24h
+                                const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
+                                const photoUrl = profileSnap.exists() && profileSnap.val().photoURL ? profileSnap.val().photoURL : DEFAULT_PROFILE_PHOTO;
+                                profileDisplayContainer.innerHTML = `
+                                    <div class="profile-status-bubble">
+                                        <img src="${photoUrl}" class="status-bubble-photo">
+                                        <span class="status-bubble-text">${statusData.text}</span>
+                                    </div>`;
+                            }
                         }
-                        if (mainDisplayContainer && mainDisplaySection) {
-                            mainDisplayContainer.innerHTML = bubbleHtml;
-                            mainDisplaySection.style.display = 'block';
-                        }
+                    } catch (error) {
+                        console.error("Erro ao carregar o status do perfil pessoal:", error);
                     }
                 }
-            } catch (error) {
-                console.error("Error loading collaborator status:", error);
-            }
-        };
+
+                // Parte 2: Carrega o status mais recente de QUALQUER usuário para a PÁGINA PRINCIPAL.
+                const mainDisplaySection = document.getElementById('main-status-display-section');
+                const mainDisplayContainer = document.getElementById('main-status-bubble-container');
+                if (!mainDisplaySection || !mainDisplayContainer) return;
+
+                mainDisplayContainer.innerHTML = '';
+                mainDisplaySection.style.display = 'none';
+
+                try {
+                    const allStatusesSnap = await database.ref('userStatuses').get();
+                    const allProfilesSnap = await database.ref('userProfiles').get();
+
+                    if (!allStatusesSnap.exists()) return;
+
+                    const allStatuses = allStatusesSnap.val();
+                    const allProfiles = allProfilesSnap.exists() ? allProfilesSnap.val() : {};
+                    const now = new Date();
+                    let mostRecentActiveStatus = null;
+
+                    // Itera por todos os status para encontrar o mais recente e ativo
+                    for (const userKey in allStatuses) {
+                        const statusData = allStatuses[userKey];
+                        const statusTimestamp = new Date(statusData.timestamp);
+
+                        if ((now - statusTimestamp) / (1000 * 60 * 60) < 24) { // Se está ativo
+                            // Se for o primeiro status ativo encontrado ou for mais recente que o último encontrado
+                            if (!mostRecentActiveStatus || statusTimestamp > new Date(mostRecentActiveStatus.timestamp)) {
+                                mostRecentActiveStatus = { ...statusData, userKey };
+                            }
+                        }
+                    }
+
+                    // Se um status ativo e mais recente foi encontrado, exibe-o
+                    if (mostRecentActiveStatus) {
+                        const authorKey = mostRecentActiveStatus.userKey;
+                        const photoUrl = allProfiles[authorKey]?.photoURL || DEFAULT_PROFILE_PHOTO;
+                        
+                        mainDisplayContainer.innerHTML = `
+                            <div class="profile-status-bubble">
+                                <img src="${photoUrl}" class="status-bubble-photo">
+                                <span class="status-bubble-text">${mostRecentActiveStatus.text}</span>
+                            </div>`;
+                        mainDisplaySection.style.display = 'block';
+                    }
+
+                } catch (error) {
+                    console.error("Erro ao carregar status global para a página principal:", error);
+                }
+            };
 
             const handleStatusUpdate = async () => {
                 const userKey = currentUserName.toLowerCase();
