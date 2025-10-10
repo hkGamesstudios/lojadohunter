@@ -1087,19 +1087,37 @@
             min-height: 20px; /* Garante espaço mesmo quando vazio */
         }
         
-        /* Estilo da bolha de status no perfil (maior) */
+                /* Estilo da bolha de status no perfil (maior) - Agora como container */
         .profile-status-bubble {
-            display: inline-block;
+            display: inline-flex; /* Usa flex para alinhar itens lado a lado */
+            align-items: center; /* Centraliza verticalmente a foto e o texto */
             background: rgba(0, 0, 0, 0.3);
-            padding: 0.4rem 0.8rem; /* Padding reduzido */
-            border-radius: 16px;
-            color: #e0e0e0; /* Cor um pouco mais suave */
-            max-width: 100%;
-            font-size: 0.9rem; /* Tamanho da fonte reduzido */
-            font-style: italic;
-            font-weight: 400; /* Peso da fonte normal */
+            padding: 6px 12px; /* Ajuste no padding */
+            border-radius: 25px; /* Deixa mais arredondado (formato de pílula) */
+            color: #e0e0e0;
+            max-width: 90%; /* Limita a largura máxima na tela */
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Novo estilo para a foto de perfil dentro do balão */
+        .status-bubble-photo {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px; /* Espaço entre a foto e o texto */
+            flex-shrink: 0; /* Impede que a foto seja espremida */
+        }
+
+        /* Novo estilo para o texto dentro do balão */
+        .status-bubble-text {
+            font-size: 0.8rem; /* Texto menor, conforme solicitado */
+            font-style: italic;
+            font-weight: 400;
+            white-space: nowrap; /* Impede que o texto quebre em várias linhas */
+            overflow: hidden; /* Esconde o texto que não couber */
+            text-overflow: ellipsis; /* Adiciona "..." ao final do texto cortado */
         }
 
         /* Bolha de status para a seção de ranking */
@@ -2555,6 +2573,13 @@
                 </div>
             </section>
 
+            <!-- NOVA Seção de Status do Colaborador -->
+            <section id="main-status-display-section" style="padding: 1.5rem 1rem 1.5rem 1rem; display: none;">
+                <div id="main-status-bubble-container" style="text-align: center;">
+                    <!-- O balão de status do usuário logado aparecerá aqui -->
+                </div>
+            </section>
+
             <!-- Seção de Aparelhos por Marca -->
             <section id="aparelhos">
                 <h2 class="section-title">Aparelhos</h2>
@@ -2571,6 +2596,8 @@
                     <div class="brand-button" data-brand="itel">Itel</div>
                                         <div class="brand-button" data-brand="infinix">Infinix</div>
                     <div class="brand-button" data-brand="honor">Honor</div>
+                    <div class="brand-button" data-brand="joog">Joog</div>
+                    <div class="brand-button" data-brand="meizu">Meizu</div>
                     <div class="brand-button" data-brand="tecno">Tecno</div>
                     <div class="brand-button" data-brand="samsung">Samsung</div>
                     <div class="brand-button" data-brand="apple">Apple</div>
@@ -3336,6 +3363,8 @@
                     <option value="itel">Itel</option>
                     <option value="infinix">Infinix</option>
                     <option value="honor">Honor</option>
+                    <option value="joog">Joog</option>
+                    <option value="meizu">Meizu</option>
                     <option value="tecno">Tecno</option>
                 </select>
             </div>
@@ -3370,6 +3399,8 @@
                         <option value="itel">Itel</option>
                         <option value="infinix">Infinix</option>
                         <option value="honor">Honor</option>
+                        <option value="joog">Joog</option>
+                        <option value="meizu">Meizu</option>
                         <option value="tecno">Tecno</option>
                     </select>
                 </div>
@@ -3436,7 +3467,9 @@
                     <option value="umidigi">Umidigi</option>
                     <option value="itel">Itel</option>
                     <option value="infinix">Infinix</option>
-                    <option value="honor">Honor</option>
+                                        <option value="honor">Honor</option>
+                    <option value="joog">Joog</option>
+                    <option value="meizu">Meizu</option>
                     <option value="tecno">Tecno</option>
                 </select>
             </div>
@@ -4270,7 +4303,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '4.0.0 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '4.0.1 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10693,27 +10726,51 @@ async function calculateAndDisplayStoreRanking() {
             
             // Listeners para troca de foto de perfil
             const loadAndDisplayCollaboratorStatus = async () => {
-                const displayContainer = document.getElementById('collaborator-status-display-container');
-                displayContainer.innerHTML = ''; // Limpa status anterior
-                const userKey = currentUserName.toLowerCase();
-                const statusRef = database.ref(`userStatuses/${userKey}`);
+const profileDisplayContainer = document.getElementById('collaborator-status-display-container');
+const mainDisplaySection = document.getElementById('main-status-display-section');
+const mainDisplayContainer = document.getElementById('main-status-bubble-container');
+if (profileDisplayContainer) profileDisplayContainer.innerHTML = '';
+            if (mainDisplayContainer) mainDisplayContainer.innerHTML = '';
+            if (mainDisplaySection) mainDisplaySection.style.display = 'none';
+            if (!currentUserName) return;
 
-                try {
-                    const snapshot = await statusRef.get();
-                    if (snapshot.exists()) {
-                        const statusData = snapshot.val();
-                        const statusTimestamp = new Date(statusData.timestamp);
-                        const now = new Date();
-                        const hoursDiff = (now - statusTimestamp) / (1000 * 60 * 60);
+            const userKey = currentUserName.toLowerCase();
+            const statusRef = database.ref(`userStatuses/${userKey}`);
 
-                        if (hoursDiff < 24) {
-                            displayContainer.innerHTML = `<span class="profile-status-bubble">${statusData.text}</span>`;
+            try {
+                const statusSnapshot = await statusRef.get();
+                if (statusSnapshot.exists()) {
+                    const statusData = statusSnapshot.val();
+                    const statusTimestamp = new Date(statusData.timestamp);
+                    const now = new Date();
+                    const hoursDiff = (now - statusTimestamp) / (1000 * 60 * 60);
+
+                    if (hoursDiff < 24) {
+                        // Busca a foto do perfil do usuário
+                        const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
+                        const photoUrl = profileSnap.exists() && profileSnap.val().photoURL ? profileSnap.val().photoURL : DEFAULT_PROFILE_PHOTO;
+
+                        // Cria a nova estrutura HTML com a foto e o texto
+                        const bubbleHtml = `
+                            <div class="profile-status-bubble">
+                                <img src="${photoUrl}" class="status-bubble-photo">
+                                <span class="status-bubble-text">${statusData.text}</span>
+                            </div>
+                        `;
+                        
+                        if (profileDisplayContainer) {
+                            profileDisplayContainer.innerHTML = bubbleHtml;
+                        }
+                        if (mainDisplayContainer && mainDisplaySection) {
+                            mainDisplayContainer.innerHTML = bubbleHtml;
+                            mainDisplaySection.style.display = 'block';
                         }
                     }
-                } catch (error) {
-                    console.error("Error loading collaborator status:", error);
                 }
-            };
+            } catch (error) {
+                console.error("Error loading collaborator status:", error);
+            }
+        };
 
             const handleStatusUpdate = async () => {
                 const userKey = currentUserName.toLowerCase();
@@ -11270,6 +11327,7 @@ async function calculateAndDisplayStoreRanking() {
                 // Se a função for chamada para um usuário já logado, só carrega os dados
                 if (isLoggedIn) {
                     loadCollaboratorProfilePicture(); // Carrega a foto de perfil imediatamente
+                    loadAndDisplayCollaboratorStatus(); // Carrega o status para a tela principal
                     calculateAndDisplayRanking();
                     calculateAndDisplayStoreRanking();
                     loadManagerNotifications();
