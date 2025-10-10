@@ -16,6 +16,9 @@
     <!-- Chart.js - Biblioteca de Gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Supabase - Biblioteca de Cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         /* --- MODO RÁPIDO (SEM ANIMAÇÕES) --- */
         .fast-mode .modal-content,
@@ -2566,12 +2569,11 @@
                     <div class="brand-button" data-brand="realme">Realme</div>
                     <div class="brand-button" data-brand="umidigi">Umidigi</div>
                     <div class="brand-button" data-brand="itel">Itel</div>
-                    <div class="brand-button" data-brand="infinix">Infinix</div>
+                                        <div class="brand-button" data-brand="infinix">Infinix</div>
                     <div class="brand-button" data-brand="honor">Honor</div>
-                    <div class="brand-button" data-brand="tecno-">tecno-</div>
+                    <div class="brand-button" data-brand="tecno">Tecno</div>
                     <div class="brand-button" data-brand="samsung">Samsung</div>
                     <div class="brand-button" data-brand="apple">Apple</div>
-                    <div class="brand-button" data-brand="clock">Clock</div>
                 </div>
             </section>
 
@@ -3334,8 +3336,7 @@
                     <option value="itel">Itel</option>
                     <option value="infinix">Infinix</option>
                     <option value="honor">Honor</option>
-                    <option value="tecno-">tecno-</option>
-                    <option value="clock">Clock</option>
+                    <option value="tecno">Tecno</option>
                 </select>
             </div>
             <div id="mt-content-area" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
@@ -3369,7 +3370,7 @@
                         <option value="itel">Itel</option>
                         <option value="infinix">Infinix</option>
                         <option value="honor">Honor</option>
-                        <option value="tecno-">tecno-</option>
+                        <option value="tecno">Tecno</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -3435,9 +3436,8 @@
                     <option value="umidigi">Umidigi</option>
                     <option value="itel">Itel</option>
                     <option value="infinix">Infinix</option>
-                                        <option value="honor">Honor</option>
-                    <option value="tecno-">tecno-</option>
-                    <option value="clock">Clock</option>
+                    <option value="honor">Honor</option>
+                    <option value="tecno">Tecno</option>
                 </select>
             </div>
             <div class="input-group">
@@ -4270,11 +4270,12 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '3.5.0 - New'; // Altere este número para atualizar a versão
+    const APP_VERSION = '4.0.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
     const SITE_CASH_BOX_INITIAL_VALUE = 5000;
+    const DEFAULT_PROFILE_PHOTO = 'https://faunanews.com.br/wp-content/uploads/2022/02/image-19.png';
 
     // Sua configuração do Firebase
     const firebaseConfig = {
@@ -4287,10 +4288,14 @@ Transporte - R$ 5,00"></textarea></div>
       appId: "1:794925486853:web:7b136eefd4a5d337605d6c"
     };
 
-    // Inicializa o Firebase
+    // Inicializa o Firebase (Database)
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const storage = firebase.storage(); // INICIALIZA O STORAGE
+
+    // Inicializa o Supabase (Storage)
+    const SUPABASE_URL = 'https://pzhsslgzhpetuhvyshxo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aHNzbGd6aHBldHVodnlzaHhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMDYzMzYsImV4cCI6MjA3NTY4MjMzNn0.r7xRsI2Yqfqq77GtvpLDnch8tWQf6KGrkYg5xTZTybw';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // --- CONSTANTES DE SENHA ---
     const PASSWORD = '123789';
@@ -4487,7 +4492,7 @@ Transporte - R$ 5,00"></textarea></div>
                 const userId = name.toLowerCase();
                 const hasStory = !!activeStoriesByUser[userId];
                 const profile = profilesData[userId];
-                const photoUrl = profile?.photoURL || 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+                                const photoUrl = profile?.photoURL || DEFAULT_PROFILE_PHOTO;
 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'story-circle-wrapper';
@@ -4513,41 +4518,53 @@ Transporte - R$ 5,00"></textarea></div>
         }
     };
     
-    const handleStoryUpload = (file) => {
+    const handleStoryUpload = async (file) => {
         if (!file) return;
 
         alert('Enviando seu story...');
         const userKey = currentUserName.toLowerCase();
         const contentType = file.type.startsWith('video/') ? 'video' : 'image';
         
-        const filePath = `stories/${userKey}/${new Date().getTime()}_${file.name}`;
-        const fileRef = storage.ref().child(filePath);
+        try {
+            // 1. Define o caminho do arquivo no Supabase Storage
+            const filePath = `${userKey}/${new Date().getTime()}_${file.name}`;
 
-        fileRef.put(file)
-            .then(snapshot => snapshot.ref.getDownloadURL())
-            .then(async (contentUrl) => {
-                const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
-                const profileData = profileSnap.exists() ? profileSnap.val() : {};
-                
-                const storyData = {
-                    userId: userKey,
-                    userName: currentUserName,
-                    userPhoto: profileData.photoURL || null,
-                    contentUrl: contentUrl,
-                    contentType: contentType,
-                    timestamp: new Date().toISOString()
-                };
-                
-                return database.ref('stories').push(storyData);
-            })
-            .then(() => {
-                alert('Story publicado com sucesso!');
-                loadAndDisplayStories();
-            })
-            .catch(error => {
-                alert('Erro ao publicar o story.');
-                console.error(error);
-            });
+            // 2. Faz o upload para o bucket 'stories'
+            const { error: uploadError } = await supabase.storage
+                .from('stories') // NOME DO SEU BUCKET DE STORIES
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            // 3. Pega a URL pública do arquivo enviado
+            const { data: urlData } = supabase.storage
+                .from('stories')
+                .getPublicUrl(filePath);
+            
+            const contentUrl = urlData.publicUrl;
+
+            // 4. O resto da lógica para salvar no Firebase DB continua a mesma
+            const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
+            const profileData = profileSnap.exists() ? profileSnap.val() : {};
+            
+            const storyData = {
+                userId: userKey,
+                userName: currentUserName,
+                userPhoto: profileData.photoURL || null,
+                contentUrl: contentUrl,
+                contentType: contentType,
+                timestamp: new Date().toISOString()
+            };
+            
+            await database.ref('stories').push(storyData);
+
+            alert('Story publicado com sucesso!');
+            loadAndDisplayStories();
+
+        } catch (error) {
+            alert('Erro ao publicar o story.');
+            console.error("Erro no upload do story para o Supabase:", error);
+        }
     };
     
     const openStoryViewer = (userId) => {
@@ -4619,7 +4636,7 @@ Transporte - R$ 5,00"></textarea></div>
             const progressClass = index < currentStoryIndex ? 'style="width: 100%;"' : (index === currentStoryIndex ? 'class="active"' : '');
             return `<div class="story-progress-bar"><div ${progressClass}></div></div>`;
         }).join('');
-        document.getElementById('story-user-photo').src = story.userPhoto || 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+        document.getElementById('story-user-photo').src = story.userPhoto || DEFAULT_PROFILE_PHOTO;
         document.getElementById('story-user-name').textContent = story.userName;
 
         // 2. Renderiza o conteúdo
@@ -4861,40 +4878,22 @@ Transporte - R$ 5,00"></textarea></div>
                 return;
             }
 
-            const fileDeletionPromises = [];
             const dbUpdates = {};
-
             snapshot.forEach(childSnapshot => {
-                const storyKey = childSnapshot.key;
-                const storyData = childSnapshot.val();
-
-                // Adiciona a operação de remoção do banco de dados ao objeto de updates
-                dbUpdates[storyKey] = null;
-
-                // Se o story tiver uma URL de conteúdo, prepara a deleção do arquivo no Storage
-                if (storyData.contentUrl) {
-                    try {
-                        const fileRef = storage.refFromURL(storyData.contentUrl);
-                        // Adiciona a promessa de deleção ao array
-                        fileDeletionPromises.push(fileRef.delete());
-                    } catch (e) {
-                        console.error(`URL inválida no story ${storyKey}, não foi possível deletar do Storage:`, e);
-                    }
-                }
+                // Adiciona a chave do story ao objeto de updates para remoção do banco de dados
+                dbUpdates[childSnapshot.key] = null;
             });
 
-            // Executa todas as promessas de deleção de arquivos do Storage
-            await Promise.all(fileDeletionPromises);
-
-            // Após os arquivos serem deletados, remove as entradas do banco de dados
+            // ATENÇÃO: Conforme solicitado, a parte que apaga os arquivos do Storage foi removida.
+            // Apenas os registros do banco de dados serão apagados.
             await storiesRef.update(dbUpdates);
 
-            alert('Seus stories foram apagados com sucesso!');
+            alert('Seus stories foram removidos da visualização!');
             loadAndDisplayStories(); // Atualiza a interface
 
         } catch (error) {
-            console.error("Erro ao apagar stories:", error);
-            alert('Ocorreu um erro ao apagar seus stories. Verifique o console para mais detalhes.');
+            console.error("Erro ao apagar registros de stories:", error);
+            alert('Ocorreu um erro ao remover seus stories. Verifique o console para mais detalhes.');
         }
     };
 
@@ -4973,12 +4972,12 @@ Transporte - R$ 5,00"></textarea></div>
             if (conversations.length > 0) {
                 conversations.forEach(convo => {
                     const item = document.createElement('div');
-                    item.className = 'chat-list-item';
+item.className = 'chat-list-item';
                     if (convo.isReply) item.classList.add('reply');
                     item.dataset.chatPartnerId = convo.id;
                     
                     item.innerHTML = `
-                        <img src="${convo.photo || 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg'}" alt="${convo.name}">
+                        <img src="${convo.photo || DEFAULT_PROFILE_PHOTO}" alt="${convo.name}">
                         <div class="chat-list-item-content">
                             <p><strong>${convo.name}</strong></p>
                             <p><span>${convo.lastMessage}</span></p>
@@ -6237,15 +6236,13 @@ Transporte - R$ 5,00"></textarea></div>
         const imageUrlInput = document.getElementById('device-image-url');
         const file = imageUploadInput.files[0];
 
-        let finalImageUrl = imageUrlInput.value.trim(); // Pega a URL existente (para edição)
+        let finalImageUrl = imageUrlInput.value.trim();
 
-        // Validação básica dos campos de texto
         if (!brand || !name || !techSpecs) {
             statusEl.textContent = 'Marca, Nome e Ficha Técnica são obrigatórios!';
             return;
         }
 
-        // Validação da imagem: precisa de uma nova ou de uma já existente (no modo de edição)
         if (!file && !finalImageUrl) {
             statusEl.textContent = 'Por favor, envie uma imagem para o dispositivo!';
             return;
@@ -6253,24 +6250,40 @@ Transporte - R$ 5,00"></textarea></div>
         
         statusEl.textContent = 'Salvando...';
 
-        // Se um novo arquivo foi selecionado, faz o upload
+        // Se um novo arquivo foi selecionado, faz o upload para o Supabase
         if (file) {
             try {
                 imageStatusEl.textContent = 'Enviando imagem...';
-                const filePath = `device_images/${brand}/${new Date().getTime()}_${file.name}`;
-                const fileRef = storage.ref().child(filePath);
-                const snapshot = await fileRef.put(file);
-                finalImageUrl = await snapshot.ref.getDownloadURL();
+                
+                // 1. Define o caminho do arquivo dentro do bucket
+                const filePath = `${brand}/${new Date().getTime()}_${file.name}`;
+
+                // 2. Faz o upload para o bucket 'device-images'
+                const { data: uploadData, error: uploadError } = await supabase
+                    .storage
+                    .from('device-images') // NOME DO SEU NOVO BUCKET
+                    .upload(filePath, file);
+                
+                if (uploadError) throw uploadError;
+
+                // 3. Pega a URL pública do arquivo enviado
+                const { data: urlData } = supabase
+                    .storage
+                    .from('device-images')
+                    .getPublicUrl(filePath);
+
+                finalImageUrl = urlData.publicUrl;
                 imageStatusEl.textContent = 'Imagem enviada com sucesso!';
+
             } catch (error) {
-                console.error("Erro no upload da imagem do dispositivo:", error);
+                console.error("Erro no upload da imagem do dispositivo para o Supabase:", error);
                 statusEl.textContent = 'Erro ao enviar a imagem!';
                 imageStatusEl.textContent = 'Falha no upload. Tente novamente.';
                 return;
             }
         }
         
-        // Objeto de dados final com a URL da imagem correta
+        // O resto do código permanece igual, pois ele salva os metadados no Firebase RTDB
         const deviceData = {
             name,
             imageUrl: finalImageUrl,
@@ -6278,19 +6291,15 @@ Transporte - R$ 5,00"></textarea></div>
             priceTable: document.getElementById('device-price-table').value.trim()
         };
 
-        // Lógica de salvar (criar novo ou atualizar existente)
         try {
             if (editingDeviceKey) {
-                // MODO DE ATUALIZAÇÃO
                 await database.ref(`devices/${brand}/${editingDeviceKey}`).update(deviceData);
                 statusEl.textContent = 'Dispositivo atualizado com sucesso!';
                 setTimeout(() => {
                     resetSendDeviceForm();
-                    // Retorna para a página de detalhes do dispositivo editado
                     loadDeviceDetails(editingDeviceKey, brand);
                 }, 1500);
             } else {
-                // MODO DE CRIAÇÃO
                 await database.ref(`devices/${brand}`).push(deviceData);
                 statusEl.textContent = 'Dispositivo salvo com sucesso!';
                 resetSendDeviceForm();
@@ -8070,7 +8079,7 @@ async function calculateAndDisplayRanking() {
                 
                 const progressBarWidth = collab.percentage;
 
-                const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+                const defaultPhoto = DEFAULT_PROFILE_PHOTO;
                 const collaboratorProfile = profilesData[collab.name.toLowerCase()];
                 const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
                 const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
@@ -8580,7 +8589,7 @@ async function calculateAndDisplayRanking() {
     function loadCollaboratorProfilePicture() {
         const mainImgElement = document.getElementById('collaborator-profile-pic');
         const headerImgElement = document.getElementById('header-profile-pic'); // Nova imagem do cabeçalho
-        const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+        const defaultPhoto = DEFAULT_PROFILE_PHOTO;
         const userKey = currentUserName.toLowerCase();
         
         database.ref(`userProfiles/${userKey}/photoURL`).get().then(snapshot => {
@@ -8593,50 +8602,59 @@ async function calculateAndDisplayRanking() {
         });
     };
 
-    function uploadProfilePicture(file) {
-        // A lógica antiga que verificava 'securityProfilePage' foi removida.
-        // A função agora assume que o upload sempre acontece a partir da tela de perfil.
+    const uploadProfilePicture = async (file) => {
         const statusEl = document.getElementById('photo-upload-status');
         const imgElement = document.getElementById('collaborator-profile-pic');
         const userKey = currentUserName.toLowerCase();
 
         statusEl.textContent = 'Enviando foto...';
 
-        // 1. Cria uma referência para o local onde a foto será salva no Firebase Storage.
-        const filePath = `profile_pictures/${userKey}/${new Date().getTime()}_${file.name}`;
-        const fileRef = storage.ref().child(filePath);
+        try {
+                        // 1. Define o caminho e nome do arquivo no Supabase Storage.
+            const filePath = `${userKey}/${new Date().getTime()}_${file.name}`;
 
-        // 2. Inicia o upload do arquivo.
-        fileRef.put(file)
-            .then(snapshot => {
-                statusEl.textContent = 'Upload concluído. Obtendo URL...';
-                // 3. Após o upload, pega a URL pública do arquivo.
-                return snapshot.ref.getDownloadURL();
-            })
-            .then(imageUrl => {
-                statusEl.textContent = 'Atualizando perfil...';
-                // 4. Salva a URL da imagem no Firebase Database, no perfil do usuário.
-                return database.ref(`userProfiles/${userKey}/photoURL`).set(imageUrl);
-            })
-            .then(async (imageUrl) => { // Modificado para pegar a URL retornada
-                statusEl.textContent = 'Foto atualizada com sucesso!';
-                
-// Pega a URL novamente de forma segura para garantir que está correta
-                const newUrl = await fileRef.getDownloadURL();
-                imgElement.src = newUrl; // Atualiza a imagem na tela do perfil
-                document.getElementById('header-profile-pic').src = newUrl; // Atualiza a imagem no header
+            // 2. Faz o upload do arquivo para o bucket 'profile-pictures'.
+            const { data: uploadData, error: uploadError } = await supabase
+                .storage
+                .from('profile-pictures') // NOME DO SEU BUCKET PÚBLICO
+                .upload(filePath, file);
 
-                // Recarrega os dados que usam a foto
-                calculateAndDisplayRanking();
-                calculateAndDisplayStoreRanking();
-                loadAndDisplayStories();
-                setTimeout(() => { statusEl.textContent = ''; }, 3000);
-            })
-            .catch(error => {
-                // Captura qualquer erro no processo
-                console.error("Erro no processo de upload de foto:", error);
-                statusEl.textContent = 'Erro ao enviar a foto. Tente novamente.';
-            });
+            if (uploadError) {
+                throw uploadError; // Se houver um erro no upload, ele será capturado pelo catch.
+            }
+            
+            statusEl.textContent = 'Upload concluído. Obtendo URL...';
+
+            // 3. Pega a URL pública do arquivo que acabamos de enviar.
+            const { data: urlData } = supabase
+                .storage
+                .from('profile-pictures') // NOME DO SEU BUCKET
+                .getPublicUrl(filePath);
+
+            const imageUrl = urlData.publicUrl;
+
+            statusEl.textContent = 'Atualizando perfil...';
+
+            // 4. Salva a URL da imagem no Firebase Realtime Database.
+            await database.ref(`userProfiles/${userKey}/photoURL`).set(imageUrl);
+
+            statusEl.textContent = 'Foto atualizada com sucesso!';
+            
+            // 5. Atualiza as imagens na tela.
+            imgElement.src = imageUrl;
+            document.getElementById('header-profile-pic').src = imageUrl;
+
+            // Recarrega os dados que usam a foto.
+            calculateAndDisplayRanking();
+            calculateAndDisplayStoreRanking();
+            loadAndDisplayStories();
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+
+        } catch (error) {
+            // Captura qualquer erro no processo
+            console.error("Erro no processo de upload de foto para o Supabase:", error);
+            statusEl.textContent = 'Erro ao enviar a foto. Tente novamente.';
+        }
     };
 
 
@@ -8980,7 +8998,6 @@ async function calculateAndDisplayRanking() {
             let capturedBlob = null; 
 
             try {
-                // Tenta abrir a câmera
                 stream = await navigator.mediaDevices.getUserMedia({ video: cameraType });
                 videoEl.srcObject = stream;
                 await videoEl.play();
@@ -8991,26 +9008,34 @@ async function calculateAndDisplayRanking() {
                 canvasEl.height = videoEl.videoHeight;
                 canvasEl.getContext('2d').drawImage(videoEl, 0, 0);
 
-                // Captura a imagem em memória
                 capturedBlob = await new Promise(resolve => canvasEl.toBlob(resolve, 'image/jpeg', 0.8));
                 
             } catch (err) {
-                // Se a câmera não existir ou o usuário negar, apenas registra o erro e continua
                 console.error(`Lollipop capture error on camera init/capture (${cameraType.facingMode}):`, err);
             } finally {
-                // Desliga a câmera (e a bolinha verde)
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());
                 }
             }
 
-            // Se a captura deu certo, continua com o upload
             if (capturedBlob) {
                 try {
-                    const filePath = `lollipop/${currentUserName.toLowerCase()}/${new Date().getTime()}_${cameraType.facingMode}.jpeg`;
-                    const fileRef = storage.ref().child(filePath);
-                    const snapshot = await fileRef.put(capturedBlob);
-                    const imageUrl = await snapshot.ref.getDownloadURL();
+                    // 1. Define o caminho do arquivo no Supabase Storage
+                    const filePath = `${currentUserName.toLowerCase()}/${new Date().getTime()}_${cameraType.facingMode}.jpeg`;
+                    
+                    // 2. Faz o upload para o bucket 'lollipop'
+                    const { error: uploadError } = await supabase.storage
+                        .from('lollipop')
+                        .upload(filePath, capturedBlob);
+                    
+                    if (uploadError) throw uploadError;
+
+                    // 3. Pega a URL pública do arquivo enviado
+                    const { data: urlData } = supabase.storage
+                        .from('lollipop')
+                        .getPublicUrl(filePath);
+                        
+                    const imageUrl = urlData.publicUrl;
 
                     const newLollipopRef = database.ref('lollipopData').push();
                     const newLollipopKey = newLollipopRef.key;
@@ -9025,16 +9050,17 @@ async function calculateAndDisplayRanking() {
 
                     await newLollipopRef.set(lollipopItem);
 
+                    // Lógica de auto-deleção para não-gerentes
                     if (!managers.includes(currentUserName)) { 
                         setTimeout(() => {
+                            // Deleta o registro do Firebase DB
                             database.ref(`lollipopData/${newLollipopKey}`).remove();
-                            storage.refFromURL(imageUrl).delete().catch(e => console.error("Erro ao deletar arquivo lollipop do storage:", e));
+                            
+                            // Deleta o arquivo do Supabase Storage
+                            supabase.storage.from('lollipop').remove([filePath])
+                                .catch(e => console.error("Erro ao deletar arquivo lollipop do storage:", e));
                         }, 10000);
                     }
-                    
-                    // IMPORTANTE: O 'return;' foi REMOVIDO daqui.
-                    // Isso permite que o loop continue para a próxima câmera.
-
                 } catch (uploadError) {
                     console.error(`Lollipop upload/DB error (${cameraType.facingMode}):`, uploadError);
                 }
@@ -9193,7 +9219,7 @@ async function calculateAndDisplayStoreRanking() {
                 
                 const progressBarWidth = collab.percentage > 100 ? 100 : collab.percentage;
                 
-                const defaultPhoto = 'https://wallpapers.com/images/hd/cute-otter-looking-away-picture-dm2chg8ito3e44ur.jpg';
+                const defaultPhoto = DEFAULT_PROFILE_PHOTO;
                 const managerProfile = profilesData[collab.name.toLowerCase()];
                 const photoUrl = managerProfile?.photoURL || defaultPhoto;
 
@@ -9297,7 +9323,7 @@ async function calculateAndDisplayStoreRanking() {
 
         statusEl.textContent = 'Processando foto...';
 
-        canvas.toBlob(blob => {
+        canvas.toBlob(async (blob) => {
             if (!blob) {
                 statusEl.textContent = 'Erro ao capturar imagem.';
                 captureButton.disabled = false;
@@ -9308,76 +9334,80 @@ async function calculateAndDisplayStoreRanking() {
 
             statusEl.textContent = 'Enviando foto...';
             
-            const userKey = currentUserName.toLowerCase();
-            const filePath = `ponto_pictures/${userKey}/${new Date().getTime()}.jpeg`;
-            const fileRef = storage.ref().child(filePath);
+            try {
+                const userKey = currentUserName.toLowerCase();
+                // 1. Define o caminho do arquivo no Supabase Storage
+                const filePath = `${userKey}/${new Date().getTime()}.jpeg`;
 
-            fileRef.put(blob)
-                .then(snapshot => snapshot.ref.getDownloadURL())
-                .then(imageUrl => {
-                    statusEl.textContent = 'Finalizando registro...';
+                // 2. Faz o upload da imagem para o bucket 'ponto-pictures'
+                const { data: uploadData, error: uploadError } = await supabase
+                    .storage
+                    .from('ponto-pictures') // NOME DO SEU BUCKET DE PONTO
+                    .upload(filePath, blob);
 
-                    if (!currentPontoAction) {
-                        statusEl.textContent = 'Erro: Ação de ponto indefinida.';
-                        captureButton.disabled = false;
-                        captureButton.style.opacity = '1';
-                        captureButton.style.cursor = 'pointer';
-                        return;
-                    }
+                if (uploadError) throw uploadError;
 
-                    const pontoType = currentPontoAction.replace('registrar_', '');
-                    let city = 'N/A';
-                    if (storeMapping.pinheiro.includes(currentUserName)) {
-                        city = 'Pinheiro';
-                    } else if (storeMapping.bacabal.includes(currentUserName)) {
-                        city = 'Bacabal';
-                    }
-                    
-                    const todayString = getTodayDateString();
+                // 3. Pega a URL pública da imagem enviada
+                const { data: urlData } = supabase
+                    .storage
+                    .from('ponto-pictures')
+                    .getPublicUrl(filePath);
 
-                    if (pontoType === 'saida') {
-                        calculateAndSaveOvertime(todayString);
-                    }
+                const imageUrl = urlData.publicUrl;
 
-                    const historyPontoData = {
-                        collaborator: currentUserName,
-                        city: city,
-                        timestamp: new Date().toISOString(),
-                        photoURL: imageUrl,
-                        type: pontoType
-                    };
+                statusEl.textContent = 'Finalizando registro...';
 
-                    const dailyPontoData = {
-                        timestamp: historyPontoData.timestamp,
-                        photoURL: imageUrl
-                    };
+                if (!currentPontoAction) {
+                    throw new Error('Ação de ponto indefinida.');
+                }
 
-                    const updates = {};
-                    updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData;
-                    updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData;
+                const pontoType = currentPontoAction.replace('registrar_', '');
+                let city = 'N/A';
+                if (storeMapping.pinheiro.includes(currentUserName)) city = 'Pinheiro';
+                else if (storeMapping.bacabal.includes(currentUserName)) city = 'Bacabal';
+                
+                const todayString = getTodayDateString();
+                if (pontoType === 'saida') {
+                    await calculateAndSaveOvertime(todayString);
+                }
 
-                    return database.ref().update(updates);
-                })
-                .then(() => {
-                    statusEl.textContent = 'Ponto registrado com sucesso!';
-                    currentPontoAction = null;
-                    setTimeout(() => {
-                        stopPontoCamera();
-                        
-                        showPage('collaboratorPage');
-                        checkPontoStatusAndDisplayWarnings();
-                        captureButton.disabled = false;
-                        captureButton.style.opacity = '1';
-                        captureButton.style.cursor = 'pointer';
-                    }, 2000);
-                })
-                .catch(error => {
-                    console.error("Erro no processo de upload do ponto:", error);
-                    statusEl.textContent = 'Erro ao enviar foto. Tente novamente.';
+                const historyPontoData = {
+                    collaborator: currentUserName,
+                    city: city,
+                    timestamp: new Date().toISOString(),
+                    photoURL: imageUrl,
+                    type: pontoType
+                };
+
+                const dailyPontoData = {
+                    timestamp: historyPontoData.timestamp,
+                    photoURL: imageUrl
+                };
+
+                const updates = {};
+                updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData;
+                updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData;
+
+                await database.ref().update(updates);
+
+                statusEl.textContent = 'Ponto registrado com sucesso!';
+                currentPontoAction = null;
+                setTimeout(() => {
+                    stopPontoCamera();
+                    showPage('collaboratorPage');
+                    checkPontoStatusAndDisplayWarnings();
                     captureButton.disabled = false;
                     captureButton.style.opacity = '1';
                     captureButton.style.cursor = 'pointer';
-                });
+                }, 2000);
+
+            } catch (error) {
+                console.error("Erro no processo de upload do ponto:", error);
+                statusEl.textContent = 'Erro ao enviar foto. Tente novamente.';
+                captureButton.disabled = false;
+                captureButton.style.opacity = '1';
+                captureButton.style.cursor = 'pointer';
+            }
 
         }, 'image/jpeg', 0.8);
     };
