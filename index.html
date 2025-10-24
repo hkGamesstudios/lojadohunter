@@ -88,8 +88,8 @@
         .theme-hunter .modal-content {
             background: rgba(161, 80, 0, 0.8);
         }
-        .theme-hunter #collaborator-page, .theme-hunter #gs-page, .theme-hunter #metas-config-page, .theme-hunter #metas-display-page, .theme-hunter #send-device-page, .theme-hunter #brand-devices-page, .theme-hunter #device-detail-page, .theme-hunter #manager-sales-panel-page, .theme-hunter #closing-page, .theme-hunter #correction-page, .theme-hunter #os-form-page, .theme-hunter #request-stock-page, .theme-hunter #recibos-page, .theme-hunter #quiz-page, .theme-hunter #crediario-calculator-page, .theme-hunter #site-calculator-page, .theme-hunter #loja-calculator-page, .theme-hunter #mt-display-page, .theme-hunter #mt-management-page, .theme-hunter #ponto-verification-page, .theme-hunter #holidays-management-page, .theme-hunter #sundays-management-page, .theme-hunter #ponto-history-page, .theme-hunter #day-off-management-page, .theme-hunter #overtime-management-page, .theme-hunter #device-search-overlay, .theme-hunter #avisos-management-page, .theme-hunter #feedback-page, .theme-hunter #debug-page, .theme-hunter #cash-management-page, .theme-hunter #store-cash-management-page {
-            background: linear-gradient(160deg, #612f00 0%, #a15000 30%, #e67e22 100%);
+        .theme-hunter #collaborator-page, .theme-hunter #gs-page, .theme-hunter #metas-config-page, .theme-hunter #metas-display-page, .theme-hunter #send-device-page, .theme-hunter #brand-devices-page, .theme-hunter #device-detail-page, .theme-hunter #manager-sales-panel-page, .theme-hunter #closing-page, .theme-hunter #correction-page, .theme-hunter #os-form-page, .theme-hunter #request-stock-page, .theme-hunter #recibos-page, .theme-hunter #quiz-page, .theme-hunter #crediario-calculator-page, .theme-hunter #site-calculator-page, .theme-hunter #loja-calculator-page, .theme-hunter #mt-display-page, .theme-hunter #mt-management-page, .theme-hunter #ponto-verification-page, .theme-hunter #holidays-management-page, .theme-hunter #sundays-management-page, .theme-hunter #ponto-history-page, .theme-hunter #day-off-management-page, .theme-hunter #overtime-management-page, .theme-hunter #device-search-overlay, .theme-hunter #avisos-management-page, .theme-hunter #feedback-page, .theme-hunter #debug-page, .theme-hunter #cash-management-page, .theme-hunter #store-cash-management-page, .theme-hunter #stock-requests-page, .theme-hunter #recibos-submissions-page, .theme-hunter #quiz-submissions-page, .theme-hunter #feedback-submissions-page, .theme-hunter #story-creation-page, .theme-hunter #chat-page, .theme-hunter #chat-conversation-page, .theme-hunter #lollipop-page {
+            background: transparent;
         }
 
         /* --- TEMA ROSA --- */
@@ -4319,7 +4319,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '4.0.3 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '4.0.4 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6471,30 +6471,30 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
         // Pega a referência para todos os campos que vêm da planilha
         const vendaEl = document.getElementById('device-price-venda');
         const limiteEl = document.getElementById('device-price-limite');
-        const entradaEl = document.getElementById('device-price-entrada');
+        const entradaEl = document.getElementById('device-price-entrada'); // Pode ser nulo
         const seguroQuedaEl = document.getElementById('device-seguro-queda');
         const garantiaEstendidaEl = document.getElementById('device-garantia-estendida');
         
         // Pega os indicadores de atualização
         const vendaIndicator = document.getElementById('venda-indicator');
         const limiteIndicator = document.getElementById('limite-indicator');
-        const entradaIndicator = document.getElementById('entrada-indicator');
+        const entradaIndicator = document.getElementById('entrada-indicator'); // Pode ser nulo
         const seguroQuedaIndicator = document.getElementById('seguro-queda-indicator');
         const garantiaEstendidaIndicator = document.getElementById('garantia-estendida-indicator');
 
-        const allElements = [vendaEl, limiteEl, entradaEl, seguroQuedaEl, garantiaEstendidaEl];
-        if (allElements.some(el => !el)) return; // Para se algum elemento não for encontrado
+        // Verifica se os elementos essenciais existem
+        if (!vendaEl || !limiteEl || !seguroQuedaEl || !garantiaEstendidaEl) return;
 
-        // Guarda os valores atuais da tela (do cache)
+        // Guarda os valores atuais da tela (do cache), verificando a existência do elemento de entrada
         const oldValues = {
             venda: vendaEl.textContent,
             limite: limiteEl.textContent,
-            entrada: entradaEl.textContent,
+            entrada: entradaEl ? entradaEl.textContent : null, // Verifica se existe
             seguroQueda: seguroQuedaEl.textContent,
             garantiaEstendida: garantiaEstendidaEl.textContent
         };
         
-        // Mostra que está atualizando
+        // Mostra que está atualizando, verificando a existência do indicador de entrada
         const allIndicators = [vendaIndicator, limiteIndicator, entradaIndicator, seguroQuedaIndicator, garantiaEstendidaIndicator];
         allIndicators.forEach(el => { if(el) el.textContent = '(atualizando...)'; });
 
@@ -6523,14 +6523,18 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             // Atualiza a tela
             vendaEl.textContent = newValues.precoVenda;
             limiteEl.textContent = newValues.precoLimite;
-            entradaEl.textContent = newValues.entradaMinima;
+            // Atualiza a entrada mínima apenas se o elemento existir
+            if (entradaEl) {
+                entradaEl.textContent = newValues.entradaMinima;
+            }
             seguroQuedaEl.textContent = newValues.seguroQueda;
             garantiaEstendidaEl.textContent = newValues.garantiaEstendida;
             
             // Compara com os valores antigos e mostra o indicador se mudou
             if (oldValues.venda !== 'Carregando...' && oldValues.venda !== newValues.precoVenda) vendaIndicator.textContent = '(Atualizado!)'; else vendaIndicator.textContent = '';
             if (oldValues.limite !== 'Carregando...' && oldValues.limite !== newValues.precoLimite) limiteIndicator.textContent = '(Atualizado!)'; else limiteIndicator.textContent = '';
-            if (oldValues.entrada !== 'Carregando...' && oldValues.entrada !== newValues.entradaMinima) entradaIndicator.textContent = '(Atualizado!)'; else entradaIndicator.textContent = '';
+            // Compara a entrada mínima apenas se o elemento existir
+            if (entradaEl && oldValues.entrada !== 'Carregando...' && oldValues.entrada !== newValues.entradaMinima) entradaIndicator.textContent = '(Atualizado!)'; else if (entradaIndicator) entradaIndicator.textContent = '';
             if (oldValues.seguroQueda !== 'Carregando...' && oldValues.seguroQueda !== newValues.seguroQueda) seguroQuedaIndicator.textContent = '(Atualizado!)'; else seguroQuedaIndicator.textContent = '';
             if (oldValues.garantiaEstendida !== 'Carregando...' && oldValues.garantiaEstendida !== newValues.garantiaEstendida) garantiaEstendidaIndicator.textContent = '(Atualizado!)'; else garantiaEstendidaIndicator.textContent = '';
             
@@ -6552,7 +6556,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             }, 4000);
         }
     };
-
+    
     // Função modificada para aceitar a marca como parâmetro
 const loadDeviceDetails = (key, brand) => {
         currentBrand = brand; // Atualiza a marca atual para o botão de voltar funcionar
@@ -6570,6 +6574,12 @@ const loadDeviceDetails = (key, brand) => {
             document.getElementById('device-detail-title').textContent = device.name;
             const contentContainer = document.getElementById('device-detail-content');
 
+            // Lógica para mostrar ou não o campo de entrada mínima
+            const entradaMinimaHTML = brand !== 'apple' ? `
+                <h3>Entrada mínima ( Crediário ) 📑 <span class="price-update-indicator" id="entrada-indicator"></span></h3>
+                <pre id="device-price-entrada">...</pre>
+            ` : '';
+
             // Estrutura HTML atualizada com as novas seções
             contentContainer.innerHTML = `
                 <img src="${device.imageUrl}" alt="${device.name}">
@@ -6580,8 +6590,7 @@ const loadDeviceDetails = (key, brand) => {
                 <h3>Preço limite 🚨 <span class="price-update-indicator" id="limite-indicator"></span></h3>
                 <pre id="device-price-limite">...</pre>
                 
-                <h3>Entrada mínima ( Crediário ) 📑 <span class="price-update-indicator" id="entrada-indicator"></span></h3>
-                <pre id="device-price-entrada">...</pre>
+                ${entradaMinimaHTML}
 
                 <h3>Seguro Contra queda 🛡 <span class="price-update-indicator" id="seguro-queda-indicator"></span></h3>
                 <pre id="device-seguro-queda">...</pre>
@@ -6601,14 +6610,19 @@ const loadDeviceDetails = (key, brand) => {
             if (cachedData) {
                 document.getElementById('device-price-venda').textContent = cachedData.precoVenda || 'Não informado.';
                 document.getElementById('device-price-limite').textContent = cachedData.precoLimite || 'Não informado.';
-                document.getElementById('device-price-entrada').textContent = cachedData.entradaMinima || 'Não informado.';
+                // Acessa o elemento de entrada mínima apenas se ele existir
+                const entradaEl = document.getElementById('device-price-entrada');
+                if (entradaEl) {
+                    entradaEl.textContent = cachedData.entradaMinima || 'Não informado.';
+                }
                 document.getElementById('device-seguro-queda').textContent = cachedData.seguroQueda || 'Não informado.';
                 document.getElementById('device-garantia-estendida').textContent = cachedData.garantiaEstendida || 'Não informado.';
             } else {
                 // Se não houver cache, exibe "Carregando..."
                  document.getElementById('device-price-venda').textContent = 'Carregando...';
                  document.getElementById('device-price-limite').textContent = 'Carregando...';
-                 document.getElementById('device-price-entrada').textContent = 'Carregando...';
+                 const entradaEl = document.getElementById('device-price-entrada');
+                 if(entradaEl) entradaEl.textContent = 'Carregando...';
                  document.getElementById('device-seguro-queda').textContent = 'Carregando...';
                  document.getElementById('device-garantia-estendida').textContent = 'Carregando...';
             }
