@@ -1605,6 +1605,11 @@
                 transform: scale(0.8);
             }
         }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
         .login-section-hiding {
             animation: modalContentExit 0.3s ease-in forwards;
             pointer-events: none;
@@ -4319,7 +4324,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '4.0.4 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '4.0.5 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8119,28 +8124,19 @@ async function calculateAndDisplayRanking() {
                 rankingContainer.innerHTML = '<p style="text-align: center;">Nenhum colaborador com meta definida para o ranking.</p>';
                 return;
             }
-            
-            // Pega o bônus do Top 1 ANTES de começar a montar o HTML
-            const topUserData = top3[0];
-            const dailyBonusData = await updateAndFetchDailyBonus(topUserData.name.toLowerCase(), 'employee');
 
             for (const [index, collab] of top3.entries()) {
                 const rank = index + 1;
-                let dailyBonusHTML = '';
 
-                // Concede a conquista e prepara o HTML do bônus
                 if (rank === 1) {
                     awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
-                    if(dailyBonusData && dailyBonusData.userKey === collab.name.toLowerCase()) {
-                        dailyBonusHTML = `
-                            <span class="daily-bonus-value">+ ${formatBRL(dailyBonusData.amount)}</span> 
-                            <span class="bonus-info-btn">?</span>`;
-                    }
                 }
 
-                const prizes = ['R$ 200,00', 'R$ 100,00', 'R$ 50,00'];
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
-                const prizeHTML = `<span class="rank-prize">${prizes[index]}</span>`;
+                let prizeHTML = '';
+                if (rank === 1) {
+                    prizeHTML = `<img src="https://www.harmanaudio.com.br/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw53a9f6dd/JBL_BOOMBOX3_WIFI_HERO_37919_x4.png?sw=535&sh=535" style="width: 60px; height: 60px; margin-left: 8px; vertical-align: middle; border: 2px solid #FFD700; border-radius: 50%; padding: 2px; animation: pulse 1.5s infinite;">`;
+                }
                 
                 const rankItem = document.createElement('div');
                 rankItem.className = `rank-item rank-${rank}`;
@@ -8172,18 +8168,6 @@ async function calculateAndDisplayRanking() {
                     const firePosition = Math.min(progressBarWidth, 98); 
                     // Gera o ícone com a posição 'left' calculada dinamicamente
                     fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%;"></i>`;
-                    
-                    if(dailyBonusData && dailyBonusData.userKey === collab.name.toLowerCase()) {
-                        dailyBonusHTML = `
-                            <span class="daily-bonus-value">+ ${formatBRL(dailyBonusData.amount)}</span> 
-                            <span class="bonus-info-btn">?</span>`;
-                    }
-                } else if (rank <= 3) {
-                     if(dailyBonusData && dailyBonusData.userKey === collab.name.toLowerCase()) {
-                        dailyBonusHTML = `
-                            <span class="daily-bonus-value">+ ${formatBRL(dailyBonusData.amount)}</span> 
-                            <span class="bonus-info-btn">?</span>`;
-                    }
                 }
 
                 rankItem.innerHTML = `
@@ -8197,7 +8181,6 @@ async function calculateAndDisplayRanking() {
                             <span>${collab.name}</span>
                             <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
                             <div class="prize-container">${prizeHTML}</div>
-                            ${dailyBonusHTML}
                         </div>
                         ${statusBubbleHtml}
                         <div class="progress-bar-container">
@@ -8214,7 +8197,6 @@ async function calculateAndDisplayRanking() {
             rankingContainer.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
         });
     };
-
     function getTodayDateString() {
         const today = new Date();
         const year = today.getFullYear();
@@ -9268,19 +9250,18 @@ async function calculateAndDisplayStoreRanking() {
                 return;
             }
             
-            // A lógica de bônus foi removida daqui
-
             for (const [index, collab] of performanceData.entries()) {
                 const rank = index + 1;
                 
-                // A única coisa a se fazer para o rank 1 é dar a conquista
                 if (rank === 1) {
                     awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
                 }
 
-                const prize = 'R$ 200,00';
                 const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
-                const prizeHTML = (rank === 1) ? `<span class="rank-prize">${prize}</span>` : '';
+                let prizeHTML = '';
+                if (rank === 1) {
+                    prizeHTML = `<img src="https://www.harmanaudio.com.br/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw53a9f6dd/JBL_BOOMBOX3_WIFI_HERO_37919_x4.png?sw=535&sh=535" style="width: 60px; height: 60px; margin-left: 8px; vertical-align: middle; border: 2px solid #FFD700; border-radius: 50%; padding: 2px; animation: pulse 1.5s infinite;">`;
+                }
                 
                 const rankItem = document.createElement('div');
                 rankItem.className = `rank-item rank-${rank}`;
