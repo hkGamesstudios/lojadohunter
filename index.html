@@ -2545,33 +2545,52 @@
 
 
                 /* --- ANIMAÇÃO PARA O ÍCONE DE FOGO DO RANKING --- */
-        @keyframes fire-animation {
-            0%, 100% {
-                /* Centraliza o ícone em seu próprio eixo X e Y */
-                transform: translate(-50%, -50%) scale(1);
-                color: #ff6b00;
-            }
-            50% {
-                /* Mantém a centralização ao escalar */
-                transform: translate(-50%, -50%) scale(1.2);
-                color: #ffdd00;
-            }
+    @keyframes fire-animation {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            color: #ff6b00;
         }
+        50% {
+            transform: translate(-50%, -50%) scale(1.2);
+            color: #ffdd00;
+        }
+    }
 
-        /* O container da barra agora é o ponto de referência para o ícone */
-        .progress-bar-container {
-            position: relative; /* Essencial para o posicionamento absoluto do filho */
+    @keyframes fire-animation-purple {
+        0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            color: #9b59b6;
         }
+        50% {
+            transform: translate(-50%, -50%) scale(1.2);
+            color: #e8daef;
+        }
+    }
 
-        .fire-icon {
-            position: absolute;
-            top: 50%; /* POSICIONA O ÍCONE NO MEIO VERTICAL DA BARRA */
-            font-size: 1.2rem;
-            animation: fire-animation 1.5s ease-in-out infinite;
-            text-shadow: 0 0 8px rgba(255, 107, 0, 0.7);
-            z-index: 2;
-            pointer-events: none;
-        }
+    /* O container da barra agora é o ponto de referência para o ícone */
+    .progress-bar-container {
+        position: relative; /* Essencial para o posicionamento absoluto do filho */
+    }
+
+    .fire-icon {
+        position: absolute;
+        top: 50%; /* POSICIONA O ÍCONE NO MEIO VERTICAL DA BARRA */
+        font-size: 1.2rem;
+        animation: fire-animation 1.5s ease-in-out infinite;
+        text-shadow: 0 0 8px rgba(255, 107, 0, 0.7);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .fire-icon-purple {
+        position: absolute;
+        top: 50%;
+        font-size: 1.2rem;
+        animation: fire-animation-purple 1.5s ease-in-out infinite;
+        text-shadow: 0 0 8px rgba(155, 89, 182, 0.7);
+        z-index: 2;
+        pointer-events: none;
+    }
 
         /* =================================================================== */
         /* --- AJUSTES PARA TELAS PEQUENAS (RESPONSIVIDADE) --- */
@@ -6190,7 +6209,7 @@ function showScreen(screenElement) {
                     <div class="meta-group-title">Premiações</div>
                     <p style="font-size: 0.9rem; line-height: 1.6;">
                         - 1% sobre a venda<br>
-                        - Prêmio Ranking Serviço: 1º R$1000 | 2º R$500 | 3º R$250<br>
+                        - Prêmios por Ranking de Serviço (Veja no Painel)<br>
                         - 2% de tudo vendido no cartão hunter card<br>
                         - Máximo de desconto 6%:500
                     </p>
@@ -6242,7 +6261,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 <h3>PREMIAÇÕES</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6; background: transparent; padding: 0;">
                     - 1% sobre a venda<br>
-                    - Prêmio Ranking Serviço: 1º R$1000 | 2º R$500 | 3º R$250<br>
+                    - Prêmios por Ranking de Serviço (Veja no Painel)<br>
                     - 2% de tudo vendido no cartão hunter card<br>
                     - Máximo de desconto 6%:500
                 </p>
@@ -7172,153 +7191,131 @@ const loadDeviceDetails = (key, brand) => {
     };
 
     const loadAndDisplayIndividualSalesData = () => {
-        const container = document.getElementById('individual-sales-data');
-        container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`;
-        const userKey = currentUserName.toLowerCase();
-        
-        const isManager = managers.includes(currentUserName);
+    const container = document.getElementById('individual-sales-data');
+    container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`;
+    const userKey = currentUserName.toLowerCase();
+    
+    const isManager = managers.includes(currentUserName);
 
-        // Se o usuário logado for um gerente, faz a soma dos dados da loja para exibição.
-        if (isManager) {
-            // Define qual a lista de funcionários da loja da gerente
-            const storeEmployees = storeMapping.pinheiro.includes(currentUserName) 
-                ? storeMapping.pinheiro 
-                : storeMapping.bacabal;
-
-            database.ref('salesData').get().then(snapshot => {
-                if (!snapshot.exists()) {
-                    container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
-                    return;
-                }
-                const allSales = snapshot.val();
-                
-                // Variáveis para somar os totais da loja inteira
-                let totalVendasDaLoja = 0;
-                let totalP1P2daLoja = 0;
-                let totalSeguroDaLoja = 0;
-                let totalCartaoDaLoja = 0;
-                let totalVendaRemotaDaLoja = 0; // Novo total
-
-                // Itera sobre cada funcionário da loja para somar seus valores
-                storeEmployees.forEach(employeeName => {
-                    const employeeKey = employeeName.toLowerCase();
-                    const employeeData = allSales[employeeKey] || {};
-                    totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
-                    totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
-                    totalSeguroDaLoja += parseFloat(employeeData.seguro || 0);
-                    totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
-                    totalVendaRemotaDaLoja += parseFloat(employeeData.vendaRemota || 0); // Soma a venda remota
-                });
-
-                // Exibe o card com os dados somados da loja
-                container.innerHTML = `
-                    <div class="sales-data-card">
-                        <h4>Resultados Atuais (Loja)</h4>
-                        <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
-                        <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
-                        <p>📲 V. REMOTA (Loja): ${formatBRL(totalVendaRemotaDaLoja)}</p>
-                        <p>🔧 SEGURO: ${formatBRL(totalSeguroDaLoja)}</p>
-                        <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
-                    </div>
-                `;
-            });
-        } else {
-            // Se não for gerente, busca e exibe apenas os dados individuais do colaborador.
-            database.ref(`salesData/${userKey}`).get().then(snapshot => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    container.innerHTML = `
-                                                <div class="sales-data-card">
-                            <h4>Resultados Atuais</h4>
-                            <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
-                            <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
-                            <p>📲 V. REMOTA: ${formatBRL(data.vendaRemota || 0)}</p>
-                            <p>🔧 SEGURO: ${formatBRL(data.seguro || 0)}</p>
-                            <p>💳 CARTÃO: ${data.cartao || '0'}</p>
-                        </div>
-                    `;
-                } else {
-                     container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
-                }
-            });
-        }
-    };
-
-    const loadManagerPanel = () => {
-        const container = document.getElementById('manager-sales-panel-content');
-        container.innerHTML = '<p style="text-align:center;">Carregando dados da equipe...</p>';
-        showPage('managerSalesPanelPage');
-
-        const managerName = currentUserName;
-        const storeEmployees = storeMapping.pinheiro.includes(managerName)
-            ? storeMapping.pinheiro
+    // Se o usuário logado for um gerente, faz a soma dos dados da loja para exibição.
+    if (isManager) {
+        // Define qual a lista de funcionários da loja da gerente
+        const storeEmployees = storeMapping.pinheiro.includes(currentUserName) 
+            ? storeMapping.pinheiro 
             : storeMapping.bacabal;
 
         database.ref('salesData').get().then(snapshot => {
-            container.innerHTML = ''; // Limpa o "carregando"
             if (!snapshot.exists()) {
-                container.innerHTML = '<p>Nenhum dado de venda encontrado para a equipe.</p>';
+                container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
                 return;
             }
             const allSales = snapshot.val();
             
-            // --- CÁLCULO DOS TOTAIS DA LOJA ---
-            let totalVendasDaLoja = 0, totalP1P2daLoja = 0, totalSeguroDaLoja = 0, totalCartaoDaLoja = 0;
+            // Variáveis para somar os totais da loja inteira
+            let totalVendasDaLoja = 0;
+            let totalServicoDaLoja = 0;
 
+            // Itera sobre cada funcionário da loja para somar seus valores
             storeEmployees.forEach(employeeName => {
                 const employeeKey = employeeName.toLowerCase();
                 const employeeData = allSales[employeeKey] || {};
                 totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
-                totalP1P2daLoja += parseFloat(employeeData.p1p2 || 0);
-                totalSeguroDaLoja += parseFloat(employeeData.seguro || 0);
-                totalCartaoDaLoja += parseInt(employeeData.cartao || 0, 10);
+                totalServicoDaLoja += parseFloat(employeeData.servico || 0);
             });
 
-            // --- RENDERIZAÇÃO DOS CARDS ---
-            storeEmployees.forEach(employeeName => {
-                let cardHtml;
-                // Se o funcionário atual for a gerente, mostra o card com os totais da loja.
-                if (employeeName === managerName) {
-                    cardHtml = `
-                        <div class="sales-data-card" style="border-left: 4px solid var(--primary-color);">
-                            <h4>${employeeName} (Total Loja)</h4>
-                            <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
-                            <p>🔱 P1/P2: ${formatBRL(totalP1P2daLoja)}</p>
-                            <p>🔧 SEGURO: ${formatBRL(totalSeguroDaLoja)}</p>
-                            <p>💳 CARTÃO: ${totalCartaoDaLoja}</p>
-                        </div>
-                    `;
-                } else {
-                    // Para os demais funcionários, mostra seus dados individuais.
-                    const employeeKey = employeeName.toLowerCase();
-                    const data = allSales[employeeKey] || {};
-                    cardHtml = `
-                        <div class="sales-data-card">
-                            <h4>${employeeName}</h4>
-                            <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
-                            <p>🔱 P1/P2: ${formatBRL(data.p1p2)}</p>
-                            <p>📲 V. REMOTA: ${formatBRL(data.vendaRemota || 0)}</p>
-                            <p>🔧 SEGURO: ${formatBRL(data.seguro || 0)}</p>
-                            <p>💳 CARTÃO: ${data.cartao || '0'}</p>
-                        </div>
-                    `;
-                }
-                container.innerHTML += cardHtml;
-            });
-            staggerAnimate(container);
+            // Exibe o card com os dados somados da loja
+            container.innerHTML = `
+                <div class="sales-data-card">
+                    <h4>Resultados Atuais (Loja)</h4>
+                    <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
+                    <p>🔧 SERVIÇO: ${formatBRL(totalServicoDaLoja)}</p>
+                </div>
+            `;
         });
-    };
+    } else {
+        // Se não for gerente, busca e exibe apenas os dados individuais do colaborador.
+        database.ref(`salesData/${userKey}`).get().then(snapshot => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                container.innerHTML = `
+                                            <div class="sales-data-card">
+                        <h4>Resultados Atuais</h4>
+                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
+                        <p>🔧 SERVIÇO: ${formatBRL(data.servico || 0)}</p>
+                    </div>
+                `;
+            } else {
+                 container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
+            }
+        });
+    }
+};
+
+    const loadManagerPanel = () => {
+    const container = document.getElementById('manager-sales-panel-content');
+    container.innerHTML = '<p style="text-align:center;">Carregando dados da equipe...</p>';
+    showPage('managerSalesPanelPage');
+
+    const managerName = currentUserName;
+    const storeEmployees = storeMapping.pinheiro.includes(managerName)
+        ? storeMapping.pinheiro
+        : storeMapping.bacabal;
+
+    database.ref('salesData').get().then(snapshot => {
+        container.innerHTML = ''; // Limpa o "carregando"
+        if (!snapshot.exists()) {
+            container.innerHTML = '<p>Nenhum dado de venda encontrado para a equipe.</p>';
+            return;
+        }
+        const allSales = snapshot.val();
+        
+        // --- CÁLCULO DOS TOTAIS DA LOJA ---
+        let totalVendasDaLoja = 0, totalServicoDaLoja = 0;
+
+        storeEmployees.forEach(employeeName => {
+            const employeeKey = employeeName.toLowerCase();
+            const employeeData = allSales[employeeKey] || {};
+            totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
+            totalServicoDaLoja += parseFloat(employeeData.servico || 0);
+        });
+
+        // --- RENDERIZAÇÃO DOS CARDS ---
+        storeEmployees.forEach(employeeName => {
+            let cardHtml;
+            // Se o funcionário atual for a gerente, mostra o card com os totais da loja.
+            if (employeeName === managerName) {
+                cardHtml = `
+                    <div class="sales-data-card" style="border-left: 4px solid var(--primary-color);">
+                        <h4>${employeeName} (Total Loja)</h4>
+                        <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
+                        <p>🔧 SERVIÇO: ${formatBRL(totalServicoDaLoja)}</p>
+                    </div>
+                `;
+            } else {
+                // Para os demais funcionários, mostra seus dados individuais.
+                const employeeKey = employeeName.toLowerCase();
+                const data = allSales[employeeKey] || {};
+                cardHtml = `
+                    <div class="sales-data-card">
+                        <h4>${employeeName}</h4>
+                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
+                        <p>🔧 SERVIÇO: ${formatBRL(data.servico || 0)}</p>
+                    </div>
+                `;
+            }
+            container.innerHTML += cardHtml;
+        });
+        staggerAnimate(container);
+    });
+};
 
         const clearClosingForm = (store) => {
     const employees = storeMapping[store];
     employees.forEach(name => {
         const key = name.toLowerCase();
         document.getElementById(`closing-venda-${key}`).value = '';
-        document.getElementById(`closing-cartao-${key}`).value = '';
         document.getElementById(`closing-servico-${key}`).value = '';
-        document.getElementById(`closing-p1p2-${key}`).value = '';
         document.getElementById(`closing-preco-site-${key}`).value = '';
-        document.getElementById(`closing-venda-remota-${key}`).value = '';
     });
 };
 
@@ -7352,30 +7349,25 @@ const loadDeviceDetails = (key, brand) => {
         
         employeesForStore.forEach(name => {
             const key = name.toLowerCase();
-            const currentData = existingSales[key] || { vendas: 0, p1p2: 0, servico: 0, cartao: 0, vendaRemota: 0 };
+            // REMOVIDO: p1p2, cartao, vendaRemota (nao sao mais somados no fechamento, apenas vendas e servico)
+            const currentData = existingSales[key] || { vendas: 0, servico: 0 };
             const currentDailyData = existingDailySales[key] || { vendas: 0 };
 
             const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
-            const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
             const newServico = parseFromBRLInput(document.getElementById(`closing-servico-${key}`).value);
-            const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
             const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
-            const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
             
-            // Venda Remota agora é somada ao total de vendas
-            totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
+            // Venda Remota foi removida, Preco Site continua somando para totalVendasDoFechamento mas nao no salesData
+            totalVendasDoFechamento += (newVenda + newPrecoSite);
             totalPrecoSiteDoFechamento += newPrecoSite;
 
             existingSales[key] = {
-                vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
-                p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
+                vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite,
                 servico: (parseFloat(currentData.servico) || 0) + newServico,
-                cartao: (parseInt(currentData.cartao) || 0) + newCartao,
-                vendaRemota: (parseFloat(currentData.vendaRemota) || 0) + newVendaRemota,
             };
             
             updates[`/dailySales/${todayString}/${key}`] = {
-                vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
+                vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite
             };
         });
 
@@ -7408,33 +7400,29 @@ const loadDeviceDetails = (key, brand) => {
     };
 
                 const updateStoreTotalsOnCorrectionPage = () => {
-            const storeTotals = {
-                pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
-                bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
-            };
-
-            // Recalcula os totais com base nos valores ATUAIS dos inputs dos funcionários
-            for (const store in storeMapping) {
-                storeMapping[store].forEach(employeeName => {
-                    const employeeKey = employeeName.toLowerCase();
-                    storeTotals[store].vendas += parseFromBRLInput(document.getElementById(`correction-vendas-${employeeKey}`).value);
-                    storeTotals[store].p1p2 += parseFromBRLInput(document.getElementById(`correction-p1p2-${employeeKey}`).value);
-                    storeTotals[store].seguro += parseInt(document.getElementById(`correction-seguro-${employeeKey}`).value, 10) || 0;
-                    storeTotals[store].cartao += parseInt(document.getElementById(`correction-cartao-${employeeKey}`).value, 10) || 0;
-                });
-            }
-
-            // Atualiza os campos de total da loja na tela
-            for (const storeName in storeTotals) {
-                const totals = storeTotals[storeName];
-                const totalCardIdPrefix = `total-loja-${storeName}`;
-                
-                document.getElementById(`${totalCardIdPrefix}-vendas`).value = formatToBRLInput(totals.vendas);
-                document.getElementById(`${totalCardIdPrefix}-p1p2`).value = formatToBRLInput(totals.p1p2);
-                document.getElementById(`${totalCardIdPrefix}-seguro`).value = totals.seguro;
-                document.getElementById(`${totalCardIdPrefix}-cartao`).value = totals.cartao;
-            }
+        const storeTotals = {
+            pinheiro: { vendas: 0, servico: 0 },
+            bacabal: { vendas: 0, servico: 0 }
         };
+
+        // Recalcula os totais com base nos valores ATUAIS dos inputs dos funcionários
+        for (const store in storeMapping) {
+            storeMapping[store].filter(name => name !== 'Beatriz').forEach(employeeName => {
+                const employeeKey = employeeName.toLowerCase();
+                storeTotals[store].vendas += parseFromBRLInput(document.getElementById(`correction-vendas-${employeeKey}`).value);
+                storeTotals[store].servico += parseFromBRLInput(document.getElementById(`correction-servico-${employeeKey}`).value);
+            });
+        }
+
+        // Atualiza os campos de total da loja na tela
+        for (const storeName in storeTotals) {
+            const totals = storeTotals[storeName];
+            const totalCardIdPrefix = `total-loja-${storeName}`;
+            
+            document.getElementById(`${totalCardIdPrefix}-vendas`).value = formatToBRLInput(totals.vendas);
+            document.getElementById(`${totalCardIdPrefix}-servico`).value = formatToBRLInput(totals.servico);
+        }
+    };
 
                 const distributeStoreTotal = (storeName, field) => {
             const employees = storeMapping[storeName];
@@ -7479,33 +7467,28 @@ const loadDeviceDetails = (key, brand) => {
             const allSales = snapshot.exists() ? snapshot.val() : {};
             container.innerHTML = '';
 
-            allCollaborators.forEach(name => {
+            allCollaborators.filter(name => name !== 'Beatriz').forEach(name => { // Oculta Beatriz da correção
                 const key = name.toLowerCase();
                 const salesData = allSales[key] || {};
                                     container.innerHTML += `
                     <div class="employee-meta-card">
                         <h4>${name}</h4>
                         <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
-                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
-                        <div class="input-group"><label for="correction-venda-remota-${key}">📲 VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
                         <div class="input-group"><label for="correction-servico-${key}">🔧 SERVIÇO (R$)</label><input type="text" inputmode="decimal" id="correction-servico-${key}" class="data-input" value="${formatToBRLInput(salesData.servico)}"></div>
-                        <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
                     </div>
                 `;
             });
 
             const storeTotals = {
-                pinheiro: { vendas: 0, p1p2: 0, servico: 0, cartao: 0 },
-                bacabal: { vendas: 0, p1p2: 0, servico: 0, cartao: 0 }
+                pinheiro: { vendas: 0, servico: 0 },
+                bacabal: { vendas: 0, servico: 0 }
             };
             for (const store in storeMapping) {
-                storeMapping[store].forEach(employeeName => {
+                storeMapping[store].filter(name => name !== 'Beatriz').forEach(employeeName => {
                     const employeeKey = employeeName.toLowerCase();
                     const employeeData = allSales[employeeKey] || {};
                     storeTotals[store].vendas += parseFloat(employeeData.vendas || 0);
-                    storeTotals[store].p1p2 += parseFloat(employeeData.p1p2 || 0);
                     storeTotals[store].servico += parseFloat(employeeData.servico || 0);
-                    storeTotals[store].cartao += parseInt(employeeData.cartao || 0, 10);
                 });
             }
 
@@ -7518,14 +7501,12 @@ const loadDeviceDetails = (key, brand) => {
                     <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
                         <h4 style="color: #fff;">Editar Total Loja ${storeTitle}</h4>
                         <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" value="${formatToBRLInput(totals.p1p2)}"></div>
                         <div class="input-group"><label for="${totalCardIdPrefix}-servico">🔧 TOTAL SERVIÇO</label><input type="text" id="${totalCardIdPrefix}-servico" class="data-input" value="${formatToBRLInput(totals.servico)}"></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" value="${totals.cartao}"></div>
                     </div>
                 `;
             }
             
-            const fields = ['vendas', 'p1p2', 'servico', 'cartao'];
+            const fields = ['vendas', 'servico'];
             for (const storeName in storeMapping) {
                 fields.forEach(field => {
                     const totalInput = document.getElementById(`total-loja-${storeName}-${field}`);
@@ -7549,17 +7530,15 @@ const saveCorrections = () => {
     
     const dataToSave = {};
 
-    // Itera sobre TODOS os colaboradores, incluindo as gerentes.
-    allCollaborators.forEach(name => {
+    // Itera sobre TODOS os colaboradores, filtrando Beatriz.
+    allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
         const key = name.toLowerCase();
         
         // Lê os valores dos campos de cada colaborador e os adiciona ao objeto que será salvo.
-                    dataToSave[key] = {
+        // REMOVIDO: p1p2, vendaRemota, cartao
+        dataToSave[key] = {
             vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
-            p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
             servico: parseFromBRLInput(document.getElementById(`correction-servico-${key}`).value),
-            cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
-            vendaRemota: parseFromBRLInput(document.getElementById(`correction-venda-remota-${key}`).value),
         };
     });
 
@@ -8117,9 +8096,7 @@ Promise.all([
 
             const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
             let prizeHTML = '';
-            if (rank === 1) {
-                prizeHTML = `<img src="https://www.harmanaudio.com.br/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw53a9f6dd/JBL_BOOMBOX3_WIFI_HERO_37919_x4.png?sw=535&sh=535" style="width: 60px; height: 60px; margin-left: 8px; vertical-align: middle; border: 2px solid #FFD700; border-radius: 50%; padding: 2px; animation: pulse 1.5s infinite;">`;
-            }
+            // REMOVIDO: Imagem flutuante do JBL Boombox para o Rank Normal
             
             const rankItem = document.createElement('div');
             rankItem.className = `rank-item rank-${rank}`;
@@ -8243,19 +8220,32 @@ async function calculateAndDisplayServiceRanking() {
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
             const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
 
+            // Nova imagem flutuante para o rank de serviços
+            const serviceIcon = `<img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 40px; height: 40px; margin-left: 8px; vertical-align: middle; animation: pulse 2s infinite;">`;
+
+            let fireIconHtml = '';
+            if (rank === 1) {
+                const firePosition = Math.min(progressBarWidth, 98); 
+                fireIconHtml = `<i class="fas fa-fire fire-icon-purple" style="left: ${firePosition}%;"></i>`;
+            }
+
             rankItem.innerHTML = `
                 <div class="rank-photo-container">
                     <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
                 </div>
                 <div class="rank-medal">${medals[index]}</div>
                 <div class="rank-details">
-                    <div class="rank-name">
+                    <div class="rank-name" style="justify-content: space-between;">
                         <span>${collab.name}</span>
-                        <span class="rank-prize" style="color: #2ecc71;">${prizeValue}</span>
+                        <div style="display: flex; align-items: center;">
+                            <span class="rank-prize" style="color: #fff; font-weight: bold; margin-right: 5px;">${prizeValue}</span>
+                            ${serviceIcon}
+                        </div>
                     </div>
                     <div class="progress-bar-container">
                         <div class="progress-bar" style="width: ${progressBarWidth}%; background-color: #9b59b6;"></div>
                         <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                        ${fireIconHtml}
                     </div>
                 </div>
             `;
@@ -10552,11 +10542,8 @@ async function calculateAndDisplayStoreRanking() {
                     <div class="employee-meta-card" style="margin-bottom: 2rem;">
                         <h4>${name}</h4>
                         <div class="input-group"><label for="closing-venda-${key}">VENDA 📈</label><input type="text" inputmode="decimal" id="closing-venda-${key}" class="data-input" placeholder="0,00"></div>
-                        <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
                         <div class="input-group"><label for="closing-servico-${key}">SERVIÇO 🔧</label><input type="text" inputmode="decimal" id="closing-servico-${key}" class="data-input" placeholder="0,00"></div>
-                        <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
                         <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 📡</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
-                        <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📲</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
                     </div>
                 `;
             });
