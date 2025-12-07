@@ -260,17 +260,90 @@
             background: transparent;
         }
 
-<!-- TEMA CINZA X -->
-        @keyframes floatUp {
-            from { transform: translateY(0) rotate(var(--start-rot)); }
-            to { transform: translateY(-120vh) rotate(var(--end-rot)); }
-        }
+/* --- TEMA NATALINO (PADRÃO FORÇADO) --- */
+    body.theme-natal {
+        background: linear-gradient(160deg, #000000 0%, #3a0000 40%, #8b0000 100%);
+    }
+    
+    .theme-natal header {
+        background-color: rgba(40, 0, 0, 0.7);
+        border-bottom: 1px solid rgba(255, 50, 50, 0.2);
+    }
+    
+    .theme-natal .modal-content {
+    background: rgba(30, 0, 0, 0.85);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+}
 
-        body.theme-grayx {
-            background: linear-gradient(160deg, #111 0%, #4a4a4a 60%, #f0f0f0 100%);
-        }
+.theme-natal .story-circle-wrapper.has-story {
+    background: linear-gradient(45deg, #ff0000, #2ecc71);
+}
 
-        #floating-x-container, #floating-dots-container {
+.theme-natal .story-circle-wrapper img {
+    border-color: #3a0000;
+    background-color: #3a0000;
+}
+
+    /* Esconde o botão de trocar tema */
+    #theme-toggle {
+        display: none !important;
+    }
+
+    /* Efeito de Neve */
+    #snow-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .snowflake {
+        position: absolute;
+        top: -2vh;
+        color: #fff;
+        font-size: 1em;
+        font-family: Arial, sans-serif;
+        text-shadow: 0 0 5px #000;
+        opacity: 0.8;
+        animation: snowfall linear infinite;
+        will-change: transform;
+    }
+
+    @keyframes snowfall {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    /* Animação do Papai Noel */
+    @keyframes flySanta {
+        from { left: -300px; }
+        to { left: 110vw; }
+    }
+
+    #santa-animation {
+        position: fixed;
+        top: 10%;
+        width: 250px;
+        z-index: 9999;
+        pointer-events: none;
+        display: none; 
+    }
+
+    /* --- TEMA CINZA X --- */
+    @keyframes floatUp {
+        from { transform: translateY(0) rotate(var(--start-rot)); }
+        to { transform: translateY(-120vh) rotate(var(--end-rot)); }
+    }
+
+    body.theme-grayx {
+        background: linear-gradient(160deg, #111 0%, #4a4a4a 60%, #f0f0f0 100%);
+    }
+
+    #floating-x-container, #floating-dots-container, #snow-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -537,9 +610,13 @@
         }
 
         /* Cores do Carrossel por Tema */
-        .theme-hunter .promo-slide {
-            background: linear-gradient(135deg, #e67e22, #a15000);
-        }
+    .theme-natal .promo-slide {
+        background: linear-gradient(135deg, #8b0000, #1a0000);
+        border: 1px solid rgba(255, 50, 50, 0.2);
+    }
+    .theme-hunter .promo-slide {
+        background: linear-gradient(135deg, #e67e22, #a15000);
+    }
         .theme-rosa .promo-slide {
             background: linear-gradient(135deg, #ff69b4, #c83a7d);
         }
@@ -2626,143 +2703,52 @@
             </section>
 
             <!-- Seção de Destaques (Carousel) -->
-            <section id="destaques" style="padding-top: 0; padding-bottom: 0;">
-                <div id="promo-carousel-container">
-                    <div id="promo-carousel-slides">
-                        <!-- Slide 1: Poste um Story -->
-                        <div class="promo-slide" data-target="add-my-story-btn">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-camera-retro"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Poste um Story</h3>
-                                <p>Compartilhe seu dia a dia com a equipe por 24 horas.</p>
-                            </div>
+        <section id="destaques" style="padding-top: 0; padding-bottom: 0;">
+            <div id="promo-carousel-container">
+                <div id="promo-carousel-slides">
+                    <!-- Slide 1: Ofereça Seguro Queda -->
+                    <div class="promo-slide">
+                        <div class="promo-slide-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <!-- Slide 2: Calculadora Crediário -->
-                        <div class="promo-slide" data-target="open-crediario-calculator">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-sliders"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Calculadora Crediário</h3>
-                                <p>Simule parcelamentos e veja os valores em tempo real.</p>
-                            </div>
+                        <div class="promo-slide-content">
+                            <h3>Ofereça Seguro Contra Queda</h3>
+                            <p>Proteja o investimento do seu cliente e aumente seu lucro.</p>
                         </div>
-                        <!-- Slide 3: Previsão de Entrega -->
-                        <div class="promo-slide" data-target="previsao-btn">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-truck-fast"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Previsão de Entrega</h3>
-                                <p>Calcule a data estimada de chegada para novos pedidos.</p>
-                            </div>
+                    </div>
+                    <!-- Slide 2: Ofereça Garantia Estendida -->
+                    <div class="promo-slide">
+                        <div class="promo-slide-icon">
+                            <i class="fa-solid fa-calendar-plus"></i>
                         </div>
-                        <!-- Slide 4: Parcelar no Site -->
-                        <div class="promo-slide" data-target="open-site-calculator">
-                             <div class="promo-slide-icon">
-                                <i class="fa-solid fa-desktop"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Parcelar no Site</h3>
-                                <p>Veja as condições de parcelamento para vendas online.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 5: Meu Perfil -->
-                        <div class="promo-slide" data-target="open-my-profile-btn">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-user-astronaut"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Acesse seu Perfil</h3>
-                                <p>Veja suas metas, ponto, chats e muito mais.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 6: Enviar Sugestão -->
-                        <div class="promo-slide" data-target="open-feedback-page">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-lightbulb"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Tem uma Ideia?</h3>
-                                <p>Nos ajude a melhorar o app enviando sua sugestão ou erro.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 7: Parcelamento de Loja -->
-                        <div class="promo-slide" data-target="open-loja-calculator">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-store"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Parcelamento de Loja</h3>
-                                <p>Calcule as parcelas para vendas físicas com e sem seguro.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 8: Enviar Recibos -->
-                        <div class="promo-slide" data-target="open-recibos-page">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-hand-holding-dollar"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Enviar Recibos</h3>
-                                <p>Digitalize e envie seus recibos de gastos diários facilmente.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 9: Buscar Aparelhos -->
-                        <div class="promo-slide" data-target="open-device-search">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Buscar Aparelhos</h3>
-                                <p>Encontre qualquer dispositivo em nosso catálogo rapidamente.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 10: Mudar o Tema -->
-                        <div class="promo-slide" data-target="theme-toggle">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-palette"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Personalize o App</h3>
-                                <p>Escolha um novo tema e deixe o sistema com a sua cara.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 11: Ofereça Seguro Queda -->
-                        <div class="promo-slide">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Ofereça Seguro Contra Queda</h3>
-                                <p>Proteja o investimento do seu cliente e aumente seu lucro.</p>
-                            </div>
-                        </div>
-                        <!-- Slide 12: Ofereça Garantia Estendida -->
-                        <div class="promo-slide">
-                            <div class="promo-slide-icon">
-                                <i class="fa-solid fa-calendar-plus"></i>
-                            </div>
-                            <div class="promo-slide-content">
-                                <h3>Ofereça Garantia Estendida</h3>
-                                <p>Mais tranquilidade para o cliente e mais comissão para você.</p>
-                            </div>
+                        <div class="promo-slide-content">
+                            <h3>Ofereça Garantia Estendida</h3>
+                            <p>Mais tranquilidade para o cliente e mais comissão para você.</p>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
             <!-- Seção do Ranking Mensal de Colaboradores -->
-            <section id="ranking">
-                <h2 class="section-title">Ranking do Mês</h2>
-                <div id="ranking-container" class="ranking-list">
-                    <!-- O JavaScript irá popular este container -->
-                    <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
-                </div>
-            </section>
-            
-            <!-- Seção do Ranking de Gerentes -->
+        <section id="ranking">
+            <h2 class="section-title">Ranking de Vendas</h2>
+            <div id="ranking-container" class="ranking-list">
+                <!-- O JavaScript irá popular este container -->
+                <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
+            </div>
+        </section>
+
+        <!-- NOVA Seção do Ranking de Serviços -->
+        <section id="service-ranking">
+            <h2 class="section-title">Ranking de Serviços</h2>
+            <div id="service-ranking-container" class="ranking-list">
+                <!-- O JavaScript irá popular este container -->
+                <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
+            </div>
+        </section>
+        
+        <!-- Seção do Ranking de Gerentes -->
             <section id="store-ranking">
                 <h2 class="section-title">Ranking de Gerentes</h2>
                 <div id="store-ranking-container" class="ranking-list">
@@ -3892,9 +3878,12 @@ Transporte - R$ 5,00"></textarea></div>
     <div id="app-version-display"></div>
 
     <!-- Container para o Tema Cinza X -->
-    <div id="floating-x-container"></div>
-    <!-- Container para o Tema Rosa -->
-    <div id="floating-dots-container"></div>
+<div id="floating-x-container"></div>
+<!-- Container para o Tema Rosa -->
+<div id="floating-dots-container"></div>
+<!-- Container para o Tema Natalino -->
+<div id="snow-container"></div>
+<img id="santa-animation" src="https://dbdzm869oupei.cloudfront.net/img/t-shirts/preview/67749.png" alt="Papai Noel">
 
     <!-- TELA DE GERENCIAMENTO DE FERIADOS -->
     <div id="holidays-management-page" style="display: none;">
@@ -6180,94 +6169,89 @@ function showScreen(screenElement) {
     // As funções loadgsData e savegsData foram removidas pois se tornaram obsoletas
     // com a implementação do novo Dashboard e da página de Configurações Gerais.
             const buildAndLoadMetasPage = () => {
-        const container = document.getElementById('metas-content-container');
-        container.innerHTML = `<p style="text-align: center;">Carregando dados...</p>`;
+    const container = document.getElementById('metas-content-container');
+    container.innerHTML = `<p style="text-align: center;">Carregando dados...</p>`;
 
-        database.ref('metas').get().then(metasSnapshot => {
-            const allMetas = metasSnapshot.exists() ? metasSnapshot.val() : {};
-            container.innerHTML = '';
-
-            allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
-                const key = name.toLowerCase();
-                const metasData = allMetas[key] || {};
-                
-                container.innerHTML += `
-                    <div class="employee-meta-card">
-                        <h4>Metas e Prêmios: ${name}</h4>
-                        <div class="meta-group-title">Metas</div>
-                        <div class="input-group"><label for="venda-${key}">Meta de Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
-                        <div class="input-group"><label for="meta-seguro-queda-${key}">Meta de Seguro Contra Queda (R$)</label><input type="text" inputmode="decimal" id="meta-seguro-queda-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_seguro_queda)}"></div>
-                        <div class="input-group"><label for="meta-garantia-estendida-${key}">Meta de Garantia Estendida (R$)</label><input type="text" inputmode="decimal" id="meta-garantia-estendida-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_garantia_estendida)}"></div>
-                        
-                        <div class="meta-group-title">Premiações</div>
-                        <p style="font-size: 0.9rem; line-height: 1.6;">
-                            - 1% sobre a venda<br>
-                            - 10% sobre seguro de queda<br>
-                            - 10% sobre garantia estendida<br>
-                            - 2% de tudo vendido no cartão hunter card<br>
-                            - Máximo de desconto 6%:500
-                        </p>
-                    </div>`;
-            });
-
-            // Adiciona o botão de salvar e o status ao final do container
-            container.innerHTML += `
-                <button id="save-all-metas" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Todas as Metas</button>
-                <p id="metas-status-message" class="status-message"></p>
-            `;
-            // Reatribui o listener ao novo botão
-            document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
-        });
-    };
-            const saveAllMetas = () => {
-        const statusMessage = document.getElementById('metas-status-message');
-        statusMessage.textContent = 'Salvando dados...';
-        const metasDataToSave = {};
+    database.ref('metas').get().then(metasSnapshot => {
+        const allMetas = metasSnapshot.exists() ? metasSnapshot.val() : {};
+        container.innerHTML = '';
 
         allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
             const key = name.toLowerCase();
-            const data = {
-                venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
-                meta_seguro_queda: parseFromBRLInput(document.getElementById(`meta-seguro-queda-${key}`).value),
-                meta_garantia_estendida: parseFromBRLInput(document.getElementById(`meta-garantia-estendida-${key}`).value)
-            };
-            metasDataToSave[key] = data;
-        });
-
-        database.ref('metas').set(metasDataToSave).then(() => {
-            statusMessage.textContent = 'Todos os dados foram salvos!';
-        }).catch((error) => {
-            statusMessage.textContent = 'Erro ao salvar os dados!';
-            console.error(error);
-        });
-    };
-    const loadAndDisplayCollaboratorMetas = () => {
-        const container = document.getElementById('metas-display-content');
-        const key = currentUserName.toLowerCase();
-        container.innerHTML = `<p>Carregando suas metas...</p>`;
-        database.ref(`metas/${key}`).get().then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                container.innerHTML = `
-                    <h3>METAS</h3>
-                    <p><strong>Meta de Venda:</strong> ${formatBRL(data.venda)}</p>
-                    <p><strong>Meta de Seguro Contra Queda:</strong> ${formatBRL(data.meta_seguro_queda || 0)}</p>
-                    <p><strong>Meta de Garantia Estendida:</strong> ${formatBRL(data.meta_garantia_estendida || 0)}</p>
-                    <br>
-                    <h3>PREMIAÇÕES</h3>
-                    <p style="font-size: 0.9rem; line-height: 1.6; background: transparent; padding: 0;">
+            const metasData = allMetas[key] || {};
+            
+            container.innerHTML += `
+                <div class="employee-meta-card">
+                    <h4>Metas e Prêmios: ${name}</h4>
+                    <div class="meta-group-title">Metas</div>
+                    <div class="input-group"><label for="venda-${key}">Meta de Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
+                    <div class="input-group"><label for="meta-servico-${key}">Meta de Serviço (R$)</label><input type="text" inputmode="decimal" id="meta-servico-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_servico)}"></div>
+                    
+                    <div class="meta-group-title">Premiações</div>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">
                         - 1% sobre a venda<br>
-                        - 10% sobre seguro de queda<br>
-                        - 10% sobre garantia estendida<br>
+                        - Prêmio Ranking Serviço: 1º R$1000 | 2º R$500 | 3º R$250<br>
                         - 2% de tudo vendido no cartão hunter card<br>
                         - Máximo de desconto 6%:500
                     </p>
-                `;
-            } else {
-                container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
-            }
+                </div>`;
         });
-    };
+
+        // Adiciona o botão de salvar e o status ao final do container
+        container.innerHTML += `
+            <button id="save-all-metas" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Todas as Metas</button>
+            <p id="metas-status-message" class="status-message"></p>
+        `;
+        // Reatribui o listener ao novo botão
+        document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
+    });
+};
+        const saveAllMetas = () => {
+    const statusMessage = document.getElementById('metas-status-message');
+    statusMessage.textContent = 'Salvando dados...';
+    const metasDataToSave = {};
+
+    allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
+        const key = name.toLowerCase();
+        const data = {
+            venda: parseFromBRLInput(document.getElementById(`venda-${key}`).value),
+            meta_servico: parseFromBRLInput(document.getElementById(`meta-servico-${key}`).value)
+        };
+        metasDataToSave[key] = data;
+    });
+
+    database.ref('metas').set(metasDataToSave).then(() => {
+        statusMessage.textContent = 'Todos os dados foram salvos!';
+    }).catch((error) => {
+        statusMessage.textContent = 'Erro ao salvar os dados!';
+        console.error(error);
+    });
+};
+const loadAndDisplayCollaboratorMetas = () => {
+    const container = document.getElementById('metas-display-content');
+    const key = currentUserName.toLowerCase();
+    container.innerHTML = `<p>Carregando suas metas...</p>`;
+    database.ref(`metas/${key}`).get().then(snapshot => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            container.innerHTML = `
+                <h3>METAS</h3>
+                <p><strong>Meta de Venda:</strong> ${formatBRL(data.venda)}</p>
+                <p><strong>Meta de Serviço:</strong> ${formatBRL(data.meta_servico || 0)}</p>
+                <br>
+                <h3>PREMIAÇÕES</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; background: transparent; padding: 0;">
+                    - 1% sobre a venda<br>
+                    - Prêmio Ranking Serviço: 1º R$1000 | 2º R$500 | 3º R$250<br>
+                    - 2% de tudo vendido no cartão hunter card<br>
+                    - Máximo de desconto 6%:500
+                </p>
+            `;
+        } else {
+            container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
+        }
+    });
+};
     const resetSendDeviceForm = () => {
         document.querySelector('#send-device-page h2').textContent = 'Enviar Novo Dispositivo';
         document.getElementById('save-device-btn').textContent = 'Salvar Dispositivo';
@@ -7326,74 +7310,74 @@ const loadDeviceDetails = (key, brand) => {
     };
 
         const clearClosingForm = (store) => {
-        const employees = storeMapping[store];
-        employees.forEach(name => {
+    const employees = storeMapping[store];
+    employees.forEach(name => {
+        const key = name.toLowerCase();
+        document.getElementById(`closing-venda-${key}`).value = '';
+        document.getElementById(`closing-cartao-${key}`).value = '';
+        document.getElementById(`closing-servico-${key}`).value = '';
+        document.getElementById(`closing-p1p2-${key}`).value = '';
+        document.getElementById(`closing-preco-site-${key}`).value = '';
+        document.getElementById(`closing-venda-remota-${key}`).value = '';
+    });
+};
+
+            const submitClosingData = () => {
+    const statusEl = document.getElementById('closing-status-message');
+    if (!confirm('Tem certeza que deseja enviar esses dados? A ação não pode ser desfeita.')) {
+        return;
+    }
+    statusEl.textContent = 'Salvando...';
+
+    const formPinheiro = document.getElementById('closing-form-pinheiro');
+    const store = formPinheiro.style.display !== 'none' ? 'pinheiro' : 'bacabal';
+    const employeesForStore = storeMapping[store];
+
+    const now = new Date();
+    const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+    const todayString = getTodayDateString();
+
+    Promise.all([
+        database.ref('salesData').get(),
+        database.ref(`monthlySales/${currentMonthKey}`).get(),
+        database.ref(`dailySales/${todayString}`).get()
+    ]).then(([salesSnapshot, monthlySalesSnapshot, dailySalesSnapshot]) => {
+        const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
+        let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
+        const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
+        let totalVendasDoFechamento = 0;
+        let totalPrecoSiteDoFechamento = 0; 
+
+        const updates = {};
+        
+        employeesForStore.forEach(name => {
             const key = name.toLowerCase();
-            document.getElementById(`closing-venda-${key}`).value = '';
-            document.getElementById(`closing-cartao-${key}`).value = '';
-            document.getElementById(`closing-seguro-${key}`).value = '';
-            document.getElementById(`closing-p1p2-${key}`).value = '';
-            document.getElementById(`closing-preco-site-${key}`).value = '';
-            document.getElementById(`closing-venda-remota-${key}`).value = '';
-        });
-    };
-    
-                const submitClosingData = () => {
-        const statusEl = document.getElementById('closing-status-message');
-        if (!confirm('Tem certeza que deseja enviar esses dados? A ação não pode ser desfeita.')) {
-            return;
-        }
-        statusEl.textContent = 'Salvando...';
+            const currentData = existingSales[key] || { vendas: 0, p1p2: 0, servico: 0, cartao: 0, vendaRemota: 0 };
+            const currentDailyData = existingDailySales[key] || { vendas: 0 };
 
-        const formPinheiro = document.getElementById('closing-form-pinheiro');
-        const store = formPinheiro.style.display !== 'none' ? 'pinheiro' : 'bacabal';
-        const employeesForStore = storeMapping[store];
-
-        const now = new Date();
-        const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
-        const todayString = getTodayDateString();
-
-        Promise.all([
-            database.ref('salesData').get(),
-            database.ref(`monthlySales/${currentMonthKey}`).get(),
-            database.ref(`dailySales/${todayString}`).get()
-        ]).then(([salesSnapshot, monthlySalesSnapshot, dailySalesSnapshot]) => {
-            const existingSales = salesSnapshot.exists() ? salesSnapshot.val() : {};
-            let monthlyTotalVendas = monthlySalesSnapshot.exists() ? monthlySalesSnapshot.val().totalVendas : 0;
-            const existingDailySales = dailySalesSnapshot.exists() ? dailySalesSnapshot.val() : {};
-            let totalVendasDoFechamento = 0;
-            let totalPrecoSiteDoFechamento = 0; 
-
-            const updates = {};
+            const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
+            const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
+            const newServico = parseFromBRLInput(document.getElementById(`closing-servico-${key}`).value);
+            const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
+            const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
+            const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
             
-            employeesForStore.forEach(name => {
-                const key = name.toLowerCase();
-                const currentData = existingSales[key] || { vendas: 0, p1p2: 0, seguro: 0, cartao: 0, vendaRemota: 0 };
-                const currentDailyData = existingDailySales[key] || { vendas: 0 };
+            // Venda Remota agora é somada ao total de vendas
+            totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
+            totalPrecoSiteDoFechamento += newPrecoSite;
 
-                const newVenda = parseFromBRLInput(document.getElementById(`closing-venda-${key}`).value);
-                const newP1P2 = parseFromBRLInput(document.getElementById(`closing-p1p2-${key}`).value);
-                const newSeguro = parseFromBRLInput(document.getElementById(`closing-seguro-${key}`).value);
-                const newCartao = parseInt(document.getElementById(`closing-cartao-${key}`).value, 10) || 0;
-                const newPrecoSite = parseFromBRLInput(document.getElementById(`closing-preco-site-${key}`).value);
-                const newVendaRemota = parseFromBRLInput(document.getElementById(`closing-venda-remota-${key}`).value);
-                
-                // Venda Remota agora é somada ao total de vendas
-                totalVendasDoFechamento += (newVenda + newPrecoSite + newVendaRemota);
-                totalPrecoSiteDoFechamento += newPrecoSite;
-
-                existingSales[key] = {
-                    vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
-                    p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
-                    seguro: (parseFloat(currentData.seguro) || 0) + newSeguro,
-                    cartao: (parseInt(currentData.cartao) || 0) + newCartao,
-                    vendaRemota: (parseFloat(currentData.vendaRemota) || 0) + newVendaRemota,
-                };
-                
-                updates[`/dailySales/${todayString}/${key}`] = {
-                    vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
-                };
-            });
+            existingSales[key] = {
+                vendas: (parseFloat(currentData.vendas) || 0) + newVenda + newPrecoSite + newVendaRemota,
+                p1p2: (parseFloat(currentData.p1p2) || 0) + newP1P2,
+                servico: (parseFloat(currentData.servico) || 0) + newServico,
+                cartao: (parseInt(currentData.cartao) || 0) + newCartao,
+                vendaRemota: (parseFloat(currentData.vendaRemota) || 0) + newVendaRemota,
+            };
+            
+            updates[`/dailySales/${todayString}/${key}`] = {
+                vendas: (currentDailyData.vendas || 0) + newVenda + newPrecoSite + newVendaRemota
+            };
+        });
 
             monthlyTotalVendas += totalVendasDoFechamento;
             
@@ -7488,110 +7472,110 @@ const loadDeviceDetails = (key, brand) => {
         };
 
         const buildAndLoadCorrectionPage = () => {
-            const container = document.getElementById('correction-content-container');
-            container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
+        const container = document.getElementById('correction-content-container');
+        container.innerHTML = `<p style="text-align: center;">Carregando dados para correção...</p>`;
 
-            database.ref('salesData').get().then(snapshot => {
-                const allSales = snapshot.exists() ? snapshot.val() : {};
-                container.innerHTML = '';
+        database.ref('salesData').get().then(snapshot => {
+            const allSales = snapshot.exists() ? snapshot.val() : {};
+            container.innerHTML = '';
 
-                allCollaborators.forEach(name => {
-                    const key = name.toLowerCase();
-                    const salesData = allSales[key] || {};
-                                        container.innerHTML += `
-                        <div class="employee-meta-card">
-                            <h4>${name}</h4>
-                            <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
-                            <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
-                            <div class="input-group"><label for="correction-venda-remota-${key}">📲 VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
-                            <div class="input-group"><label for="correction-seguro-${key}">🔧 SEGURO (R$)</label><input type="text" inputmode="decimal" id="correction-seguro-${key}" class="data-input" value="${formatToBRLInput(salesData.seguro)}"></div>
-                            <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
-                        </div>
-                    `;
-                });
-
-                const storeTotals = {
-                    pinheiro: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 },
-                    bacabal: { vendas: 0, p1p2: 0, seguro: 0, cartao: 0 }
-                };
-                for (const store in storeMapping) {
-                    storeMapping[store].forEach(employeeName => {
-                        const employeeKey = employeeName.toLowerCase();
-                        const employeeData = allSales[employeeKey] || {};
-                        storeTotals[store].vendas += parseFloat(employeeData.vendas || 0);
-                        storeTotals[store].p1p2 += parseFloat(employeeData.p1p2 || 0);
-                        storeTotals[store].seguro += parseInt(employeeData.seguro || 0, 10);
-                        storeTotals[store].cartao += parseInt(employeeData.cartao || 0, 10);
-                    });
-                }
-
-                for (const storeName in storeTotals) {
-                    const totals = storeTotals[storeName];
-                    const totalCardIdPrefix = `total-loja-${storeName}`;
-                    const storeTitle = storeName.charAt(0).toUpperCase() + storeName.slice(1);
-
-                    container.innerHTML += `
-                        <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
-                            <h4 style="color: #fff;">Editar Total Loja ${storeTitle}</h4>
-                            <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
-                            <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" value="${formatToBRLInput(totals.p1p2)}"></div>
-                            <div class="input-group"><label for="${totalCardIdPrefix}-seguro">🔧 TOTAL SEGURO</label><input type="number" id="${totalCardIdPrefix}-seguro" class="data-input" value="${totals.seguro}"></div>
-                            <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" value="${totals.cartao}"></div>
-                        </div>
-                    `;
-                }
-                
-                const fields = ['vendas', 'p1p2', 'seguro', 'cartao'];
-                for (const storeName in storeMapping) {
-                    fields.forEach(field => {
-                        const totalInput = document.getElementById(`total-loja-${storeName}-${field}`);
-                        totalInput.addEventListener('change', () => distributeStoreTotal(storeName, field));
-                    });
-                }
-
-                // Adiciona o botão de salvar e o status ao final do container
-                container.innerHTML += `
-                    <button id="save-all-corrections-btn" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Correções</button>
-                    <p id="correction-status-message" class="status-message"></p>
+            allCollaborators.forEach(name => {
+                const key = name.toLowerCase();
+                const salesData = allSales[key] || {};
+                                    container.innerHTML += `
+                    <div class="employee-meta-card">
+                        <h4>${name}</h4>
+                        <div class="input-group"><label for="correction-vendas-${key}">📈 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
+                        <div class="input-group"><label for="correction-p1p2-${key}">🔱 P1/P2 (R$)</label><input type="text" id="correction-p1p2-${key}" class="data-input" value="${formatToBRLInput(salesData.p1p2)}"></div>
+                        <div class="input-group"><label for="correction-venda-remota-${key}">📲 VENDA REMOTA (R$)</label><input type="text" id="correction-venda-remota-${key}" class="data-input" value="${formatToBRLInput(salesData.vendaRemota)}"></div>
+                        <div class="input-group"><label for="correction-servico-${key}">🔧 SERVIÇO (R$)</label><input type="text" inputmode="decimal" id="correction-servico-${key}" class="data-input" value="${formatToBRLInput(salesData.servico)}"></div>
+                        <div class="input-group"><label for="correction-cartao-${key}">💳 CARTÃO</label><input type="number" id="correction-cartao-${key}" class="data-input" value="${salesData.cartao || ''}"></div>
+                    </div>
                 `;
-                // Reatribui o listener ao novo botão
-                document.getElementById('save-all-corrections-btn').addEventListener('click', saveCorrections);
             });
-        };
 
-    const saveCorrections = () => {
-        const statusMessage = document.getElementById('correction-status-message');
-        statusMessage.textContent = 'Salvando correções...';
-        
-        const dataToSave = {};
-
-        // Itera sobre TODOS os colaboradores, incluindo as gerentes.
-        allCollaborators.forEach(name => {
-            const key = name.toLowerCase();
-            
-            // Lê os valores dos campos de cada colaborador e os adiciona ao objeto que será salvo.
-                        dataToSave[key] = {
-                vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
-                p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
-                seguro: parseFromBRLInput(document.getElementById(`correction-seguro-${key}`).value),
-                cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
-                vendaRemota: parseFromBRLInput(document.getElementById(`correction-venda-remota-${key}`).value),
+            const storeTotals = {
+                pinheiro: { vendas: 0, p1p2: 0, servico: 0, cartao: 0 },
+                bacabal: { vendas: 0, p1p2: 0, servico: 0, cartao: 0 }
             };
-        });
+            for (const store in storeMapping) {
+                storeMapping[store].forEach(employeeName => {
+                    const employeeKey = employeeName.toLowerCase();
+                    const employeeData = allSales[employeeKey] || {};
+                    storeTotals[store].vendas += parseFloat(employeeData.vendas || 0);
+                    storeTotals[store].p1p2 += parseFloat(employeeData.p1p2 || 0);
+                    storeTotals[store].servico += parseFloat(employeeData.servico || 0);
+                    storeTotals[store].cartao += parseInt(employeeData.cartao || 0, 10);
+                });
+            }
 
-        // O método .set() substitui completamente os dados no nó 'salesData' com os novos dados lidos do formulário.
-        database.ref('salesData').set(dataToSave)
-            .then(() => {
-                statusMessage.textContent = 'Dados corrigidos com sucesso!';
-                // Recarrega a página para recalcular e exibir os totais atualizados
-                buildAndLoadCorrectionPage(); 
-                setTimeout(() => { statusMessage.textContent = ''; }, 3000);
-            })
-            .catch((error) => {
-                statusMessage.textContent = 'Erro ao salvar as correções!';
-                console.error(error);
-            });
+            for (const storeName in storeTotals) {
+                const totals = storeTotals[storeName];
+                const totalCardIdPrefix = `total-loja-${storeName}`;
+                const storeTitle = storeName.charAt(0).toUpperCase() + storeName.slice(1);
+
+                container.innerHTML += `
+                    <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
+                        <h4 style="color: #fff;">Editar Total Loja ${storeTitle}</h4>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📈 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-p1p2">🔱 TOTAL P1/P2</label><input type="text" id="${totalCardIdPrefix}-p1p2" class="data-input" value="${formatToBRLInput(totals.p1p2)}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-servico">🔧 TOTAL SERVIÇO</label><input type="text" id="${totalCardIdPrefix}-servico" class="data-input" value="${formatToBRLInput(totals.servico)}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-cartao">💳 TOTAL CARTÃO</label><input type="number" id="${totalCardIdPrefix}-cartao" class="data-input" value="${totals.cartao}"></div>
+                    </div>
+                `;
+            }
+            
+            const fields = ['vendas', 'p1p2', 'servico', 'cartao'];
+            for (const storeName in storeMapping) {
+                fields.forEach(field => {
+                    const totalInput = document.getElementById(`total-loja-${storeName}-${field}`);
+                    totalInput.addEventListener('change', () => distributeStoreTotal(storeName, field));
+                });
+            }
+
+            // Adiciona o botão de salvar e o status ao final do container
+            container.innerHTML += `
+                <button id="save-all-corrections-btn" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Correções</button>
+                <p id="correction-status-message" class="status-message"></p>
+            `;
+            // Reatribui o listener ao novo botão
+            document.getElementById('save-all-corrections-btn').addEventListener('click', saveCorrections);
+        });
     };
+
+const saveCorrections = () => {
+    const statusMessage = document.getElementById('correction-status-message');
+    statusMessage.textContent = 'Salvando correções...';
+    
+    const dataToSave = {};
+
+    // Itera sobre TODOS os colaboradores, incluindo as gerentes.
+    allCollaborators.forEach(name => {
+        const key = name.toLowerCase();
+        
+        // Lê os valores dos campos de cada colaborador e os adiciona ao objeto que será salvo.
+                    dataToSave[key] = {
+            vendas: parseFromBRLInput(document.getElementById(`correction-vendas-${key}`).value),
+            p1p2: parseFromBRLInput(document.getElementById(`correction-p1p2-${key}`).value),
+            servico: parseFromBRLInput(document.getElementById(`correction-servico-${key}`).value),
+            cartao: document.getElementById(`correction-cartao-${key}`).value || 0,
+            vendaRemota: parseFromBRLInput(document.getElementById(`correction-venda-remota-${key}`).value),
+        };
+    });
+
+    // O método .set() substitui completamente os dados no nó 'salesData' com os novos dados lidos do formulário.
+    database.ref('salesData').set(dataToSave)
+        .then(() => {
+            statusMessage.textContent = 'Dados corrigidos com sucesso!';
+            // Recarrega a página para recalcular e exibir os totais atualizados
+            buildAndLoadCorrectionPage(); 
+            setTimeout(() => { statusMessage.textContent = ''; }, 3000);
+        })
+        .catch((error) => {
+            statusMessage.textContent = 'Erro ao salvar as correções!';
+            console.error(error);
+        });
+};
 
     const changePassword = () => {
         const newPassword = prompt("Digite sua nova senha. Deixe em branco para remover a senha.");
@@ -8079,124 +8063,210 @@ const loadDeviceDetails = (key, brand) => {
     };
 
 async function calculateAndDisplayRanking() {
-        const rankingContainer = document.getElementById('ranking-container');
-        rankingContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking...</p>';
+const rankingContainer = document.getElementById('ranking-container');
+rankingContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking...</p>';
+Promise.all([
+        database.ref('salesData').get(),
+        database.ref('metas').get(),
+        database.ref('userProfiles').get(),
+        database.ref('userStatuses').get() // Adicionado para buscar status
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
+        if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
+            rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
+            return;
+        }
 
-        Promise.all([
-            database.ref('salesData').get(),
-            database.ref('metas').get(),
-            database.ref('userProfiles').get(),
-            database.ref('userStatuses').get() // Adicionado para buscar status
-        ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
-            if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
-                rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
-                return;
+        const salesData = salesSnapshot.val();
+        const metasData = metasSnapshot.val();
+        const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
+        const statusesData = statusesSnapshot.exists() ? statusesSnapshot.val() : {};
+        const performanceData = [];
+
+        const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
+
+        eligibleCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            const actualSales = parseFloat(salesData[key]?.vendas || 0);
+            const salesGoal = parseFloat(metasData[key]?.venda || 0);
+
+            if (salesGoal > 0) {
+                const percentage = (actualSales / salesGoal) * 100;
+                performanceData.push({
+                    name: name,
+                    percentage: percentage
+                });
             }
-
-            const salesData = salesSnapshot.val();
-            const metasData = metasSnapshot.val();
-            const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
-            const statusesData = statusesSnapshot.exists() ? statusesSnapshot.val() : {};
-            const performanceData = [];
-
-            const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
-
-            eligibleCollaborators.forEach(name => {
-                const key = name.toLowerCase();
-                const actualSales = parseFloat(salesData[key]?.vendas || 0);
-                const salesGoal = parseFloat(metasData[key]?.venda || 0);
-
-                if (salesGoal > 0) {
-                    const percentage = (actualSales / salesGoal) * 100;
-                    performanceData.push({
-                        name: name,
-                        percentage: percentage
-                    });
-                }
-            });
-
-            performanceData.sort((a, b) => b.percentage - a.percentage);
-
-            rankingContainer.innerHTML = '';
-            const top3 = performanceData.slice(0, 3);
-
-            if (top3.length === 0) {
-                rankingContainer.innerHTML = '<p style="text-align: center;">Nenhum colaborador com meta definida para o ranking.</p>';
-                return;
-            }
-
-            for (const [index, collab] of top3.entries()) {
-                const rank = index + 1;
-
-                if (rank === 1) {
-                    awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
-                }
-
-                const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
-                let prizeHTML = '';
-                if (rank === 1) {
-                    prizeHTML = `<img src="https://www.harmanaudio.com.br/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw53a9f6dd/JBL_BOOMBOX3_WIFI_HERO_37919_x4.png?sw=535&sh=535" style="width: 60px; height: 60px; margin-left: 8px; vertical-align: middle; border: 2px solid #FFD700; border-radius: 50%; padding: 2px; animation: pulse 1.5s infinite;">`;
-                }
-                
-                const rankItem = document.createElement('div');
-                rankItem.className = `rank-item rank-${rank}`;
-                
-                const progressBarWidth = collab.percentage;
-
-                const defaultPhoto = DEFAULT_PROFILE_PHOTO;
-                const collaboratorProfile = profilesData[collab.name.toLowerCase()];
-                const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
-                const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
-
-                // --- LÓGICA DA BOLHA DE STATUS ---
-                let statusBubbleHtml = '';
-                const userStatus = statusesData[collab.name.toLowerCase()];
-                if (userStatus && userStatus.text) {
-                    const statusTimestamp = new Date(userStatus.timestamp);
-                    const now = new Date();
-                    const hoursDiff = (now - statusTimestamp) / (1000 * 60 * 60);
-                    if (hoursDiff < 24) {
-                        statusBubbleHtml = `<div class="status-bubble">${userStatus.text}</div>`;
-                    }
-                }
-                // --- FIM DA LÓGICA DA BOLHA ---
-
-                let fireIconHtml = '';
-                if (rank === 1) {
-                    awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
-                    // Limita a posição do ícone em 98% para não sair da tela em 100%
-                    const firePosition = Math.min(progressBarWidth, 98); 
-                    // Gera o ícone com a posição 'left' calculada dinamicamente
-                    fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%;"></i>`;
-                }
-
-                rankItem.innerHTML = `
-                    <div class="rank-photo-container">
-                        ${crownHtml}
-                        <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
-                    </div>
-                    <div class="rank-medal">${medals[index]}</div>
-                    <div class="rank-details">
-                        <div class="rank-name">
-                            <span>${collab.name}</span>
-                            <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
-                            <div class="prize-container">${prizeHTML}</div>
-                        </div>
-                        ${statusBubbleHtml}
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
-                            <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
-                            ${fireIconHtml}
-                        </div>
-                    </div>
-                `;
-                rankingContainer.appendChild(rankItem);
-            };
-        }).catch(error => {
-            console.error("Erro ao carregar dados para o ranking:", error);
-            rankingContainer.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
         });
-    };
+
+        performanceData.sort((a, b) => b.percentage - a.percentage);
+
+        rankingContainer.innerHTML = '';
+        const top3 = performanceData.slice(0, 3);
+
+        if (top3.length === 0) {
+            rankingContainer.innerHTML = '<p style="text-align: center;">Nenhum colaborador com meta definida para o ranking.</p>';
+            return;
+        }
+
+        for (const [index, collab] of top3.entries()) {
+            const rank = index + 1;
+
+            if (rank === 1) {
+                awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
+            }
+
+            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+            let prizeHTML = '';
+            if (rank === 1) {
+                prizeHTML = `<img src="https://www.harmanaudio.com.br/dw/image/v2/BFND_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw53a9f6dd/JBL_BOOMBOX3_WIFI_HERO_37919_x4.png?sw=535&sh=535" style="width: 60px; height: 60px; margin-left: 8px; vertical-align: middle; border: 2px solid #FFD700; border-radius: 50%; padding: 2px; animation: pulse 1.5s infinite;">`;
+            }
+            
+            const rankItem = document.createElement('div');
+            rankItem.className = `rank-item rank-${rank}`;
+            
+            const progressBarWidth = collab.percentage;
+
+            const defaultPhoto = DEFAULT_PROFILE_PHOTO;
+            const collaboratorProfile = profilesData[collab.name.toLowerCase()];
+            const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
+            const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
+
+            // --- LÓGICA DA BOLHA DE STATUS ---
+            let statusBubbleHtml = '';
+            const userStatus = statusesData[collab.name.toLowerCase()];
+            if (userStatus && userStatus.text) {
+                const statusTimestamp = new Date(userStatus.timestamp);
+                const now = new Date();
+                const hoursDiff = (now - statusTimestamp) / (1000 * 60 * 60);
+                if (hoursDiff < 24) {
+                    statusBubbleHtml = `<div class="status-bubble">${userStatus.text}</div>`;
+                }
+            }
+            // --- FIM DA LÓGICA DA BOLHA ---
+
+            let fireIconHtml = '';
+            if (rank === 1) {
+                awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
+                // Limita a posição do ícone em 98% para não sair da tela em 100%
+                const firePosition = Math.min(progressBarWidth, 98); 
+                // Gera o ícone com a posição 'left' calculada dinamicamente
+                fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%;"></i>`;
+            }
+
+            rankItem.innerHTML = `
+                <div class="rank-photo-container">
+                    ${crownHtml}
+                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                </div>
+                <div class="rank-medal">${medals[index]}</div>
+                <div class="rank-details">
+                    <div class="rank-name">
+                        <span>${collab.name}</span>
+                        <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
+                        <div class="prize-container">${prizeHTML}</div>
+                    </div>
+                    ${statusBubbleHtml}
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
+                        <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                        ${fireIconHtml}
+                    </div>
+                </div>
+            `;
+            rankingContainer.appendChild(rankItem);
+        };
+    }).catch(error => {
+        console.error("Erro ao carregar dados para o ranking:", error);
+        rankingContainer.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
+    });
+};
+
+async function calculateAndDisplayServiceRanking() {
+    const rankingContainer = document.getElementById('service-ranking-container');
+    rankingContainer.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking de serviços...</p>';
+
+    Promise.all([
+        database.ref('salesData').get(),
+        database.ref('metas').get(),
+        database.ref('userProfiles').get()
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot]) => {
+        if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
+            rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
+            return;
+        }
+
+        const salesData = salesSnapshot.val();
+        const metasData = metasSnapshot.val();
+        const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
+        const performanceData = [];
+
+        const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
+
+        eligibleCollaborators.forEach(name => {
+            const key = name.toLowerCase();
+            const actualService = parseFloat(salesData[key]?.servico || 0);
+            const serviceGoal = parseFloat(metasData[key]?.meta_servico || 0);
+
+            if (serviceGoal > 0) {
+                const percentage = (actualService / serviceGoal) * 100;
+                performanceData.push({
+                    name: name,
+                    percentage: percentage
+                });
+            }
+        });
+
+        performanceData.sort((a, b) => b.percentage - a.percentage);
+
+        rankingContainer.innerHTML = '';
+        const top3 = performanceData.slice(0, 3);
+
+        if (top3.length === 0) {
+            rankingContainer.innerHTML = '<p style="text-align: center;">Nenhuma meta de serviço definida.</p>';
+            return;
+        }
+
+        for (const [index, collab] of top3.entries()) {
+            const rank = index + 1;
+            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+            let prizeValue = '';
+            
+            if (rank === 1) prizeValue = 'R$ 1.000,00';
+            else if (rank === 2) prizeValue = 'R$ 500,00';
+            else if (rank === 3) prizeValue = 'R$ 250,00';
+
+            const rankItem = document.createElement('div');
+            rankItem.className = `rank-item rank-${rank}`;
+            
+            const progressBarWidth = collab.percentage;
+            const defaultPhoto = DEFAULT_PROFILE_PHOTO;
+            const collaboratorProfile = profilesData[collab.name.toLowerCase()];
+            const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
+
+            rankItem.innerHTML = `
+                <div class="rank-photo-container">
+                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                </div>
+                <div class="rank-medal">${medals[index]}</div>
+                <div class="rank-details">
+                    <div class="rank-name">
+                        <span>${collab.name}</span>
+                        <span class="rank-prize" style="color: #2ecc71;">${prizeValue}</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressBarWidth}%; background-color: #9b59b6;"></div>
+                        <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                    </div>
+                </div>
+            `;
+            rankingContainer.appendChild(rankItem);
+        };
+    }).catch(error => {
+        console.error("Erro ao carregar dados para o ranking de serviços:", error);
+        rankingContainer.innerHTML = '<p style="text-align: center;">Erro ao carregar o ranking.</p>';
+    });
+};
+
     function getTodayDateString() {
         const today = new Date();
         const year = today.getFullYear();
@@ -9980,78 +10050,87 @@ async function calculateAndDisplayStoreRanking() {
             };
 
             const createOrClearFloatingDots = (create) => {
-                const container = document.getElementById('floating-dots-container');
-                container.innerHTML = '';
-                if (!create) return;
+            const container = document.getElementById('floating-dots-container');
+            container.innerHTML = '';
+            if (!create) return;
 
-                const dotCount = 60; // Mais pontos para preencher a tela
-                for (let i = 0; i < dotCount; i++) {
-                    const dot = document.createElement('div');
-                    dot.classList.add('floating-dot');
+            const dotCount = 60; // Mais pontos para preencher a tela
+            for (let i = 0; i < dotCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('floating-dot');
+                
+                const size = Math.random() * 5 + 2; // Tamanho do ponto entre 2px e 7px
+                const left = Math.random() * 100;
+                const duration = Math.random() * 25 + 20; // Duração entre 20s e 45s
+                const delay = Math.random() * 15;
+
+                dot.style.width = `${size}px`;
+                dot.style.height = `${size}px`;
+                dot.style.left = `${left}vw`;
+                dot.style.animationDuration = `${duration}s`;
+                dot.style.animationDelay = `${delay}s`;
+
+                container.appendChild(dot);
+            }
+        };
+
+        const createSnowflakes = () => {
+            const container = document.getElementById('snow-container');
+            container.innerHTML = '';
+            const snowflakeCount = 50; 
+
+            for (let i = 0; i < snowflakeCount; i++) {
+                const flake = document.createElement('div');
+                flake.classList.add('snowflake');
+                flake.innerHTML = '❅'; 
+                
+                const left = Math.random() * 100;
+                const duration = Math.random() * 5 + 5; 
+                const delay = Math.random() * 5; 
+                const size = Math.random() * 1.5 + 0.5; 
+
+                flake.style.left = `${left}vw`;
+                flake.style.animationDuration = `${duration}s`;
+                flake.style.animationDelay = `${delay}s`;
+                flake.style.fontSize = `${size}em`;
+
+                container.appendChild(flake);
+            }
+        };
+        
+        const applySelectedTheme = () => {
+            // Força o tema natalino removendo todos os outros
+            document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx');
+            
+            createOrClearFloatingXs(false);
+            createOrClearFloatingDots(false); 
+            
+            // Aplica tema natalino
+            document.body.classList.add('theme-natal');
+            createSnowflakes();
+        };
+
+        // Desativa listeners de tema antigo e força o natalino na inicialização
+        applySelectedTheme();
+
+        const runSantaEvent = () => {
+            // 1 chance em 3 (gera 0, 1 ou 2)
+            const chance = Math.floor(Math.random() * 3); 
+            
+            if (chance === 0) {
+                const santa = document.getElementById('santa-animation');
+                if (santa) {
+                    santa.style.display = 'block';
+                    santa.style.animation = 'flySanta 20s linear forwards';
                     
-                    const size = Math.random() * 5 + 2; // Tamanho do ponto entre 2px e 7px
-                    const left = Math.random() * 100;
-                    const duration = Math.random() * 25 + 20; // Duração entre 20s e 45s
-                    const delay = Math.random() * 15;
-
-                    dot.style.width = `${size}px`;
-                    dot.style.height = `${size}px`;
-                    dot.style.left = `${left}vw`;
-                    dot.style.animationDuration = `${duration}s`;
-                    dot.style.animationDelay = `${delay}s`;
-
-                    container.appendChild(dot);
+                    setTimeout(() => {
+                        santa.style.display = 'none';
+                    }, 20000);
                 }
-            };
-            
-            const applySelectedTheme = (themeName) => {
-                // Limpa temas e efeitos anteriores
-                document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx');
-                createOrClearFloatingXs(false);
-                createOrClearFloatingDots(false); // Limpa os pontos também
-                
-                // Adiciona o novo tema
-                if (themeName && themeName !== 'default') {
-                    document.body.classList.add(themeName);
-                }
-                
-                // Ativa efeitos especiais para temas específicos
-                if (themeName === 'theme-grayx') {
-                    createOrClearFloatingXs(true);
-                }
-                if (themeName === 'theme-rosa' || themeName === 'theme-hunter') {
-                    createOrClearFloatingDots(true);
-                }
+            }
+        };
 
-                localStorage.setItem('selectedTheme', themeName);
-            };
-
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeModal = document.getElementById('theme-modal');
-            const closeThemeBtn = document.getElementById('close-theme-modal-btn');
-            
-            themeToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                openThemeModal();
-            });
-
-            closeThemeBtn.addEventListener('click', closeThemeModal);
-            themeModal.addEventListener('click', (e) => {
-                if (e.target === themeModal) {
-                    closeThemeModal();
-                }
-            });
-
-            document.querySelectorAll('.theme-select-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const themeName = e.currentTarget.dataset.theme;
-                    applySelectedTheme(themeName);
-                    closeThemeModal();
-                });
-            });
-
-            const savedTheme = localStorage.getItem('selectedTheme') || 'default';
-            applySelectedTheme(savedTheme);
+        runSantaEvent();
 
 
             // --- LÓGICA DE ATIVAÇÃO (A SER USADA PELA NOVA FUNÇÃO DE INICIALIZAÇÃO) ---
@@ -10461,37 +10540,37 @@ async function calculateAndDisplayStoreRanking() {
 
                         // --- FECHAMENTO (seleção de loja e geração de formulário) ---
             const showClosingForm = (store) => {
-                const formContainerId = `closing-form-${store}`;
-                const formContainer = document.getElementById(formContainerId);
-                const employeesForStore = storeMapping[store];
+            const formContainerId = `closing-form-${store}`;
+            const formContainer = document.getElementById(formContainerId);
+            const employeesForStore = storeMapping[store];
 
-                let formHtml = `<h3 class="modal-title">Fechamento - ${store.charAt(0).toUpperCase() + store.slice(1)}</h3>`;
+            let formHtml = `<h3 class="modal-title">Fechamento - ${store.charAt(0).toUpperCase() + store.slice(1)}</h3>`;
 
-                employeesForStore.forEach(name => {
-                    const key = name.toLowerCase();
-                    formHtml += `
-                        <div class="employee-meta-card" style="margin-bottom: 2rem;">
-                            <h4>${name}</h4>
-                            <div class="input-group"><label for="closing-venda-${key}">VENDA 📈</label><input type="text" inputmode="decimal" id="closing-venda-${key}" class="data-input" placeholder="0,00"></div>
-                            <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
-                            <div class="input-group"><label for="closing-seguro-${key}">SEGURO 📝</label><input type="text" inputmode="decimal" id="closing-seguro-${key}" class="data-input" placeholder="0,00"></div>
-                            <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
-                            <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 📡</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
-                            <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📲</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
-                        </div>
-                    `;
-                });
-                
-                formContainer.innerHTML = formHtml;
-                
-                document.getElementById('closing-store-selection').style.display = 'none';
-                document.getElementById('closing-submit-container').style.display = 'block';
-                document.getElementById('closing-form-pinheiro').style.display = store === 'pinheiro' ? 'block' : 'none';
-                document.getElementById('closing-form-bacabal').style.display = store === 'bacabal' ? 'block' : 'none';
-            };
-            document.getElementById('closing-btn-pinheiro').addEventListener('click', () => showClosingForm('pinheiro'));
-            document.getElementById('closing-btn-bacabal').addEventListener('click', () => showClosingForm('bacabal'));
-            document.getElementById('submit-closing-data-btn').addEventListener('click', submitClosingData);
+            employeesForStore.forEach(name => {
+                const key = name.toLowerCase();
+                formHtml += `
+                    <div class="employee-meta-card" style="margin-bottom: 2rem;">
+                        <h4>${name}</h4>
+                        <div class="input-group"><label for="closing-venda-${key}">VENDA 📈</label><input type="text" inputmode="decimal" id="closing-venda-${key}" class="data-input" placeholder="0,00"></div>
+                        <div class="input-group"><label for="closing-p1p2-${key}">P1/P2 🔱</label><input type="text" inputmode="decimal" id="closing-p1p2-${key}" class="data-input" placeholder="0,00"></div>
+                        <div class="input-group"><label for="closing-servico-${key}">SERVIÇO 🔧</label><input type="text" inputmode="decimal" id="closing-servico-${key}" class="data-input" placeholder="0,00"></div>
+                        <div class="input-group"><label for="closing-cartao-${key}">CARTÕES 💳</label><input type="number" id="closing-cartao-${key}" class="data-input" placeholder="0"></div>
+                        <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 📡</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
+                        <div class="input-group"><label for="closing-venda-remota-${key}">VENDA REMOTA 📲</label><input type="text" inputmode="decimal" id="closing-venda-remota-${key}" class="data-input" placeholder="0,00"></div>
+                    </div>
+                `;
+            });
+            
+            formContainer.innerHTML = formHtml;
+            
+            document.getElementById('closing-store-selection').style.display = 'none';
+            document.getElementById('closing-submit-container').style.display = 'block';
+            document.getElementById('closing-form-pinheiro').style.display = store === 'pinheiro' ? 'block' : 'none';
+            document.getElementById('closing-form-bacabal').style.display = store === 'bacabal' ? 'block' : 'none';
+        };
+        document.getElementById('closing-btn-pinheiro').addEventListener('click', () => showClosingForm('pinheiro'));
+        document.getElementById('closing-btn-bacabal').addEventListener('click', () => showClosingForm('bacabal'));
+        document.getElementById('submit-closing-data-btn').addEventListener('click', submitClosingData);
 
             // --- BOTÕES DE VOLTAR (TODOS CENTRALIZADOS AQUI) ---
             document.getElementById('back-to-main').addEventListener('click', showMainPage);
@@ -11373,10 +11452,11 @@ async function calculateAndDisplayStoreRanking() {
                 // Se a função for chamada para um usuário já logado, só carrega os dados
                 if (isLoggedIn) {
                     loadCollaboratorProfilePicture(); // Carrega a foto de perfil imediatamente
-                    loadAndDisplayCollaboratorStatus(); // Carrega o status para a tela principal
-                    calculateAndDisplayRanking();
-                    calculateAndDisplayStoreRanking();
-                    loadManagerNotifications();
+                loadAndDisplayCollaboratorStatus(); // Carrega o status para a tela principal
+                calculateAndDisplayRanking();
+                calculateAndDisplayServiceRanking();
+                calculateAndDisplayStoreRanking();
+                loadManagerNotifications();
                     loadAndDisplayOvertime();
                     loadAndDisplayAvisos();
                     loadAndDisplayStories();
