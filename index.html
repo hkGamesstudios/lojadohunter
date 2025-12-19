@@ -4332,7 +4332,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '4.0.5 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '5.0.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -4355,9 +4355,11 @@ Transporte - R$ 5,00"></textarea></div>
     const database = firebase.database();
 
     // Inicializa o Supabase (Storage)
-    const SUPABASE_URL = 'https://pzhsslgzhpetuhvyshxo.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aHNzbGd6aHBldHVodnlzaHhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMDYzMzYsImV4cCI6MjA3NTY4MjMzNn0.r7xRsI2Yqfqq77GtvpLDnch8tWQf6KGrkYg5xTZTybw';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_URL = 'https://mezmwuwwcscfgmbzkzfa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lem13dXd3Y3NjZmdtYnpremZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNTE5MjQsImV4cCI6MjA4MTcyNzkyNH0.uUY2CtpAeJlfOZpBDL89mlPFGBros0czlPLXbhD67a4';
+    if (typeof supabase === 'undefined') {
+        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 
     // --- CONSTANTES DE SENHA ---
     const PASSWORD = '123789';
