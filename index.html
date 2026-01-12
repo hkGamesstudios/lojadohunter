@@ -4611,7 +4611,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '6.0.2 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '6.0.3 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6768,6 +6768,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
         // Pega a referência para todos os campos que vêm da planilha
         const vendaEl = document.getElementById('device-price-venda');
         const limiteEl = document.getElementById('device-price-limite');
+        const zeroLucroEl = document.getElementById('device-price-zero-lucro');
         const entradaEl = document.getElementById('device-price-entrada'); // Pode ser nulo
         const seguroQuedaEl = document.getElementById('device-seguro-queda');
         const garantiaEstendidaEl = document.getElementById('device-garantia-estendida');
@@ -6775,24 +6776,26 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
         // Pega os indicadores de atualização
         const vendaIndicator = document.getElementById('venda-indicator');
         const limiteIndicator = document.getElementById('limite-indicator');
+        const zeroLucroIndicator = document.getElementById('zero-lucro-indicator');
         const entradaIndicator = document.getElementById('entrada-indicator'); // Pode ser nulo
         const seguroQuedaIndicator = document.getElementById('seguro-queda-indicator');
         const garantiaEstendidaIndicator = document.getElementById('garantia-estendida-indicator');
 
         // Verifica se os elementos essenciais existem
-        if (!vendaEl || !limiteEl || !seguroQuedaEl || !garantiaEstendidaEl) return;
+        if (!vendaEl || !limiteEl || !zeroLucroEl || !seguroQuedaEl || !garantiaEstendidaEl) return;
 
         // Guarda os valores atuais da tela (do cache), verificando a existência do elemento de entrada
         const oldValues = {
             venda: vendaEl.textContent,
             limite: limiteEl.textContent,
+            zeroLucro: zeroLucroEl.textContent,
             entrada: entradaEl ? entradaEl.textContent : null, // Verifica se existe
             seguroQueda: seguroQuedaEl.textContent,
             garantiaEstendida: garantiaEstendidaEl.textContent
         };
         
         // Mostra que está atualizando, verificando a existência do indicador de entrada
-        const allIndicators = [vendaIndicator, limiteIndicator, entradaIndicator, seguroQuedaIndicator, garantiaEstendidaIndicator];
+        const allIndicators = [vendaIndicator, limiteIndicator, zeroLucroIndicator, entradaIndicator, seguroQuedaIndicator, garantiaEstendidaIndicator];
         allIndicators.forEach(el => { if(el) el.textContent = '(atualizando...)'; });
 
         try {
@@ -6809,6 +6812,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             const newValues = {
                 precoVenda: data.precoDeVenda || 'Não informado',
                 precoLimite: data.precoLimite || 'Não informado',
+                zeroLucro: data.zeroLucro || 'Não informado',
                 entradaMinima: data.entradaMinima || 'Não informado',
                 seguroQueda: data.seguroContraQueda || 'Não informado', // Chave corrigida
                 garantiaEstendida: data.garantiaEstendidaDe1Ano || 'Não informado' // Chave corrigida
@@ -6820,6 +6824,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             // Atualiza a tela
             vendaEl.textContent = newValues.precoVenda;
             limiteEl.textContent = newValues.precoLimite;
+            zeroLucroEl.textContent = newValues.zeroLucro;
             // Atualiza a entrada mínima apenas se o elemento existir
             if (entradaEl) {
                 entradaEl.textContent = newValues.entradaMinima;
@@ -6830,6 +6835,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             // Compara com os valores antigos e mostra o indicador se mudou
             if (oldValues.venda !== 'Carregando...' && oldValues.venda !== newValues.precoVenda) vendaIndicator.textContent = '(Atualizado!)'; else vendaIndicator.textContent = '';
             if (oldValues.limite !== 'Carregando...' && oldValues.limite !== newValues.precoLimite) limiteIndicator.textContent = '(Atualizado!)'; else limiteIndicator.textContent = '';
+            if (oldValues.zeroLucro !== 'Carregando...' && oldValues.zeroLucro !== newValues.zeroLucro) zeroLucroIndicator.textContent = '(Atualizado!)'; else zeroLucroIndicator.textContent = '';
             // Compara a entrada mínima apenas se o elemento existir
             if (entradaEl && oldValues.entrada !== 'Carregando...' && oldValues.entrada !== newValues.entradaMinima) entradaIndicator.textContent = '(Atualizado!)'; else if (entradaIndicator) entradaIndicator.textContent = '';
             if (oldValues.seguroQueda !== 'Carregando...' && oldValues.seguroQueda !== newValues.seguroQueda) seguroQuedaIndicator.textContent = '(Atualizado!)'; else seguroQuedaIndicator.textContent = '';
@@ -6886,6 +6892,9 @@ const loadDeviceDetails = (key, brand) => {
                 
                 <h3>Preço limite 🚨 <span class="price-update-indicator" id="limite-indicator"></span></h3>
                 <pre id="device-price-limite">...</pre>
+
+                <h3>Lucro Zero🔒 <span class="price-update-indicator" id="zero-lucro-indicator"></span></h3>
+                <pre id="device-price-zero-lucro">...</pre>
                 
                 ${entradaMinimaHTML}
 
@@ -6907,6 +6916,7 @@ const loadDeviceDetails = (key, brand) => {
             if (cachedData) {
                 document.getElementById('device-price-venda').textContent = cachedData.precoVenda || 'Não informado.';
                 document.getElementById('device-price-limite').textContent = cachedData.precoLimite || 'Não informado.';
+                document.getElementById('device-price-zero-lucro').textContent = cachedData.zeroLucro || 'Não informado.';
                 // Acessa o elemento de entrada mínima apenas se ele existir
                 const entradaEl = document.getElementById('device-price-entrada');
                 if (entradaEl) {
@@ -6918,6 +6928,7 @@ const loadDeviceDetails = (key, brand) => {
                 // Se não houver cache, exibe "Carregando..."
                  document.getElementById('device-price-venda').textContent = 'Carregando...';
                  document.getElementById('device-price-limite').textContent = 'Carregando...';
+                 document.getElementById('device-price-zero-lucro').textContent = 'Carregando...';
                  const entradaEl = document.getElementById('device-price-entrada');
                  if(entradaEl) entradaEl.textContent = 'Carregando...';
                  document.getElementById('device-seguro-queda').textContent = 'Carregando...';
@@ -7035,13 +7046,14 @@ const loadDeviceDetails = (key, brand) => {
                 throw new Error(data.error);
             }
 
-            // Usa as chaves corretas que o novo script vai gerar (ex: precoDeVenda)
+            // Usa as chaves corretas incluindo o Zero Lucro
             const precoVenda = data.precoDeVenda || 'Não informado';
             const precoLimite = data.precoLimite || 'Não informado';
+            const zeroLucro = data.zeroLucro || 'Não informado';
             const entradaMinima = data.entradaMinima || 'Não informado';
             
             // Cria o texto formatado e insere na área de texto
-            const priceTableText = `Preço de Venda: ${precoVenda}\nPreço Limite: ${precoLimite}\nEntrada Mínima: ${entradaMinima}`;
+            const priceTableText = `Preço de Venda: ${precoVenda}\nPreço Limite: ${precoLimite}\nZero Lucro: ${zeroLucro}\nEntrada Mínima: ${entradaMinima}`;
             
             priceTableTextarea.value = priceTableText;
             statusEl.textContent = 'Dados da planilha carregados!';
