@@ -7877,21 +7877,48 @@ const saveCorrections = () => {
     };
 
     const calculateDeliveryPrediction = () => {
-        // Pega a data de hoje
         const today = new Date();
-        
-        // Cria uma nova data para a entrega e adiciona 15 dias
         const deliveryDate = new Date();
-        deliveryDate.setDate(today.getDate() + 15);
-        
-        // Define as opções de formatação (dia numérico e mês por extenso)
+        deliveryDate.setDate(today.getDate() + 5);
         const options = { day: 'numeric', month: 'long' };
-        
-        // Formata a data para o padrão pt-BR
         const formattedDate = deliveryDate.toLocaleDateString('pt-BR', options);
+
+        const overlay = document.createElement('div');
+        overlay.id = 'prediction-anim-overlay';
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(10px); color:white; font-family:'Poppins', sans-serif; overflow:hidden; animation: pageEnter 0.4s ease-out forwards; cursor: pointer;";
         
-        // Monta e exibe a mensagem em um alerta
-        alert(`Comprando hoje, o produto chegará no máximo em ${formattedDate}`);
+        overlay.innerHTML = `
+            <style>
+                @keyframes driveTruck {
+                    0% { transform: translateX(-150%); }
+                    100% { transform: translateX(150%); }
+                }
+                .road-container { width: 80%; height: 2px; background: rgba(255,255,255,0.2); position: relative; margin: 60px 0; overflow: visible; }
+                .truck-icon-anim { font-size: 3.5rem; color: #FF6B00; position: absolute; top: -50px; left: 50%; animation: driveTruck 2.5s linear infinite; }
+                .delivery-text-box { text-align: center; padding: 20px; max-width: 320px; position: relative; cursor: default; }
+            </style>
+            <button id="x-close-prediction" class="modal-close-btn" style="top: -60px; right: -20px; font-size: 3rem;">×</button>
+            <div class="delivery-text-box" onclick="event.stopPropagation()">
+                <h2 style="color:#FF6B00; margin-bottom:10px; font-size: 1.5rem;">Previsão de Entrega</h2>
+                <div class="road-container">
+                    <i class="fa-solid fa-truck-fast truck-icon-anim"></i>
+                </div>
+                <p style="font-size: 1.1rem; margin-top:20px; line-height:1.4;">Comprando hoje, o produto chegará no máximo em:</p>
+                <p style="font-size: 1.6rem; font-weight: 700; color: #2ecc71; margin-top: 10px;">${formattedDate}</p>
+                <button id="close-prediction-anim" class="action-button" style="margin-top:40px; width:180px; height: auto; aspect-ratio: auto; padding: 12px;">Entendido</button>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const closeFunc = () => {
+            overlay.style.animation = "pageExit 0.4s ease-in forwards";
+            setTimeout(() => overlay.remove(), 400);
+        };
+
+        overlay.addEventListener('click', closeFunc);
+        document.getElementById('close-prediction-anim').addEventListener('click', closeFunc);
+        document.getElementById('x-close-prediction').addEventListener('click', closeFunc);
     };
 
     const openSuporteModal = () => {
@@ -8379,7 +8406,9 @@ async function calculateAndDisplayRanking() {
                 const percentage = (actualSales / salesGoal) * 100;
                 performanceData.push({
                     name: name,
-                    percentage: percentage
+                    percentage: percentage,
+                    actualSales: actualSales,
+                    salesGoal: salesGoal
                 });
             }
         });
@@ -8387,15 +8416,32 @@ async function calculateAndDisplayRanking() {
         performanceData.sort((a, b) => b.percentage - a.percentage);
 
         rankingContainer.innerHTML = '';
-        const top3 = performanceData.slice(0, 3);
+        const allRank = performanceData;
 
-        if (top3.length === 0) {
+        if (allRank.length === 0) {
             rankingContainer.innerHTML = '<p style="text-align: center;">Nenhum colaborador com meta definida para o ranking.</p>';
             return;
         }
 
-        for (const [index, collab] of top3.entries()) {
+        const getWorkingDaysLeft = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            let days = 0;
+            for (let d = now.getDate(); d <= lastDay; d++) {
+                const date = new Date(year, month, d);
+                // Inclui Segunda a Sábado (1-6) e exclui Domingo (0)
+                if (date.getDay() !== 0) days++; 
+            }
+            return days || 1;
+        };
+        const workingDaysLeft = getWorkingDaysLeft();
+
+        for (const [index, collab] of allRank.entries()) {
             const rank = index + 1;
+            const remaining = Math.max(0, collab.salesGoal - collab.actualSales);
+            const dailyNeeded = remaining / workingDaysLeft;
 
             if (rank === 1) {
                 awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
@@ -8407,18 +8453,23 @@ async function calculateAndDisplayRanking() {
                 topVendasImg.style.display = 'block';
             }
 
-            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
-            let prizeHTML = '';
+            const medalIcon = index < 3 ? '<i class="fa-solid fa-medal"></i>' : '<i class="fa-solid fa-star"></i>';
+            
+            let prizeContent = '';
             const prizeValue = config.prizes ? config.prizes[index] : 0;
             if (prizeValue > 0) {
-                prizeHTML = `<span class="rank-prize" style="color: #fff; font-weight: bold; margin-right: 5px; font-size: 0.8rem;">${formatBRL(prizeValue)}</span>
-                             <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 35px; height: 35px; margin-left: 5px; vertical-align: middle; animation: pulse 2s infinite;">`;
+                prizeContent = `
+                    <div style="display: flex; align-items: center; gap: 4px; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 8px;">
+                        <span style="color: #fff; font-weight: bold; font-size: 0.75rem;">${formatBRL(prizeValue)}</span>
+                        <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 28px; height: 28px; animation: pulse 2s infinite;">
+                    </div>
+                `;
             }
             
             const rankItem = document.createElement('div');
-            rankItem.className = `rank-item rank-${rank}`;
+            rankItem.className = `rank-item rank-${rank > 3 ? 'low' : rank}`;
             
-            const progressBarWidth = collab.percentage;
+            const progressBarWidth = Math.min(100, collab.percentage);
 
             const defaultPhoto = DEFAULT_PROFILE_PHOTO;
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
@@ -8440,10 +8491,7 @@ async function calculateAndDisplayRanking() {
 
             let fireIconHtml = '';
             if (rank === 1) {
-                awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
-                // Limita a posição do ícone em 98% para não sair da tela em 100%
                 const firePosition = Math.min(progressBarWidth, 98); 
-                // Gera o ícone com a posição 'left' calculada dinamicamente
                 fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%;"></i>`;
             }
 
@@ -8454,19 +8502,26 @@ async function calculateAndDisplayRanking() {
                 </div>
                 <div class="rank-medal" style="width: auto; padding-right: 8px;">
                     <span style="font-weight: bold; margin-right: 2px;">${rank}º</span>
-                    ${medals[index]}
+                    ${medalIcon}
                 </div>
                 <div class="rank-details">
-                    <div class="rank-name">
-                        <span>${collab.name}</span>
-                        <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
-                        <div class="prize-container">${prizeHTML}</div>
+                    <div class="rank-name" style="justify-content: space-between; align-items: center; gap: 5px;">
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; font-weight: 700;">${collab.name}</span>
+                        
+                        <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                            <button class="parabens-btn" data-recipient-name="${collab.name}" style="margin-left: 0; padding: 0 4px;"><i class="fa-solid fa-hands-clapping"></i></button>
+                            ${prizeContent}
+                        </div>
                     </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container">
                         <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
                         <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
                         ${fireIconHtml}
+                    </div>
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.8); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 600;">
+                        <span>Faltam: ${formatBRL(remaining)}</span>
+                        <span>${formatBRL(dailyNeeded)} / dia</span>
                     </div>
                 </div>
             `;
