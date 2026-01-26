@@ -4635,7 +4635,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '6.0.4 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '6.0.5 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -11370,12 +11370,15 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('view-quiz-submissions-btn').addEventListener('click', () => {
                 createGenericSubmissionViewer('quizSubmissions', 'quizSubmissionsPage', 'quiz-submissions-list', 'quiz-submissions-title', 'Respostas do Quiz', (item) => {
                     return `<h4>Quiz de: ${item.nome}</h4>
-                            <p><strong>1. Gostou:</strong> ${item.respostas.gostou}</p>
-                            <p><strong>2. Parte útil:</strong> ${item.respostas.parteUtil}</p>
-                            <p><strong>3. Parte confusa:</strong> ${item.respostas.parteConfusa}</p>
-                            <p><strong>4. Ajudou a preparar:</strong> ${item.respostas.ajudouPreparar}</p>
-                            <p><strong>5. Próximo tema:</strong> ${item.respostas.proximoTema}</p>
-                            <p><strong>6. Sugestão:</strong> ${item.respostas.sugestao || 'N/A'}</p>`;
+                            <p><strong>1. Sentimento:</strong> ${item.respostas.motivacao_geral || 'N/A'}</p>
+                            <p><strong>2. Impactos:</strong> ${item.respostas.impactos_motivacao || 'N/A'}</p>
+                            <p><strong>3. Clareza Info:</strong> ${item.respostas.clareza_informacao || 'N/A'}</p>
+                            <p><strong>4. Melhor Forma:</strong> ${item.respostas.melhor_forma_receber || 'N/A'}</p>
+                            <p><strong>5. Dar Opinião:</strong> ${item.respostas.vontade_opiniao || 'N/A'}</p>
+                            <p><strong>6. Atrapalha:</strong> ${item.respostas.atrapalho_desempenho || 'N/A'}</p>
+                            <p><strong>7. Sugestão:</strong> ${item.respostas.sugestao_ajuda || 'N/A'}</p>
+                            <p><strong>8. Liderança Auxílio:</strong> ${item.respostas.lideranca_auxilio || 'N/A'}</p>
+                            <p><strong>9. Liderança Rapidez:</strong> ${item.respostas.lideranca_rapidez || 'N/A'}</p>`;
                 });
             });
 
