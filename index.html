@@ -4054,60 +4054,84 @@ Transporte - R$ 5,00"></textarea></div>
     <div id="quiz-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-main-from-quiz" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Treinamento da Loja do Hunter</h2>
+            <h2>Pesquisa de Clima</h2>
         </div>
         <div class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1.5rem; align-items: stretch; overflow-y: auto;">
             
             <div class="input-group"><label for="quiz-nome">Nome (Obrigatório)</label><input type="text" id="quiz-nome" class="data-input" placeholder="Seu nome"></div>
 
             <div class="quiz-question-group">
-                <label>1. Você gostou do conteúdo do treinamento?</label>
-                <div class="radio-option"><input type="radio" id="gostou-sim-muito" name="gostou_treinamento" value="Sim, muito!"><label for="gostou-sim-muito">Sim, muito!</label></div>
-                <div class="radio-option"><input type="radio" id="gostou-sim-bom" name="gostou_treinamento" value="Sim, foi bom."><label for="gostou-sim-bom">Sim, foi bom.</label></div>
-                <div class="radio-option"><input type="radio" id="gostou-razoavel" name="gostou_treinamento" value="Foi razoável."><label for="gostou-razoavel">Foi razoável.</label></div>
-                <div class="radio-option"><input type="radio" id="gostou-nao" name="gostou_treinamento" value="Não gostei muito."><label for="gostou-nao">Não gostei muito.</label></div>
+                <label>1. Como você se sente trabalhando hoje na loja do Hunter?</label>
+                <div class="radio-option"><input type="radio" id="motiv-muito" name="motivacao_geral" value="Muito motivado"><label for="motiv-muito">Muito motivado</label></div>
+                <div class="radio-option"><input type="radio" id="motiv-motivado" name="motivacao_geral" value="Motivado"><label for="motiv-motivado">Motivado</label></div>
+                <div class="radio-option"><input type="radio" id="motiv-neutro" name="motivacao_geral" value="Neutro"><label for="motiv-neutro">Neutro</label></div>
+                <div class="radio-option"><input type="radio" id="motiv-pouco" name="motivacao_geral" value="Pouco motivado"><label for="motiv-pouco">Pouco motivado</label></div>
+                <div class="radio-option"><input type="radio" id="motiv-desmotivado" name="motivacao_geral" value="Desmotivado"><label for="motiv-desmotivado">Desmotivado</label></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>2. O que mais impacta sua motivação no trabalho atualmente? (Pode marcar mais de uma)</label>
+                <div class="radio-option"><input type="checkbox" id="imp-comunicacao" class="quiz-checkbox" value="Comunicação"><label for="imp-comunicacao">Comunicação</label></div>
+                <div class="radio-option"><input type="checkbox" id="imp-ambiente" class="quiz-checkbox" value="Ambiente de trabalho"><label for="imp-ambiente">Ambiente de trabalho</label></div>
+                <div class="radio-option"><input type="checkbox" id="imp-lideranca" class="quiz-checkbox" value="Liderança"><label for="imp-lideranca">Liderança</label></div>
+                <div class="radio-option"><input type="checkbox" id="imp-reconhecimento" class="quiz-checkbox" value="Reconhecimento"><label for="imp-reconhecimento">Reconhecimento</label></div>
+                <div class="radio-option"><input type="checkbox" id="imp-pessoais" class="quiz-checkbox" value="Questões pessoais"><label for="imp-pessoais">Questões pessoais</label></div>
+                <div class="radio-option"><input type="checkbox" id="imp-carga" class="quiz-checkbox" value="Carga de trabalho"><label for="imp-carga">Carga de trabalho</label></div>
+                <div class="radio-option"><label for="imp-outros" style="margin-right: 10px;">Outros:</label><input type="text" id="quiz_imp_outros" class="data-input"></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>3. Você sente que as informações importantes chegam até você com clareza?</label>
+                <div class="radio-option"><input type="radio" id="clar-sempre" name="clareza_info" value="Sempre"><label for="clar-sempre">Sempre</label></div>
+                <div class="radio-option"><input type="radio" id="clar-maioria" name="clareza_info" value="Na maioria das vezes"><label for="clar-maioria">Na maioria das vezes</label></div>
+                <div class="radio-option"><input type="radio" id="clar-vezes" name="clareza_info" value="Às vezes"><label for="clar-vezes">Às vezes</label></div>
+                <div class="radio-option"><input type="radio" id="clar-raramente" name="clareza_info" value="Raramente"><label for="clar-raramente">Raramente</label></div>
+                <div class="radio-option"><input type="radio" id="clar-nunca" name="clareza_info" value="Quase nunca"><label for="clar-nunca">Quase nunca</label></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>4. Qual é a melhor forma de você receber informações importantes da empresa?</label>
+                <div class="radio-option"><input type="radio" id="form-whatsapp" name="forma_recebimento" value="Grupo de WhatsApp"><label for="form-whatsapp">Grupo de WhatsApp</label></div>
+                <div class="radio-option"><input type="radio" id="form-direta" name="forma_recebimento" value="Conversa direta / reunião rápida"><label for="form-direta">Conversa direta / reunião rápida</label></div>
+                <div class="radio-option"><input type="radio" id="form-escrito" name="forma_recebimento" value="Avisos escritos (quadro, mensagem fixa)"><label for="form-escrito">Avisos escritos (quadro, mensagem fixa)</label></div>
+                <div class="radio-option"><input type="radio" id="form-reforco" name="forma_recebimento" value="Reforço mais de uma vez"><label for="form-reforco">Reforço mais de uma vez</label></div>
+                <div class="radio-option"><label for="form-outra" style="margin-right: 10px;">Outra forma:</label><input type="text" id="quiz_form_outra" class="data-input"></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>5. Você se sente à vontade para dar opiniões, sugestões ou apontar problemas?</label>
+                <div class="radio-option"><input type="radio" id="op-sim" name="vontade_opiniao" value="Sim, totalmente"><label for="op-sim">Sim, totalmente</label></div>
+                <div class="radio-option"><input type="radio" id="op-receio" name="vontade_opiniao" value="Sim, mas com receio"><label for="op-receio">Sim, mas com receio</label></div>
+                <div class="radio-option"><input type="radio" id="op-vezes" name="vontade_opiniao" value="Às vezes"><label for="op-vezes">Às vezes</label></div>
+                <div class="radio-option"><input type="radio" id="op-nao" name="vontade_opiniao" value="Não me sinto à vontade"><label for="op-nao">Não me sinto à vontade</label></div>
             </div>
 
             <div class="input-group">
-                <label for="quiz_parte_util">2. Qual parte você achou mais útil ou que mais chamou sua atenção?</label>
-                <textarea id="quiz_parte_util" class="data-input" rows="3"></textarea>
-            </div>
-
-            <div class="quiz-question-group">
-                <label>3. Teve alguma parte que ficou confusa ou você sentiu falta de mais explicações?</label>
-                <div class="radio-option"><input type="radio" id="confusa-sim" name="parte_confusa" value="Sim"><label for="confusa-sim">Sim</label></div>
-                <div class="radio-option"><input type="radio" id="confusa-nao" name="parte_confusa" value="Não"><label for="confusa-nao">Não</label></div>
-                <div class="input-group" style="margin-top: 1rem; margin-bottom: 0;">
-                    <label for="quiz_parte_confusa_detalhe">Se sim, qual parte?</label>
-                    <textarea id="quiz_parte_confusa_detalhe" class="data-input" rows="2"></textarea>
-                </div>
-            </div>
-
-            <div class="quiz-question-group">
-                <label>4. Você sentiu que esse treinamento te ajudou a se sentir mais preparado(a) para vender e atender melhor?</label>
-                <div class="radio-option"><input type="radio" id="ajudou-certeza" name="ajudou_preparar" value="Sim, com certeza"><label for="ajudou-certeza">Sim, com certeza</label></div>
-                <div class="radio-option"><input type="radio" id="ajudou-pouco" name="ajudou_preparar" value="Um pouco"><label for="ajudou-pouco">Um pouco</label></div>
-                <div class="radio-option"><input type="radio" id="ajudou-nao-muito" name="ajudou_preparar" value="Não muito"><label for="ajudou-nao-muito">Não muito</label></div>
-                <div class="radio-option"><input type="radio" id="ajudou-nao" name="ajudou_preparar" value="Não"><label for="ajudou-nao">Não</label></div>
-            </div>
-
-            <div class="quiz-question-group">
-                <label>5. Qual tema você gostaria que a gente abordasse no próximo treinamento?</label>
-                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-redes" value="Abordagem nas redes sociais e atendimento online"><label for="tema-redes">Abordagem nas redes sociais e atendimento online</label></div>
-                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-metas" value="Como bater metas de forma leve e planejada"><label for="tema-metas">Como bater metas de forma leve e planejada</label></div>
-                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-clientes" value="Técnicas para lidar com clientes indecisos ou difíceis"><label for="tema-clientes">Técnicas para lidar com clientes indecisos ou difíceis</label></div>
-                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-sistema" value="Como usar melhor o sistema Hunter Vendas"><label for="tema-sistema">Como usar melhor o sistema Hunter Vendas</label></div>
-                <div class="radio-option"><input type="radio" name="proximo_tema" id="tema-outro" value="Outro"><label for="tema-outro">Outro:</label></div>
-                <input type="text" id="quiz_proximo_tema_outro" class="data-input" style="margin-left: 2rem; width: calc(100% - 2rem);">
+                <label for="quiz_atrapalho">6. Hoje, o que mais está atrapalhando seu desempenho no trabalho?</label>
+                <textarea id="quiz_atrapalho" class="data-input" rows="2" placeholder="Uma frase já resolve"></textarea>
             </div>
 
             <div class="input-group">
-                <label for="quiz_sugestao">6. Deixe aqui alguma sugestão, elogio ou crítica (opcional):</label>
-                <textarea id="quiz_sugestao" class="data-input" rows="3"></textarea>
+                <label for="quiz_ajuda">7. De forma a empresa poderia te ajudar a melhorar seu desempenho e bem-estar?</label>
+                <textarea id="quiz_ajuda" class="data-input" rows="2"></textarea>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>Qual liderança você se sente mais a vontade de pedir auxílio?</label>
+                <div class="radio-option"><input type="radio" id="aux-keliane" name="lideranca_auxilio" value="Keliane"><label for="aux-keliane">Keliane</label></div>
+                <div class="radio-option"><input type="radio" id="aux-paulo" name="lideranca_auxilio" value="Paulo"><label for="aux-paulo">Paulo</label></div>
+                <div class="radio-option"><input type="radio" id="aux-ducielma" name="lideranca_auxilio" value="Ducielma"><label for="aux-ducielma">Ducielma</label></div>
+            </div>
+
+            <div class="quiz-question-group">
+                <label>Qual das lideranças resolve sua solicitação mais rápido?</label>
+                <div class="radio-option"><input type="radio" id="rap-keliane" name="lideranca_rapidez" value="Keliane"><label for="rap-keliane">Keliane</label></div>
+                <div class="radio-option"><input type="radio" id="rap-ducielma" name="lideranca_rapidez" value="Ducielma"><label for="rap-ducielma">Ducielma</label></div>
+                <div class="radio-option"><input type="radio" id="rap-paulo" name="lideranca_rapidez" value="Paulo"><label for="rap-paulo">Paulo</label></div>
             </div>
             
             <div style="width: 100%; max-width: 350px; text-align: center; margin-top: 1rem;">
-                <button id="submit-quiz-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Feedback</button>
+                <button id="submit-quiz-btn" class="action-button"><i class="fa-solid fa-paper-plane"></i>Enviar Pesquisa</button>
                 <p id="quiz-status-message" class="status-message"></p>
             </div>
         </div>
@@ -4611,7 +4635,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '6.0.3 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '6.0.4 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8213,47 +8237,43 @@ const saveCorrections = () => {
         const statusEl = document.getElementById('quiz-status-message');
 
         const nome = document.getElementById('quiz-nome').value.trim();
-        const gostouTreinamento = document.querySelector('input[name="gostou_treinamento"]:checked');
-        const parteUtil = document.getElementById('quiz_parte_util').value.trim();
-        const parteConfusa = document.querySelector('input[name="parte_confusa"]:checked');
-        const parteConfusaDetalhe = document.getElementById('quiz_parte_confusa_detalhe').value.trim();
-        const ajudouPreparar = document.querySelector('input[name="ajudou_preparar"]:checked');
-        const proximoTemaRadio = document.querySelector('input[name="proximo_tema"]:checked');
-        const proximoTemaOutro = document.getElementById('quiz_proximo_tema_outro').value.trim();
-        const sugestao = document.getElementById('quiz_sugestao').value.trim();
+        const motivacaoGeral = document.querySelector('input[name="motivacao_geral"]:checked');
+        const clarezaInfo = document.querySelector('input[name="clareza_info"]:checked');
+        const formaRecebimento = document.querySelector('input[name="forma_recebimento"]:checked');
+        const formaOutra = document.getElementById('quiz_form_outra').value.trim();
+        const vontadeOpiniao = document.querySelector('input[name="vontade_opiniao"]:checked');
+        const atrapalho = document.getElementById('quiz_atrapalho').value.trim();
+        const ajuda = document.getElementById('quiz_ajuda').value.trim();
+        const liderancaAuxilio = document.querySelector('input[name="lideranca_auxilio"]:checked');
+        const liderancaRapidez = document.querySelector('input[name="lideranca_rapidez"]:checked');
 
-        if (!nome || !gostouTreinamento || !parteUtil || !parteConfusa || !ajudouPreparar || !proximoTemaRadio) {
+        const checkboxes = document.querySelectorAll('.quiz-checkbox:checked');
+        let impactos = Array.from(checkboxes).map(cb => cb.value);
+        const impOutros = document.getElementById('quiz_imp_outros').value.trim();
+        if (impOutros) impactos.push(`Outros: ${impOutros}`);
+
+        if (!nome || !motivacaoGeral || !clarezaInfo || !formaRecebimento || !vontadeOpiniao || !atrapalho || !ajuda || !liderancaAuxilio || !liderancaRapidez) {
             statusEl.textContent = 'Por favor, responda todas as perguntas obrigatórias.';
             return;
         }
 
-        let proximoTemaFinal = proximoTemaRadio.labels[0].innerText;
-        if (proximoTemaRadio.id === 'tema-outro') {
-            if (!proximoTemaOutro) {
-                statusEl.textContent = 'Por favor, especifique o outro tema para o próximo treinamento.';
-                return;
-            }
-            proximoTemaFinal = `Outro: ${proximoTemaOutro}`;
-        }
-        
-        let parteConfusaFinal = parteConfusa.value;
-        if (parteConfusa.value === 'Sim') {
-            if (!parteConfusaDetalhe) {
-                statusEl.textContent = 'Por favor, especifique qual parte do treinamento ficou confusa.';
-                return;
-            }
-            parteConfusaFinal = `Sim: ${parteConfusaDetalhe}`;
+        let formaFinal = formaRecebimento.value;
+        if (formaRecebimento.id === 'form-outra' && formaOutra) {
+            formaFinal = `Outra: ${formaOutra}`;
         }
 
         const quizData = {
             nome,
             respostas: {
-                gostou: gostouTreinamento.value,
-                parteUtil: parteUtil,
-                parteConfusa: parteConfusaFinal,
-                ajudouPreparar: ajudouPreparar.value,
-                proximoTema: proximoTemaFinal,
-                sugestao: sugestao
+                motivacao_geral: motivacaoGeral.value,
+                impactos_motivacao: impactos.join(', '),
+                clareza_informacao: clarezaInfo.value,
+                melhor_forma_receber: formaFinal,
+                vontade_opiniao: vontadeOpiniao.value,
+                atrapalho_desempenho: atrapalho,
+                sugestao_ajuda: ajuda,
+                lideranca_auxilio: liderancaAuxilio.value,
+                lideranca_rapidez: liderancaRapidez.value
             },
             timestamp: new Date().toISOString(),
             read: false
@@ -8261,14 +8281,14 @@ const saveCorrections = () => {
 
         database.ref('quizSubmissions').push(quizData)
             .then(() => {
-                statusEl.textContent = 'Feedback enviado com sucesso!';
+                statusEl.textContent = 'Pesquisa enviada com sucesso!';
                 document.getElementById('quiz-nome').value = '';
-                document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-                document.querySelectorAll('textarea, input[type="text"]').forEach(input => input.id !== 'quiz-nome' ? input.value = '' : null);
+                document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+                document.querySelectorAll('#quiz-page textarea, #quiz-page input[type="text"]').forEach(input => input.value = '');
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
             })
             .catch(error => {
-                statusEl.textContent = 'Erro ao enviar o feedback.';
+                statusEl.textContent = 'Erro ao enviar.';
                 console.error("Erro ao salvar quiz:", error);
             });
     };
