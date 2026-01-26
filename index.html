@@ -4635,7 +4635,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '6.0.5 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '6.0.6 - c '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -11369,16 +11369,19 @@ async function calculateAndDisplayStoreRanking() {
             
             document.getElementById('view-quiz-submissions-btn').addEventListener('click', () => {
                 createGenericSubmissionViewer('quizSubmissions', 'quizSubmissionsPage', 'quiz-submissions-list', 'quiz-submissions-title', 'Respostas do Quiz', (item) => {
-                    return `<h4>Quiz de: ${item.nome}</h4>
-                            <p><strong>1. Sentimento:</strong> ${item.respostas.motivacao_geral || 'N/A'}</p>
-                            <p><strong>2. Impactos:</strong> ${item.respostas.impactos_motivacao || 'N/A'}</p>
-                            <p><strong>3. Clareza Info:</strong> ${item.respostas.clareza_informacao || 'N/A'}</p>
-                            <p><strong>4. Melhor Forma:</strong> ${item.respostas.melhor_forma_receber || 'N/A'}</p>
-                            <p><strong>5. Dar Opinião:</strong> ${item.respostas.vontade_opiniao || 'N/A'}</p>
-                            <p><strong>6. Atrapalha:</strong> ${item.respostas.atrapalho_desempenho || 'N/A'}</p>
-                            <p><strong>7. Sugestão:</strong> ${item.respostas.sugestao_ajuda || 'N/A'}</p>
-                            <p><strong>8. Liderança Auxílio:</strong> ${item.respostas.lideranca_auxilio || 'N/A'}</p>
-                            <p><strong>9. Liderança Rapidez:</strong> ${item.respostas.lideranca_rapidez || 'N/A'}</p>`;
+                    const boxStyle = "display: block; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; margin-top: 5px; color: #fff; border: 1px solid rgba(255,255,255,0.1); font-weight: 600;";
+                    return `<h4>PESQUISA DE: ${item.nome}</h4>
+                            <div style="font-size: 0.85rem; line-height: 1.4;">
+                                <p style="margin-bottom: 12px;"><strong>1. Como você se sente trabalhando hoje na loja do Hunter?</strong><span style="${boxStyle}">${item.respostas.motivacao_geral || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>2. O que mais impacta sua motivação no trabalho atualmente?</strong><span style="${boxStyle}">${item.respostas.impactos_motivacao || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>3. Você sente que as informações importantes chegam até você com clareza?</strong><span style="${boxStyle}">${item.respostas.clareza_informacao || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>4. Qual é a melhor forma de você receber informações importantes da empresa?</strong><span style="${boxStyle}">${item.respostas.melhor_forma_receber || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>5. Você se sente à vontade para dar opiniões, sugestões ou apontar problemas?</strong><span style="${boxStyle}">${item.respostas.vontade_opiniao || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>6. Hoje, o que mais está atrapalhando seu desempenho no trabalho?</strong><span style="${boxStyle}">${item.respostas.atrapalho_desempenho || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>7. De que forma a empresa poderia te ajudar a melhorar seu desempenho e bem-estar?</strong><span style="${boxStyle}">${item.respostas.sugestao_ajuda || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>8. Qual liderança você se sente mais a vontade de pedir auxílio?</strong><span style="${boxStyle}">${item.respostas.lideranca_auxilio || 'N/A'}</span></p>
+                                <p style="margin-bottom: 12px;"><strong>9. Qual das lideranças resolve sua solicitação mais rápido?</strong><span style="${boxStyle}">${item.respostas.lideranca_rapidez || 'N/A'}</span></p>
+                            </div>`;
                 });
             });
 
