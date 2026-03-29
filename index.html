@@ -18,6 +18,8 @@
 
     <!-- Supabase - Biblioteca de Cliente -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- JSZip - Para compactação de arquivos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
         /* --- MODO RÁPIDO (SEM ANIMAÇÕES) --- */
@@ -2797,6 +2799,27 @@
     </div>
 
     <!-- TELA DE GERENCIAMENTO DE RANKS -->
+    <div id="supabase-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-supabase" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Gestão Supabase</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+            <div class="employee-meta-card">
+                <h4>Backup Completo (ZIP)</h4>
+                <p style="font-size: 0.8rem; margin-bottom: 1rem; color: #ccc;">Baixa um arquivo compactado contendo todas as imagens (Aparelhos, Perfis e Ponto) e o mapeamento JSON.</p>
+                <button id="download-supabase-json-btn" class="action-button full-width"><i class="fa-solid fa-file-zipper"></i> Baixar Backup Completo</button>
+            </div>
+            <div class="employee-meta-card">
+                <h4>Restaurar Backup (ZIP)</h4>
+                <p style="font-size: 0.8rem; margin-bottom: 1rem; color: #ccc;">Envie o arquivo ZIP para restaurar as imagens no Storage e os links no banco de dados.</p>
+                <button id="restore-supabase-json-btn" class="action-button full-width"><i class="fa-solid fa-upload"></i> Restaurar via ZIP</button>
+                <input type="file" id="supabase-restore-input" accept=".zip" style="display: none;">
+            </div>
+            <p id="supabase-status-message" class="status-message"></p>
+        </div>
+    </div>
+
     <div id="ranks-management-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-gs-from-ranks" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
@@ -3026,6 +3049,7 @@
                     <div class="brand-button" data-brand="tecno">TECNO</div>
                     <div class="brand-button" data-brand="samsung">SAMSUNG</div>
                     <div class="brand-button" data-brand="apple">APPLE</div>
+                    <div class="brand-button" data-brand="motorola">MOTOROLA</div>
                     <div class="brand-button" data-brand="acessorios">ACESSÓRIOS</div>
                 </div>
             </section>
@@ -3316,10 +3340,11 @@
             <div id="colaborador-bacabal" class="modal-view" style="display: none;">
                 <h3 class="modal-title">Colaboradores - Bacabal</h3>
                 <div class="modal-button-container">
-                    <a href="#" class="modal-btn collaborator-link" data-name="Natalia">Natalia</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Cleudiane">Cleudiane</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Tacilio">Tacilio</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Demilson">Demilson</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Leonardo">Leonardo</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Jose">Jose</a>
                 </div>
             </div>
         </div>
@@ -3487,6 +3512,7 @@
                 <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
                 <button id="open-avisos-management-page" class="gs-action-btn"><i class="fa-solid fa-bullhorn"></i><span>Avisos</span></button>
                 <button id="open-ranks-management-btn" class="gs-action-btn"><i class="fa-solid fa-trophy"></i><span>Gerenciar Ranks</span></button>
+                <button id="open-supabase-management-btn" class="gs-action-btn"><i class="fa-solid fa-cloud"></i><span>Supabase</span></button>
                 <button id="clear-ponto-status-btn" class="gs-action-btn"><i class="fa-solid fa-user-clock"></i><span>Limpar Ponto</span></button>  
                 <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar Backup</span></button>
                 <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Restaurar Backup</span></button>
@@ -3674,6 +3700,7 @@
                     <option value="" selected>Selecione uma marca...</option>
                     <option value="apple">Apple</option>
                     <option value="samsung">Samsung</option>
+                    <option value="motorola">Motorola</option>
                     <option value="xiaomi">Xiaomi</option>
                     <option value="poco">Poco</option>
                     <option value="realme">Realme</option>
@@ -3710,6 +3737,7 @@
                         <option value="" disabled selected>Selecione a marca...</option>
                         <option value="apple">Apple</option>
                         <option value="samsung">Samsung</option>
+                        <option value="motorola">Motorola</option>
                         <option value="xiaomi">Xiaomi</option>
                         <option value="poco">Poco</option>
                         <option value="realme">Realme</option>
@@ -3779,13 +3807,14 @@
                     <option value="" disabled selected>Selecione a marca...</option>
                     <option value="apple">Apple</option>
                     <option value="samsung">Samsung</option>
+                    <option value="motorola">Motorola</option>
                     <option value="xiaomi">Xiaomi</option>
                     <option value="poco">Poco</option>
                     <option value="realme">Realme</option>
                     <option value="umidigi">Umidigi</option>
                     <option value="itel">Itel</option>
                     <option value="infinix">Infinix</option>
-                                        <option value="honor">Honor</option>
+                    <option value="honor">Honor</option>
                     <option value="acessorios">Acessorios</option>
                     <option value="meizu">Meizu</option>
                     <option value="tecno">Tecno</option>
@@ -4635,7 +4664,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '6.0.6 - c '; // Altere este número para atualizar a versão
+    const APP_VERSION = '7.0.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -4658,8 +4687,8 @@ Transporte - R$ 5,00"></textarea></div>
     const database = firebase.database();
 
     // Inicializa o Supabase (Storage)
-    const SUPABASE_URL = 'https://mezmwuwwcscfgmbzkzfa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1lem13dXd3Y3NjZmdtYnpremZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNTE5MjQsImV4cCI6MjA4MTcyNzkyNH0.uUY2CtpAeJlfOZpBDL89mlPFGBros0czlPLXbhD67a4';
+    const SUPABASE_URL = 'https://shscuqqqezibwkibhyix.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoc2N1cXFxZXppYndraWJoeWl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDI1OTUsImV4cCI6MjA4OTQxODU5NX0.FaY_4rtgscVuSnJuFAjXEgexwMntlfCPy439xazfu00';
     // Correção: Inicializa o cliente do Supabase de forma correta para a v2
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -4677,15 +4706,15 @@ Transporte - R$ 5,00"></textarea></div>
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
                                 // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Beatriz', 'Mainara', 'Eliseu', 'Eduardo', 'Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
+    const allCollaborators = ['Beatriz', 'Mainara', 'Eliseu', 'Eduardo', 'Cleudiane', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
-    const storeManagers = ['Beatriz', 'Natalia']; // NOVA LISTA: Apenas gerentes de loja
+    const storeManagers = ['Eliseu', 'Cleudiane']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
         pinheiro: ['Beatriz','Mainara', 'Eliseu', 'Eduardo'],
-        bacabal: ['Natalia', 'Tacilio', 'Demilson', 'Leonardo', 'Jose']
-    };;
+        bacabal: ['Cleudiane', 'Tacilio', 'Demilson', 'Leonardo', 'Jose']
+    };
     let currntUserName = ''; // Variável unificada para o usuário logado
     let currentBrand = '';
     let isNavigating = false; // Flag para prevenir cliques duplos durante animações
@@ -4707,6 +4736,7 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('ponto-page').classList.add('page');
     document.getElementById('ponto-verification-page').classList.add('page');
     document.getElementById('ponto-history-page').classList.add('page');
+    document.getElementById('supabase-management-page').classList.add('page');
     document.getElementById('collaborator-page').classList.add('page');
     document.getElementById('gs-page').classList.add('page');
     document.getElementById('metas-config-page').classList.add('page');
@@ -4787,6 +4817,7 @@ document.getElementById('feedback-submissions-page').classList.add('page');
         themeModal: document.getElementById('theme-modal'),
         deviceSearchOverlay: document.getElementById('device-search-overlay'),
         avisosManagementPage: document.getElementById('avisos-management-page'), // Nova página
+        supabaseManagementPage: document.getElementById('supabase-management-page'),
         feedbackPage: document.getElementById('feedback-page'),
         debugPage: document.getElementById('debug-page'),
         cashManagementPage: document.getElementById('cash-management-page'),
@@ -7702,7 +7733,7 @@ const loadDeviceDetails = (key, brand) => {
             updates[`/monthlySales/${currentMonthKey}/totalVendas`] = monthlyTotalVendas;
 
             // Encontra a gerente da loja para descontar da verba de Preço de Site
-            const managerName = store === 'pinheiro' ? 'Beatriz' : 'Natalia';
+            const managerName = store === 'pinheiro' ? 'Eliseu' : 'Cleudiane';
             const managerKey = managerName.toLowerCase();
             const precoSiteCashRef = database.ref(`cashManagement/${managerKey}/currentVendaRemotaValue`);
             
@@ -10720,6 +10751,15 @@ async function calculateAndDisplayStoreRanking() {
 
                 document.getElementById('open-ranks-management-btn').addEventListener('click', openRanksManagementPage);
                 
+                document.getElementById('open-supabase-management-btn').addEventListener('click', () => {
+                    const pass = prompt("Digite a senha de acesso:");
+                    if (pass === "2805") {
+                        showPage('supabaseManagementPage');
+                    } else if (pass !== null) {
+                        alert("Senha incorreta!");
+                    }
+                });
+
                 document.getElementById('clear-ponto-status-btn').addEventListener('click', clearPontoStatusForUser);
 
                 // Marca que os listeners foram adicionados.
@@ -10876,6 +10916,7 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-gs-from-overtime').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-avisos').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-ranks').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-supabase').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-collab-from-metas').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-panel').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-closing').addEventListener('click', () => showPage('collaboratorPage'));
@@ -11486,6 +11527,157 @@ async function calculateAndDisplayStoreRanking() {
             };
 
             document.getElementById('save-ranks-settings-btn').addEventListener('click', saveRanksSettings);
+
+            const extractPathFromSupabaseUrl = (url) => {
+                if (!url || typeof url !== 'string' || !url.includes('/public/')) return null;
+                try {
+                    const parts = url.split('/public/');
+                    const pathWithBucket = parts[1];
+                    const bucket = pathWithBucket.split('/')[0];
+                    const fullPath = pathWithBucket.substring(bucket.length + 1).split('?')[0];
+                    return { bucket, fullPath, fileName: fullPath.split('/').pop() };
+                } catch (e) { return null; }
+            };
+
+            const handleSupabaseBackup = async () => {
+                const statusEl = document.getElementById('supabase-status-message');
+                statusEl.textContent = 'Coletando dados do Firebase...';
+                const zip = new JSZip();
+                
+                try {
+                    const [devicesSnap, profilesSnap, pontosSnap] = await Promise.all([
+                        database.ref('devices').get(),
+                        database.ref('userProfiles').get(),
+                        database.ref('pontos').get()
+                    ]);
+
+                    const backupData = {
+                        version: APP_VERSION,
+                        timestamp: new Date().toISOString(),
+                        devices: devicesSnap.exists() ? devicesSnap.val() : {},
+                        userProfiles: profilesSnap.exists() ? profilesSnap.val() : {},
+                        pontos: pontosSnap.exists() ? pontosSnap.val() : {}
+                    };
+
+                    const fileUrls = [];
+                    const traverse = (obj) => {
+                        if (obj && typeof obj === 'object') {
+                            const url = obj.imageUrl || obj.photoURL;
+                            if (url && url.includes('supabase.co')) {
+                                const info = extractPathFromSupabaseUrl(url);
+                                if (info) fileUrls.push({ url, ...info });
+                            }
+                            Object.values(obj).forEach(traverse);
+                        }
+                    };
+                    traverse(backupData);
+
+                    statusEl.textContent = `Baixando ${fileUrls.length} arquivos...`;
+
+                    // Adiciona um pequeno delay entre downloads para evitar bloqueio do navegador
+                    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+                    for (let i = 0; i < fileUrls.length; i++) {
+                        const item = fileUrls[i];
+                        try {
+                            // Adicionamos cache: 'no-cache' para garantir o download da versão mais recente
+                            const response = await fetch(item.url, { mode: 'cors', cache: 'no-cache' });
+                            if (!response.ok) throw new Error("Erro na resposta do servidor");
+                            const blob = await response.blob();
+                            zip.file(`${item.bucket}/${item.fullPath}`, blob);
+                            statusEl.textContent = `Baixando arquivos (${i + 1}/${fileUrls.length})...`;
+                            if (i % 5 === 0) await delay(100); // Pausa breve a cada 5 arquivos
+                        } catch (err) {
+                            console.error(`Falha ao baixar: ${item.url}`, err);
+                            statusEl.textContent = `Aviso: Falha ao baixar ${item.fileName}`;
+                        }
+                    }
+
+                    zip.file("mapping_backup.json", JSON.stringify(backupData, null, 2));
+                    
+                    statusEl.textContent = 'Gerando ZIP...';
+                    const content = await zip.generateAsync({ type: "blob" });
+                    const url = URL.createObjectURL(content);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `supabase_full_backup_${getTodayDateString()}.zip`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    statusEl.textContent = 'Backup Completo Concluído!';
+                } catch (error) {
+                    console.error(error);
+                    statusEl.textContent = 'Erro ao gerar backup.';
+                }
+            };
+
+            const handleSupabaseRestore = async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const statusEl = document.getElementById('supabase-status-message');
+                statusEl.textContent = 'Processando ZIP...';
+
+                try {
+                    const zip = await JSZip.loadAsync(file);
+                    const jsonFile = zip.file("mapping_backup.json");
+                    if (!jsonFile) throw new Error("Arquivo mapping_backup.json não encontrado no ZIP.");
+
+                    const backupData = JSON.parse(await jsonFile.async("string"));
+                    if (!confirm('ZIP Carregado. Deseja restaurar arquivos no Storage e atualizar links no Firebase?')) return;
+
+                    const filesInZip = Object.keys(zip.files).filter(path => !path.endsWith('/') && path !== "mapping_backup.json");
+                    statusEl.textContent = `Restaurando ${filesInZip.length} arquivos no Storage...`;
+
+                    for (let i = 0; i < filesInZip.length; i++) {
+                        const zipPath = filesInZip[i];
+                        const pathParts = zipPath.split('/');
+                        const bucket = pathParts.shift();
+                        const storagePath = pathParts.join('/');
+                        
+                        const fileBlob = await zip.file(zipPath).async("blob");
+                        const fileType = fileBlob.type || 'image/jpeg';
+
+                        statusEl.textContent = `Enviando (${i + 1}/${filesInZip.length}): ${storagePath}`;
+                        
+                        await supabaseClient.storage
+                            .from(bucket)
+                            .upload(storagePath, fileBlob, { upsert: true, contentType: fileType });
+                    }
+
+                    statusEl.textContent = 'Atualizando Banco de Dados...';
+                    const updates = {};
+                    if (backupData.devices) updates['devices'] = backupData.devices;
+                    if (backupData.pontos) updates['pontos'] = backupData.pontos;
+                    if (backupData.userProfiles) {
+                        const currentProfilesSnap = await database.ref('userProfiles').get();
+                        const currentProfiles = currentProfilesSnap.exists() ? currentProfilesSnap.val() : {};
+                        for (let userKey in backupData.userProfiles) {
+                            if (currentProfiles[userKey]) {
+                                backupData.userProfiles[userKey] = {
+                                    ...currentProfiles[userKey],
+                                    photoURL: backupData.userProfiles[userKey].photoURL
+                                };
+                            }
+                        }
+                        updates['userProfiles'] = backupData.userProfiles;
+                    }
+
+                    await database.ref().update(updates);
+                    statusEl.textContent = 'Restauração Completa com Sucesso!';
+                    alert('Backup ZIP restaurado com sucesso!');
+
+                } catch (error) {
+                    console.error(error);
+                    statusEl.textContent = `Erro na restauração: ${error.message}`;
+                }
+                event.target.value = null;
+            };
+
+            document.getElementById('download-supabase-json-btn').addEventListener('click', handleSupabaseBackup);
+            document.getElementById('restore-supabase-json-btn').addEventListener('click', () => document.getElementById('supabase-restore-input').click());
+            document.getElementById('supabase-restore-input').addEventListener('change', handleSupabaseRestore);
 
             document.getElementById('save-aviso-btn').addEventListener('click', () => {
                 const managerPhotoInput = document.getElementById('aviso-photo-upload');
