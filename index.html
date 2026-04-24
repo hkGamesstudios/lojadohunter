@@ -4777,7 +4777,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '7.0.2 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '7.0.3 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -9716,6 +9716,20 @@ async function calculateAndDisplayStoreRanking() {
             { name: 'Tacilio', store: 'bacabal' }
         ];
 
+        const getWorkingDaysLeft = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            let days = 0;
+            for (let d = now.getDate(); d <= lastDay; d++) {
+                const date = new Date(year, month, d);
+                if (date.getDay() !== 0) days++; 
+            }
+            return days || 1;
+        };
+        const workingDaysLeft = getWorkingDaysLeft();
+
         managerConfigs.forEach(config => {
             const name = config.name;
             const key = name.toLowerCase();
@@ -9724,22 +9738,30 @@ async function calculateAndDisplayStoreRanking() {
             let totalStoreSales = 0;
             let totalStoreGoal = 0;
 
-            // Calcula a soma de todas as vendas e todas as metas dos funcionários da loja
             storeEmployees.forEach(employeeName => {
                 const employeeKey = employeeName.toLowerCase();
                 totalStoreSales += parseFloat(salesData[employeeKey]?.vendas || 0);
                 totalStoreGoal += parseFloat(metasData[employeeKey]?.venda || 0);
             });
 
-            // Se houver uma meta específica "metaLoja" cadastrada para o gerente, ela substitui a soma das metas
             const overrideGoal = parseFloat(metasData[key]?.metaLoja || 0);
             const finalGoal = overrideGoal > 0 ? overrideGoal : totalStoreGoal;
             
             if (finalGoal > 0) {
                 const percentage = (totalStoreSales / finalGoal) * 100;
-                performanceData.push({ name: name, percentage: percentage });
+                performanceData.push({ 
+                    name: name, 
+                    percentage: percentage,
+                    actualSales: totalStoreSales,
+                    salesGoal: finalGoal
+                });
             } else {
-                performanceData.push({ name: name, percentage: 0 });
+                performanceData.push({ 
+                    name: name, 
+                    percentage: 0,
+                    actualSales: totalStoreSales,
+                    salesGoal: 0
+                });
             }
         });
 
@@ -9753,6 +9775,8 @@ async function calculateAndDisplayStoreRanking() {
         
         for (const [index, collab] of performanceData.entries()) {
             const rank = index + 1;
+            const remaining = Math.max(0, collab.salesGoal - collab.actualSales);
+            const dailyNeeded = remaining / workingDaysLeft;
             
             if (rank === 1) {
                 awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
@@ -9806,6 +9830,10 @@ async function calculateAndDisplayStoreRanking() {
                     <div class="progress-bar-container">
                         <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
                         <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                    </div>
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.8); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 600;">
+                        <span>Faltam: ${formatBRL(remaining)}</span>
+                        <span>${formatBRL(dailyNeeded)} / dia</span>
                     </div>
                 </div>
             `;
