@@ -2933,7 +2933,14 @@
             </section>
 
             <!-- PASTA DE APPS ESTILO ANDROID -->
-            <section id="apps-folder-section" style="padding-bottom: 0; display: flex; justify-content: center;">
+            <section id="apps-folder-section" style="padding-bottom: 0; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                <div class="folder-wrapper" id="direct-brasilcard">
+                    <div class="folder-preview-icon" style="display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-credit-card" style="font-size: 1.8rem; color: #fff;"></i>
+                    </div>
+                    <span>BrasilCard</span>
+                </div>
+
                 <div class="folder-wrapper" id="trigger-folder">
                     <div class="folder-preview-icon">
                         <i class="fa-solid fa-id-card"></i>
@@ -2942,6 +2949,13 @@
                         <i class="fa-solid fa-calculator"></i>
                     </div>
                     <span>Apps & Calcs</span>
+                </div>
+
+                <div class="folder-wrapper" id="direct-odrescred">
+                    <div class="folder-preview-icon" style="display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-building-columns" style="font-size: 1.8rem; color: #fff;"></i>
+                    </div>
+                    <span>OdresCred</span>
                 </div>
             </section>
 
@@ -4777,7 +4791,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '7.0.4 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '7.0.5 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -12456,6 +12470,14 @@ async function calculateAndDisplayStoreRanking() {
                         setTimeout(() => { document.getElementById(map.original).click(); }, 100);
                     });
                 }
+            });
+
+            document.getElementById('direct-brasilcard').addEventListener('click', () => {
+                openExternalLinkAndExit('https://www.brasilcard.net/bca/lojista/login');
+            });
+
+            document.getElementById('direct-odrescred').addEventListener('click', () => {
+                openExternalLinkAndExit('https://vendas.odrescred.com.br/login');
             });
 
             // --- LÓGICA DO SEGUNDO CARROSSEL (RANKING) ---
