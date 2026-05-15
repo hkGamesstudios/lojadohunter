@@ -4857,7 +4857,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.2 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.3 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10778,17 +10778,45 @@ async function calculateAndDisplayStoreRanking() {
         const leftEl = document.getElementById('daily-left-value');
         const titleEl = document.getElementById('daily-goal-title');
         const todayString = getTodayDateString();
+        
+        const userName = currentUserName;
+        const isStoreManager = storeManagers.includes(userName);
 
         try {
-            const [metasSnap, salesSnap, dailySnap] = await Promise.all([
-                database.ref(`metas/${userKey}`).get(),
-                database.ref(`salesData/${userKey}`).get(),
-                database.ref(`dailySales/${todayString}/${userKey}`).get()
+            const [metasSnap, allSalesSnap, allDailySnap] = await Promise.all([
+                database.ref('metas').get(),
+                database.ref('salesData').get(),
+                database.ref(`dailySales/${todayString}`).get()
             ]);
 
-            const metaMensal = metasSnap.exists() ? parseFloat(metasSnap.val().venda || 0) : 0;
-            const vendaTotal = salesSnap.exists() ? parseFloat(salesSnap.val().vendas || 0) : 0;
-            const vendaHoje = dailySnap.exists() ? parseFloat(dailySnap.val().vendas || 0) : 0;
+            const allMetas = metasSnap.exists() ? metasSnap.val() : {};
+            const allSales = allSalesSnap.exists() ? allSalesSnap.val() : {};
+            const allDaily = allDailySnap.exists() ? allDailySnap.val() : {};
+
+            let metaMensal = 0;
+            let vendaTotal = 0;
+            let vendaHoje = 0;
+
+            if (isStoreManager) {
+                const store = storeMapping.pinheiro.includes(userName) ? 'pinheiro' : 'bacabal';
+                const storeEmployees = storeMapping[store];
+                
+                metaMensal = parseFloat(allMetas[userKey]?.metaLoja || 0);
+                
+                storeEmployees.forEach(empName => {
+                    const empKey = empName.toLowerCase();
+                    vendaTotal += parseFloat(allSales[empKey]?.vendas || 0);
+                    vendaHoje += parseFloat(allDaily[empKey]?.vendas || 0);
+                });
+
+                if (titleEl) titleEl.textContent = `META DO DIA - LOJA ${store.toUpperCase()}`;
+            } else {
+                metaMensal = parseFloat(allMetas[userKey]?.venda || 0);
+                vendaTotal = parseFloat(allSales[userKey]?.vendas || 0);
+                vendaHoje = parseFloat(allDaily[userKey]?.vendas || 0);
+                
+                if (titleEl) titleEl.textContent = `META DO DIA - ${userName.toUpperCase()}`;
+            }
 
             const getWorkingDaysLeft = () => {
                 const now = new Date();
@@ -10803,10 +10831,9 @@ async function calculateAndDisplayStoreRanking() {
 
             const metaDiaria = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
 
-            if (titleEl) titleEl.textContent = `META DO DIA - ${currentUserName.toUpperCase()}`;
-            targetEl.textContent = formatBRL(metaDiaria);
-            soldEl.textContent = formatBRL(vendaHoje);
-            leftEl.textContent = formatBRL(Math.max(0, metaDiaria - vendaHoje));
+            if (targetEl) targetEl.textContent = formatBRL(metaDiaria);
+            if (soldEl) soldEl.textContent = formatBRL(vendaHoje);
+            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiaria - vendaHoje));
 
         } catch (e) { console.error(e); }
     };
