@@ -1014,7 +1014,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -2880,6 +2880,17 @@
             <h2>Versão 6.0.0 - A</h2>
             <p>Estamos mudando algumas coisas de lugar para melhorar sua praticidade no nosso app, alguns apps podem ter mudados de lugar.</p>
             <button id="close-update-notice" class="update-notice-btn">( ok )</button>
+        </div>
+    </div>
+
+    <!-- TELA DE LANÇAMENTO DE VENDA MANUAL (ESTILO CORREÇÃO) -->
+    <div id="manual-sale-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-manual-sale" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Lançar Vendas do Dia</h2>
+        </div>
+        <div id="manual-sale-content-container" class="collaborator-content" style="flex-direction: column; justify-content: flex-start; padding-top: 1rem; align-items: stretch; overflow-y: auto;">
+            <!-- Gerado via JS -->
         </div>
     </div>
 
@@ -4853,7 +4864,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.0 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.1 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5006,6 +5017,7 @@ document.getElementById('feedback-submissions-page').classList.add('page');
         themeModal: document.getElementById('theme-modal'),
         deviceSearchOverlay: document.getElementById('device-search-overlay'),
         avisosManagementPage: document.getElementById('avisos-management-page'), // Nova página
+        manualSalePage: document.getElementById('manual-sale-page'),
         supabaseManagementPage: document.getElementById('supabase-management-page'),
         feedbackPage: document.getElementById('feedback-page'),
         debugPage: document.getElementById('debug-page'),
@@ -10779,33 +10791,109 @@ async function calculateAndDisplayStoreRanking() {
         } catch (e) { console.error(e); }
     };
 
-    const addManualSale = async () => {
-        const userList = allCollaborators.map((name, index) => `${index + 1}. ${name}`).join('\n');
-        const selectedIdx = prompt(`Lançar Venda - Selecione o colaborador:\n\n${userList}`);
-        if (!selectedIdx) return;
-        const name = allCollaborators[parseInt(selectedIdx) - 1];
-        if (!name) return;
-
-        const valorStr = prompt(`Digite o valor da venda para ${name}:`);
-        if (!valorStr) return;
-        const valor = parseFromBRLInput(valorStr);
-        if (isNaN(valor) || valor <= 0) { alert("Valor inválido"); return; }
+    const openManualSalePage = async () => {
+        const container = document.getElementById('manual-sale-content-container');
+        container.innerHTML = `<p style="text-align: center;">Carregando dados de hoje...</p>`;
+        showPage('manualSalePage');
 
         const todayString = getTodayDateString();
-        const userKey = name.toLowerCase();
-
+        
         try {
-            const salesRef = database.ref(`salesData/${userKey}/vendas`);
-            const dailyRef = database.ref(`dailySales/${todayString}/${userKey}/vendas`);
+            const snapshot = await database.ref(`dailySales/${todayString}`).get();
+            const dailyData = snapshot.exists() ? snapshot.val() : {};
 
-            await Promise.all([
-                salesRef.transaction(curr => (curr || 0) + valor),
-                dailyRef.transaction(curr => (curr || 0) + valor)
+            container.innerHTML = '';
+            
+            allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
+                const key = name.toLowerCase();
+                const userDaily = dailyData[key] || { vendas: 0, servico: 0 };
+
+                container.innerHTML += `
+                    <div class="employee-meta-card">
+                        <h4 style="color: #fff; margin-bottom: 10px;">${name}</h4>
+                        <div class="input-group">
+                            <label>📈 Vendas Hoje (R$)</label>
+                            <input type="text" id="manual-venda-${key}" class="data-input" value="${formatToBRLInput(userDaily.vendas)}">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>🔧 Serviço Hoje (R$)</label>
+                            <input type="text" id="manual-servico-${key}" class="data-input" value="${formatToBRLInput(userDaily.servico)}">
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <button id="save-manual-sales-btn" class="action-button full-width" style="margin-top: 1rem; background: #27ae60;">
+                    <i class="fa-solid fa-check-double"></i> Atualizar Valores de Hoje
+                </button>
+                <p id="manual-sale-status" class="status-message"></p>
+                <div style="height: 50px;"></div>
+            `;
+
+            document.getElementById('save-manual-sales-btn').addEventListener('click', saveTodayManualSales);
+
+        } catch (error) {
+            container.innerHTML = '<p>Erro ao carregar dados.</p>';
+            console.error(error);
+        }
+    };
+
+    const saveTodayManualSales = async () => {
+        const statusEl = document.getElementById('manual-sale-status');
+        if (!confirm('Isso substituirá os valores de HOJE pelos novos valores digitados. Confirmar?')) return;
+        
+        statusEl.textContent = 'Processando atualização...';
+        const todayString = getTodayDateString();
+        
+        try {
+            const [salesSnap, dailySnap] = await Promise.all([
+                database.ref('salesData').get(),
+                database.ref(`dailySales/${todayString}`).get()
             ]);
 
-            alert("Venda lançada com sucesso!");
+            const currentSalesData = salesSnap.exists() ? salesSnap.val() : {};
+            const currentDailyData = dailySnap.exists() ? dailySnap.val() : {};
+            
+            const updates = {};
+
+            allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
+                const key = name.toLowerCase();
+                
+                // Valores digitados na tela
+                const newVendaHoje = parseFromBRLInput(document.getElementById(`manual-venda-${key}`).value);
+                const newServicoHoje = parseFromBRLInput(document.getElementById(`manual-servico-${key}`).value);
+
+                // Valores que já estavam salvos hoje
+                const oldVendaHoje = currentDailyData[key]?.vendas || 0;
+                const oldServicoHoje = currentDailyData[key]?.servico || 0;
+
+                // Valores totais acumulados
+                const totalVendaAcumulada = currentSalesData[key]?.vendas || 0;
+                const totalServicoAcumulado = currentSalesData[key]?.servico || 0;
+
+                // Cálculo da diferença para ajustar o acumulado sem apagar o passado
+                const diffVenda = newVendaHoje - oldVendaHoje;
+                const diffServico = newServicoHoje - oldServicoHoje;
+
+                // Atualiza o dia
+                updates[`/dailySales/${todayString}/${key}/vendas`] = newVendaHoje;
+                updates[`/dailySales/${todayString}/${key}/servico`] = newServicoHoje;
+
+                // Ajusta o acumulado
+                updates[`/salesData/${key}/vendas`] = totalVendaAcumulada + diffVenda;
+                updates[`/salesData/${key}/servico`] = totalServicoAcumulado + diffServico;
+            });
+
+            await database.ref().update(updates);
+            statusEl.textContent = 'Valores atualizados com sucesso!';
             loadDashboardData();
-        } catch (e) { alert("Erro ao lançar venda"); console.error(e); }
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+
+        } catch (error) {
+            statusEl.textContent = 'Erro ao salvar!';
+            console.error(error);
+        }
     };
 
     const loadAndShowCollaboratorProfile = (userName) => {
@@ -10968,7 +11056,8 @@ async function calculateAndDisplayStoreRanking() {
                 });
 
                 safeAddListener('clear-ponto-status-btn', 'click', clearPontoStatusForUser);
-                safeAddListener('add-manual-sale-btn', 'click', addManualSale);
+                safeAddListener('add-manual-sale-btn', 'click', openManualSalePage);
+                safeAddListener('back-to-gs-from-manual-sale', 'click', () => showPage('gsPage'));
 
                 safeAddListener('view-stock-requests-btn', 'click', () => {
                     createGenericSubmissionViewer('stockRequests', 'stockRequestsPage', 'stock-requests-list', 'stock-requests-title', 'Solicitações de Estoque', (item) => {
@@ -12566,36 +12655,25 @@ async function calculateAndDisplayStoreRanking() {
                 const banners = [
                     "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img1.png",
                     "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img2%20(1).png",
-                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img4.png",
-                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img4%20(1).png"
+                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img4.png"
                 ];
                 let currentIndex = 0;
 
                 if (bannerImg) {
-                    // Transição de fade mais suave (2 segundos)
-                    bannerImg.style.transition = 'opacity 2.0s ease-in-out';
+                    // Transição ajustada para 1 segundo
+                    bannerImg.style.transition = 'opacity 1.0s ease-in-out';
                     
                     setInterval(() => {
                         bannerImg.style.opacity = '0';
                         
                         setTimeout(() => {
-                            let nextIndex;
-                            const rarityRoll = Math.random(); 
-                            
-                            // 10% de chance para a última imagem (mais rara), 90% para as outras
-                            if (rarityRoll < 0.10) {
-                                nextIndex = 3;
-                            } else {
-                                const commonOnes = [0, 1, 2].filter(i => i !== currentIndex);
-                                nextIndex = commonOnes[Math.floor(Math.random() * commonOnes.length)];
-                            }
-                            
-                            currentIndex = nextIndex;
+                            // Rotação simples entre as 3 imagens restantes
+                            currentIndex = (currentIndex + 1) % banners.length;
                             bannerImg.src = banners[currentIndex];
                             bannerImg.style.opacity = '1';
-                        }, 2000); // Aguarda o fade out completo
+                        }, 1000); // Aguarda o fade out
                         
-                    }, 12000); // Fica parado por 12 segundos em cada imagem
+                    }, 6000); // Troca a cada 6 segundos
                 }
             };
 
