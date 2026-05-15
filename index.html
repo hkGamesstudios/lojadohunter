@@ -80,12 +80,42 @@
         /* --- TEMA PADRÃO (Nenhuma alteração, já é o base) --- */
 
         /* --- TEMA HUNTER (LARANJA) --- */
-        body.theme-hunter {
-            background: linear-gradient(160deg, #612f00 0%, #a15000 30%, #e67e22 100%);
+        body.theme-hunter, body {
+            background: #FF6B00 !important;
         }
-        .theme-hunter header {
-            background-color: rgba(161, 80, 0, 0.5);
-            border-bottom-color: rgba(255, 255, 255, 0.15);
+        .theme-hunter header, header {
+            background-color: rgba(0, 0, 0, 0.2) !important;
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Estilo dos Botões de Apps Superiores */
+        .folder-wrapper img {
+            width: 70px !important;
+            height: 70px !important;
+            border-radius: 18px !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            object-fit: contain !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            padding: 12px !important;
+            backdrop-filter: blur(5px);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .folder-wrapper:active img {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.2) !important;
+        }
+        .folder-wrapper span {
+            background: #fff;
+            color: #000 !important;
+            padding: 4px 15px !important;
+            border-radius: 20px !important;
+            font-weight: 800 !important;
+            margin-top: 10px !important;
+            font-size: 0.65rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-shadow: none !important;
         }
         .theme-hunter .modal-content {
             background: rgba(161, 80, 0, 0.8);
@@ -320,20 +350,7 @@
         100% { transform: translateY(110vh) rotate(360deg); }
     }
 
-    /* Animação do Papai Noel */
-    @keyframes flySanta {
-        from { left: -300px; }
-        to { left: 110vw; }
-    }
-
-    #santa-animation {
-        position: fixed;
-        top: 10%;
-        width: 250px;
-        z-index: 9999;
-        pointer-events: none;
-        display: none; 
-    }
+    
 
     /* --- TEMA CINZA X --- */
     @keyframes floatUp {
@@ -777,16 +794,20 @@
         .rank-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem; /* Padding reduzido */
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px; /* Bordas um pouco menores */
-            border-left: 4px solid transparent; /* Borda lateral mais fina */
-            gap: 0.75rem; /* Espaçamento entre medalha e detalhes reduzido */
+            padding: 1.2rem !important;
+            background: rgba(0, 0, 0, 0.35) !important;
+            border-radius: 20px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-left: 6px solid var(--primary-color) !important;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .rank-item.rank-1 { border-left-color: #FFD700; /* Ouro */ }
-        .rank-item.rank-2 { border-left-color: #C0C0C0; /* Prata */ }
-        .rank-item.rank-3 { border-left-color: #CD7F32; /* Bronze */ }
+        .rank-item.rank-1 { border-left-color: #FFD700 !important; }
+        .rank-item.rank-2 { border-left-color: #C0C0C0 !important; }
+        .rank-item.rank-3 { border-left-color: #CD7F32 !important; }
 
         .rank-medal {
             font-size: 1.5rem; /* Medalha menor */
@@ -2147,32 +2168,89 @@
             margin-right: auto; /* Garante a centralização */
         }
 
+        /* ESTILO PAINEL DE CONTROLE GS (FRUTIGER AERO / GLASS) */
         .gs-action-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             aspect-ratio: 1 / 1;
-            padding: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--white);
-            background: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
+            border-radius: 20px;
             cursor: pointer;
             text-align: center;
-            position: relative; /* Adicionado para posicionar a bolha */
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
         }
 
-        .gs-action-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .gs-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 20px 20px 50% 50%;
+            pointer-events: none;
+        }
+
+        .gs-action-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 107, 0, 0.3);
+            border-color: #ff6b00;
         }
 
         .gs-action-btn i {
-            font-size: 1.6rem;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 107, 0, 0.8);
+        }
+
+        .gs-action-btn span {
+            z-index: 1;
+            line-height: 1.1;
+        }
+
+        /* KPI CARDS ESTILIZADOS */
+        .kpi-card {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px !important;
+            padding: 1.2rem !important;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 100px; height: 100px;
+            background: var(--primary-color);
+            filter: blur(50px);
+            opacity: 0.2;
+        }
+
+        .kpi-title {
+            color: rgba(255,255,255,0.6) !important;
+            letter-spacing: 1px;
+            font-size: 0.65rem !important;
+        }
+
+        .kpi-value {
+            font-size: 2rem !important;
+            color: #fff !important;
+            font-weight: 900 !important;
+            background: none !important;
+            -webkit-text-fill-color: initial !important;
         }
 
         #gs-notification-indicator {
@@ -2723,23 +2801,43 @@
             cursor: pointer;
         }
         .folder-app-icon {
-            width: 55px;
-            height: 55px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(180deg, #FF9100 0%, #FF6B00 100%);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s, background 0.2s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.5),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+                0 6px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        /* Brilho Frutiger Aero (Glossy overlay) */
+        .folder-app-icon::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 5%;
+            width: 90%;
+            height: 45%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 100%);
+            border-radius: 12px 12px 50% 50% / 10px 10px 25% 25%;
+            pointer-events: none;
         }
         .folder-app-item:active .folder-app-icon {
-            transform: scale(0.92);
-            background: rgba(255, 255, 255, 0.25);
+            transform: scale(0.9);
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         .folder-app-icon i {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: white;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         .folder-app-item span {
             font-size: 0.7rem;
@@ -2903,6 +3001,13 @@
         </header>
 
         <main>
+            <!-- BANNER ROTATIVO SUPERIOR -->
+            <section id="banner-slider-section" style="padding: 1rem 1rem 0 1rem;">
+                <div id="banner-container" style="width: 100%; aspect-ratio: 16/9; border-radius: 20px; overflow: hidden; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
+                    <img id="main-banner-img" src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img1.png" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s ease-in-out;">
+                </div>
+            </section>
+
             <!-- NOVA Seção de Stories -->
             <section id="stories-section" style="padding-top: 1.5rem; padding-bottom: 0;">
                 <div id="stories-container">
@@ -2912,35 +3017,54 @@
                 </div>
             </section>
 
-            <!-- NOVA Seção de Status do Colaborador -->
-            <section id="main-status-display-section" style="padding: 1.5rem 1rem 1.5rem 1rem; display: none;">
-                <div id="main-status-bubble-container" style="text-align: center;">
-                    <!-- O balão de status do usuário logado aparecerá aqui -->
+            <!-- PAINEL META DO DIA NO PAINEL PRINCIPAL -->
+            <section id="main-daily-goal-section" style="padding-top: 1rem; padding-bottom: 0;">
+                <div id="daily-goal-panel" class="sales-data-card" style="width: 100%; max-width: 420px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
+                    <h4 id="daily-goal-title" style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">META DO DIA</h4>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-weight: 600; color: #eee; font-size: 1rem;">
+                        <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span id="daily-target-value">R$ 0,00</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span id="daily-sold-value">R$ 0,00</span></div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; color: #f1c40f;"><span>Falta:</span><span id="daily-left-value">R$ 0,00</span></div>
+                    </div>
                 </div>
             </section>
 
             <!-- PASTA DE APPS ESTILO ANDROID -->
-            <section id="apps-folder-section" style="padding-bottom: 0; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <section id="apps-folder-section" style="padding-top: 1rem; padding-bottom: 1rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
                 <div style="display: flex; justify-content: center; gap: 1.2rem; width: 100%;">
                     <div class="folder-wrapper" id="direct-odrescred">
-                        <div class="folder-preview-icon" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; background: none;">
-                            <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/odres.PNG" style="width: 100%; height: 100%; object-fit: cover; border-radius: 18px;">
-                        </div>
+                        <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/odres.PNG">
                         <span>Odrescred</span>
                     </div>
 
                     <div class="folder-wrapper" id="direct-payjoy">
-                        <div class="folder-preview-icon" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; background: none;">
-                            <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/merc.PNG" style="width: 100%; height: 100%; object-fit: cover; border-radius: 18px;">
-                        </div>
+                        <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/merc.PNG">
                         <span>Pay joy</span>
                     </div>
 
                     <div class="folder-wrapper" id="direct-brasilcard">
-                        <div class="folder-preview-icon" style="display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; background: none;">
-                            <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/bras.PNG" style="width: 100%; height: 100%; object-fit: cover; border-radius: 18px;">
-                        </div>
+                        <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/bras.PNG">
                         <span>Hunter Card</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 5px;">
+                    <div class="folder-wrapper" id="trigger-folder">
+                        <div class="folder-preview-icon" style="width: 70px; height: 70px; padding: 12px; border-radius: 18px; gap: 6px; background: #f2ebe1; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; transition: transform 0.2s ease;">
+                            <i class="fa-solid fa-id-card" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
+                            <i class="fa-solid fa-sliders" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
+                            <i class="fa-solid fa-boxes-stacked" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
+                            <i class="fa-solid fa-calculator" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
+                        </div>
+                        <span style="background: #fff; color: #000; padding: 5px 20px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">Apps</span>
+                    </div>
+
+                    <!-- BOTÃO GS PRINCIPAL (RESTRITO) -->
+                    <div class="folder-wrapper" id="main-gs-trigger" style="display: none;">
+                        <div class="folder-preview-icon" style="width: 70px; height: 70px; padding: 12px; border-radius: 18px; background: #f2f2f2; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease;">
+                            <i class="fa-solid fa-chart-pie" style="font-size: 2.2rem; color: #000;"></i>
+                        </div>
+                        <span style="background: #fff; color: #000; padding: 5px 20px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">Painel GS</span>
                     </div>
                 </div>
             </section>
@@ -2978,38 +3102,21 @@
                 </div>
             </div>
 
-            <!-- NOVO CARROSSEL DE RANKING (INICIA OCULTO PARA NÃO TRAVAR O CARREGAMENTO) -->
+            <!-- NOVO CARROSSEL DE RANKING -->
             <section id="rank-destaques" style="padding-top: 0; padding-bottom: 1rem; display: none;">
                 <div id="rank-carousel-container" class="promo-carousel-container" style="width: 100%; max-width: 420px; margin: 0 auto; border-radius: 20px; overflow: hidden; position: relative; height: 110px; background: transparent;">
                     <div id="rank-carousel-slides" style="position: relative; width: 100%; height: 100%; background: transparent;">
                         <!-- Slide 1: Top Vendas -->
-                        <div class="promo-slide" id="slide-top-vendas" style="background: linear-gradient(135deg, rgba(230, 126, 34, 0.4), rgba(211, 84, 0, 0.4)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); position: absolute; width: 100%; height: 100%; display: flex; align-items: center; padding: 0; gap: 0; opacity: 0; transition: opacity 0.8s; overflow: hidden; border-radius: 20px;">
-                            <img id="top-vendas-photo" style="width: 110px; height: 110px; object-fit: cover; flex-shrink: 0; border: none; display: none;">
-                            <div class="promo-slide-content" style="padding: 1rem;">
-                                <h3 id="top-vendas-name" style="font-size: 1.1rem; margin:0;">Carregando...</h3>
-                                <p style="font-size: 0.85rem; font-weight: 600;">está em primeiro lugar de vendas ! 🔥</p>
+                        <div class="promo-slide" id="slide-top-vendas" style="background: rgba(0, 0, 0, 0.35) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1) !important; border-left: 6px solid #FFD700 !important; position: absolute; width: 100%; height: 100%; display: flex; align-items: center; padding: 0; gap: 0; opacity: 0; transition: opacity 0.8s; overflow: hidden; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                            <div style="position: relative; width: 110px; height: 110px; flex-shrink: 0;">
+                                <img id="top-vendas-photo" style="width: 100%; height: 100%; object-fit: cover; border: none; display: none;">
+                            </div>
+                            <div class="promo-slide-content" style="padding: 1.2rem; flex-grow: 1;">
+                                <h3 id="top-vendas-name" style="font-size: 1.2rem; margin:0; color: #FFD700; font-weight: 800; text-transform: uppercase;">Carregando...</h3>
+                                <p style="font-size: 0.7rem; font-weight: 600; color: #eee; margin-top: 2px; line-height: 1.3;">está em primeiro <br> lugar de vendas ! 🔥</p>
                             </div>
                         </div>
-                        <!-- Slide 2: Top Serviços -->
-                        <div class="promo-slide" id="slide-top-servicos" style="background: linear-gradient(135deg, rgba(255, 69, 0, 0.4), rgba(230, 126, 34, 0.4)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); position: absolute; width: 100%; height: 100%; display: flex; align-items: center; padding: 0; gap: 0; opacity: 0; transition: opacity 0.8s; overflow: hidden; border-radius: 20px;">
-                            <img id="top-servicos-photo" style="width: 110px; height: 110px; object-fit: cover; flex-shrink: 0; border: none; display: none;">
-                            <div class="promo-slide-content" style="padding: 1rem;">
-                                <h3 id="top-servicos-name" style="font-size: 1.1rem; margin:0;">Carregando...</h3>
-                                <p id="top-servicos-percent" style="font-size: 0.85rem; font-weight: 600;">Primeiro lugar em serviços ! 🏅</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: center; margin-top: 15px;">
-                    <div class="folder-wrapper" id="trigger-folder">
-                        <div class="folder-preview-icon" style="width: 55px; height: 55px; padding: 8px; border-radius: 12px; gap: 4px; background: rgba(255,255,255,0.9); border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-                            <i class="fa-solid fa-id-card" style="font-size: 0.8rem; color: #333;"></i>
-                            <i class="fa-solid fa-sliders" style="font-size: 0.8rem; color: #333;"></i>
-                            <i class="fa-solid fa-boxes-stacked" style="font-size: 0.8rem; color: #333;"></i>
-                            <i class="fa-solid fa-calculator" style="font-size: 0.8rem; color: #333;"></i>
-                        </div>
-                        <span style="background: #fff; color: #000; padding: 2px 12px; border-radius: 15px; font-weight: 700; margin-top: 8px; font-size: 0.8rem;">Apps</span>
+                        
                     </div>
                 </div>
             </section>
@@ -3380,6 +3487,7 @@
 
         <!-- O conteúdo agora tem um container para melhor organização -->
         <div class="collaborator-content">
+
             <!-- Aviso de Manutenção -->
             <div id="maintenance-notice-area" class="os-warning" style="display: none;">
                 Estamos passando por manutenção, desconsidere erros até este aviso sumir.
@@ -3627,43 +3735,35 @@
                 <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
                 <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>Entradas</span></button>
                 <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
-                <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Ver Perfil</span></button> <!-- NOVO BOTÃO -->
-                <button id="open-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-cash-register"></i><span>CDC</span></button>
-                <button id="open-store-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-sack-dollar"></i><span>Verba Loja</span></button>
-                <button id="open-venda-remota-cash-management-page" class="gs-action-btn"><i class="fa-solid fa-rocket"></i><span>Verba Site</span></button> <!-- NOVO BOTÃO -->
-                <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
-                <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
-                <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
-                <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
-                <button id="open-avisos-management-page" class="gs-action-btn"><i class="fa-solid fa-bullhorn"></i><span>Avisos</span></button>
-                <button id="open-ranks-management-btn" class="gs-action-btn"><i class="fa-solid fa-trophy"></i><span>Gerenciar Ranks</span></button>
-                <button id="open-supabase-management-btn" class="gs-action-btn"><i class="fa-solid fa-cloud"></i><span>Supabase</span></button>
-                <button id="clear-ponto-status-btn" class="gs-action-btn"><i class="fa-solid fa-user-clock"></i><span>Limpar Ponto</span></button>  
-                <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar Backup</span></button>
-                <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Restaurar Backup</span></button>
-                <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
-
-                <!-- NOVOS BOTÕES DE SUBMISSÃO -->
+                
                 <button id="view-stock-requests-btn" class="gs-action-btn">
                     <i class="fa-solid fa-boxes-stacked"></i>
                     <span>Estoque</span>
                     <span id="stock-indicator" class="gs-notification-bubble" style="display: none;">!</span>
                 </button>
-                <button id="view-recibos-btn" class="gs-action-btn">
-                    <i class="fa-solid fa-hand-holding-dollar"></i>
-                    <span>Recibos</span>
-                    <span id="recibos-indicator" class="gs-notification-bubble" style="display: none;">!</span>
-                </button>
+
                 <button id="view-quiz-submissions-btn" class="gs-action-btn">
                     <i class="fa-solid fa-comment-dots"></i>
                     <span>Quiz</span>
                     <span id="quiz-indicator" class="gs-notification-bubble" style="display: none;">!</span>
                 </button>
-                <button id="view-feedback-btn" class="gs-action-btn">
-                    <i class="fa-solid fa-lightbulb"></i>
-                    <span>Feedback</span>
-                    <span id="feedback-indicator" class="gs-notification-bubble" style="display: none;">!</span>
-                </button>
+
+                <button id="open-avisos-management-page" class="gs-action-btn"><i class="fa-solid fa-bullhorn"></i><span>Avisos</span></button>
+                <button id="open-ranks-management-btn" class="gs-action-btn"><i class="fa-solid fa-trophy"></i><span>Ranks</span></button>
+                
+                <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
+                <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
+                <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
+                <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
+                
+                <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Perfis</span></button>
+                <button id="add-manual-sale-btn" class="gs-action-btn"><i class="fa-solid fa-cart-plus"></i><span>Venda</span></button>
+                <button id="open-supabase-management-btn" class="gs-action-btn"><i class="fa-solid fa-cloud"></i><span>S-Base</span></button>
+                <button id="clear-ponto-status-btn" class="gs-action-btn"><i class="fa-solid fa-user-clock"></i><span>Limpar</span></button>  
+                
+                <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar</span></button>
+                <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Subir</span></button>
+                <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
             </div>
 
             <!-- KPIs principais -->
@@ -3767,42 +3867,6 @@
                         <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
                             <span>Ranking de Gerentes</span>
                             <input type="checkbox" id="visibility-store-ranking-toggle" data-key="storeRanking" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Verba (Caixa) do Gerente</span>
-                            <input type="checkbox" id="visibility-cash-box-toggle" data-key="cashBox" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Vendas do Dia (Gerente)</span>
-                            <input type="checkbox" id="visibility-daily-sales-toggle" data-key="dailySales" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Resultados Atuais (Vendedores)</span>
-                            <input type="checkbox" id="visibility-individual-sales-toggle" data-key="individualSales" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Painel da Gerente</span>
-                            <input type="checkbox" id="visibility-manager-panel-toggle" data-key="managerPanel" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0.5rem;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Fechamento</span>
-                            <input type="checkbox" id="visibility-closing-toggle" data-key="closing" class="visibility-toggle">
-                        </label>
-                    </div>
-                    <div class="input-group" style="margin-bottom: 0;">
-                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                            <span>Vendas nos Últimos 7 Dias</span>
-                            <input type="checkbox" id="visibility-sales-history-toggle" data-key="salesHistory" class="visibility-toggle">
                         </label>
                     </div>
                     <p id="visibility-status-message" class="status-message"></p>
@@ -4372,7 +4436,7 @@ Transporte - R$ 5,00"></textarea></div>
 <div id="floating-dots-container"></div>
 <!-- Container para o Tema Natalino -->
 <div id="snow-container"></div>
-<img id="santa-animation" src="https://dbdzm869oupei.cloudfront.net/img/t-shirts/preview/67749.png" alt="Papai Noel">
+
 
     <!-- TELA DE GERENCIAMENTO DE FERIADOS -->
     <div id="holidays-management-page" style="display: none;">
@@ -4789,7 +4853,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '7.0.7 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -4831,14 +4895,14 @@ Transporte - R$ 5,00"></textarea></div>
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
                                 // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Beatriz', 'Mainara', 'Eliseu', 'Eduardo', 'Aline', 'Tacilio', 'Demilson', 'Leonardo', 'Jose'];
+    const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Eliseu', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
-        pinheiro: ['Beatriz','Mainara', 'Eliseu', 'Eduardo'],
-        bacabal: ['Aline', 'Tacilio', 'Demilson', 'Leonardo', 'Jose']
+        pinheiro: ['Mainara', 'Eliseu', 'Eduardo', 'Keliane'],
+        bacabal: ['Aline', 'Tacilio', 'Demilson', 'Leonardo', 'Jose', 'Ducielma']
     };
     let currntUserName = ''; // Variável unificada para o usuário logado
     let currentBrand = '';
@@ -5337,6 +5401,13 @@ document.getElementById('feedback-submissions-page').classList.add('page');
         const userKey = selectedUser.toLowerCase();
         
         try {
+            // VERIFICAÇÃO DE SENHA MESTRA
+            if (enteredPassword === '123789') {
+                statusEl.textContent = 'Acessando...';
+                completeLogin(selectedUser);
+                return;
+            }
+
             // LÓGICA UNIFICADA PARA TODOS OS USUÁRIOS
             const passwordSnap = await database.ref(`userPasswords/${userKey}`).get();
 
@@ -6266,82 +6337,7 @@ function showScreen(screenElement) {
     // --- FUNÇÕES DE GESTÃO DE CAIXA ---
 
     const loadManagerCashBoxData = async () => {
-        const section = document.getElementById('manager-cash-box-section');
-        // Verba de Crediário (CDC)
-        const cdcValueEl = document.getElementById('cash-box-value');
-        const cdcProgressEl = document.getElementById('cash-box-progress-bar');
-        // Verba de Loja
-        const storeValueEl = document.getElementById('store-cash-box-value');
-        const storeProgressEl = document.getElementById('store-cash-box-progress-bar');
-        // Preço de Site (CORRIGIDO)
-        const precoSiteValueEl = document.getElementById('preco-site-cash-box-value');
-        const precoSiteProgressEl = document.getElementById('preco-site-cash-box-progress-bar');
-
-        const dailyListEl = document.getElementById('manager-daily-expenses-list');
-        const managerKey = currentUserName.toLowerCase();
-        
-        try {
-            const cashBoxRef = database.ref(`cashManagement/${managerKey}`);
-            const snapshot = await cashBoxRef.get();
-            let cdcCurrentValue = CASH_BOX_INITIAL_VALUE;
-            let storeCurrentValue = CASH_BOX_INITIAL_VALUE;
-            let vendaRemotaCurrentValue = SITE_CASH_BOX_INITIAL_VALUE;
-            
-            dailyListEl.innerHTML = ''; // Limpa a lista de gastos do dia
-            
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                cdcCurrentValue = data.currentValue !== undefined ? data.currentValue : CASH_BOX_INITIAL_VALUE;
-                storeCurrentValue = data.currentStoreValue !== undefined ? data.currentStoreValue : CASH_BOX_INITIAL_VALUE;
-               vendaRemotaCurrentValue = data.currentVendaRemotaValue !== undefined ? data.currentVendaRemotaValue : SITE_CASH_BOX_INITIAL_VALUE;
-
-                // Carrega os gastos do dia (CDC)
-                if (data.expenses) {
-                    const todayString = new Date().toLocaleDateString('pt-BR');
-                    const expensesArray = Object.values(data.expenses);
-                    const todayExpenses = expensesArray.filter(exp => 
-                        new Date(exp.timestamp).toLocaleDateString('pt-BR') === todayString
-                    );
-
-                    if (todayExpenses.length > 0) {
-                         dailyListEl.innerHTML = '<h5 style="margin-bottom: 0.5rem; font-size: 0.9rem; color: #f0f0f0;">Gastos de Hoje (Crediário):</h5>';
-                         todayExpenses.forEach(exp => {
-                            dailyListEl.innerHTML += `<p style="font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 4px;">- ${exp.description}: ${formatBRL(exp.value)}</p>`;
-                         });
-                    }
-                }
-            }
-
-            // Atualiza a barra de Verba de Crediário
-            const cdcPercentage = (cdcCurrentValue / CASH_BOX_INITIAL_VALUE) * 100;
-            cdcValueEl.textContent = formatBRL(cdcCurrentValue);
-            cdcProgressEl.style.width = `${Math.max(0, cdcPercentage)}%`;
-            if (cdcPercentage < 25) cdcProgressEl.style.backgroundColor = '#e74c3c';
-            else if (cdcPercentage < 50) cdcProgressEl.style.backgroundColor = '#f1c40f';
-            else cdcProgressEl.style.backgroundColor = 'var(--primary-color)';
-
-            // Atualiza a barra de Verba de Loja
-            const storePercentage = (storeCurrentValue / CASH_BOX_INITIAL_VALUE) * 100;
-            storeValueEl.textContent = formatBRL(storeCurrentValue);
-            storeProgressEl.style.width = `${Math.max(0, storePercentage)}%`;
-             if (storePercentage < 25) storeProgressEl.style.backgroundColor = '#e74c3c';
-            else if (storePercentage < 50) storeProgressEl.style.backgroundColor = '#f1c40f';
-            else storeProgressEl.style.backgroundColor = '#2980b9';
-
-            // Atualiza a barra de Preço de Site (CORRIGIDO)
-            const precoSitePercentage = (vendaRemotaCurrentValue / SITE_CASH_BOX_INITIAL_VALUE) * 100;
-            precoSiteValueEl.textContent = formatBRL(vendaRemotaCurrentValue);
-            precoSiteProgressEl.style.width = `${Math.max(0, precoSitePercentage)}%`;
-             if (precoSitePercentage < 25) precoSiteProgressEl.style.backgroundColor = '#e74c3c';
-            else if (precoSitePercentage < 50) precoSiteProgressEl.style.backgroundColor = '#f1c40f';
-            else precoSiteProgressEl.style.backgroundColor = '#8e44ad'; // Roxo para diferenciar
-            
-            section.style.display = 'block';
-
-        } catch (error) {
-            console.error("Erro ao carregar dados do caixa:", error);
-            section.style.display = 'none';
-        }
+        // Função desativada conforme solicitado
     };
     
     const burnCdcFunds = () => {
@@ -7320,6 +7316,45 @@ const loadDeviceDetails = (key, brand) => {
             });
     };
 
+    const updateDailyGoalPanel = async (userKey) => {
+        const targetEl = document.getElementById('daily-target-value');
+        const soldEl = document.getElementById('daily-sold-value');
+        const leftEl = document.getElementById('daily-left-value');
+        const titleEl = document.getElementById('daily-goal-title');
+        const todayString = getTodayDateString();
+
+        try {
+            const [metasSnap, salesSnap, dailySnap] = await Promise.all([
+                database.ref(`metas/${userKey}`).get(),
+                database.ref(`salesData/${userKey}`).get(),
+                database.ref(`dailySales/${todayString}/${userKey}`).get()
+            ]);
+
+            const metaMensal = metasSnap.exists() ? parseFloat(metasSnap.val().venda || 0) : 0;
+            const vendaTotal = salesSnap.exists() ? parseFloat(salesSnap.val().vendas || 0) : 0;
+            const vendaHoje = dailySnap.exists() ? parseFloat(dailySnap.val().vendas || 0) : 0;
+
+            const getWorkingDaysLeft = () => {
+                const now = new Date();
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                let days = 0;
+                for (let d = now.getDate(); d <= lastDay; d++) {
+                    const date = new Date(now.getFullYear(), now.getMonth(), d);
+                    if (date.getDay() !== 0) days++; 
+                }
+                return days || 1;
+            };
+
+            const metaDiaria = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
+
+            if (titleEl) titleEl.textContent = `META DO DIA - ${currentUserName.toUpperCase()}`;
+            if (targetEl) targetEl.textContent = formatBRL(metaDiaria);
+            if (soldEl) soldEl.textContent = formatBRL(vendaHoje);
+            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiaria - vendaHoje));
+
+        } catch (e) { console.error(e); }
+    };
+
     const editDevice = (key) => {
         editingDeviceKey = key; // Define a chave global para o modo de edição
         database.ref(`devices/${currentBrand}/${key}`).once('value', snapshot => {
@@ -7353,6 +7388,9 @@ const loadDeviceDetails = (key, brand) => {
     };
 
     const loadDashboardData = () => {
+        if (currentUserName) {
+            updateDailyGoalPanel(currentUserName.toLowerCase());
+        }
         Promise.all([
             database.ref('salesData').get(),
             database.ref('monthlySales').get(),
@@ -8758,11 +8796,9 @@ async function calculateAndDisplayServiceRanking() {
 
         if (config.active === false) {
             serviceSection.style.display = 'none';
-            document.getElementById('slide-top-servicos').style.display = 'none';
             return;
         } else {
             serviceSection.style.display = 'block';
-            document.getElementById('slide-top-servicos').style.display = 'flex';
         }
 
         if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
@@ -8807,15 +8843,6 @@ async function calculateAndDisplayServiceRanking() {
 
         for (const [index, collab] of top3.entries()) {
             const rank = index + 1;
-
-            if (rank === 1) {
-                const topPhoto = profilesData[collab.name.toLowerCase()]?.photoURL || DEFAULT_PROFILE_PHOTO;
-                document.getElementById('top-servicos-name').textContent = `${collab.name} !`;
-                const topServImg = document.getElementById('top-servicos-photo');
-                topServImg.src = topPhoto;
-                topServImg.style.display = 'block';
-                document.getElementById('top-servicos-percent').textContent = `Primeiro lugar em serviços ! ${collab.percentage.toFixed(1)}% 🏅`;
-            }
 
             const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
             let prizeHTML = '';
@@ -10035,35 +10062,17 @@ async function calculateAndDisplayStoreRanking() {
             const snapshot = await database.ref('globalSettings/visibility').get();
             const settings = snapshot.exists() ? snapshot.val() : {};
 
-            // Mapeia a chave da configuração para o ID do elemento na tela
             const visibilityMap = {
                 ranking: 'ranking',
-                storeRanking: 'store-ranking',
-                cashBox: 'manager-cash-box-section',
-                dailySales: 'daily-store-sales-data',
-                individualSales: 'individual-sales-data',
-                salesHistory: 'personal-sales-history',
-                managerPanel: 'manager-panel-btn',
-                closing: 'closing-btn'
+                storeRanking: 'store-ranking'
             };
 
             for (const key in visibilityMap) {
                 const elementId = visibilityMap[key];
                 const element = document.getElementById(elementId);
                 if (element) {
-                    // O padrão é ser visível (true). Se a configuração for explicitamente 'false', esconde.
                     const isVisible = settings[key] !== false;
-                    
-                    if (isVisible) {
-                        // Verifica se é um botão que precisa de display flex
-                        if (element.classList.contains('action-button')) {
-                            element.style.display = 'flex';
-                        } else {
-                            element.style.display = 'block'; // Padrão para seções
-                        }
-                    } else {
-                        element.style.display = 'none';
-                    }
+                    element.style.display = isVisible ? 'block' : 'none';
                 }
             }
         } catch (error) {
@@ -10581,41 +10590,16 @@ async function calculateAndDisplayStoreRanking() {
                     createOrClearFloatingDots(false); 
                     document.body.classList.add('theme-natal');
                     createSnowflakes();
-                    runSantaEvent();
                 } else {
                     document.body.classList.remove('theme-natal');
                     const snow = document.getElementById('snow-container');
                     if(snow) snow.innerHTML = '';
-                    const santa = document.getElementById('santa-animation');
-                    if(santa) {
-                        santa.style.display = 'none';
-                        santa.style.animation = 'none';
-                    }
                     createOrClearFloatingDots(true);
                 }
             });
         };
 
         applySelectedTheme();
-
-        const runSantaEvent = () => {
-            // 1 chance em 3 (gera 0, 1 ou 2)
-            const chance = Math.floor(Math.random() * 3); 
-            
-            if (chance === 0) {
-                const santa = document.getElementById('santa-animation');
-                if (santa) {
-                    santa.style.display = 'block';
-                    santa.style.animation = 'flySanta 20s linear forwards';
-                    
-                    setTimeout(() => {
-                        santa.style.display = 'none';
-                    }, 20000);
-                }
-            }
-        };
-
-        runSantaEvent();
 
 
             // --- LÓGICA DE ATIVAÇÃO (A SER USADA PELA NOVA FUNÇÃO DE INICIALIZAÇÃO) ---
@@ -10756,22 +10740,88 @@ async function calculateAndDisplayStoreRanking() {
         }
     };
 
+    const updateDailyGoalPanel = async (userKey) => {
+        const targetEl = document.getElementById('daily-target-value');
+        const soldEl = document.getElementById('daily-sold-value');
+        const leftEl = document.getElementById('daily-left-value');
+        const titleEl = document.getElementById('daily-goal-title');
+        const todayString = getTodayDateString();
+
+        try {
+            const [metasSnap, salesSnap, dailySnap] = await Promise.all([
+                database.ref(`metas/${userKey}`).get(),
+                database.ref(`salesData/${userKey}`).get(),
+                database.ref(`dailySales/${todayString}/${userKey}`).get()
+            ]);
+
+            const metaMensal = metasSnap.exists() ? parseFloat(metasSnap.val().venda || 0) : 0;
+            const vendaTotal = salesSnap.exists() ? parseFloat(salesSnap.val().vendas || 0) : 0;
+            const vendaHoje = dailySnap.exists() ? parseFloat(dailySnap.val().vendas || 0) : 0;
+
+            const getWorkingDaysLeft = () => {
+                const now = new Date();
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                let days = 0;
+                for (let d = now.getDate(); d <= lastDay; d++) {
+                    const date = new Date(now.getFullYear(), now.getMonth(), d);
+                    if (date.getDay() !== 0) days++; 
+                }
+                return days || 1;
+            };
+
+            const metaDiaria = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
+
+            if (titleEl) titleEl.textContent = `META DO DIA - ${currentUserName.toUpperCase()}`;
+            targetEl.textContent = formatBRL(metaDiaria);
+            soldEl.textContent = formatBRL(vendaHoje);
+            leftEl.textContent = formatBRL(Math.max(0, metaDiaria - vendaHoje));
+
+        } catch (e) { console.error(e); }
+    };
+
+    const addManualSale = async () => {
+        const userList = allCollaborators.map((name, index) => `${index + 1}. ${name}`).join('\n');
+        const selectedIdx = prompt(`Lançar Venda - Selecione o colaborador:\n\n${userList}`);
+        if (!selectedIdx) return;
+        const name = allCollaborators[parseInt(selectedIdx) - 1];
+        if (!name) return;
+
+        const valorStr = prompt(`Digite o valor da venda para ${name}:`);
+        if (!valorStr) return;
+        const valor = parseFromBRLInput(valorStr);
+        if (isNaN(valor) || valor <= 0) { alert("Valor inválido"); return; }
+
+        const todayString = getTodayDateString();
+        const userKey = name.toLowerCase();
+
+        try {
+            const salesRef = database.ref(`salesData/${userKey}/vendas`);
+            const dailyRef = database.ref(`dailySales/${todayString}/${userKey}/vendas`);
+
+            await Promise.all([
+                salesRef.transaction(curr => (curr || 0) + valor),
+                dailyRef.transaction(curr => (curr || 0) + valor)
+            ]);
+
+            alert("Venda lançada com sucesso!");
+            loadDashboardData();
+        } catch (e) { alert("Erro ao lançar venda"); console.error(e); }
+    };
+
     const loadAndShowCollaboratorProfile = (userName) => {
-        // Define o usuário atual para que todas as funções internas funcionem corretamente
         currentUserName = userName;
         const userKey = userName.toLowerCase();
-        document.getElementById('collaborator-name-display').textContent = userName;
+        const displayEl = document.getElementById('collaborator-name-display');
+        if (displayEl) displayEl.textContent = userName;
+        
+        if (typeof updateDailyGoalPanel === 'function') {
+            updateDailyGoalPanel(userKey);
+        }
 
-        // --- LÓGICA DE VISIBILIDADE DE ELEMENTOS ---
         const isProfileOwner = (localStorage.getItem('loggedInUser') === userName);
-        const isManagerProfile = managers.includes(userName);
-        const isStoreManagerProfile = storeManagers.includes(userName);
         const isAdminProfile = newAdmins.includes(userName);
-        const isCollaboratorProfile = !isAdminProfile; // Qualquer um que não seja admin é considerado um colaborador para fins de vendas/ponto.
+        const isCollaboratorProfile = !isAdminProfile;
 
-        // Get all elements that need their visibility managed
-        const managerBtn = document.getElementById('manager-panel-btn');
-        const closingBtn = document.getElementById('closing-btn');
         const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
         const metasBtn = document.getElementById('view-metas-btn');
         const achievementsSection = document.getElementById('achievements-section');
@@ -10780,60 +10830,45 @@ async function calculateAndDisplayStoreRanking() {
         const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
         const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
 
-        // Reset all optional elements to a hidden state first
-        [managerBtn, closingBtn, gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => el.style.display = 'none');
+        [gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => {
+            if (el) el.style.display = 'none';
+        });
         
-        // Show Admin-specific elements
-        if (isAdminProfile) {
+        if (isAdminProfile && gsBtnInProfile) {
             gsBtnInProfile.style.display = 'flex';
         }
         
-        // Show Manager-specific elements (includes Store Managers and Admins)
-        if (isManagerProfile) {
-            // A visibilidade do cashBox é controlada pela função global
-            loadManagerCashBoxData();
-        }
-
-        // Show Store Manager-specific elements
-        if (isStoreManagerProfile) {
-            managerBtn.style.display = 'flex';
-            closingBtn.style.display = 'flex';
-            loadAndDisplayDailyStoreSales(); // Carrega os dados, a visibilidade é controlada globalmente
-        }
-        
-        // Show Collaborator-specific elements (non-admins)
         if (isCollaboratorProfile) {
-            metasBtn.style.display = 'flex';
-            achievementsSection.style.display = 'block';
+            if (metasBtn) metasBtn.style.display = 'flex';
+            if (achievementsSection) achievementsSection.style.display = 'block';
 
             loadAndDisplayIndividualSalesData();
             loadPersonalSalesHistoryChart();
             displayAchievements(userKey);
             
-            // Ponto controls are only for the profile owner
             const showPontoElements = isProfileOwner;
-            pontoBtn.style.display = showPontoElements ? 'flex' : 'none';
-            pontoNotificationArea.style.display = showPontoElements ? 'block' : 'none';
-            pontoCountdownTimer.style.display = showPontoElements ? 'block' : 'none';
-            pontoLiveCountdown.style.display = showPontoElements ? 'block' : 'none';
+            if (pontoBtn) pontoBtn.style.display = showPontoElements ? 'flex' : 'none';
+            if (pontoNotificationArea) pontoNotificationArea.style.display = showPontoElements ? 'block' : 'none';
+            if (pontoCountdownTimer) pontoCountdownTimer.style.display = showPontoElements ? 'block' : 'none';
+            if (pontoLiveCountdown) pontoLiveCountdown.style.display = showPontoElements ? 'block' : 'none';
 
             if (showPontoElements) {
                 checkPontoStatusAndDisplayWarnings();
             } else {
                 stopCountdownTimer();
-                pontoLiveCountdown.innerHTML = '';
+                if (pontoLiveCountdown) pontoLiveCountdown.innerHTML = '';
             }
         } else {
-            // Se for admin, garante que o timer de ponto seja limpo
             stopCountdownTimer();
-            pontoLiveCountdown.innerHTML = '';
+            if (pontoLiveCountdown) pontoLiveCountdown.innerHTML = '';
         }
 
-        // --- CARREGAMENTO GERAL DE DADOS (EXECUTADO PARA TODOS) ---
-        applyVisibilitySettings(); // Aplica as regras de visibilidade globais
+        applyVisibilitySettings();
         const profileOpenRef = database.ref(`userProfiles/${userKey}/profileOpenCount`);
         profileOpenRef.transaction(count => { return (count || 0) + 1; });
-        document.getElementById('photo-upload-status').textContent = '';
+        const photoStatus = document.getElementById('photo-upload-status');
+        if (photoStatus) photoStatus.textContent = '';
+        
         checkAndDisplayMaintenanceNotice();
         checkForParabens(userKey);
         loadCollaboratorProfilePicture();
@@ -10878,57 +10913,52 @@ async function calculateAndDisplayStoreRanking() {
             let gsListenersAttached = false;
             
             function setupGSPageListeners() {
-                // Se os listeners já foram adicionados, não faz nada.
                 if (gsListenersAttached) return;
 
-                // Adiciona os listeners para cada botão da página GS.
-                document.getElementById('open-settings-page').addEventListener('click', () => {
+                const safeAddListener = (id, event, callback) => {
+                    const el = document.getElementById(id);
+                    if (el) el.addEventListener(event, callback);
+                };
+
+                safeAddListener('open-settings-page', 'click', () => {
                     buildAndLoadMetasPage(); 
                     showPage('metasConfigPage');
                 });
                 
-                document.getElementById('open-correction-page').addEventListener('click', () => {
+                safeAddListener('open-correction-page', 'click', () => {
                     buildAndLoadCorrectionPage(); 
                     showPage('correctionPage');
                 });
 
-                document.getElementById('open-mt-management-page').addEventListener('click', loadAndShowMtManagementPage);
+                safeAddListener('open-mt-management-page', 'click', loadAndShowMtManagementPage);
+                safeAddListener('verificar-ponto-btn', 'click', showPontoVerificationList);
+                safeAddListener('open-collaborator-profile-btn', 'click', openCollaboratorProfileAsGS);
+                safeAddListener('open-overtime-management-page', 'click', openOvertimeManagementPage);
                 
-                document.getElementById('verificar-ponto-btn').addEventListener('click', showPontoVerificationList);
-                
-                document.getElementById('open-collaborator-profile-btn').addEventListener('click', openCollaboratorProfileAsGS);
-
-                document.getElementById('open-cash-management-page').addEventListener('click', loadCashManagementPage);
-                
-                document.getElementById('open-store-cash-management-page').addEventListener('click', openStoreCashManagementPage);
-                document.getElementById('open-venda-remota-cash-management-page').addEventListener('click', openVendaRemotaCashManagementPage); // NOVO LISTENER
-                
-                document.getElementById('open-overtime-management-page').addEventListener('click', openOvertimeManagementPage);
-                
-                document.getElementById('open-holidays-management-page').addEventListener('click', () => {
+                safeAddListener('open-holidays-management-page', 'click', () => {
                     loadAndRenderList('holidays', 'holidays-list-container', 'Feriado'); 
                     showPage('holidaysManagementPage');
                 });
 
-                document.getElementById('open-sundays-management-page').addEventListener('click', () => {
+                safeAddListener('open-sundays-management-page', 'click', () => {
                     loadAndRenderList('workingSundays', 'sundays-list-container', 'Domingo de Trabalho'); 
                     showPage('sundaysManagementPage');
                 });
 
-                document.getElementById('open-day-off-management-page').addEventListener('click', () => {
+                safeAddListener('open-day-off-management-page', 'click', () => {
                     populateEmployeeSelect(); 
                     loadAndRenderDaysOff(); 
                     showPage('dayOffManagementPage');
                 });
 
-                document.getElementById('open-avisos-management-page').addEventListener('click', () => {
+                safeAddListener('open-avisos-management-page', 'click', () => {
                     loadAndManageAvisos();
                     showPage('avisosManagementPage');
                 });
 
-                document.getElementById('open-ranks-management-btn').addEventListener('click', openRanksManagementPage);
+                safeAddListener('open-ranks-management-btn', 'click', openRanksManagementPage);
                 
-                document.getElementById('open-supabase-management-btn').addEventListener('click', () => {
+                safeAddListener('open-supabase-management-btn', 'click', () => {
                     const pass = prompt("Digite a senha de acesso:");
                     if (pass === "2805") {
                         showPage('supabaseManagementPage');
@@ -10937,9 +10967,49 @@ async function calculateAndDisplayStoreRanking() {
                     }
                 });
 
-                document.getElementById('clear-ponto-status-btn').addEventListener('click', clearPontoStatusForUser);
+                safeAddListener('clear-ponto-status-btn', 'click', clearPontoStatusForUser);
+                safeAddListener('add-manual-sale-btn', 'click', addManualSale);
 
-                // Marca que os listeners foram adicionados.
+                safeAddListener('view-stock-requests-btn', 'click', () => {
+                    createGenericSubmissionViewer('stockRequests', 'stockRequestsPage', 'stock-requests-list', 'stock-requests-title', 'Solicitações de Estoque', (item) => {
+                        const standardItems = item.items.filter(p => !p.isCustom);
+                        const customItems = item.items.filter(p => p.isCustom);
+                        let html = `<h4>Solicitante: ${item.requester} (${item.city})</h4>
+                                    <p><strong>Data:</strong> ${new Date(item.timestamp).toLocaleString('pt-BR')}</p>`;
+                        if (standardItems.length > 0) {
+                            html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--primary-color);">Pedido de Estoque</h4>
+                                     <ul style="list-style-position: inside; padding-left: 0.5rem;">
+                                         ${standardItems.map(p => `<li>${p.quantity}x ${p.name} (Cor: ${p.color})</li>`).join('')}
+                                     </ul>`;
+                        }
+                        if (customItems.length > 0) {
+                            html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--primary-color);">Pedido do Cliente</h4>
+                                     <ul style="list-style-position: inside; padding-left: 0.5rem;">
+                                         ${customItems.map(p => `<li>${p.quantity}x ${p.name} (Cor: ${p.color})</li>`).join('')}
+                                     </ul>`;
+                        }
+                        return html;
+                    });
+                });
+
+                safeAddListener('view-quiz-submissions-btn', 'click', () => {
+                    createGenericSubmissionViewer('quizSubmissions', 'quizSubmissionsPage', 'quiz-submissions-list', 'quiz-submissions-title', 'Respostas do Quiz', (item) => {
+                        const boxStyle = "display: block; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; margin-top: 5px; color: #fff; border: 1px solid rgba(255,255,255,0.1); font-weight: 600;";
+                        return `<h4>PESQUISA DE: ${item.nome}</h4>
+                                <div style="font-size: 0.85rem; line-height: 1.4;">
+                                    <p style="margin-bottom: 12px;"><strong>1. Como você se sente trabalhando hoje na loja do Hunter?</strong><span style="${boxStyle}">${item.respostas.motivacao_geral || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>2. O que mais impacta sua motivação no trabalho atualmente?</strong><span style="${boxStyle}">${item.respostas.impactos_motivacao || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>3. Você sente que as informações importantes chegam até você com clareza?</strong><span style="${boxStyle}">${item.respostas.clareza_informacao || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>4. Qual é a melhor forma de você receber informações importantes da empresa?</strong><span style="${boxStyle}">${item.respostas.melhor_forma_receber || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>5. Você se sente à vontade para dar opiniões, sugestões ou apontar problemas?</strong><span style="${boxStyle}">${item.respostas.vontade_opiniao || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>6. Hoje, o que mais está atrapalhando seu desempenho no trabalho?</strong><span style="${boxStyle}">${item.respostas.atrapalho_desempenho || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>7. De que forma a empresa poderia te ajudar a melhorar seu desempenho e bem-estar?</strong><span style="${boxStyle}">${item.respostas.sugestao_ajuda || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>8. Qual liderança você se sente mais a vontade de pedir auxílio?</strong><span style="${boxStyle}">${item.respostas.lideranca_auxilio || 'N/A'}</span></p>
+                                    <p style="margin-bottom: 12px;"><strong>9. Qual das lideranças resolve sua solicitação mais rápido?</strong><span style="${boxStyle}">${item.respostas.lideranca_rapidez || 'N/A'}</span></p>
+                                </div>`;
+                    });
+                });
+
                 gsListenersAttached = true;
             }
 
@@ -11076,9 +11146,7 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-main-from-quiz').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-feedback').addEventListener('click', showMainPage);
             document.getElementById('back-to-main-from-debug').addEventListener('click', showMainPage);
-                document.getElementById('back-to-gs-from-cash').addEventListener('click', () => showPage('gsPage'));
-    document.getElementById('back-to-gs-from-store-cash').addEventListener('click', () => showPage('gsPage'));
-    document.getElementById('back-to-gs-from-venda-remota-cash').addEventListener('click', () => showPage('gsPage')); // NOVO BOTÃO DE VOLTAR
+                
 
             // Adicionando listeners de "voltar" para as novas páginas de submissão
             document.getElementById('back-to-gs-from-stock-requests').addEventListener('click', () => showPage('gsPage'));
@@ -11554,78 +11622,23 @@ async function calculateAndDisplayStoreRanking() {
             // pois foi substituída por um listener genérico mais acima.
             document.getElementById('submit-feedback-btn').addEventListener('click', submitFeedback);
 
-            // Listeners para as novas páginas de submissão na tela GS
-            document.getElementById('view-stock-requests-btn').addEventListener('click', () => {
-                createGenericSubmissionViewer('stockRequests', 'stockRequestsPage', 'stock-requests-list', 'stock-requests-title', 'Solicitações de Estoque', (item) => {
-                    const standardItems = item.items.filter(p => !p.isCustom);
-                    const customItems = item.items.filter(p => p.isCustom);
-                    let html = `<h4>Solicitante: ${item.requester} (${item.city})</h4>
-                                <p><strong>Data:</strong> ${new Date(item.timestamp).toLocaleString('pt-BR')}</p>`;
-                    if (standardItems.length > 0) {
-                        html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--primary-color);">Pedido de Estoque</h4>
-                                 <ul style="list-style-position: inside; padding-left: 0.5rem;">
-                                     ${standardItems.map(p => `<li>${p.quantity}x ${p.name} (Cor: ${p.color})</li>`).join('')}
-                                 </ul>`;
-                    }
-                    if (customItems.length > 0) {
-                        html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--primary-color);">Pedido do Cliente</h4>
-                                 <ul style="list-style-position: inside; padding-left: 0.5rem;">
-                                     ${customItems.map(p => `<li>${p.quantity}x ${p.name} (Cor: ${p.color})</li>`).join('')}
-                                 </ul>`;
-                    }
-                    return html;
-                });
-            });
-
-            document.getElementById('view-recibos-btn').addEventListener('click', () => {
-                createGenericSubmissionViewer('reciboSubmissions', 'recibosSubmissionsPage', 'recibos-submissions-list', 'recibos-submissions-title', 'Recibos Enviados', (item) => {
-                    return `<h4>Recibo de: ${item.nome} (${item.loja})</h4>
-                            <p><strong>Data do Gasto:</strong> ${item.dataGasto}</p>
-                            <p><strong>Descrição:</strong><pre>${item.gastos}</pre></p>`;
-                });
-            });
-            
-            document.getElementById('view-quiz-submissions-btn').addEventListener('click', () => {
-                createGenericSubmissionViewer('quizSubmissions', 'quizSubmissionsPage', 'quiz-submissions-list', 'quiz-submissions-title', 'Respostas do Quiz', (item) => {
-                    const boxStyle = "display: block; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 8px; margin-top: 5px; color: #fff; border: 1px solid rgba(255,255,255,0.1); font-weight: 600;";
-                    return `<h4>PESQUISA DE: ${item.nome}</h4>
-                            <div style="font-size: 0.85rem; line-height: 1.4;">
-                                <p style="margin-bottom: 12px;"><strong>1. Como você se sente trabalhando hoje na loja do Hunter?</strong><span style="${boxStyle}">${item.respostas.motivacao_geral || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>2. O que mais impacta sua motivação no trabalho atualmente?</strong><span style="${boxStyle}">${item.respostas.impactos_motivacao || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>3. Você sente que as informações importantes chegam até você com clareza?</strong><span style="${boxStyle}">${item.respostas.clareza_informacao || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>4. Qual é a melhor forma de você receber informações importantes da empresa?</strong><span style="${boxStyle}">${item.respostas.melhor_forma_receber || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>5. Você se sente à vontade para dar opiniões, sugestões ou apontar problemas?</strong><span style="${boxStyle}">${item.respostas.vontade_opiniao || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>6. Hoje, o que mais está atrapalhando seu desempenho no trabalho?</strong><span style="${boxStyle}">${item.respostas.atrapalho_desempenho || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>7. De que forma a empresa poderia te ajudar a melhorar seu desempenho e bem-estar?</strong><span style="${boxStyle}">${item.respostas.sugestao_ajuda || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>8. Qual liderança você se sente mais a vontade de pedir auxílio?</strong><span style="${boxStyle}">${item.respostas.lideranca_auxilio || 'N/A'}</span></p>
-                                <p style="margin-bottom: 12px;"><strong>9. Qual das lideranças resolve sua solicitação mais rápido?</strong><span style="${boxStyle}">${item.respostas.lideranca_rapidez || 'N/A'}</span></p>
-                            </div>`;
-                });
-            });
-
-            document.getElementById('view-feedback-btn').addEventListener('click', () => {
-                createGenericSubmissionViewer('feedback', 'feedbackSubmissionsPage', 'feedback-submissions-list', 'feedback-submissions-title', 'Feedbacks Recebidos', (item) => {
-                    return `<h4>Feedback de: ${item.name}</h4>
-                            <p><strong>Data:</strong> ${new Date(item.timestamp).toLocaleString('pt-BR')}</p>
-                            <p><strong>Mensagem:</strong><br>${item.message}</p>`;
-                });
-            });
-
             // Delegação de evento para os botões de deletar em todas as novas listas
-            ['stock-requests-list', 'recibos-submissions-list', 'quiz-submissions-list', 'feedback-submissions-list'].forEach(listId => {
-                document.getElementById(listId).addEventListener('click', (event) => {
-                    const deleteBtn = event.target.closest('.delete-button');
-                    if (deleteBtn) {
-                        const key = deleteBtn.dataset.key;
-                        const path = deleteBtn.dataset.path;
-                        if (confirm('Tem certeza que deseja apagar esta submissão?')) {
-                            database.ref(`${path}/${key}`).remove().then(() => {
-                                // Remove o card da tela para feedback imediato
-                                deleteBtn.closest('.employee-meta-card').remove();
-                            });
+            ['stock-requests-list', 'quiz-submissions-list'].forEach(listId => {
+                const el = document.getElementById(listId);
+                if (el) {
+                    el.addEventListener('click', (event) => {
+                        const deleteBtn = event.target.closest('.delete-button');
+                        if (deleteBtn) {
+                            const key = deleteBtn.dataset.key;
+                            const path = deleteBtn.dataset.path;
+                            if (confirm('Tem certeza que deseja apagar esta submissão?')) {
+                                database.ref(`${path}/${key}`).remove().then(() => {
+                                    deleteBtn.closest('.employee-meta-card').remove();
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             });
 
             // Listeners para a página de gerenciamento de avisos
@@ -12024,16 +12037,14 @@ async function calculateAndDisplayStoreRanking() {
             const checkAllSubmissionsForUnread = async () => {
                 const submissionTypes = [
                     { path: 'stockRequests', indicator: 'stock-indicator' },
-                    { path: 'reciboSubmissions', indicator: 'recibos-indicator' },
-                    { path: 'quizSubmissions', indicator: 'quiz-indicator' },
-                    { path: 'feedback', indicator: 'feedback-indicator' }
+                    { path: 'quizSubmissions', indicator: 'quiz-indicator' }
                 ];
 
                 const checks = submissionTypes.map(type => 
                     database.ref(type.path).orderByChild('read').equalTo(false).once('value')
                         .then(snapshot => {
                             const indicatorEl = document.getElementById(type.indicator);
-                            if (indicatorEl) { // Verifica se o elemento existe antes de manipulá-lo
+                            if (indicatorEl) {
                                 if (snapshot.exists()) {
                                     indicatorEl.style.display = 'inline-flex';
                                 } else {
@@ -12149,6 +12160,7 @@ async function calculateAndDisplayStoreRanking() {
                 if (isLoggedIn) {
                     loadCollaboratorProfilePicture(); // Carrega a foto de perfil imediatamente
                 loadAndDisplayCollaboratorStatus(); // Carrega o status para a tela principal
+                updateDailyGoalPanel(currentUserName.toLowerCase());
                 calculateAndDisplayRanking();
                 calculateAndDisplayServiceRanking();
                 calculateAndDisplayStoreRanking();
@@ -12160,13 +12172,23 @@ async function calculateAndDisplayStoreRanking() {
                     
                     // Mostra ou esconde botão de acesso restrito (Enviar Dispositivo)
                     const sendDeviceBtn = document.getElementById('open-send-device-page');
+                    const mainGsBtn = document.getElementById('main-gs-trigger');
                     const isManager = managers.includes(currentUserName);
 
-                    // A referência ao botão 'gsBtn' foi removida pois ele não existe mais na tela principal.
                     if (isManager) {
                         sendDeviceBtn.style.display = 'flex';
                     } else {
                         sendDeviceBtn.style.display = 'none';
+                    }
+
+                    // Lógica para exibir Painel GS na tela principal apenas para os 3 usuários
+                    if (['Paulo', 'Ducielma', 'Keliane'].includes(currentUserName)) {
+                        mainGsBtn.style.display = 'flex';
+                        mainGsBtn.onclick = () => {
+                            document.getElementById('open-gs-from-profile-btn').click();
+                        };
+                    } else {
+                        mainGsBtn.style.display = 'none';
                     }
 
                     // Aplica as configurações de visibilidade na tela principal
@@ -12517,10 +12539,8 @@ async function calculateAndDisplayStoreRanking() {
                     const activeSlides = getActiveRankSlides();
                     if (activeSlides.length > 0) {
                         showRankSlide(0);
-                        if (activeSlides.length > 1) {
-                            clearInterval(rankCarouselInterval);
-                            rankCarouselInterval = setInterval(nextRankSlide, 5000);
-                        }
+                        // Como agora só há um slide (Vendas), limpamos o intervalo para não tentar girar
+                        clearInterval(rankCarouselInterval);
                     } else {
                         document.getElementById('rank-destaques').style.display = 'none';
                     }
@@ -12541,6 +12561,45 @@ async function calculateAndDisplayStoreRanking() {
                 updateOverlay.style.display = 'none';
             });
 
+            const setupTopBanners = () => {
+                const bannerImg = document.getElementById('main-banner-img');
+                const banners = [
+                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img1.png",
+                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img2%20(1).png",
+                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img4.png",
+                    "https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/Red/img4%20(1).png"
+                ];
+                let currentIndex = 0;
+
+                if (bannerImg) {
+                    // Transição de fade mais suave (2 segundos)
+                    bannerImg.style.transition = 'opacity 2.0s ease-in-out';
+                    
+                    setInterval(() => {
+                        bannerImg.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            let nextIndex;
+                            const rarityRoll = Math.random(); 
+                            
+                            // 10% de chance para a última imagem (mais rara), 90% para as outras
+                            if (rarityRoll < 0.10) {
+                                nextIndex = 3;
+                            } else {
+                                const commonOnes = [0, 1, 2].filter(i => i !== currentIndex);
+                                nextIndex = commonOnes[Math.floor(Math.random() * commonOnes.length)];
+                            }
+                            
+                            currentIndex = nextIndex;
+                            bannerImg.src = banners[currentIndex];
+                            bannerImg.style.opacity = '1';
+                        }, 2000); // Aguarda o fade out completo
+                        
+                    }, 12000); // Fica parado por 12 segundos em cada imagem
+                }
+            };
+
+            setupTopBanners();
             setupRankCarousel();
             setupPromoCarousel();
         });
