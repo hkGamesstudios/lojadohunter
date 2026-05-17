@@ -5043,7 +5043,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.7 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.8 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10994,15 +10994,18 @@ async function calculateAndDisplayStoreRanking() {
         const isStoreManager = storeManagers.includes(userName);
 
         try {
-            const [metasSnap, allSalesSnap, allDailySnap] = await Promise.all([
+            const [metasSnap, allSalesSnap, allDailySnap, increaseSnap] = await Promise.all([
                 database.ref('metas').get(),
                 database.ref('salesData').get(),
-                database.ref(`dailySales/${todayString}`).get()
+                database.ref(`dailySales/${todayString}`).get(),
+                database.ref('globalSettings/dailyGoalIncrease').get()
             ]);
 
             const allMetas = metasSnap.exists() ? metasSnap.val() : {};
             const allSales = allSalesSnap.exists() ? allSalesSnap.val() : {};
             const allDaily = allDailySnap.exists() ? allDailySnap.val() : {};
+            const increasePercent = increaseSnap.exists() ? parseFloat(increaseSnap.val() || 0) : 0;
+            const multiplier = 1 + (increasePercent / 100);
 
             let metaMensal = 0;
             let vendaTotal = 0;
@@ -11031,20 +11034,24 @@ async function calculateAndDisplayStoreRanking() {
 
             const getWorkingDaysLeft = () => {
                 const now = new Date();
-                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                const year = now.getFullYear();
+                const month = now.getMonth();
+                const lastDay = new Date(year, month + 1, 0).getDate();
                 let days = 0;
                 for (let d = now.getDate(); d <= lastDay; d++) {
-                    const date = new Date(now.getFullYear(), now.getMonth(), d);
+                    const date = new Date(year, month, d);
                     if (date.getDay() !== 0) days++; 
                 }
                 return days || 1;
             };
 
-            const metaDiaria = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
+            const workingDaysLeft = getWorkingDaysLeft();
+            const metaDiariaBase = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / workingDaysLeft);
+            const metaDiariaComAumento = metaDiariaBase * multiplier;
 
-            if (targetEl) targetEl.textContent = formatBRL(metaDiaria);
+            if (targetEl) targetEl.textContent = formatBRL(metaDiariaComAumento);
             if (soldEl) soldEl.textContent = formatBRL(vendaHoje);
-            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiaria - vendaHoje));
+            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiariaComAumento - vendaHoje));
 
         } catch (e) { console.error(e); }
     };
