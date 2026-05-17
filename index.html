@@ -1014,7 +1014,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -1022,10 +1022,23 @@
             height: 100%;
             background: linear-gradient(160deg, #612f00 0%, #a15000 30%, #e67e22 100%);
             z-index: 3000;
-            display: none; /* Inicia escondida */
+            display: none; 
             flex-direction: column;
-            justify-content: flex-start; /* Garante que o conteúdo comece no topo */
-            overflow-y: auto; /* Permite que a PÁGINA INTEIRA role */
+            justify-content: flex-start; 
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Ajuste para garantir que o conteúdo não fuja para a direita */
+        #telemarketing-selection-page .collaborator-content,
+        #telemarketing-list-page .collaborator-content,
+        #telemarketing-admin-page .collaborator-content,
+        #telemarketing-stats-page .collaborator-content {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            align-items: stretch;
+            flex-direction: column;
         }
 
                 /* ================================================= */
@@ -5007,7 +5020,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.4 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.5 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
