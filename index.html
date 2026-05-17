@@ -3065,8 +3065,8 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Cole a lista aqui (Nome - Número)</label>
-                    <textarea id="tm-admin-raw-list" class="data-input" rows="8" placeholder="João Silva - 11999999999&#10;Maria Oliveira - 11888888888"></textarea>
+                    <label>Cole a lista aqui (Nome Número)</label>
+                    <textarea id="tm-admin-raw-list" class="data-input" rows="8" placeholder="João Silva 11999999999&#10;Maria Oliveira 11888888888"></textarea>
                 </div>
                 <button id="tm-admin-save-list-btn" class="action-button full-width"><i class="fa-solid fa-cloud-arrow-up"></i> Adicionar à Lista</button>
                 <p id="tm-admin-status" class="status-message"></p>
@@ -5020,7 +5020,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.5 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.6 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -13030,14 +13030,19 @@ async function calculateAndDisplayStoreRanking() {
                 const updates = {};
 
                 lines.forEach(line => {
-                    const parts = line.split(' - ');
-                    if (parts.length >= 2) {
-                        const name = parts[0].trim();
-                        const number = parts[1].trim().replace(/\s/g, '');
-                        const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
-                        updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
-                            name, number, status: 'available', addedAt: new Date().toISOString()
-                        };
+                    const trimmedLine = line.trim();
+                    const lastSpaceIndex = trimmedLine.lastIndexOf(' ');
+                    
+                    if (lastSpaceIndex !== -1) {
+                        const name = trimmedLine.substring(0, lastSpaceIndex).trim();
+                        const number = trimmedLine.substring(lastSpaceIndex + 1).trim().replace(/\D/g, '');
+                        
+                        if (name && number) {
+                            const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
+                            updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
+                                name, number, status: 'available', addedAt: new Date().toISOString()
+                            };
+                        }
                     }
                 });
 
