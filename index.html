@@ -1014,7 +1014,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -3931,6 +3931,7 @@
                 <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
                 <button id="open-tm-admin-btn" class="gs-action-btn"><i class="fa-solid fa-users-gear"></i><span>Clientes TM</span></button>
                 <button id="open-tm-stats-btn" class="gs-action-btn"><i class="fa-solid fa-chart-line"></i><span>Envios TM</span></button>
+                <button id="open-daily-increase-page" class="gs-action-btn" style="border: 2px solid #f1c40f;"><i class="fa-solid fa-arrow-up-right-dots"></i><span>Aumento %</span></button>
             </div>
 
             <!-- KPIs principais -->
@@ -4963,6 +4964,28 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- TELA DE GERENCIAMENTO DE AUMENTO DE META DIÁRIA -->
+    <div id="daily-increase-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-increase" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Aumento de Meta %</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch;">
+            <div class="employee-meta-card">
+                <h4>Acréscimo de Meta Diária</h4>
+                <div class="input-group">
+                    <label>Acréscimo Hoje (%)</label>
+                    <input type="number" id="daily-goal-increase-input" class="data-input" placeholder="Ex: 30">
+                </div>
+                <button id="save-daily-increase-btn" class="action-button full-width"><i class="fa-solid fa-percent"></i> Aplicar Aumento</button>
+                <p id="increase-status-message" class="status-message"></p>
+                <p style="font-size: 0.75rem; color: #ccc; margin-top: 1rem; text-align: center; line-height: 1.4;">
+                    Este acréscimo aumenta a meta diária calculada (Meta Mensal - Vendas atuais / Dias restantes) na porcentagem definida.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- TELA DE CHATS -->
     <div id="chat-page" style="display: none;">
         <div class="collaborator-header">
@@ -5020,7 +5043,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.6 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.7 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5093,6 +5116,7 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('ponto-verification-page').classList.add('page');
     document.getElementById('ponto-history-page').classList.add('page');
     document.getElementById('supabase-management-page').classList.add('page');
+    document.getElementById('daily-increase-management-page').classList.add('page');
     document.getElementById('collaborator-page').classList.add('page');
     document.getElementById('gs-page').classList.add('page');
     document.getElementById('metas-config-page').classList.add('page');
@@ -5188,6 +5212,7 @@ Transporte - R$ 5,00"></textarea></div>
         telemarketingListPage: document.getElementById('telemarketing-list-page'),
         telemarketingAdminPage: document.getElementById('telemarketing-admin-page'),
         telemarketingStatsPage: document.getElementById('telemarketing-stats-page'),
+        dailyIncreaseManagementPage: document.getElementById('daily-increase-management-page'),
         telemarketingSelectionPage: document.getElementById('telemarketing-selection-page'),
         telemarketingListPage: document.getElementById('telemarketing-list-page'),
         telemarketingAdminPage: document.getElementById('telemarketing-admin-page'),
@@ -7508,15 +7533,18 @@ const loadDeviceDetails = (key, brand) => {
         const isStoreManager = storeManagers.includes(userName);
 
         try {
-            const [metasSnap, allSalesSnap, allDailySnap] = await Promise.all([
+            const [metasSnap, allSalesSnap, allDailySnap, increaseSnap] = await Promise.all([
                 database.ref('metas').get(),
                 database.ref('salesData').get(),
-                database.ref(`dailySales/${todayString}`).get()
+                database.ref(`dailySales/${todayString}`).get(),
+                database.ref('globalSettings/dailyGoalIncrease').get()
             ]);
 
             const allMetas = metasSnap.exists() ? metasSnap.val() : {};
             const allSales = allSalesSnap.exists() ? allSalesSnap.val() : {};
             const allDaily = allDailySnap.exists() ? allDailySnap.val() : {};
+            const increasePercent = increaseSnap.exists() ? parseFloat(increaseSnap.val() || 0) : 0;
+            const multiplier = 1 + (increasePercent / 100);
 
             let metaMensal = 0;
             let vendaTotal = 0;
@@ -7554,11 +7582,12 @@ const loadDeviceDetails = (key, brand) => {
                 return days || 1;
             };
 
-            const metaDiaria = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
+            const metaDiariaBase = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
+            const metaDiariaComAumento = metaDiariaBase * multiplier;
 
-            if (targetEl) targetEl.textContent = formatBRL(metaDiaria);
+            if (targetEl) targetEl.textContent = formatBRL(metaDiariaComAumento);
             if (soldEl) soldEl.textContent = formatBRL(vendaHoje);
-            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiaria - vendaHoje));
+            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiariaComAumento - vendaHoje));
 
         } catch (e) { console.error(e); }
     };
@@ -8823,8 +8852,11 @@ async function calculateAndDisplayRanking() {
         database.ref('metas').get(),
         database.ref('userProfiles').get(),
         database.ref('userStatuses').get(),
-        database.ref('globalSettings/ranks/vendas').get()
-    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, configSnapshot]) => {
+        database.ref('globalSettings/ranks/vendas').get(),
+        database.ref('globalSettings/dailyGoalIncrease').get()
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, configSnapshot, increaseSnapshot]) => {
+        const increasePercent = increaseSnapshot.exists() ? parseFloat(increaseSnapshot.val() || 0) : 0;
+        const multiplier = 1 + (increasePercent / 100);
         const config = configSnapshot.exists() ? configSnapshot.val() : { active: true, prizes: [0, 0, 0] };
         
         if (config.active === false) {
@@ -8897,7 +8929,7 @@ async function calculateAndDisplayRanking() {
         for (const [index, collab] of allRank.entries()) {
             const rank = index + 1;
             const remaining = Math.max(0, collab.salesGoal - collab.actualSales);
-            const dailyNeeded = remaining / workingDaysLeft;
+            const dailyNeeded = (remaining / workingDaysLeft) * multiplier;
 
             if (rank === 1) {
                 awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
@@ -9945,8 +9977,11 @@ async function calculateAndDisplayStoreRanking() {
         database.ref('salesData').get(),
         database.ref('metas').get(),
         database.ref('userProfiles').get(),
-        database.ref('userStatuses').get()
-    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
+        database.ref('userStatuses').get(),
+        database.ref('globalSettings/dailyGoalIncrease').get()
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, increaseSnapshot]) => {
+        const increasePercent = increaseSnapshot.exists() ? parseFloat(increaseSnapshot.val() || 0) : 0;
+        const multiplier = 1 + (increasePercent / 100);
         if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
             container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
             return;
@@ -10023,7 +10058,7 @@ async function calculateAndDisplayStoreRanking() {
         for (const [index, collab] of performanceData.entries()) {
             const rank = index + 1;
             const remaining = Math.max(0, collab.salesGoal - collab.actualSales);
-            const dailyNeeded = remaining / workingDaysLeft;
+            const dailyNeeded = (remaining / workingDaysLeft) * multiplier;
             
             if (rank === 1) {
                 awardAchievement(collab.name.toLowerCase(), 'rei_do_ranking');
@@ -11277,6 +11312,30 @@ async function calculateAndDisplayStoreRanking() {
                         alert("Senha incorreta!");
                     }
                 });
+
+                safeAddListener('open-daily-increase-page', 'click', async () => {
+                    const input = document.getElementById('daily-goal-increase-input');
+                    const status = document.getElementById('increase-status-message');
+                    status.textContent = 'Carregando...';
+                    const snap = await database.ref('globalSettings/dailyGoalIncrease').get();
+                    input.value = snap.exists() ? snap.val() : 0;
+                    status.textContent = '';
+                    showPage('dailyIncreaseManagementPage');
+                });
+
+                safeAddListener('save-daily-increase-btn', 'click', () => {
+                    const val = parseFloat(document.getElementById('daily-goal-increase-input').value) || 0;
+                    const status = document.getElementById('increase-status-message');
+                    status.textContent = 'Salvando...';
+                    database.ref('globalSettings/dailyGoalIncrease').set(val).then(() => {
+                        status.textContent = 'Aumento aplicado com sucesso!';
+                        calculateAndDisplayRanking();
+                        calculateAndDisplayStoreRanking();
+                        setTimeout(() => status.textContent = '', 2500);
+                    });
+                });
+
+                safeAddListener('back-to-gs-from-increase', 'click', () => showPage('gsPage'));
 
                 safeAddListener('clear-ponto-status-btn', 'click', clearPontoStatusForUser);
                 safeAddListener('add-manual-sale-btn', 'click', openManualSalePage);
