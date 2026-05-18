@@ -2858,6 +2858,7 @@
             text-align: center;
             gap: 8px;
             cursor: pointer;
+            width: 100%;
         }
         .folder-app-icon {
             width: 58px;
@@ -2875,6 +2876,24 @@
                 0 6px 12px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* Ajuste para o painel GS não bugar em telas diferentes */
+        .gs-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            padding: 1rem;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .gs-action-btn {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            padding: 0.5rem 0.2rem;
+            font-size: 0.6rem !important;
+            overflow: hidden;
         }
         /* Brilho Frutiger Aero (Glossy overlay) */
         .folder-app-icon::after {
@@ -3056,13 +3075,18 @@
         </div>
         <div class="collaborator-content" style="align-items: stretch;">
             <div class="employee-meta-card">
-                <h4>Upload de Clientes</h4>
+                <h4>Configurar Campanha</h4>
                 <div class="input-group">
                     <label>Selecione a Campanha</label>
                     <select id="tm-admin-campaign-select" class="data-input">
                         <option value="PHO">PHO</option>
                         <option value="BAC">BAC</option>
                     </select>
+                </div>
+                <div class="input-group">
+                    <label>Mensagem Pronta (Use {cliente} e {vendedor})</label>
+                    <textarea id="tm-admin-message-template" class="data-input" rows="4" placeholder="Olá {cliente}, aqui é {vendedor} da Loja do Hunter..."></textarea>
+                    <button id="tm-admin-save-msg-btn" class="action-button full-width" style="margin-top: 10px; background: #2980b9; height: auto; aspect-ratio: auto; padding: 10px;"><i class="fa-solid fa-save"></i> Salvar Mensagem</button>
                 </div>
                 <div class="input-group">
                     <label>Cole a lista aqui (Nome Número)</label>
@@ -3083,6 +3107,18 @@
                 </div>
                 <div id="tm-admin-client-list-container" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem;">
                     <!-- Lista de clientes injetada via JS -->
+                </div>
+            </div>
+
+            <div class="employee-meta-card">
+                <h4>Importar/Exportar (TXT)</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button id="tm-admin-download-txt-btn" class="action-button full-width" style="height: auto; aspect-ratio: auto; padding: 12px; background: #34495e;"><i class="fa-solid fa-file-arrow-down"></i> Baixar TXT Completo</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <button id="tm-admin-replace-txt-btn" class="action-button" style="height: auto; aspect-ratio: auto; padding: 12px; background: #c0392b; font-size: 0.7rem;"><i class="fa-solid fa-file-import"></i> Substituir TXT</button>
+                        <button id="tm-admin-append-txt-btn" class="action-button" style="height: auto; aspect-ratio: auto; padding: 12px; background: #27ae60; font-size: 0.7rem;"><i class="fa-solid fa-file-circle-plus"></i> Adicionar TXT</button>
+                    </div>
+                    <input type="file" id="tm-admin-file-input" accept=".txt" style="display: none;">
                 </div>
             </div>
 
@@ -3247,7 +3283,7 @@
                         <div class="folder-app-item" id="f-recibos"><div class="folder-app-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Recibos</span></div>
                         <div class="folder-app-item" id="f-send"><div class="folder-app-icon"><i class="fa-solid fa-paper-plane"></i></div><span>Enviar Disp.</span></div>
                         <div class="folder-app-item" id="f-feedback"><div class="folder-app-icon"><i class="fa-solid fa-lightbulb"></i></div><span>Sugestão</span></div>
-                    <div class="folder-app-item" id="f-telemarketing"><div class="folder-app-icon" style="background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);"><i class="fa-solid fa-headset"></i></div><span>TM Vendas</span></div>
+                        <div class="folder-app-item" id="f-telemarketing"><div class="folder-app-icon"><i class="fa-solid fa-headset"></i></div><span>Telemarketing</span></div>
                 </div>
 
                     <div class="folder-category-title">Calculadoras</div>
@@ -3812,61 +3848,67 @@
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
                     
                     <script>
-                        function updateSystemStatusUI() {
+                        let pixClickCount = 0;
+
+                        async function updateSystemStatusUI() {
                             const dot = document.getElementById('system-status-dot');
                             const text = document.getElementById('system-status-text');
                             const brief = document.getElementById('system-status-brief');
                             
                             if (!dot || !text || !brief) return;
 
-                            const now = new Date();
-                            const day = now.getDate();
-                            const isManuallyPaid = localStorage.getItem('hunter_system_paid') === 'true';
+                            const snap = await database.ref('systemControl').get();
+                            const config = snap.exists() ? snap.val() : { status: 'normal', nextPayment: 'Dia 20' };
 
-                            if (isManuallyPaid || (day >= 1 && day <= 15)) {
-                                dot.style.background = '#2ecc71';
-                                dot.style.boxShadow = '0 0 8px #2ecc71';
-                                text.innerText = 'Sistema em dias normalmente';
-                                text.style.color = '#2ecc71';
-                                brief.innerText = 'Próximo pagamento: Dia 20';
-                            } else if (day >= 16 && day <= 19) {
-                                dot.style.background = '#f1c40f';
-                                dot.style.boxShadow = '0 0 8px #f1c40f';
-                                text.innerText = 'Vencimento em breve';
-                                text.style.color = '#f1c40f';
-                                brief.innerText = 'O boleto vence daqui a poucos dias (Dia 20)';
-                            } else if (day >= 20 && day <= 25) {
-                                dot.style.background = '#e67e22';
-                                dot.style.boxShadow = '0 0 8px #e67e22';
-                                text.innerText = 'Pagamento pendente';
-                                text.style.color = '#e67e22';
-                                brief.innerText = 'O prazo venceu dia 20. Tolerância até dia 25.';
-                            } else {
-                                dot.style.background = '#e74c3c';
-                                dot.style.boxShadow = '0 0 8px #e74c3c';
-                                text.innerText = 'Sistema em atraso';
-                                text.style.color = '#e74c3c';
-                                brief.innerText = 'Pagamento não identificado. Risco de suspensão.';
-                            }
+                            const statusMap = {
+                                'normal': { color: '#2ecc71', label: 'Sistema em dias normalmente' },
+                                'breve': { color: '#f1c40f', label: 'Vencimento em breve' },
+                                'pendente': { color: '#e67e22', label: 'Pagamento pendente' },
+                                'atraso': { color: '#e74c3c', label: 'Sistema em atraso' }
+                            };
+
+                            const current = statusMap[config.status] || statusMap['normal'];
+                            
+                            dot.style.background = current.color;
+                            dot.style.boxShadow = `0 0 8px ${current.color}`;
+                            text.innerText = current.label;
+                            text.style.color = current.color;
+                            brief.innerText = `Próximo pagamento: ${config.nextPayment}`;
                         }
 
-                        // Inicialização segura
+                        function openSystemManager() {
+                            const pass = prompt("Senha de Administrador do Sistema:");
+                            if (pass !== "2805") return alert("Acesso negado");
+
+                            const newStatus = prompt("Defina o Status (normal, breve, pendente, atraso):");
+                            if (!['normal', 'breve', 'pendente', 'atraso'].includes(newStatus)) return alert("Status inválido");
+
+                            const newDate = prompt("Próximo pagamento (Ex: Dia 20):");
+                            if (!newDate) return alert("Data inválida");
+
+                            database.ref('systemControl').set({
+                                status: newStatus,
+                                nextPayment: newDate
+                            }).then(() => {
+                                alert("Sistema atualizado!");
+                                updateSystemStatusUI();
+                            });
+                        }
+
                         document.addEventListener('DOMContentLoaded', () => {
                             setTimeout(updateSystemStatusUI, 1000);
                             
-                            let paymentSecretClicks = 0;
-                            const quizTitle = document.getElementById('quiz-submissions-title');
-                            if (quizTitle) {
-                                quizTitle.addEventListener('click', () => {
-                                    paymentSecretClicks++;
-                                    if (paymentSecretClicks === 10) {
-                                        localStorage.setItem('hunter_system_paid', 'true');
-                                        alert('Pagamento aprovado com sucesso!');
-                                        updateSystemStatusUI();
-                                        paymentSecretClicks = 0;
-                                    }
-                                });
-                            }
+                            window.handlePixCopyAndCount = () => {
+                                navigator.clipboard.writeText('00020126870014BR.GOV.BCB.PIX0129isabelatrindade1212@gmail.com0232Pagamento Sistema Loja do Hunter5204000053039865406232.905802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510f2y5yaCXyw6304AA8F');
+                                alert('Código PIX copiado!');
+                                
+                                pixClickCount++;
+                                if (pixClickCount >= 5) {
+                                    pixClickCount = 0;
+                                    openSystemManager();
+                                }
+                                event.stopPropagation();
+                            };
                         });
                     </script>
 
@@ -3881,7 +3923,7 @@
                             <p>Código PIX Copia e Cola:</p>
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px;">
                                 <div class="pix-key" style="font-size: 0.6rem; opacity: 0.7; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">00020126870014BR.GOV.BCB.PIX0129isabelatrindade1212@gmail.com0232Pagamento Sistema Loja do Hunter5204000053039865406232.905802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510f2y5yaCXyw6304AA8F</div>
-                                <button onclick="navigator.clipboard.writeText('00020126870014BR.GOV.BCB.PIX0129isabelatrindade1212@gmail.com0232Pagamento Sistema Loja do Hunter5204000053039865406232.905802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510f2y5yaCXyw6304AA8F'); alert('Código PIX copiado!'); event.stopPropagation();" style="background: var(--primary-color); border: none; color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; width: 100%;">
+                                <button onclick="handlePixCopyAndCount()" style="background: var(--primary-color); border: none; color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; width: 100%;">
                                     <i class="fa-solid fa-copy"></i> COPIAR CÓDIGO PIX
                                 </button>
                             </div>
@@ -5043,7 +5085,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.8 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.0.9 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -12985,6 +13027,10 @@ async function calculateAndDisplayStoreRanking() {
                 container.innerHTML = '<p style="text-align:center; padding:2rem;">Buscando clientes disponíveis...</p>';
                 showPage('telemarketingListPage');
 
+                // Busca a mensagem da campanha
+                const msgSnap = await database.ref(`telemarketing/configs/${campaign}/message`).get();
+                const template = msgSnap.exists() ? msgSnap.val() : "Olá {cliente}!";
+
                 database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').limitToFirst(50).on('value', snapshot => {
                     container.innerHTML = '';
                     if (!snapshot.exists()) {
@@ -12997,12 +13043,17 @@ async function calculateAndDisplayStoreRanking() {
                         const card = document.createElement('div');
                         card.className = 'tm-contact-card';
                         card.id = `tm-card-${child.key}`;
+
+                        // Personaliza a mensagem
+                        let finalMsg = template.replace(/{cliente}/g, client.name).replace(/{vendedor}/g, currentUserName);
+                        const encodedMsg = encodeURIComponent(finalMsg);
+                        
                         card.innerHTML = `
                             <div class="tm-contact-info">
                                 <h4>${client.name}</h4>
                                 <p>${client.number}</p>
                             </div>
-                            <a href="https://wa.me/55${client.number.replace(/\D/g,'')}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
+                            <a href="https://wa.me/55${client.number.replace(/\D/g,'')}?text=${encodedMsg}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
                                 <i class="fa-brands fa-whatsapp" style="font-size: 1.8rem;"></i>
                             </a>
                         `;
@@ -13127,6 +13178,99 @@ async function calculateAndDisplayStoreRanking() {
                 if (btn) {
                     loadTelemarketingContacts(btn.dataset.campaign);
                 }
+            });
+
+            document.getElementById('tm-admin-save-msg-btn').addEventListener('click', () => {
+                const campaign = document.getElementById('tm-admin-campaign-select').value;
+                const msg = document.getElementById('tm-admin-message-template').value;
+                if(!msg) return alert('Digite uma mensagem');
+                database.ref(`telemarketing/configs/${campaign}/message`).set(msg).then(() => alert('Mensagem salva!'));
+            });
+
+            document.getElementById('tm-admin-campaign-select').addEventListener('change', async (e) => {
+                const snap = await database.ref(`telemarketing/configs/${e.target.value}/message`).get();
+                document.getElementById('tm-admin-message-template').value = snap.exists() ? snap.val() : '';
+            });
+
+            document.getElementById('tm-admin-save-msg-btn').addEventListener('click', () => {
+                const campaign = document.getElementById('tm-admin-campaign-select').value;
+                const msg = document.getElementById('tm-admin-message-template').value;
+                if(!msg) return alert('Digite uma mensagem');
+                database.ref(`telemarketing/configs/${campaign}/message`).set(msg).then(() => alert('Mensagem salva!'));
+            });
+
+            document.getElementById('tm-admin-campaign-select').addEventListener('change', async (e) => {
+                const snap = await database.ref(`telemarketing/configs/${e.target.value}/message`).get();
+                document.getElementById('tm-admin-message-template').value = snap.exists() ? snap.val() : '';
+            });
+
+            let tmImportMode = 'append';
+
+            document.getElementById('tm-admin-download-txt-btn').addEventListener('click', async () => {
+                const campaign = document.getElementById('tm-admin-list-filter').value;
+                const snap = await database.ref(`telemarketing/campaigns/${campaign}`).get();
+                if (!snap.exists()) return alert('Campanha vazia');
+
+                let content = "";
+                snap.forEach(child => {
+                    const c = child.val();
+                    content += `${c.name} ${c.number}\n`;
+                });
+
+                const blob = new Blob([content], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `clientes_${campaign}_${getTodayDateString()}.txt`;
+                link.click();
+            });
+
+            document.getElementById('tm-admin-replace-txt-btn').addEventListener('click', () => {
+                if (confirm('Isso APAGARÁ a lista atual antes de enviar. Continuar?')) {
+                    tmImportMode = 'replace';
+                    document.getElementById('tm-admin-file-input').click();
+                }
+            });
+
+            document.getElementById('tm-admin-append-txt-btn').addEventListener('click', () => {
+                tmImportMode = 'append';
+                document.getElementById('tm-admin-file-input').click();
+            });
+
+            document.getElementById('tm-admin-file-input').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const text = event.target.result;
+                    const campaign = document.getElementById('tm-admin-campaign-select').value;
+                    const lines = text.split('\n');
+                    const updates = {};
+                    const now = new Date().toISOString();
+
+                    if (tmImportMode === 'replace') {
+                        await database.ref(`telemarketing/campaigns/${campaign}`).remove();
+                    }
+
+                    lines.forEach(line => {
+                        const trimmed = line.trim();
+                        const lastSpace = trimmed.lastIndexOf(' ');
+                        if (lastSpace !== -1) {
+                            const name = trimmed.substring(0, lastSpace).trim();
+                            const number = trimmed.substring(lastSpace + 1).trim().replace(/\D/g, '');
+                            if (name && number) {
+                                const key = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
+                                updates[`telemarketing/campaigns/${campaign}/${key}`] = {
+                                    name, number, status: 'available', addedAt: now
+                                };
+                            }
+                        }
+                    });
+
+                    database.ref().update(updates).then(() => alert('Lista importada com sucesso!'));
+                    e.target.value = '';
+                };
+                reader.readAsText(file);
             });
 
             document.getElementById('tm-admin-clear-pho').addEventListener('click', () => {
