@@ -3011,6 +3011,8 @@
                 <div class="input-group"><label>Prêmio 1º Lugar (R$)</label><input type="text" id="prize-vendas-1" class="data-input" placeholder="0,00"></div>
                 <div class="input-group"><label>Prêmio 2º Lugar (R$)</label><input type="text" id="prize-vendas-2" class="data-input" placeholder="0,00"></div>
                 <div class="input-group"><label>Prêmio 3º Lugar (R$)</label><input type="text" id="prize-vendas-3" class="data-input" placeholder="0,00"></div>
+                <div class="input-group"><label>Prêmio 4º Lugar (R$)</label><input type="text" id="prize-vendas-4" class="data-input" placeholder="0,00"></div>
+                <div class="input-group"><label>Prêmio 5º Lugar (R$)</label><input type="text" id="prize-vendas-5" class="data-input" placeholder="0,00"></div>
             </div>
             <div class="employee-meta-card">
                 <h4>Ranking de Serviços</h4>
@@ -3023,6 +3025,8 @@
                 <div class="input-group"><label>Prêmio 1º Lugar (R$)</label><input type="text" id="prize-servicos-1" class="data-input" placeholder="0,00"></div>
                 <div class="input-group"><label>Prêmio 2º Lugar (R$)</label><input type="text" id="prize-servicos-2" class="data-input" placeholder="0,00"></div>
                 <div class="input-group"><label>Prêmio 3º Lugar (R$)</label><input type="text" id="prize-servicos-3" class="data-input" placeholder="0,00"></div>
+                <div class="input-group"><label>Prêmio 4º Lugar (R$)</label><input type="text" id="prize-servicos-4" class="data-input" placeholder="0,00"></div>
+                <div class="input-group"><label>Prêmio 5º Lugar (R$)</label><input type="text" id="prize-servicos-5" class="data-input" placeholder="0,00"></div>
             </div>
             <button id="save-ranks-settings-btn" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Configurações</button>
             <p id="ranks-settings-status" class="status-message"></p>
@@ -3655,6 +3659,7 @@
                     <a href="#" class="modal-btn collaborator-link" data-name="Mainara">Mainara</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Eliseu">Eliseu</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Eduardo">Eduardo</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Hananda">Hananda</a>
                 </div>
             </div>
             <div id="colaborador-bacabal" class="modal-view" style="display: none;">
@@ -5127,13 +5132,13 @@ Transporte - R$ 5,00"></textarea></div>
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
                                 // --- ESTADO DA APLICAÇÃO ---
-    const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma'];
+    const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Eliseu', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
-        pinheiro: ['Mainara', 'Eliseu', 'Eduardo', 'Keliane'],
+        pinheiro: ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Keliane'],
         bacabal: ['Aline', 'Tacilio', 'Demilson', 'Leonardo', 'Jose', 'Ducielma']
     };
     let currntUserName = ''; // Variável unificada para o usuário logado
@@ -9116,17 +9121,17 @@ async function calculateAndDisplayServiceRanking() {
         performanceData.sort((a, b) => b.percentage - a.percentage);
 
         rankingContainer.innerHTML = '';
-        const top3 = performanceData.slice(0, 3);
+        const top5 = performanceData.slice(0, 5);
 
-        if (top3.length === 0) {
+        if (top5.length === 0) {
             rankingContainer.innerHTML = '<p style="text-align: center;">Nenhuma meta de serviço definida.</p>';
             return;
         }
 
-        for (const [index, collab] of top3.entries()) {
+        for (const [index, collab] of top5.entries()) {
             const rank = index + 1;
 
-            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
             let prizeHTML = '';
             const prizeVal = config.prizes ? config.prizes[index] : 0;
             
@@ -12089,18 +12094,22 @@ async function calculateAndDisplayStoreRanking() {
                     const snap = await database.ref('globalSettings/ranks').get();
                     const data = snap.exists() ? snap.val() : {};
                     
-                    const vConfig = data.vendas || { active: true, prizes: [0, 0, 0] };
-                    const sConfig = data.servicos || { active: true, prizes: [1000, 500, 250] };
+                    const vConfig = data.vendas || { active: true, prizes: [0, 0, 0, 0, 0] };
+                    const sConfig = data.servicos || { active: true, prizes: [1000, 500, 250, 0, 0] };
 
                     document.getElementById('rank-vendas-toggle').checked = vConfig.active !== false;
                     document.getElementById('prize-vendas-1').value = formatToBRLInput(vConfig.prizes ? vConfig.prizes[0] : 0);
                     document.getElementById('prize-vendas-2').value = formatToBRLInput(vConfig.prizes ? vConfig.prizes[1] : 0);
                     document.getElementById('prize-vendas-3').value = formatToBRLInput(vConfig.prizes ? vConfig.prizes[2] : 0);
+                    document.getElementById('prize-vendas-4').value = formatToBRLInput(vConfig.prizes ? vConfig.prizes[3] : 0);
+                    document.getElementById('prize-vendas-5').value = formatToBRLInput(vConfig.prizes ? vConfig.prizes[4] : 0);
 
                     document.getElementById('rank-servicos-toggle').checked = sConfig.active !== false;
                     document.getElementById('prize-servicos-1').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[0] : 0);
                     document.getElementById('prize-servicos-2').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[1] : 0);
                     document.getElementById('prize-servicos-3').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[2] : 0);
+                    document.getElementById('prize-servicos-4').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[3] : 0);
+                    document.getElementById('prize-servicos-5').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[4] : 0);
 
                     statusEl.textContent = '';
                 } catch (e) {
@@ -12119,7 +12128,9 @@ async function calculateAndDisplayStoreRanking() {
                         prizes: [
                             parseFromBRLInput(document.getElementById('prize-vendas-1').value),
                             parseFromBRLInput(document.getElementById('prize-vendas-2').value),
-                            parseFromBRLInput(document.getElementById('prize-vendas-3').value)
+                            parseFromBRLInput(document.getElementById('prize-vendas-3').value),
+                            parseFromBRLInput(document.getElementById('prize-vendas-4').value),
+                            parseFromBRLInput(document.getElementById('prize-vendas-5').value)
                         ]
                     },
                     servicos: {
@@ -12127,7 +12138,9 @@ async function calculateAndDisplayStoreRanking() {
                         prizes: [
                             parseFromBRLInput(document.getElementById('prize-servicos-1').value),
                             parseFromBRLInput(document.getElementById('prize-servicos-2').value),
-                            parseFromBRLInput(document.getElementById('prize-servicos-3').value)
+                            parseFromBRLInput(document.getElementById('prize-servicos-3').value),
+                            parseFromBRLInput(document.getElementById('prize-servicos-4').value),
+                            parseFromBRLInput(document.getElementById('prize-servicos-5').value)
                         ]
                     }
                 };
