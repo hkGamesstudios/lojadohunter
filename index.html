@@ -867,18 +867,50 @@
             width: 100%;
             background-color: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
-            height: 14px; /* Altura da barra reduzida */
-            margin-top: 0.4rem; /* VOLTOU AO VALOR ORIGINAL */
-            overflow: visible;  /* MANTIDO: Permite que o ícone vaze para fora */
+            height: 16px; 
+            margin-top: 0.4rem;
+            overflow: visible; 
             position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
         }
+
+        .commission-ruler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.8);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+
+        .seg-05 { width: 40%; background: #c0392b; }
+        .seg-10 { width: 40%; background: #d4ac0d; }
+        .seg-15 { width: 20%; background: #27ae60; }
 
         .progress-bar {
             height: 100%;
-            width: 0%; /* Inicia com 0, o JS vai definir a largura */
-            background: var(--primary-color);
+            width: 0%;
+            background: #ff6b00;
             border-radius: 6px;
             transition: width 0.8s var(--ease-out-back);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .progress-percentage {
@@ -5090,7 +5122,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.0.9 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -9004,14 +9036,13 @@ async function calculateAndDisplayRanking() {
             const rankItem = document.createElement('div');
             rankItem.className = `rank-item rank-${rank > 3 ? 'low' : rank}`;
             
-            const progressBarWidth = Math.min(100, collab.percentage);
+            const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
 
             const defaultPhoto = DEFAULT_PROFILE_PHOTO;
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
             const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
             const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown"></i>' : '';
 
-            // --- LÓGICA DA BOLHA DE STATUS ---
             let statusBubbleHtml = '';
             const userStatus = statusesData[collab.name.toLowerCase()];
             if (userStatus && userStatus.text) {
@@ -9022,7 +9053,6 @@ async function calculateAndDisplayRanking() {
                     statusBubbleHtml = `<div class="status-bubble">${userStatus.text}</div>`;
                 }
             }
-            // --- FIM DA LÓGICA DA BOLHA ---
 
             let fireIconHtml = '';
             if (rank === 1) {
@@ -9042,7 +9072,6 @@ async function calculateAndDisplayRanking() {
                 <div class="rank-details">
                     <div class="rank-name" style="justify-content: space-between; align-items: center; gap: 5px;">
                         <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; font-weight: 700;">${collab.name}</span>
-                        
                         <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
                             <button class="parabens-btn" data-recipient-name="${collab.name}" style="margin-left: 0; padding: 0 4px;"><i class="fa-solid fa-hands-clapping"></i></button>
                             ${prizeContent}
@@ -9050,8 +9079,13 @@ async function calculateAndDisplayRanking() {
                     </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container">
+                        <div class="commission-ruler">
+                            <div class="segment seg-05">0,5%</div>
+                            <div class="segment seg-10">1%</div>
+                            <div class="segment seg-15">1,5%</div>
+                        </div>
                         <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
-                        <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                        <span class="progress-percentage" style="z-index: 2;">${collab.percentage.toFixed(1)}%</span>
                         ${fireIconHtml}
                     </div>
                     <div style="font-size: 0.7rem; color: rgba(255,255,255,0.8); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 600;">
@@ -9143,7 +9177,7 @@ async function calculateAndDisplayServiceRanking() {
             const rankItem = document.createElement('div');
             rankItem.className = `rank-item rank-${rank}`;
             
-            const progressBarWidth = collab.percentage;
+            const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
             const defaultPhoto = DEFAULT_PROFILE_PHOTO;
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
             const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
@@ -10121,7 +10155,7 @@ async function calculateAndDisplayStoreRanking() {
             const rankItem = document.createElement('div');
             rankItem.className = `rank-item rank-${rank}`;
             
-            const progressBarWidth = Math.min(100, collab.percentage);
+            const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
             
             const defaultPhoto = DEFAULT_PROFILE_PHOTO;
             const managerProfile = profilesData[collab.name.toLowerCase()];
@@ -10157,8 +10191,13 @@ async function calculateAndDisplayStoreRanking() {
                 </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container">
+                        <div class="commission-ruler">
+                            <div class="segment seg-05">0,5%</div>
+                            <div class="segment seg-10">1%</div>
+                            <div class="segment seg-15">1,5%</div>
+                        </div>
                         <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
-                        <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                        <span class="progress-percentage" style="z-index: 2;">${collab.percentage.toFixed(1)}%</span>
                     </div>
                     <div style="font-size: 0.7rem; color: rgba(255,255,255,0.8); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 600;">
                         <span>Faltam: ${formatBRL(remaining)}</span>
