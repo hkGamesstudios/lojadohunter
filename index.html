@@ -5122,7 +5122,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.1 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.2 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6970,14 +6970,6 @@ function showScreen(screenElement) {
                     <div class="meta-group-title">Metas</div>
                     <div class="input-group"><label for="venda-${key}">Meta de Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
                     <div class="input-group"><label for="meta-servico-${key}">Meta de Serviço (R$)</label><input type="text" inputmode="decimal" id="meta-servico-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_servico)}"></div>
-                    
-                    <div class="meta-group-title">Premiações</div>
-                    <p style="font-size: 0.9rem; line-height: 1.6;">
-                        - 1% sobre a venda<br>
-                        - Prêmios por Ranking de Serviço (Veja no Painel)<br>
-                        - 2% de tudo vendido no cartão hunter card<br>
-                        - Máximo de desconto 6%:500
-                    </p>
                 </div>`;
         });
 
@@ -7029,14 +7021,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                 <h3>METAS</h3>
                 <p><strong>Meta de Venda:</strong> ${formatBRL(data.venda)}</p>
                 <p><strong>Meta de Serviço:</strong> ${formatBRL(data.meta_servico || 0)}</p>
-                <br>
-                <h3>PREMIAÇÕES</h3>
-                <p style="font-size: 0.9rem; line-height: 1.6; background: transparent; padding: 0;">
-                    - 1% sobre a venda<br>
-                    - Prêmios por Ranking de Serviço (Veja no Painel)<br>
-                    - 2% de tudo vendido no cartão hunter card<br>
-                    - Máximo de desconto 6%:500
-                </p>
             `;
         } else {
             container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
