@@ -3277,11 +3277,6 @@
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/merc.PNG">
                         <span>Pay joy</span>
                     </div>
-
-                    <div class="folder-wrapper" id="direct-brasilcard">
-                        <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/bras.PNG">
-                        <span>Hunter Card</span>
-                    </div>
                 </div>
                 
                 <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 5px;">
@@ -3310,7 +3305,6 @@
                 <div class="folder-expanded-container">
                     <div class="folder-category-title">Aplicativos</div>
                     <div class="folder-apps-grid">
-                        <div class="folder-app-item" id="f-hunter-card"><div class="folder-app-icon"><i class="fa-solid fa-id-card"></i></div><span>Hunter Card</span></div>
                         <div class="folder-app-item" id="f-my-profile"><div class="folder-app-icon"><i class="fa-solid fa-user-astronaut"></i></div><span>Meu Perfil</span></div>
                         <div class="folder-app-item" id="f-previsao"><div class="folder-app-icon"><i class="fa-solid fa-truck-fast"></i></div><span>Previsão</span></div>
                         <div class="folder-app-item" id="f-os"><div class="folder-app-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><span>Assistência</span></div>
@@ -3814,6 +3808,10 @@
                 <a href="#" id="change-photo-btn" class="action-button">
                     <i class="fa-solid fa-camera-rotate"></i>
                     <span>Trocar Foto</span>
+                </a>
+                <a href="#" id="open-entrada-nota-btn" class="action-button" style="display: none; background: #ffffff; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                    <i class="fa-solid fa-file-invoice-dollar" style="color: #FF6B00; font-size: 2.2rem; margin-bottom: 5px;"></i>
+                    <span style="color: #333; font-weight: 800; font-size: 0.7rem; text-transform: uppercase;">Entrada/Nota</span>
                 </a>
                                  <a href="#" id="delete-my-story-btn" class="action-button" style="display: none; background-color: rgba(231, 76, 60, 0.7);">
                     <i class="fa-solid fa-trash-can"></i>
@@ -5122,7 +5120,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.2 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.3 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5166,7 +5164,7 @@ Transporte - R$ 5,00"></textarea></div>
                                 // --- ESTADO DA APLICAÇÃO ---
     const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
-    const storeManagers = ['Eliseu', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
+    const storeManagers = ['Mainara', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
@@ -7235,6 +7233,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
         // Pega a referência para todos os campos que vêm da planilha
         const vendaEl = document.getElementById('device-price-venda');
         const limiteEl = document.getElementById('device-price-limite');
+        const custoEl = document.getElementById('device-price-custo');
         const zeroLucroEl = document.getElementById('device-price-zero-lucro');
         const entradaEl = document.getElementById('device-price-entrada'); // Pode ser nulo
         const seguroQuedaEl = document.getElementById('device-seguro-queda');
@@ -7243,6 +7242,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
         // Pega os indicadores de atualização
         const vendaIndicator = document.getElementById('venda-indicator');
         const limiteIndicator = document.getElementById('limite-indicator');
+        const custoIndicator = document.getElementById('custo-indicator');
         const zeroLucroIndicator = document.getElementById('zero-lucro-indicator');
         const entradaIndicator = document.getElementById('entrada-indicator'); // Pode ser nulo
         const seguroQuedaIndicator = document.getElementById('seguro-queda-indicator');
@@ -7279,6 +7279,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             const newValues = {
                 precoVenda: data.precoDeVenda || 'Não informado',
                 precoLimite: data.precoLimite || 'Não informado',
+                precoCusto: data.precoDeCusto || 'Não informado',
                 zeroLucro: data.zeroLucro || 'Não informado',
                 entradaMinima: data.entradaMinima || 'Não informado',
                 seguroQueda: data.seguroContraQueda || 'Não informado', // Chave corrigida
@@ -7291,6 +7292,7 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
             // Atualiza a tela
             vendaEl.textContent = newValues.precoVenda;
             limiteEl.textContent = newValues.precoLimite;
+            if(custoEl) custoEl.textContent = newValues.precoCusto;
             zeroLucroEl.textContent = newValues.zeroLucro;
             // Atualiza a entrada mínima e cálculos Pay Mobi apenas se o elemento existir
             if (entradaEl) {
@@ -7313,8 +7315,13 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
                     
                     const el12 = document.getElementById('paymobi-12x');
                     const el18 = document.getElementById('paymobi-18x');
+                    const el12t = document.getElementById('paymobi-12x-total');
+                    const el18t = document.getElementById('paymobi-18x-total');
+
                     if(el12) el12.textContent = `12X de ${format(val12x)}`;
+                    if(el12t) el12t.textContent = `A financiar ${format(val12x * 12)}`;
                     if(el18) el18.textContent = `18X de ${format(val18x)}`;
+                    if(el18t) el18t.textContent = `A financiar ${format(val18x * 18)}`;
                 }
             }
             seguroQuedaEl.textContent = newValues.seguroQueda;
@@ -7352,6 +7359,12 @@ const fetchAndDisplayPriceForDevice = async (deviceName) => {
 const loadDeviceDetails = (key, brand) => {
         currentBrand = brand; // Atualiza a marca atual para o botão de voltar funcionar
         database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
+            if (snapshot.exists()) {
+                setTimeout(() => {
+                    const costContainer = document.getElementById('cost-price-container');
+                    if (costContainer) costContainer.style.display = window.isEntradaNotaMode ? 'block' : 'none';
+                }, 100);
+            }
             if (!snapshot.exists()) {
                 alert('Este dispositivo não foi encontrado. Pode ter sido excluído.');
                 if (brand) {
@@ -7370,8 +7383,10 @@ const loadDeviceDetails = (key, brand) => {
                 <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 20px; border-left: 5px solid #fff;">
                     <h3 style="margin: 0; font-size: 1.8rem; color: #fff; text-transform: none;">Pay mobi: <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.8rem;"></span></h3>
                     <p style="font-size: 1.2rem; margin: 10px 0 5px 0; font-weight: 600;">Entrada: <span id="device-price-entrada">...</span></p>
-                    <p id="paymobi-12x" style="font-size: 1.2rem; margin: 5px 0; font-weight: 700; color: #fff;">12X de ...</p>
-                    <p id="paymobi-18x" style="font-size: 1.2rem; margin: 5px 0; font-weight: 700; color: #fff;">18X de ...</p>
+                    <p id="paymobi-12x" style="font-size: 1.2rem; margin: 5px 0 0 0; font-weight: 700; color: #fff;">12X de ...</p>
+                    <p id="paymobi-12x-total" style="font-size: 0.9rem; margin: 0 0 10px 0; opacity: 0.8; color: #eee; font-weight: 400;">A financiar ...</p>
+                    <p id="paymobi-18x" style="font-size: 1.2rem; margin: 5px 0 0 0; font-weight: 700; color: #fff;">18X de ...</p>
+                    <p id="paymobi-18x-total" style="font-size: 0.9rem; margin: 0 0 5px 0; opacity: 0.8; color: #eee; font-weight: 400;">A financiar ...</p>
                     <p style="font-size: 0.8rem; opacity: 0.8; margin-top: 10px;">Obs: Quinzenal</p>
                 </div>
             ` : '';
@@ -7385,6 +7400,11 @@ const loadDeviceDetails = (key, brand) => {
                 
                 <h3>Preço limite 🚨 <span class="price-update-indicator" id="limite-indicator"></span></h3>
                 <pre id="device-price-limite">...</pre>
+
+                <div id="cost-price-container" style="display: none;">
+                    <h3 style="color: #fff; text-transform: uppercase;">Preço de Custo 💸 <span class="price-update-indicator" id="custo-indicator"></span></h3>
+                    <pre id="device-price-custo" style="background: rgba(255,255,255,0.9); color: #000; font-weight: 900; font-size: 1.1rem; border: 2px solid #000;">...</pre>
+                </div>
 
                 <h3>Lucro Zero🔒 <span class="price-update-indicator" id="zero-lucro-indicator"></span></h3>
                 <pre id="device-price-zero-lucro">...</pre>
@@ -11271,6 +11291,7 @@ async function calculateAndDisplayStoreRanking() {
         const isProfileOwner = (localStorage.getItem('loggedInUser') === userName);
         const isAdminProfile = newAdmins.includes(userName);
         const isCollaboratorProfile = !isAdminProfile;
+        const isManager = managers.includes(userName);
 
         const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
         const metasBtn = document.getElementById('view-metas-btn');
@@ -11285,10 +11306,14 @@ async function calculateAndDisplayStoreRanking() {
         });
         
         if (isAdminProfile && gsBtnInProfile) {
-            gsBtnInProfile.style.display = 'flex';
-        }
-        
-        if (isCollaboratorProfile) {
+                        gsBtnInProfile.style.display = 'flex';
+                    }
+
+                    // Exibir Entrada/Nota somente para gerentes
+                    const entradaNotaBtn = document.getElementById('open-entrada-nota-btn');
+                    if (entradaNotaBtn) entradaNotaBtn.style.display = isManager ? 'flex' : 'none';
+                    
+                    if (isCollaboratorProfile) {
             if (metasBtn) metasBtn.style.display = 'flex';
             if (achievementsSection) achievementsSection.style.display = 'block';
 
@@ -12683,6 +12708,38 @@ async function calculateAndDisplayStoreRanking() {
 
                     // Aplica as configurações de visibilidade na tela principal
                     applyVisibilitySettings();
+
+                    const entradaNotaBtn = document.getElementById('open-entrada-nota-btn');
+                    if(entradaNotaBtn) {
+                        entradaNotaBtn.onclick = () => {
+                            window.isEntradaNotaMode = !window.isEntradaNotaMode;
+                            showMainPage();
+                            const appareilsSection = document.getElementById('aparelhos');
+                            if(appareilsSection) {
+                                window.scrollTo({ top: appareilsSection.offsetTop, behavior: 'smooth' });
+                            }
+                            if (window.isEntradaNotaMode) {
+                                entradaNotaBtn.style.background = '#2ecc71';
+                                entradaNotaBtn.querySelector('i').style.color = '#fff';
+                                entradaNotaBtn.querySelector('span').style.color = '#fff';
+                                alert('Modo Entrada/Nota Ativado!');
+                            } else {
+                                entradaNotaBtn.style.background = '#ffffff';
+                                entradaNotaBtn.querySelector('i').style.color = '#FF6B00';
+                                entradaNotaBtn.querySelector('span').style.color = '#333';
+                                alert('Modo Entrada/Nota Desativado!');
+                            }
+                        };
+                    }
+
+                    // Reset do modo Entrada Nota ao clicar em marcas da tela inicial normalmente
+                    document.querySelectorAll('.brand-button').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            // Se clicou no botão de marca sem vir do perfil, o modo reseta. 
+                            // Mas deixaremos ativo se o usuário não fizer logout.
+                        });
+                    });
+
                     return;
                 }
                 
@@ -12954,7 +13011,6 @@ async function calculateAndDisplayStoreRanking() {
 
             // Mapeamento de cliques internos da pasta
             const folderMappings = [
-                { id: 'f-hunter-card', original: 'hunter-card-link' },
                 { id: 'f-telemarketing', original: 'trigger-tm-selection' },
                 { id: 'f-my-profile', original: 'open-my-profile-btn' },
                 { id: 'f-previsao', original: 'previsao-btn' },
@@ -12964,9 +13020,6 @@ async function calculateAndDisplayStoreRanking() {
                 { id: 'f-recibos', original: 'open-recibos-page' },
                 { id: 'f-send', original: 'open-send-device-page' },
                 { id: 'f-feedback', original: 'open-feedback-page' },
-                { id: 'f-calc-crediario', original: 'open-crediario-calculator' },
-                { id: 'f-calc-site', original: 'open-site-calculator' },
-                { id: 'f-calc-loja', original: 'open-loja-calculator' },
                 { id: 'f-ponto', original: 'bater-ponto-btn' },
                 { id: 'f-add-story', original: 'add-my-story-btn' },
                 { id: 'f-change-pass', original: 'change-password-btn' },
@@ -12975,10 +13028,11 @@ async function calculateAndDisplayStoreRanking() {
 
             folderMappings.forEach(map => {
                 const el = document.getElementById(map.id);
-                if (el) {
+                const target = document.getElementById(map.original);
+                if (el && target) {
                     el.addEventListener('click', () => {
                         closeFolder();
-                        setTimeout(() => { document.getElementById(map.original).click(); }, 100);
+                        setTimeout(() => { target.click(); }, 100);
                     });
                 }
             });
