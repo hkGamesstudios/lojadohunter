@@ -3268,6 +3268,11 @@
             <!-- PASTA DE APPS ESTILO ANDROID -->
             <section id="apps-folder-section" style="padding-top: 1rem; padding-bottom: 1rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
                 <div style="display: flex; justify-content: center; gap: 1.2rem; width: 100%;">
+                    <div class="folder-wrapper" id="direct-brasilcard">
+                        <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/bras.PNG">
+                        <span>Hunter Card</span>
+                    </div>
+
                     <div class="folder-wrapper" id="direct-odrescred">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/odres.PNG">
                         <span>Odrescred</span>
@@ -3664,6 +3669,22 @@
         </div>
     </div>
 
+    <!-- TELA DE ENTRADA/NOTA (LISTA GERAL) -->
+    <div id="entrada-nota-page" style="display: none; flex-direction: column; justify-content: flex-start;">
+        <div class="collaborator-header" style="flex-shrink: 0;">
+            <button id="back-to-profile-from-entrada" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Entrada / Nota</h2>
+        </div>
+        <div class="collaborator-content" style="padding-top: 1rem; align-items: stretch; flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+            <div class="input-group" style="max-width: none; margin-bottom: 1rem; flex-shrink: 0;">
+                <input type="text" id="entrada-nota-search-input" class="data-input" placeholder="Pesquisar no estoque...">
+            </div>
+            <div id="entrada-nota-results-grid" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-content: flex-start; gap: 1rem; width: 100%; overflow-y: auto; flex-grow: 1; padding-bottom: 2rem;">
+                <!-- Dispositivos para Entrada/Nota aparecerão aqui -->
+            </div>
+        </div>
+    </div>
+
             
 
     <div id="colaborador-modal" class="modal-overlay">
@@ -3809,9 +3830,9 @@
                     <i class="fa-solid fa-camera-rotate"></i>
                     <span>Trocar Foto</span>
                 </a>
-                <a href="#" id="open-entrada-nota-btn" class="action-button" style="display: none; background: #ffffff; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-                    <i class="fa-solid fa-file-invoice-dollar" style="color: #FF6B00; font-size: 2.2rem; margin-bottom: 5px;"></i>
-                    <span style="color: #333; font-weight: 800; font-size: 0.7rem; text-transform: uppercase;">Entrada/Nota</span>
+                <a href="#" id="open-entrada-nota-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Entrada/Nota</span>
                 </a>
                                  <a href="#" id="delete-my-story-btn" class="action-button" style="display: none; background-color: rgba(231, 76, 60, 0.7);">
                     <i class="fa-solid fa-trash-can"></i>
@@ -3878,72 +3899,6 @@
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
                     </div>
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
-                    
-                    <script>
-                        let pixClickCount = 0;
-
-                        async function updateSystemStatusUI() {
-                            const dot = document.getElementById('system-status-dot');
-                            const text = document.getElementById('system-status-text');
-                            const brief = document.getElementById('system-status-brief');
-                            
-                            if (!dot || !text || !brief) return;
-
-                            const snap = await database.ref('systemControl').get();
-                            const config = snap.exists() ? snap.val() : { status: 'normal', nextPayment: 'Dia 20' };
-
-                            const statusMap = {
-                                'normal': { color: '#2ecc71', label: 'Sistema em dias normalmente' },
-                                'breve': { color: '#f1c40f', label: 'Vencimento em breve' },
-                                'pendente': { color: '#e67e22', label: 'Pagamento pendente' },
-                                'atraso': { color: '#e74c3c', label: 'Sistema em atraso' }
-                            };
-
-                            const current = statusMap[config.status] || statusMap['normal'];
-                            
-                            dot.style.background = current.color;
-                            dot.style.boxShadow = `0 0 8px ${current.color}`;
-                            text.innerText = current.label;
-                            text.style.color = current.color;
-                            brief.innerText = `Próximo pagamento: ${config.nextPayment}`;
-                        }
-
-                        function openSystemManager() {
-                            const pass = prompt("Senha de Administrador do Sistema:");
-                            if (pass !== "2805") return alert("Acesso negado");
-
-                            const newStatus = prompt("Defina o Status (normal, breve, pendente, atraso):");
-                            if (!['normal', 'breve', 'pendente', 'atraso'].includes(newStatus)) return alert("Status inválido");
-
-                            const newDate = prompt("Próximo pagamento (Ex: Dia 20):");
-                            if (!newDate) return alert("Data inválida");
-
-                            database.ref('systemControl').set({
-                                status: newStatus,
-                                nextPayment: newDate
-                            }).then(() => {
-                                alert("Sistema atualizado!");
-                                updateSystemStatusUI();
-                            });
-                        }
-
-                        document.addEventListener('DOMContentLoaded', () => {
-                            setTimeout(updateSystemStatusUI, 1000);
-                            
-                            window.handlePixCopyAndCount = () => {
-                                navigator.clipboard.writeText('00020126870014BR.GOV.BCB.PIX0129isabelatrindade1212@gmail.com0232Pagamento Sistema Loja do Hunter5204000053039865406232.905802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510f2y5yaCXyw6304AA8F');
-                                alert('Código PIX copiado!');
-                                
-                                pixClickCount++;
-                                if (pixClickCount >= 5) {
-                                    pixClickCount = 0;
-                                    openSystemManager();
-                                }
-                                event.stopPropagation();
-                            };
-                        });
-                    </script>
-
                     <div class="system-details-expand">
                         <div class="receipt-line"><span>Supabase (Servidor de Mídias)</span><span>R$ 120,00</span></div>
                         <div class="receipt-line"><span>Banco de Dados Realtime</span><span>R$ 60,00</span></div>
@@ -5120,7 +5075,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.3 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.4 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5162,6 +5117,7 @@ Transporte - R$ 5,00"></textarea></div>
     let countdownInterval = null; // Para controlar o timer da contagem regressiva
 
                                 // --- ESTADO DA APLICAÇÃO ---
+    let isEntradaNotaView = false;
     const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Mainara', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
@@ -5189,6 +5145,7 @@ Transporte - R$ 5,00"></textarea></div>
     const allPages = document.querySelectorAll('.page, .modal-overlay'); // Pega todas as "telas"
 
     // Adiciona a classe 'page' onde for necessário
+    document.getElementById('entrada-nota-page').classList.add('page');
     document.getElementById('ponto-page').classList.add('page');
     document.getElementById('ponto-verification-page').classList.add('page');
     document.getElementById('ponto-history-page').classList.add('page');
@@ -5282,6 +5239,7 @@ Transporte - R$ 5,00"></textarea></div>
         supabaseManagementPage: document.getElementById('supabase-management-page'),
         feedbackPage: document.getElementById('feedback-page'),
         debugPage: document.getElementById('debug-page'),
+        entradaNotaPage: document.getElementById('entrada-nota-page'),
         cashManagementPage: document.getElementById('cash-management-page'),
         storeCashManagementPage: document.getElementById('store-cash-management-page'),
         vendaRemotaCashManagementPage: document.getElementById('venda-remota-cash-management-page'),
@@ -7362,7 +7320,7 @@ const loadDeviceDetails = (key, brand) => {
             if (snapshot.exists()) {
                 setTimeout(() => {
                     const costContainer = document.getElementById('cost-price-container');
-                    if (costContainer) costContainer.style.display = window.isEntradaNotaMode ? 'block' : 'none';
+                    if (costContainer) costContainer.style.display = isEntradaNotaView ? 'block' : 'none';
                 }, 100);
             }
             if (!snapshot.exists()) {
@@ -11384,6 +11342,158 @@ async function calculateAndDisplayStoreRanking() {
             // O listener para 'open-gs-page' foi removido, pois o botão não existe mais.
             // ... (resto dos seus listeners)
             
+            // --- LÓGICA TELEMARKETING (MOVIDA PARA CIMA PARA EVITAR ERRO DE INICIALIZAÇÃO) ---
+
+            const loadTelemarketingContacts = async (campaign) => {
+                const container = document.getElementById('tm-contacts-container');
+                document.getElementById('tm-list-title').textContent = `TM - Campanha ${campaign}`;
+                container.innerHTML = '<p style="text-align:center; padding:2rem;">Buscando clientes disponíveis...</p>';
+                showPage('telemarketingListPage');
+
+                const msgSnap = await database.ref(`telemarketing/configs/${campaign}/message`).get();
+                const template = msgSnap.exists() ? msgSnap.val() : "Olá {cliente}!";
+
+                database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').limitToFirst(50).on('value', snapshot => {
+                    container.innerHTML = '';
+                    if (!snapshot.exists()) {
+                        container.innerHTML = '<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente disponível nesta campanha no momento.</p>';
+                        return;
+                    }
+
+                    snapshot.forEach(child => {
+                        const client = child.val();
+                        const card = document.createElement('div');
+                        card.className = 'tm-contact-card';
+                        card.id = `tm-card-${child.key}`;
+
+                        let finalMsg = template.replace(/{cliente}/g, client.name).replace(/{vendedor}/g, currentUserName);
+                        const encodedMsg = encodeURIComponent(finalMsg);
+                        
+                        card.innerHTML = `
+                            <div class="tm-contact-info">
+                                <h4>${client.name}</h4>
+                                <p>${client.number}</p>
+                            </div>
+                            <a href="https://wa.me/55${client.number.replace(/\D/g,'')}?text=${encodedMsg}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.8rem;"></i>
+                            </a>
+                        `;
+                        container.appendChild(card);
+                    });
+                });
+            };
+
+            window.claimTMContact = async (campaign, clientKey) => {
+                const userKey = currentUserName.toLowerCase();
+                const today = getTodayDateString();
+                const clientRef = database.ref(`telemarketing/campaigns/${campaign}/${clientKey}`);
+
+                try {
+                    const result = await clientRef.transaction(currentData => {
+                        if (currentData && currentData.status === 'available') {
+                            currentData.status = 'claimed';
+                            currentData.claimedBy = currentUserName;
+                            currentData.claimedAt = new Date().toISOString();
+                            return currentData;
+                        }
+                        return; 
+                    });
+
+                    if (result.committed) {
+                        const statsRef = database.ref(`telemarketing/stats/${today}/${userKey}`);
+                        statsRef.transaction(currentVal => (currentVal || 0) + 1);
+                        const card = document.getElementById(`tm-card-${clientKey}`);
+                        if (card) card.remove();
+                    }
+                } catch (e) { console.error(e); }
+            };
+
+            const loadTelemarketingStats = async () => {
+                showPage('telemarketingStatsPage');
+                const container = document.getElementById('tm-stats-list-container');
+                const totalVal = document.getElementById('tm-total-today-val');
+                const today = getTodayDateString();
+
+                container.innerHTML = '<p style="text-align:center;">Carregando dados...</p>';
+
+                try {
+                    const [statsSnap, profilesSnap] = await Promise.all([
+                        database.ref(`telemarketing/stats/${today}`).get(),
+                        database.ref('userProfiles').get()
+                    ]);
+
+                    const stats = statsSnap.exists() ? statsSnap.val() : {};
+                    const profiles = profilesSnap.exists() ? profilesSnap.val() : {};
+                    
+                    let grandTotal = 0;
+                    const sortedStats = Object.entries(stats).sort((a,b) => b[1] - a[1]);
+
+                    container.innerHTML = '';
+                    sortedStats.forEach(([userKey, count]) => {
+                        grandTotal += count;
+                        const name = allUsers.find(n => n.toLowerCase() === userKey) || userKey;
+                        const photo = profiles[userKey]?.photoURL || DEFAULT_PROFILE_PHOTO;
+
+                        const item = document.createElement('div');
+                        item.className = 'tm-agent-card';
+                        item.innerHTML = `
+                            <img src="${photo}" class="tm-agent-photo">
+                            <div class="tm-agent-info">
+                                <h4>${name}</h4>
+                                <p>Realizou ${count} contatos hoje</p>
+                            </div>
+                            <div class="tm-agent-count">${count}</div>
+                        `;
+                        container.appendChild(item);
+                    });
+
+                    totalVal.textContent = grandTotal;
+                    if (sortedStats.length === 0) container.innerHTML = '<p style="text-align:center; padding:2rem; opacity:0.5;">Nenhum envio registrado hoje.</p>';
+
+                } catch (e) { console.error(e); }
+            };
+
+            const loadTMAdminClientList = () => {
+                const campaign = document.getElementById('tm-admin-list-filter').value;
+                const container = document.getElementById('tm-admin-client-list-container');
+                container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Carregando clientes...</p>';
+
+                database.ref(`telemarketing/campaigns/${campaign}`).on('value', snapshot => {
+                    container.innerHTML = '';
+                    if (!snapshot.exists()) {
+                        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Nenhum cliente nesta campanha.</p>';
+                        return;
+                    }
+
+                    snapshot.forEach(child => {
+                        const client = child.val();
+                        const statusColor = client.status === 'available' ? '#2ecc71' : '#e74c3c';
+                        const item = document.createElement('div');
+                        item.className = 'mt-list-item';
+                        item.style.padding = '0.5rem 0.75rem';
+                        item.innerHTML = `
+                            <div class="mt-list-item-text">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="width:8px; height:8px; border-radius:50%; background:${statusColor};"></div>
+                                    <strong>${client.name}</strong>
+                                </div>
+                                <span style="font-size:0.75rem; opacity:0.7;">${client.number}</span>
+                            </div>
+                            <button class="delete-button-small" onclick="deleteTMClient('${campaign}', '${child.key}')" style="width:35px; height:35px;">
+                                <i class="fa-solid fa-trash-can" style="font-size:0.9rem;"></i>
+                            </button>
+                        `;
+                        container.appendChild(item);
+                    });
+                });
+            };
+
+            window.deleteTMClient = (campaign, key) => {
+                if(confirm('Deseja excluir este cliente da lista?')) {
+                    database.ref(`telemarketing/campaigns/${campaign}/${key}`).remove();
+                }
+            };
+
             // Flag para garantir que os listeners sejam adicionados apenas uma vez.
             let gsListenersAttached = false;
             
@@ -11672,6 +11782,10 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-collab-from-metas').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-panel').addEventListener('click', () => showPage('collaboratorPage'));
             document.getElementById('back-to-collab-from-closing').addEventListener('click', () => showPage('collaboratorPage'));
+            document.getElementById('back-to-profile-from-entrada').addEventListener('click', () => {
+                isEntradaNotaView = false;
+                showPage('collaboratorPage');
+            });
             document.getElementById('back-to-main-from-device-search').addEventListener('click', showMainPage);
 
             // --- LÓGICA DAS CALCULADORAS ---
@@ -12709,35 +12823,66 @@ async function calculateAndDisplayStoreRanking() {
                     // Aplica as configurações de visibilidade na tela principal
                     applyVisibilitySettings();
 
+                    const renderEntradaNotaResults = (devices, filterText = '') => {
+                        const grid = document.getElementById('entrada-nota-results-grid');
+                        grid.innerHTML = '';
+                        const normalizedFilter = filterText.toLowerCase().trim();
+                        const filteredDevices = devices.filter(device => device.name.toLowerCase().includes(normalizedFilter));
+
+                        if (filteredDevices.length === 0) {
+                            grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Nenhum aparelho encontrado.</p>';
+                            return;
+                        }
+
+                        filteredDevices.forEach(device => {
+                            const card = document.createElement('div');
+                            card.className = 'device-card';
+                            card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
+                            card.onclick = () => {
+                                isEntradaNotaView = true;
+                                loadDeviceDetails(device.key, device.brand);
+                            };
+                            grid.appendChild(card);
+                        });
+                    };
+
                     const entradaNotaBtn = document.getElementById('open-entrada-nota-btn');
                     if(entradaNotaBtn) {
                         entradaNotaBtn.onclick = () => {
-                            window.isEntradaNotaMode = !window.isEntradaNotaMode;
-                            showMainPage();
-                            const appareilsSection = document.getElementById('aparelhos');
-                            if(appareilsSection) {
-                                window.scrollTo({ top: appareilsSection.offsetTop, behavior: 'smooth' });
-                            }
-                            if (window.isEntradaNotaMode) {
-                                entradaNotaBtn.style.background = '#2ecc71';
-                                entradaNotaBtn.querySelector('i').style.color = '#fff';
-                                entradaNotaBtn.querySelector('span').style.color = '#fff';
-                                alert('Modo Entrada/Nota Ativado!');
+                            isEntradaNotaView = true;
+                            const grid = document.getElementById('entrada-nota-results-grid');
+                            grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Carregando estoque...</p>';
+                            document.getElementById('entrada-nota-search-input').value = '';
+                            showPage('entradaNotaPage');
+
+                            if (allDevicesCache.length > 0) {
+                                renderEntradaNotaResults(allDevicesCache);
                             } else {
-                                entradaNotaBtn.style.background = '#ffffff';
-                                entradaNotaBtn.querySelector('i').style.color = '#FF6B00';
-                                entradaNotaBtn.querySelector('span').style.color = '#333';
-                                alert('Modo Entrada/Nota Desativado!');
+                                database.ref('devices').get().then(snapshot => {
+                                    allDevicesCache = [];
+                                    if (snapshot.exists()) {
+                                        snapshot.forEach(brandSnapshot => {
+                                            const brand = brandSnapshot.key;
+                                            const devices = brandSnapshot.val();
+                                            for (const key in devices) {
+                                                allDevicesCache.push({ key, brand, ...devices[key] });
+                                            }
+                                        });
+                                    }
+                                    renderEntradaNotaResults(allDevicesCache);
+                                });
                             }
                         };
                     }
 
-                    // Reset do modo Entrada Nota ao clicar em marcas da tela inicial normalmente
-                    document.querySelectorAll('.brand-button').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            // Se clicou no botão de marca sem vir do perfil, o modo reseta. 
-                            // Mas deixaremos ativo se o usuário não fizer logout.
-                        });
+                    document.getElementById('entrada-nota-search-input').addEventListener('input', (e) => {
+                        renderEntradaNotaResults(allDevicesCache, e.target.value);
+                    });
+
+                    document.getElementById('device-detail-page').querySelector('.back-button').addEventListener('click', () => {
+                        if (isEntradaNotaView) {
+                            showPage('entradaNotaPage');
+                        }
                     });
 
                     return;
@@ -13136,121 +13281,13 @@ async function calculateAndDisplayStoreRanking() {
             setupRankCarousel();
             setupPromoCarousel();
 
-            // --- LÓGICA TELEMARKETING ---
+            document.getElementById('tm-admin-list-filter').addEventListener('change', loadTMAdminClientList);
 
-            const loadTelemarketingContacts = async (campaign) => {
-                const container = document.getElementById('tm-contacts-container');
-                document.getElementById('tm-list-title').textContent = `TM - Campanha ${campaign}`;
-                container.innerHTML = '<p style="text-align:center; padding:2rem;">Buscando clientes disponíveis...</p>';
-                showPage('telemarketingListPage');
-
-                // Busca a mensagem da campanha
-                const msgSnap = await database.ref(`telemarketing/configs/${campaign}/message`).get();
-                const template = msgSnap.exists() ? msgSnap.val() : "Olá {cliente}!";
-
-                database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').limitToFirst(50).on('value', snapshot => {
-                    container.innerHTML = '';
-                    if (!snapshot.exists()) {
-                        container.innerHTML = '<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente disponível nesta campanha no momento.</p>';
-                        return;
-                    }
-
-                    snapshot.forEach(child => {
-                        const client = child.val();
-                        const card = document.createElement('div');
-                        card.className = 'tm-contact-card';
-                        card.id = `tm-card-${child.key}`;
-
-                        // Personaliza a mensagem
-                        let finalMsg = template.replace(/{cliente}/g, client.name).replace(/{vendedor}/g, currentUserName);
-                        const encodedMsg = encodeURIComponent(finalMsg);
-                        
-                        card.innerHTML = `
-                            <div class="tm-contact-info">
-                                <h4>${client.name}</h4>
-                                <p>${client.number}</p>
-                            </div>
-                            <a href="https://wa.me/55${client.number.replace(/\D/g,'')}?text=${encodedMsg}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
-                                <i class="fa-brands fa-whatsapp" style="font-size: 1.8rem;"></i>
-                            </a>
-                        `;
-                        container.appendChild(card);
-                    });
-                });
-            };
-
-            window.claimTMContact = async (campaign, clientKey) => {
-                const userKey = currentUserName.toLowerCase();
-                const today = getTodayDateString();
-                const clientRef = database.ref(`telemarketing/campaigns/${campaign}/${clientKey}`);
-
-                try {
-                    const result = await clientRef.transaction(currentData => {
-                        if (currentData && currentData.status === 'available') {
-                            currentData.status = 'claimed';
-                            currentData.claimedBy = currentUserName;
-                            currentData.claimedAt = new Date().toISOString();
-                            return currentData;
-                        }
-                        return; // Aborta se já foi pego
-                    });
-
-                    if (result.committed) {
-                        // Incrementa contador do vendedor
-                        const statsRef = database.ref(`telemarketing/stats/${today}/${userKey}`);
-                        statsRef.transaction(currentVal => (currentVal || 0) + 1);
-                        
-                        // Remove do DOM imediatamente
-                        const card = document.getElementById(`tm-card-${clientKey}`);
-                        if (card) card.remove();
-                    }
-                } catch (e) { console.error(e); }
-            };
-
-            const loadTelemarketingStats = async () => {
-                showPage('telemarketingStatsPage');
-                const container = document.getElementById('tm-stats-list-container');
-                const totalVal = document.getElementById('tm-total-today-val');
-                const today = getTodayDateString();
-
-                container.innerHTML = '<p style="text-align:center;">Carregando dados...</p>';
-
-                try {
-                    const [statsSnap, profilesSnap] = await Promise.all([
-                        database.ref(`telemarketing/stats/${today}`).get(),
-                        database.ref('userProfiles').get()
-                    ]);
-
-                    const stats = statsSnap.exists() ? statsSnap.val() : {};
-                    const profiles = profilesSnap.exists() ? profilesSnap.val() : {};
-                    
-                    let grandTotal = 0;
-                    const sortedStats = Object.entries(stats).sort((a,b) => b[1] - a[1]);
-
-                    container.innerHTML = '';
-                    sortedStats.forEach(([userKey, count]) => {
-                        grandTotal += count;
-                        const name = allUsers.find(n => n.toLowerCase() === userKey) || userKey;
-                        const photo = profiles[userKey]?.photoURL || DEFAULT_PROFILE_PHOTO;
-
-                        const item = document.createElement('div');
-                        item.className = 'tm-agent-card';
-                        item.innerHTML = `
-                            <img src="${photo}" class="tm-agent-photo">
-                            <div class="tm-agent-info">
-                                <h4>${name}</h4>
-                                <p>Realizou ${count} contatos hoje</p>
-                            </div>
-                            <div class="tm-agent-count">${count}</div>
-                        `;
-                        container.appendChild(item);
-                    });
-
-                    totalVal.textContent = grandTotal;
-                    if (sortedStats.length === 0) container.innerHTML = '<p style="text-align:center; padding:2rem; opacity:0.5;">Nenhum envio registrado hoje.</p>';
-
-                } catch (e) { console.error(e); }
-            };
+            document.getElementById('back-to-main-from-tm-select').addEventListener('click', showMainPage);
+            document.getElementById('back-to-tm-selection').addEventListener('click', () => {
+                database.ref().off();
+                showPage('telemarketingSelectionPage');
+            });
 
             document.getElementById('tm-admin-save-list-btn').addEventListener('click', async () => {
                 const campaign = document.getElementById('tm-admin-campaign-select').value;
@@ -13288,162 +13325,6 @@ async function calculateAndDisplayStoreRanking() {
                     statusEl.textContent = 'Erro ao salvar.';
                     console.error(e); 
                 }
-            });
-
-            document.getElementById('telemarketing-selection-page').addEventListener('click', (e) => {
-                const btn = e.target.closest('.tm-campaign-btn');
-                if (btn) {
-                    loadTelemarketingContacts(btn.dataset.campaign);
-                }
-            });
-
-            document.getElementById('tm-admin-save-msg-btn').addEventListener('click', () => {
-                const campaign = document.getElementById('tm-admin-campaign-select').value;
-                const msg = document.getElementById('tm-admin-message-template').value;
-                if(!msg) return alert('Digite uma mensagem');
-                database.ref(`telemarketing/configs/${campaign}/message`).set(msg).then(() => alert('Mensagem salva!'));
-            });
-
-            document.getElementById('tm-admin-campaign-select').addEventListener('change', async (e) => {
-                const snap = await database.ref(`telemarketing/configs/${e.target.value}/message`).get();
-                document.getElementById('tm-admin-message-template').value = snap.exists() ? snap.val() : '';
-            });
-
-            document.getElementById('tm-admin-save-msg-btn').addEventListener('click', () => {
-                const campaign = document.getElementById('tm-admin-campaign-select').value;
-                const msg = document.getElementById('tm-admin-message-template').value;
-                if(!msg) return alert('Digite uma mensagem');
-                database.ref(`telemarketing/configs/${campaign}/message`).set(msg).then(() => alert('Mensagem salva!'));
-            });
-
-            document.getElementById('tm-admin-campaign-select').addEventListener('change', async (e) => {
-                const snap = await database.ref(`telemarketing/configs/${e.target.value}/message`).get();
-                document.getElementById('tm-admin-message-template').value = snap.exists() ? snap.val() : '';
-            });
-
-            let tmImportMode = 'append';
-
-            document.getElementById('tm-admin-download-txt-btn').addEventListener('click', async () => {
-                const campaign = document.getElementById('tm-admin-list-filter').value;
-                const snap = await database.ref(`telemarketing/campaigns/${campaign}`).get();
-                if (!snap.exists()) return alert('Campanha vazia');
-
-                let content = "";
-                snap.forEach(child => {
-                    const c = child.val();
-                    content += `${c.name} ${c.number}\n`;
-                });
-
-                const blob = new Blob([content], { type: 'text/plain' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `clientes_${campaign}_${getTodayDateString()}.txt`;
-                link.click();
-            });
-
-            document.getElementById('tm-admin-replace-txt-btn').addEventListener('click', () => {
-                if (confirm('Isso APAGARÁ a lista atual antes de enviar. Continuar?')) {
-                    tmImportMode = 'replace';
-                    document.getElementById('tm-admin-file-input').click();
-                }
-            });
-
-            document.getElementById('tm-admin-append-txt-btn').addEventListener('click', () => {
-                tmImportMode = 'append';
-                document.getElementById('tm-admin-file-input').click();
-            });
-
-            document.getElementById('tm-admin-file-input').addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = async (event) => {
-                    const text = event.target.result;
-                    const campaign = document.getElementById('tm-admin-campaign-select').value;
-                    const lines = text.split('\n');
-                    const updates = {};
-                    const now = new Date().toISOString();
-
-                    if (tmImportMode === 'replace') {
-                        await database.ref(`telemarketing/campaigns/${campaign}`).remove();
-                    }
-
-                    lines.forEach(line => {
-                        const trimmed = line.trim();
-                        const lastSpace = trimmed.lastIndexOf(' ');
-                        if (lastSpace !== -1) {
-                            const name = trimmed.substring(0, lastSpace).trim();
-                            const number = trimmed.substring(lastSpace + 1).trim().replace(/\D/g, '');
-                            if (name && number) {
-                                const key = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
-                                updates[`telemarketing/campaigns/${campaign}/${key}`] = {
-                                    name, number, status: 'available', addedAt: now
-                                };
-                            }
-                        }
-                    });
-
-                    database.ref().update(updates).then(() => alert('Lista importada com sucesso!'));
-                    e.target.value = '';
-                };
-                reader.readAsText(file);
-            });
-
-            document.getElementById('tm-admin-clear-pho').addEventListener('click', () => {
-                if(confirm('Apagar TODOS os clientes PHO?')) database.ref('telemarketing/campaigns/PHO').remove();
-            });
-            document.getElementById('tm-admin-clear-bac').addEventListener('click', () => {
-                if(confirm('Apagar TODOS os clientes BAC?')) database.ref('telemarketing/campaigns/BAC').remove();
-            });
-
-            const loadTMAdminClientList = () => {
-                const campaign = document.getElementById('tm-admin-list-filter').value;
-                const container = document.getElementById('tm-admin-client-list-container');
-                container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Carregando clientes...</p>';
-
-                database.ref(`telemarketing/campaigns/${campaign}`).on('value', snapshot => {
-                    container.innerHTML = '';
-                    if (!snapshot.exists()) {
-                        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Nenhum cliente nesta campanha.</p>';
-                        return;
-                    }
-
-                    snapshot.forEach(child => {
-                        const client = child.val();
-                        const statusColor = client.status === 'available' ? '#2ecc71' : '#e74c3c';
-                        const item = document.createElement('div');
-                        item.className = 'mt-list-item';
-                        item.style.padding = '0.5rem 0.75rem';
-                        item.innerHTML = `
-                            <div class="mt-list-item-text">
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <div style="width:8px; height:8px; border-radius:50%; background:${statusColor};"></div>
-                                    <strong>${client.name}</strong>
-                                </div>
-                                <span style="font-size:0.75rem; opacity:0.7;">${client.number}</span>
-                            </div>
-                            <button class="delete-button-small" onclick="deleteTMClient('${campaign}', '${child.key}')" style="width:35px; height:35px;">
-                                <i class="fa-solid fa-trash-can" style="font-size:0.9rem;"></i>
-                            </button>
-                        `;
-                        container.appendChild(item);
-                    });
-                });
-            };
-
-            window.deleteTMClient = (campaign, key) => {
-                if(confirm('Deseja excluir este cliente da lista?')) {
-                    database.ref(`telemarketing/campaigns/${campaign}/${key}`).remove();
-                }
-            };
-
-            document.getElementById('tm-admin-list-filter').addEventListener('change', loadTMAdminClientList);
-
-            document.getElementById('back-to-main-from-tm-select').addEventListener('click', showMainPage);
-            document.getElementById('back-to-tm-selection').addEventListener('click', () => {
-                database.ref().off(); // Remove listeners de realtime da lista
-                showPage('telemarketingSelectionPage');
             });
 
             // Criar gatilho invisível para a pasta
