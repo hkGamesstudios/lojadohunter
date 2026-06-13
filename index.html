@@ -3905,14 +3905,15 @@
                     <div class="system-details-expand">
                         <div class="receipt-line"><span>Supabase (Servidor de Mídias)</span><span>R$ 120,00</span></div>
                         <div class="receipt-line"><span>Banco de Dados Realtime</span><span>R$ 60,00</span></div>
+                        <div class="receipt-line"><span>Banner Promocional Redline</span><span>R$ 210,00</span></div>
                         <div class="receipt-line"><span>Taxa de Serviço</span><span>R$ 25,00</span></div>
                         <div class="receipt-line"><span>Atualizações e Manutenção</span><span>R$ 27,00</span></div>
-                        <div class="receipt-total"><span>VALOR TOTAL</span><span>R$ 232,00</span></div>
+                        <div class="receipt-total"><span>VALOR TOTAL</span><span>R$ 442,00</span></div>
                         
                         <div class="payment-box">
                             <p>Código PIX Copia e Cola:</p>
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px;">
-                                <div class="pix-key" style="font-size: 0.6rem; opacity: 0.7; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">00020126870014BR.GOV.BCB.PIX0129isabelatrindade1212@gmail.com0232Pagamento Sistema Loja do Hunter5204000053039865406232.905802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510f2y5yaCXyw6304AA8F</div>
+                                <div class="pix-key" style="font-size: 0.6rem; opacity: 0.7; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">00020126770014BR.GOV.BCB.PIX0129redlinedelivery1212@gmail.com0222SISTEMA LOJA DO HUNTER5204000053039865406442.005802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510TX4XIWap3s6304D7D4</div>
                                 <button onclick="handlePixCopyAndCount()" style="background: var(--primary-color); border: none; color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; width: 100%;">
                                     <i class="fa-solid fa-copy"></i> COPIAR CÓDIGO PIX
                                 </button>
@@ -3921,6 +3922,9 @@
                         </div>
                         <div class="system-warning-text">
                             Atenção: Caso o pagamento não seja efetuado em até 2 dias após o prazo de tolerância, o servidor, banco de dados e hospedagem serão suspensos automaticamente.
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                            <button id="admin-manual-status-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); font-size: 0.6rem; cursor: pointer; padding: 4px 8px; border-radius: 4px;">EDITAR STATUS [ADM]</button>
                         </div>
                     </div>
                 </div>
@@ -10614,8 +10618,8 @@ async function calculateAndDisplayStoreRanking() {
         const parcelas = parseInt(document.getElementById('site-parcelas').value, 10);
         document.getElementById('site-parcelas-value').textContent = parcelas;
 
-        const taxaJurosMensal = 0.0299; // 2.99% a.m.
-        const valorFinanciado = valorSite - entrada;
+        const taxaJurosMensal = 0.0299; 
+        const valorFinanciado = (valorSite - entrada) + 243;
 
         if (valorFinanciado <= 0 || parcelas === 0) {
             document.getElementById('site-result-parcela').textContent = formatBRL(0);
@@ -11616,20 +11620,96 @@ async function calculateAndDisplayStoreRanking() {
                 gsListenersAttached = true;
             }
 
-            // Listener para o botão GS dentro do perfil
-            document.getElementById('open-gs-from-profile-btn').addEventListener('click', () => {
-                // Carrega todos os dados necessários para o dashboard.
+            const updateSystemStatusUI = async () => {
+                const textEl = document.getElementById('system-status-text');
+                const briefEl = document.getElementById('system-status-brief');
+                const dotEl = document.getElementById('system-status-dot');
+                
+                if (!textEl || !briefEl || !dotEl) return;
+
+                const overrideSnap = await database.ref('globalSettings/systemStatusOverride').get();
+                let status = overrideSnap.exists() ? overrideSnap.val() : "auto";
+
+                if (status === "auto") {
+                    const now = new Date();
+                    const day = now.getDate();
+                    if (day <= 20) status = "active";
+                    else if (day <= 25) status = "waiting";
+                    else status = "danger";
+                }
+
+                if (status === "active") {
+                    textEl.textContent = 'Sistema Ativo';
+                    textEl.style.color = '#2ecc71';
+                    briefEl.textContent = 'Todos os serviços estão operando normalmente.';
+                    dotEl.style.background = '#2ecc71';
+                    dotEl.style.boxShadow = '0 0 8px #2ecc71';
+                } else if (status === "waiting") {
+                    textEl.textContent = 'Aguardando Pagamento';
+                    textEl.style.color = '#f1c40f';
+                    briefEl.textContent = 'O boleto de manutenção venceu. Regularize para evitar interrupções.';
+                    dotEl.style.background = '#f1c40f';
+                    dotEl.style.boxShadow = '0 0 8px #f1c40f';
+                } else {
+                    textEl.textContent = 'Servidor em Risco';
+                    textEl.style.color = '#e74c3c';
+                    briefEl.textContent = 'Prazo de tolerância excedido. O sistema pode ser suspenso a qualquer momento.';
+                    dotEl.style.background = '#e74c3c';
+                    dotEl.style.boxShadow = '0 0 8px #e74c3c';
+                }
+            };
+
+            const handleAdminManualStatus = async () => {
+                const pass = prompt("Senha de Administrador:");
+                if (pass !== "2805") {
+                    if (pass !== null) alert("Acesso negado.");
+                    return;
+                }
+
+                const choice = prompt("Escolha o Status:\n1. Sistema Ativo\n2. Aguardando Pagamento\n3. Servidor em Risco\n4. Automático (Data)");
+                
+                let statusVal = "auto";
+                if (choice === "1") statusVal = "active";
+                else if (choice === "2") statusVal = "waiting";
+                else if (choice === "3") statusVal = "danger";
+                else if (choice === "4") statusVal = "auto";
+                else return;
+
+                await database.ref('globalSettings/systemStatusOverride').set(statusVal);
+                alert("Status atualizado!");
+                updateSystemStatusUI();
+            };
+
+            window.handlePixCopyAndCount = () => {
+                const pixCode = "00020126770014BR.GOV.BCB.PIX0129redlinedelivery1212@gmail.com0222SISTEMA LOJA DO HUNTER5204000053039865406442.005802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510TX4XIWap3s6304D7D4";
+                navigator.clipboard.writeText(pixCode).then(() => {
+                    alert("Código PIX copiado com sucesso!");
+                });
+            };
+
+            document.getElementById('open-gs-from-profile-btn').addEventListener('click', async () => {
                 loadDashboardData();
                 loadManagerNotifications();
                 loadMaintenanceModeStatus();
                 markNotificationsAsRead();
+                await updateSystemStatusUI();
 
-                // Chama a função que garante que todos os botões da página GS funcionarão.
                 setupGSPageListeners();
-                loadVisibilitySettings(); // Carrega as configurações de visibilidade
+                loadVisibilitySettings();
 
-                // Mostra a página GS.
                 showPage('gsPage');
+
+                // Garante que o listener seja atribuído toda vez que a página abrir
+                setTimeout(() => {
+                    const admBtn = document.getElementById('admin-manual-status-btn');
+                    if (admBtn) {
+                        admBtn.onclick = (e) => { 
+                            e.preventDefault();
+                            e.stopPropagation(); 
+                            handleAdminManualStatus(); 
+                        };
+                    }
+                }, 500);
             });
 
             document.getElementById('open-send-device-page').addEventListener('click', () => showPage('sendDevicePage'));
