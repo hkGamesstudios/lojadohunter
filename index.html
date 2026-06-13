@@ -107,15 +107,18 @@
         .folder-wrapper span {
             background: #fff;
             color: #000 !important;
-            padding: 4px 15px !important;
+            padding: 4px 8px !important;
             border-radius: 20px !important;
             font-weight: 800 !important;
             margin-top: 10px !important;
-            font-size: 0.65rem !important;
+            font-size: 0.6rem !important;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             text-shadow: none !important;
+            white-space: nowrap;
+            display: inline-block;
+            text-align: center;
         }
         .theme-hunter .modal-content {
             background: rgba(161, 80, 0, 0.8);
@@ -1046,7 +1049,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -3266,19 +3269,19 @@
             </section>
 
             <!-- PASTA DE APPS ESTILO ANDROID -->
-            <section id="apps-folder-section" style="padding-top: 1rem; padding-bottom: 1rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
-                <div style="display: flex; justify-content: center; gap: 1.2rem; width: 100%;">
-                    <div class="folder-wrapper" id="direct-brasilcard">
+            <section id="apps-folder-section" style="padding-top: 1rem; padding-bottom: 1rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%;">
+                <div style="display: flex; justify-content: space-evenly; align-items: flex-start; width: 100%; max-width: 450px; margin: 0 auto;">
+                    <div class="folder-wrapper" id="direct-brasilcard" style="width: 30%; flex-shrink: 0;">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/bras.PNG">
                         <span>Hunter Card</span>
                     </div>
 
-                    <div class="folder-wrapper" id="direct-odrescred">
+                    <div class="folder-wrapper" id="direct-odrescred" style="width: 30%; flex-shrink: 0;">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/odres.PNG">
                         <span>Odrescred</span>
                     </div>
 
-                    <div class="folder-wrapper" id="direct-payjoy">
+                    <div class="folder-wrapper" id="direct-payjoy" style="width: 30%; flex-shrink: 0;">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/merc.PNG">
                         <span>Pay joy</span>
                     </div>
@@ -3670,16 +3673,16 @@
     </div>
 
     <!-- TELA DE ENTRADA/NOTA (LISTA GERAL) -->
-    <div id="entrada-nota-page" style="display: none; flex-direction: column; justify-content: flex-start;">
-        <div class="collaborator-header" style="flex-shrink: 0;">
-            <button id="back-to-profile-from-entrada" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Entrada / Nota</h2>
+    <div id="entrada-nota-page" style="display: none; flex-direction: column; justify-content: flex-start; align-items: center;">
+        <div class="collaborator-header" style="width: 100%; max-width: 450px; flex-shrink: 0; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <button id="back-to-profile-from-entrada" class="back-button" style="position: absolute; left: 1rem;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; padding: 0;">Estoque Geral</h2>
         </div>
-        <div class="collaborator-content" style="padding-top: 1rem; align-items: stretch; flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
-            <div class="input-group" style="max-width: none; margin-bottom: 1rem; flex-shrink: 0;">
-                <input type="text" id="entrada-nota-search-input" class="data-input" placeholder="Pesquisar no estoque...">
+        <div style="width: 100%; max-width: 450px; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden;">
+            <div class="input-group" style="max-width: none; width: auto; margin: 1rem; flex-shrink: 0;">
+                <input type="text" id="entrada-nota-search-input" class="data-input" placeholder="🔍 Pesquisar modelo...">
             </div>
-            <div id="entrada-nota-results-grid" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-content: flex-start; gap: 1rem; width: 100%; overflow-y: auto; flex-grow: 1; padding-bottom: 2rem;">
+            <div id="entrada-nota-results-grid" style="display: flex; flex-direction: column; gap: 0.75rem; padding: 0 1rem 2rem 1rem; overflow-y: auto; flex-grow: 1;">
                 <!-- Dispositivos para Entrada/Nota aparecerão aqui -->
             </div>
         </div>
@@ -5075,7 +5078,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.4 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.5 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6053,44 +6056,57 @@ item.className = 'chat-list-item';
 
 
 function showScreen(screenElement) {
-        // 1. Se uma navegação já está em andamento, ignora o novo clique.
-        if (isNavigating) return;
+    if (isNavigating || !screenElement) return;
+    isNavigating = true;
+    document.body.classList.add('navigating');
+
+    const currentScreen = document.querySelector('.page.visible, .modal-overlay.visible');
+
+    const finalizeNavigation = () => {
+        isNavigating = false;
+        document.body.classList.remove('navigating');
+    };
+
+    const showNext = () => {
+        // Garante que todas as outras páginas fiquem escondidas antes de mostrar a próxima
+        document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+            if (p !== screenElement) {
+                p.style.display = 'none';
+                p.classList.remove('visible', 'is-exiting');
+            }
+        });
+
+        screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
         
-        // 2. Inicia a navegação, bloqueando cliques futuros e ativando o cursor de carregamento via CSS.
-        isNavigating = true;
-        document.body.classList.add('navigating');
+        requestAnimationFrame(() => {
+            screenElement.classList.add('visible');
+            staggerAnimate(screenElement);
+            // Reduz o tempo de trava para 500ms para evitar sensação de travamento
+            setTimeout(finalizeNavigation, 500);
+        });
+    };
 
-        const currentScreen = document.querySelector('.visible');
+    if (currentScreen && currentScreen !== screenElement) {
+        currentScreen.classList.add('is-exiting');
+        
+        // Timer de segurança caso o animationend não dispare
+        const safetyTimeout = setTimeout(() => {
+            currentScreen.style.display = 'none';
+            currentScreen.classList.remove('visible', 'is-exiting');
+            showNext();
+        }, 450);
 
-        // 5. Agenda a liberação do bloqueio para daqui a 800ms, que é o tempo total da animação.
-        setTimeout(() => {
-            isNavigating = false;
-            document.body.classList.remove('navigating');
-        }, 1400); // 400ms para sair + 400ms para entrar
-
-        // 3. Lógica para animar a saída da tela atual (se houver).
-        if (currentScreen) {
-            currentScreen.classList.add('is-exiting');
-            currentScreen.addEventListener('animationend', (e) => {
-                if (e.target !== currentScreen) return;
-                currentScreen.classList.remove('visible', 'is-exiting');
-                
-                // 4. Inicia a exibição da nova tela APÓS a antiga sumir.
-                screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
-                requestAnimationFrame(() => {
-                    screenElement.classList.add('visible');
-                    staggerAnimate(screenElement);
-                });
-            }, { once: true });
-        } else {
-            // Se não há tela atual, apenas exibe a nova.
-            screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
-            requestAnimationFrame(() => {
-                screenElement.classList.add('visible');
-                staggerAnimate(screenElement);
-            });
-        }
+        currentScreen.addEventListener('animationend', (e) => {
+            if (e.target !== currentScreen) return;
+            clearTimeout(safetyTimeout);
+            currentScreen.style.display = 'none';
+            currentScreen.classList.remove('visible', 'is-exiting');
+            showNext();
+        }, { once: true });
+    } else {
+        showNext();
     }
+}
 
         const loadMaintenanceModeStatus = () => {
         const checkbox = document.getElementById('maintenance-mode-toggle');
@@ -7185,160 +7201,134 @@ const loadAndDisplayCollaboratorMetas = () => {
         return response;
     };
 
-    let priceCache = {}; // Cache global para os preços
+    let priceCache = {};
 
-const fetchAndDisplayPriceForDevice = async (deviceName) => {
-        // Pega a referência para todos os campos que vêm da planilha
-        const vendaEl = document.getElementById('device-price-venda');
-        const limiteEl = document.getElementById('device-price-limite');
-        const custoEl = document.getElementById('device-price-custo');
-        const zeroLucroEl = document.getElementById('device-price-zero-lucro');
-        const entradaEl = document.getElementById('device-price-entrada'); // Pode ser nulo
-        const seguroQuedaEl = document.getElementById('device-seguro-queda');
-        const garantiaEstendidaEl = document.getElementById('device-garantia-estendida');
-        
-        // Pega os indicadores de atualização
-        const vendaIndicator = document.getElementById('venda-indicator');
-        const limiteIndicator = document.getElementById('limite-indicator');
-        const custoIndicator = document.getElementById('custo-indicator');
-        const zeroLucroIndicator = document.getElementById('zero-lucro-indicator');
-        const entradaIndicator = document.getElementById('entrada-indicator'); // Pode ser nulo
-        const seguroQuedaIndicator = document.getElementById('seguro-queda-indicator');
-        const garantiaEstendidaIndicator = document.getElementById('garantia-estendida-indicator');
-
-        // Verifica se os elementos essenciais existem
-        if (!vendaEl || !limiteEl || !zeroLucroEl || !seguroQuedaEl || !garantiaEstendidaEl) return;
-
-        // Guarda os valores atuais da tela (do cache), verificando a existência do elemento de entrada
-        const oldValues = {
-            venda: vendaEl.textContent,
-            limite: limiteEl.textContent,
-            zeroLucro: zeroLucroEl.textContent,
-            entrada: entradaEl ? entradaEl.textContent : null, // Verifica se existe
-            seguroQueda: seguroQuedaEl.textContent,
-            garantiaEstendida: garantiaEstendidaEl.textContent
+    const fetchAndDisplayPriceForDevice = async (deviceName) => {
+        const updateText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
         };
-        
-        // Mostra que está atualizando, verificando a existência do indicador de entrada
-        const allIndicators = [vendaIndicator, limiteIndicator, zeroLucroIndicator, entradaIndicator, seguroQuedaIndicator, garantiaEstendidaIndicator];
-        allIndicators.forEach(el => { if(el) el.textContent = '(atualizando...)'; });
+
+        const updateIndicator = (id, msg) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = msg;
+        };
+
+        const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'entrada', 'seguro-queda', 'garantia-estendida'];
+        ids.forEach(id => updateIndicator(`${id}-indicator`, '(...)'));
 
         try {
-            const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`, {
-                timeout: 10000 
-            });
-
-            if (!response.ok) throw new Error(`Erro de rede: ${response.status}.`);
-
+            const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`, { timeout: 15000 });
+            if (!response.ok) throw new Error();
             const data = await response.json();
-            if (data.error) throw new Error(data.error);
+            if (data.error) throw new Error();
 
-            // CORREÇÃO: Usa as chaves exatas que o Google Apps Script está enviando
             const newValues = {
-                precoVenda: data.precoDeVenda || 'Não informado',
-                precoLimite: data.precoLimite || 'Não informado',
-                precoCusto: data.precoDeCusto || 'Não informado',
-                zeroLucro: data.zeroLucro || 'Não informado',
-                entradaMinima: data.entradaMinima || 'Não informado',
-                seguroQueda: data.seguroContraQueda || 'Não informado', // Chave corrigida
-                garantiaEstendida: data.garantiaEstendidaDe1Ano || 'Não informado' // Chave corrigida
+                precoVenda: data.precoDeVenda || 'N/A',
+                precoLimite: data.precoLimite || 'N/A',
+                precoCusto: data.precoDeCusto || 'N/A',
+                zeroLucro: data.zeroLucro || 'N/A',
+                entradaMinima: data.entradaMinima || 'N/A',
+                seguroQueda: data.seguroContraQueda || 'N/A',
+                garantiaEstendida: data.garantiaEstendidaDe1Ano || 'N/A'
             };
 
-            // Salva os novos dados no cache
             priceCache[deviceName] = newValues;
 
-            // Atualiza a tela
-            vendaEl.textContent = newValues.precoVenda;
-            limiteEl.textContent = newValues.precoLimite;
-            if(custoEl) custoEl.textContent = newValues.precoCusto;
-            zeroLucroEl.textContent = newValues.zeroLucro;
-            // Atualiza a entrada mínima e cálculos Pay Mobi apenas se o elemento existir
-            if (entradaEl) {
-                entradaEl.textContent = newValues.entradaMinima;
-                
-                const parseVal = (str) => {
-                    if(!str || str === 'Não informado' || str === 'Carregando...') return 0;
-                    return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
-                };
+            updateText('device-price-venda', newValues.precoVenda);
+            updateText('device-price-limite', newValues.precoLimite);
+            updateText('device-price-custo', newValues.precoCusto);
+            updateText('device-price-zero-lucro', newValues.zeroLucro);
+            updateText('device-price-entrada', newValues.entradaMinima);
+            updateText('device-seguro-queda', newValues.seguroQueda);
+            updateText('device-garantia-estendida', newValues.garantiaEstendida);
 
-                const precoVendaNum = parseVal(newValues.precoVenda);
-                const entradaNum = parseVal(newValues.entradaMinima);
-                
-                if (precoVendaNum > 0 && entradaNum > 0) {
-                    const base = precoVendaNum - entradaNum;
-                    const val12x = (base * 2.1) / 12;
-                    const val18x = (base * 2.6) / 18;
-                    
-                    const format = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    
-                    const el12 = document.getElementById('paymobi-12x');
-                    const el18 = document.getElementById('paymobi-18x');
-                    const el12t = document.getElementById('paymobi-12x-total');
-                    const el18t = document.getElementById('paymobi-18x-total');
+            const parseVal = (str) => parseFloat(str?.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const pVenda = parseVal(newValues.precoVenda);
+            const pEntrada = parseVal(newValues.entradaMinima);
 
-                    if(el12) el12.textContent = `12X de ${format(val12x)}`;
-                    if(el12t) el12t.textContent = `A financiar ${format(val12x * 12)}`;
-                    if(el18) el18.textContent = `18X de ${format(val18x)}`;
-                    if(el18t) el18t.textContent = `A financiar ${format(val18x * 18)}`;
-                }
+            if (pVenda > 0 && pEntrada > 0) {
+                const base = pVenda - pEntrada;
+                const fmt = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                updateText('paymobi-12x', `12X de R$ ${fmt((base * 2.1) / 12)}`);
+                updateText('paymobi-12x-total', `Total R$ ${fmt(base * 2.1)}`);
+                updateText('paymobi-18x', `18X de R$ ${fmt((base * 2.6) / 18)}`);
+                updateText('paymobi-18x-total', `Total R$ ${fmt(base * 2.6)}`);
             }
-            seguroQuedaEl.textContent = newValues.seguroQueda;
-            garantiaEstendidaEl.textContent = newValues.garantiaEstendida;
-            
-            // Compara com os valores antigos e mostra o indicador se mudou
-            if (oldValues.venda !== 'Carregando...' && oldValues.venda !== newValues.precoVenda) vendaIndicator.textContent = '(Atualizado!)'; else vendaIndicator.textContent = '';
-            if (oldValues.limite !== 'Carregando...' && oldValues.limite !== newValues.precoLimite) limiteIndicator.textContent = '(Atualizado!)'; else limiteIndicator.textContent = '';
-            if (oldValues.zeroLucro !== 'Carregando...' && oldValues.zeroLucro !== newValues.zeroLucro) zeroLucroIndicator.textContent = '(Atualizado!)'; else zeroLucroIndicator.textContent = '';
-            // Compara a entrada mínima apenas se o elemento existir
-            if (entradaEl && oldValues.entrada !== 'Carregando...' && oldValues.entrada !== newValues.entradaMinima) entradaIndicator.textContent = '(Atualizado!)'; else if (entradaIndicator) entradaIndicator.textContent = '';
-            if (oldValues.seguroQueda !== 'Carregando...' && oldValues.seguroQueda !== newValues.seguroQueda) seguroQuedaIndicator.textContent = '(Atualizado!)'; else seguroQuedaIndicator.textContent = '';
-            if (oldValues.garantiaEstendida !== 'Carregando...' && oldValues.garantiaEstendida !== newValues.garantiaEstendida) garantiaEstendidaIndicator.textContent = '(Atualizado!)'; else garantiaEstendidaIndicator.textContent = '';
-            
-            // Limpa os indicadores após alguns segundos
-            setTimeout(() => {
-                 allIndicators.forEach(el => { if(el) el.textContent = ''; });
-            }, 4000);
 
-        } catch (error) {
-            let errorMessage = '(falha ao atualizar)';
-            if (error.name === 'AbortError') {
-                console.error("Timeout ao buscar preços da planilha para:", deviceName);
-            } else {
-                console.error("Erro ao buscar dados da planilha para detalhes do dispositivo:", error);
+            ids.forEach(id => updateIndicator(`${id}-indicator`, ''));
+
+        } catch (e) {
+            ids.forEach(id => updateIndicator(`${id}-indicator`, '(Erro)'));
+            // Se falhar, tenta manter o que está no cache ou limpa o carregando
+            if(priceCache[deviceName]) {
+                 const c = priceCache[deviceName];
+                 updateText('device-price-venda', c.precoVenda);
+                 updateText('device-price-limite', c.precoLimite);
+                 updateText('device-price-custo', c.precoCusto);
+                 updateText('device-price-zero-lucro', c.zeroLucro);
             }
-            allIndicators.forEach(el => { if(el) el.textContent = errorMessage; });
-            setTimeout(() => {
-                allIndicators.forEach(el => { if(el) el.textContent = ''; });
-            }, 4000);
         }
     };
     
     // Função modificada para aceitar a marca como parâmetro
 const loadDeviceDetails = (key, brand) => {
-        currentBrand = brand; // Atualiza a marca atual para o botão de voltar funcionar
-        database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
-            if (snapshot.exists()) {
-                setTimeout(() => {
-                    const costContainer = document.getElementById('cost-price-container');
-                    if (costContainer) costContainer.style.display = isEntradaNotaView ? 'block' : 'none';
-                }, 100);
-            }
-            if (!snapshot.exists()) {
-                alert('Este dispositivo não foi encontrado. Pode ter sido excluído.');
-                if (brand) {
-                    loadBrandDevices(brand);
-                } else {
-                    showMainPage();
-                }
-                return;
-            }
-            const device = snapshot.val();
-            document.getElementById('device-detail-title').textContent = device.name;
-            const contentContainer = document.getElementById('device-detail-content');
+    currentBrand = brand;
+    database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
+        if (!snapshot.exists()) {
+            alert('Este dispositivo não foi encontrado.');
+            isEntradaNotaView ? showPage('entradaNotaPage') : showPage('brandDevicesPage');
+            return;
+        }
 
-            // Lógica para mostrar ou não o campo Pay mobi
+        const device = snapshot.val();
+        const contentContainer = document.getElementById('device-detail-content');
+        const titleEl = document.getElementById('device-detail-title');
+
+        if (!contentContainer || !titleEl) return;
+
+        titleEl.textContent = isEntradaNotaView ? "Ficha de Entrada" : device.name;
+
+        if (isEntradaNotaView) {
+            contentContainer.innerHTML = `
+                <div style="width: 100%; background: #fff; border-radius: 20px; padding: 20px; display: flex; justify-content: center; margin-bottom: 20px;">
+                    <img src="${device.imageUrl}" style="max-height: 180px; object-fit: contain; margin: 0;">
+                </div>
+                
+                <h2 style="color: #fff; font-size: 1.4rem; margin-bottom: 1rem; width: 100%; text-align: center;">${device.name}</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
+                    <div style="background: #27ae60; padding: 15px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: rgba(255,255,255,0.8); display: block;">Preço Venda <span id="venda-indicator"></span></span>
+                        <strong id="device-price-venda" style="font-size: 1rem; color: #fff;">Carregando...</strong>
+                    </div>
+                    <div style="background: #e67e22; padding: 15px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: rgba(255,255,255,0.8); display: block;">Preço Limite <span id="limite-indicator"></span></span>
+                        <strong id="device-price-limite" style="font-size: 1rem; color: #fff;">Carregando...</strong>
+                    </div>
+                    <div style="background: #fff; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #000;">
+                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 900; color: #000; display: block;">Custo Bruto <span id="custo-indicator"></span></span>
+                        <strong id="device-price-custo" style="font-size: 1rem; color: #000;">Carregando...</strong>
+                    </div>
+                    <div style="background: #c0392b; padding: 15px; border-radius: 12px; text-align: center;">
+                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: rgba(255,255,255,0.8); display: block;">Zero Lucro <span id="zero-lucro-indicator"></span></span>
+                        <strong id="device-price-zero-lucro" style="font-size: 1rem; color: #fff;">Carregando...</strong>
+                    </div>
+                </div>
+
+                <div style="width: 100%; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 15px;">
+                     <h4 style="color: #f1c40f; margin-bottom: 5px; font-size: 0.8rem; text-transform: uppercase;">Especificações Técnicas</h4>
+                     <p style="font-size: 0.85rem; line-height: 1.4; color: #eee; margin: 0;">${device.techSpecs || 'Sem especificações.'}</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 20px;">
+                    <button id="edit-device-btn" class="action-button" style="height: auto; aspect-ratio: initial; padding: 15px; background: #2980b9; font-size: 0.8rem;"><i class="fa-solid fa-pencil"></i> EDITAR</button>
+                    <button id="delete-device-btn" class="action-button delete-button" style="height: auto; aspect-ratio: initial; padding: 15px; font-size: 0.8rem; margin: 0;"><i class="fa-solid fa-trash"></i> APAGAR</button>
+                </div>
+            `;
+        } else {
             const payMobiHTML = brand !== 'apple' ? `
-                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 20px; border-left: 5px solid #fff;">
+                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 20px; border-left: 5px solid #fff; width: 100%;">
                     <h3 style="margin: 0; font-size: 1.8rem; color: #fff; text-transform: none;">Pay mobi: <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.8rem;"></span></h3>
                     <p style="font-size: 1.2rem; margin: 10px 0 5px 0; font-weight: 600;">Entrada: <span id="device-price-entrada">...</span></p>
                     <p id="paymobi-12x" style="font-size: 1.2rem; margin: 5px 0 0 0; font-weight: 700; color: #fff;">12X de ...</p>
@@ -7349,74 +7339,70 @@ const loadDeviceDetails = (key, brand) => {
                 </div>
             ` : '';
 
-            // Estrutura HTML atualizada com as novas seções
             contentContainer.innerHTML = `
-                <img src="${device.imageUrl}" alt="${device.name}">
-                
+                <img src="${device.imageUrl}" alt="${device.name}" style="max-height: 250px; width: auto; align-self: center; margin-bottom: 20px;">
                 <h3>Preço de venda ✅ <span class="price-update-indicator" id="venda-indicator"></span></h3>
-                <pre id="device-price-venda">...</pre>
-                
+                <pre id="device-price-venda">Carregando...</pre>
                 <h3>Preço limite 🚨 <span class="price-update-indicator" id="limite-indicator"></span></h3>
-                <pre id="device-price-limite">...</pre>
-
-                <div id="cost-price-container" style="display: none;">
+                <pre id="device-price-limite">Carregando...</pre>
+                <div id="cost-price-container" style="display: none; width: 100%;">
                     <h3 style="color: #fff; text-transform: uppercase;">Preço de Custo 💸 <span class="price-update-indicator" id="custo-indicator"></span></h3>
-                    <pre id="device-price-custo" style="background: rgba(255,255,255,0.9); color: #000; font-weight: 900; font-size: 1.1rem; border: 2px solid #000;">...</pre>
+                    <pre id="device-price-custo" style="background: rgba(255,255,255,0.9); color: #000; font-weight: 900; font-size: 1.1rem; border: 2px solid #000;">Carregando...</pre>
                 </div>
-
                 <h3>Lucro Zero🔒 <span class="price-update-indicator" id="zero-lucro-indicator"></span></h3>
-                <pre id="device-price-zero-lucro">...</pre>
-                
+                <pre id="device-price-zero-lucro">Carregando...</pre>
                 ${payMobiHTML}
-
                 <h3>Seguro Contra queda 🛡 <span class="price-update-indicator" id="seguro-queda-indicator"></span></h3>
-                <pre id="device-seguro-queda">...</pre>
-                
+                <pre id="device-seguro-queda">Carregando...</pre>
                 <h3>Garantia Estendida (+1 Ano) ⚙ <span class="price-update-indicator" id="garantia-estendida-indicator"></span></h3>
-                <pre id="device-garantia-estendida">...</pre>
-
+                <pre id="device-garantia-estendida">Carregando...</pre>
                 <h3>⚙️ Ficha Técnica</h3>
                 <pre>${device.techSpecs || 'Não informado.'}</pre>
-
-                <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
-                <button id="delete-device-btn" class="action-button delete-button"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
+                <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9; width: 100%; height: auto; padding: 15px;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
+                <button id="delete-device-btn" class="action-button delete-button" style="margin-top: 1rem; width: 100%; height: auto; padding: 15px;"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
             `;
-            
-            // Lógica de cache para exibição imediata
-            const cachedData = priceCache[device.name];
-            if (cachedData) {
-                document.getElementById('device-price-venda').textContent = cachedData.precoVenda || 'Não informado.';
-                document.getElementById('device-price-limite').textContent = cachedData.precoLimite || 'Não informado.';
-                document.getElementById('device-price-zero-lucro').textContent = cachedData.zeroLucro || 'Não informado.';
-                // Acessa o elemento de entrada mínima apenas se ele existir
-                const entradaEl = document.getElementById('device-price-entrada');
-                if (entradaEl) {
-                    entradaEl.textContent = cachedData.entradaMinima || 'Não informado.';
-                }
-                document.getElementById('device-seguro-queda').textContent = cachedData.seguroQueda || 'Não informado.';
-                document.getElementById('device-garantia-estendida').textContent = cachedData.garantiaEstendida || 'Não informado.';
-            } else {
-                // Se não houver cache, exibe "Carregando..."
-                 document.getElementById('device-price-venda').textContent = 'Carregando...';
-                 document.getElementById('device-price-limite').textContent = 'Carregando...';
-                 document.getElementById('device-price-zero-lucro').textContent = 'Carregando...';
-                 const entradaEl = document.getElementById('device-price-entrada');
-                 if(entradaEl) entradaEl.textContent = 'Carregando...';
-                 document.getElementById('device-seguro-queda').textContent = 'Carregando...';
-                 document.getElementById('device-garantia-estendida').textContent = 'Carregando...';
+        }
+
+        const cachedData = priceCache[device.name];
+        if (cachedData) {
+            const fields = {
+                'device-price-venda': cachedData.precoVenda,
+                'device-price-limite': cachedData.precoLimite,
+                'device-price-custo': cachedData.precoCusto,
+                'device-price-zero-lucro': cachedData.zeroLucro,
+                'device-price-entrada': cachedData.entradaMinima,
+                'device-seguro-queda': cachedData.seguroQueda,
+                'device-garantia-estendida': cachedData.garantiaEstendida
+            };
+            for (let id in fields) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = fields[id];
             }
+        }
 
-            showPage('deviceDetailPage');
-            
-            // Busca a atualização da planilha em segundo plano
-            fetchAndDisplayPriceForDevice(device.name);
+        showPage('deviceDetailPage');
+        fetchAndDisplayPriceForDevice(device.name);
 
-            // Adiciona os listeners
-            document.getElementById('edit-device-btn').addEventListener('click', () => editDevice(key));
-            document.getElementById('delete-device-btn').addEventListener('click', () => deleteDevice(key));
-            document.getElementById('back-to-brand-from-detail').addEventListener('click', () => showPage('brandDevicesPage'));
-        });
-    };
+        // Usa onclick para garantir que não acumule múltiplos eventos ao abrir e voltar várias vezes
+        const editBtn = document.getElementById('edit-device-btn');
+        const deleteBtn = document.getElementById('delete-device-btn');
+        const backBtn = document.getElementById('back-to-brand-from-detail');
+
+        if (editBtn) editBtn.onclick = () => editDevice(key);
+        if (deleteBtn) deleteBtn.onclick = () => deleteDevice(key);
+        
+        if (backBtn) {
+            backBtn.onclick = (e) => {
+                e.preventDefault();
+                if (isEntradaNotaView) {
+                    showPage('entradaNotaPage');
+                } else {
+                    showPage('brandDevicesPage');
+                }
+            };
+        }
+    });
+};
 
     // Cache para armazenar a lista de dispositivos da planilha
     let sheetDeviceListCache = [];
@@ -12830,14 +12816,31 @@ async function calculateAndDisplayStoreRanking() {
                         const filteredDevices = devices.filter(device => device.name.toLowerCase().includes(normalizedFilter));
 
                         if (filteredDevices.length === 0) {
-                            grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Nenhum aparelho encontrado.</p>';
+                            grid.innerHTML = '<p style="padding: 2rem; text-align: center; width: 100%; opacity: 0.6;">Nenhum aparelho encontrado no estoque.</p>';
                             return;
                         }
 
                         filteredDevices.forEach(device => {
                             const card = document.createElement('div');
                             card.className = 'device-card';
-                            card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
+                            card.style.width = '100%';
+                            card.style.height = 'auto';
+                            card.style.minHeight = '85px';
+                            card.style.aspectRatio = 'initial';
+                            card.style.display = 'flex';
+                            card.style.flexDirection = 'row';
+                            card.style.alignItems = 'center';
+                            card.style.padding = '10px';
+                            card.style.gap = '15px';
+                            card.style.opacity = '1';
+                            card.style.marginBottom = '4px';
+                            
+                            card.innerHTML = `
+                                <img src="${device.imageUrl}" alt="${device.name}" style="width: 65px; height: 65px; object-fit: contain; border-radius: 10px; background: #fff; flex-shrink: 0; padding: 5px;">
+                                <span style="text-align: left; padding: 0; font-size: 0.9rem; flex-grow: 1; font-weight: 700; line-height: 1.2; color: #fff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${device.name}</span>
+                                <i class="fa-solid fa-chevron-right" style="margin-right: 5px; opacity: 0.6; font-size: 1.1rem; color: #fff;"></i>
+                            `;
+                            
                             card.onclick = () => {
                                 isEntradaNotaView = true;
                                 loadDeviceDetails(device.key, device.brand);
