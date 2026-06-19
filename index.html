@@ -4234,12 +4234,7 @@
                 <!-- Input oculto para armazenar a URL da imagem (útil para edição) -->
                 <input type="hidden" id="device-image-url">
              </div>
-            <div class="input-group">
-                <label for="device-tech-specs">⚙️ Ficha Técnica</label>
-                <textarea id="device-tech-specs" class="data-input" rows="5" placeholder="Processador: Snapdragon 8 Gen 1
-Tela: 6.8 polegadas, AMOLED
-Câmera: 108MP..."></textarea>
-            </div>
+            
             <div class="input-group">
                 <label for="device-price-table">💰 Tabela de Preços</label>
                 <textarea id="device-price-table" class="data-input" rows="4" placeholder="Os dados da planilha aparecerão aqui..."></textarea>
@@ -5071,7 +5066,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.6 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.7 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7014,15 +7009,14 @@ const loadAndDisplayCollaboratorMetas = () => {
         const imageStatusEl = document.getElementById('device-image-status');
         const brand = document.getElementById('device-brand').value;
         const name = document.getElementById('device-name').value.trim();
-        const techSpecs = document.getElementById('device-tech-specs').value.trim();
         const imageUploadInput = document.getElementById('device-image-upload');
         const imageUrlInput = document.getElementById('device-image-url');
         const file = imageUploadInput.files[0];
 
         let finalImageUrl = imageUrlInput.value.trim();
 
-        if (!brand || !name || !techSpecs) {
-            statusEl.textContent = 'Marca, Nome e Ficha Técnica são obrigatórios!';
+        if (!brand || !name) {
+            statusEl.textContent = 'Marca e Nome são obrigatórios!';
             return;
         }
 
@@ -7070,7 +7064,6 @@ const loadAndDisplayCollaboratorMetas = () => {
         const deviceData = {
             name,
             imageUrl: finalImageUrl,
-            techSpecs,
             priceTable: document.getElementById('device-price-table').value.trim()
         };
 
@@ -7363,7 +7356,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); border-radius: 20px; padding: 20px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.2); width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                         <div style="width: 40px; height: 40px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 1.2rem;">P</div>
-                        <h3 style="margin: 0; font-size: 1.3rem; color: #fff; text-transform: none; font-weight: 800;">Pay Joy / Mobi <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.7rem; font-weight: 400; opacity: 0.6;"></span></h3>
+                        <h3 style="margin: 0; font-size: 1.3rem; color: #fff; text-transform: none; font-weight: 800;">Pay Mobi <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.7rem; font-weight: 400; opacity: 0.6;"></span></h3>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; margin-bottom: 10px;">
                         <span style="font-size: 0.8rem; opacity: 0.8;">Entrada Mínima:</span>
@@ -7428,11 +7421,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                         <span style="display: block; font-size: 0.6rem; text-transform: uppercase; opacity: 0.7;">Garantia +1 Ano</span>
                         <strong id="device-garantia-estendida" style="font-size: 0.85rem; display: block; margin-top: 4px;">...</strong>
                     </div>
-                </div>
-
-                <div class="employee-meta-card" style="max-width: none; margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.2);">
-                    <h4 style="text-align: left; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-microchip"></i> Ficha Técnica</h4>
-                    <p style="font-size: 0.8rem; line-height: 1.6; color: #ccc; margin: 0; white-space: pre-wrap;">${device.techSpecs || 'Especificações não detalhadas.'}</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 25px; padding-bottom: 30px;">
@@ -7744,7 +7732,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                 displayName.style.color = 'var(--white)'; // Cor de texto normal
                 
                 document.getElementById('device-image-url').value = device.imageUrl;
-                document.getElementById('device-tech-specs').value = device.techSpecs || '';
                 document.getElementById('device-price-table').value = device.priceTable || '';
 
                 showPage('sendDevicePage');
