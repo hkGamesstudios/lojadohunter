@@ -20,6 +20,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- JSZip - Para compactação de arquivos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- SheetJS - Para leitura de arquivos Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         /* --- MODO RÁPIDO (SEM ANIMAÇÕES) --- */
@@ -3127,44 +3129,31 @@
                     <textarea id="tm-admin-message-template" class="data-input" rows="4" placeholder="Olá {cliente}, aqui é {vendedor} da Loja do Hunter..."></textarea>
                     <button id="tm-admin-save-msg-btn" class="action-button full-width" style="margin-top: 10px; background: #2980b9; height: auto; aspect-ratio: auto; padding: 10px;"><i class="fa-solid fa-save"></i> Salvar Mensagem</button>
                 </div>
-                <div class="input-group">
-                    <label>Cole a lista aqui (Nome Número)</label>
-                    <textarea id="tm-admin-raw-list" class="data-input" rows="8" placeholder="João Silva 11999999999&#10;Maria Oliveira 11888888888"></textarea>
+            </div>
+
+            <div class="employee-meta-card">
+                <h4>Importar Lista (EXCEL)</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button id="tm-admin-excel-btn" class="action-button full-width" style="height: auto; aspect-ratio: auto; padding: 1.5rem; background: #27ae60;"><i class="fa-solid fa-file-excel"></i> SUBIR LISTA EXCEL</button>
+                    <input type="file" id="tm-admin-excel-input" accept=".xlsx, .xls, .csv" style="display: none;">
                 </div>
-                <button id="tm-admin-save-list-btn" class="action-button full-width"><i class="fa-solid fa-cloud-arrow-up"></i> Adicionar à Lista</button>
                 <p id="tm-admin-status" class="status-message"></p>
             </div>
 
             <div class="employee-meta-card">
-                <h4>Clientes em Fila</h4>
+                <h4>Gerenciar Fila</h4>
                 <div class="input-group">
-                    <label>Filtrar Campanha</label>
+                    <label>Visualizar Campanha</label>
                     <select id="tm-admin-list-filter" class="data-input">
                         <option value="PHO">PHO</option>
                         <option value="BAC">BAC</option>
                     </select>
                 </div>
-                <div id="tm-admin-client-list-container" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem;">
+                <div id="tm-admin-client-list-container" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
                     <!-- Lista de clientes injetada via JS -->
                 </div>
-            </div>
-
-            <div class="employee-meta-card">
-                <h4>Importar/Exportar (TXT)</h4>
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <button id="tm-admin-download-txt-btn" class="action-button full-width" style="height: auto; aspect-ratio: auto; padding: 12px; background: #34495e;"><i class="fa-solid fa-file-arrow-down"></i> Baixar TXT Completo</button>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                        <button id="tm-admin-replace-txt-btn" class="action-button" style="height: auto; aspect-ratio: auto; padding: 12px; background: #c0392b; font-size: 0.7rem;"><i class="fa-solid fa-file-import"></i> Substituir TXT</button>
-                        <button id="tm-admin-append-txt-btn" class="action-button" style="height: auto; aspect-ratio: auto; padding: 12px; background: #27ae60; font-size: 0.7rem;"><i class="fa-solid fa-file-circle-plus"></i> Adicionar TXT</button>
-                    </div>
-                    <input type="file" id="tm-admin-file-input" accept=".txt" style="display: none;">
-                </div>
-            </div>
-
-            <div class="employee-meta-card">
-                <h4>Limpar Campanhas</h4>
-                <button id="tm-admin-clear-pho" class="action-button full-width delete-button" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-trash"></i> Apagar Todos PHO</button>
-                <button id="tm-admin-clear-bac" class="action-button full-width delete-button"><i class="fa-solid fa-trash"></i> Apagar Todos BAC</button>
+                <button id="tm-admin-clear-current-list" class="action-button full-width delete-button"><i class="fa-solid fa-trash-can"></i> LIMPAR TODOS OS CLIENTES ANTIGOS</button>
+                <button id="tm-admin-backup-list" class="action-button full-width" style="margin-top: 10px; background: #34495e; height: auto; aspect-ratio: auto; padding: 1rem;"><i class="fa-solid fa-file-arrow-down"></i> SALVAR BACKUP (TXT)</button>
             </div>
         </div>
     </div>
@@ -5082,7 +5071,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.5 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.6 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7167,23 +7156,71 @@ const loadAndDisplayCollaboratorMetas = () => {
         currentBrand = brand;
         document.getElementById('brand-page-title').textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
         const grid = document.getElementById('brand-devices-grid');
-        grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Carregando dispositivos...</p>';
+        
+        // Estilização robusta para evitar empilhamento
+        grid.style.display = 'flex';
+        grid.style.flexDirection = 'row';
+        grid.style.flexWrap = 'wrap';
+        grid.style.alignItems = 'flex-start';
+        grid.style.justifyContent = 'flex-start';
+        grid.style.gap = '12px';
+        grid.style.padding = '15px';
+        
+        grid.innerHTML = '<p style="padding: 2rem; text-align: center; width: 100%; color: #fff; opacity: 0.8;">Buscando aparelhos...</p>';
         showPage('brandDevicesPage');
+
         database.ref(`devices/${brand}`).once('value', snapshot => {
             grid.innerHTML = '';
             if (snapshot.exists()) {
                 const devices = snapshot.val();
+                let hasValidDevice = false;
+
                 Object.keys(devices).forEach(key => {
                     const device = devices[key];
+                    
+                    if (!device.name || device.name.toLowerCase().includes('undefined') || !device.imageUrl || device.imageUrl === '') {
+                        return;
+                    }
+
+                    hasValidDevice = true;
                     const card = document.createElement('div');
                     card.className = 'device-card';
-                    card.innerHTML = `<img src="${device.imageUrl}" alt="${device.name}"><span>${device.name}</span>`;
-                    // A chamada agora passa a marca, que já está na variável global 'currentBrand'
+                    
+                    // Ajuste de largura para 2 colunas reais
+                    card.style.width = 'calc(50% - 6px)';
+                    card.style.height = '230px'; 
+                    card.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)';
+                    card.style.border = '1px solid rgba(255,255,255,0.15)';
+                    card.style.borderRadius = '24px';
+                    card.style.padding = '10px';
+                    card.style.display = 'flex';
+                    card.style.flexDirection = 'column';
+                    card.style.alignItems = 'center';
+                    card.style.justifyContent = 'space-between';
+                    card.style.position = 'relative';
+                    card.style.boxShadow = '0 8px 20px rgba(0,0,0,0.2)';
+                    card.style.backdropFilter = 'blur(10px)';
+                    card.style.opacity = '1';
+
+                    card.innerHTML = `
+                        <div style="width: 100%; background: #fff; border-radius: 18px; padding: 10px; height: 120px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); flex-shrink: 0;">
+                            <img src="${device.imageUrl}" alt="${device.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
+                        <div style="width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding: 8px 0;">
+                            <span style="display: block; font-size: 0.75rem; font-weight: 700; color: #fff; line-height: 1.2; text-align: center; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">${device.name}</span>
+                        </div>
+                        <div style="margin-bottom: 5px; font-size: 0.55rem; background: var(--primary-color); color: #fff; padding: 4px 12px; border-radius: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;">Ver Preços</div>
+                    `;
+
                     card.addEventListener('click', () => loadDeviceDetails(key, currentBrand));
                     grid.appendChild(card);
                 });
+
+                if (!hasValidDevice) {
+                    grid.innerHTML = '<p style="padding: 2rem; text-align: center; width: 100%; color: #fff;">Nenhum dispositivo válido disponível.</p>';
+                }
             } else {
-                grid.innerHTML = '<p style="padding: 1rem; text-align: center; width: 100%;">Nenhum dispositivo cadastrado para esta marca.</p>';
+                grid.innerHTML = '<p style="padding: 2rem; text-align: center; width: 100%; color: #fff;">Nenhum dispositivo cadastrado para esta marca.</p>';
             }
             staggerAnimate(grid.parentElement);
         });
@@ -7275,8 +7312,7 @@ const loadAndDisplayCollaboratorMetas = () => {
         }
     };
     
-    // Função modificada para aceitar a marca como parâmetro
-const loadDeviceDetails = (key, brand) => {
+    const loadDeviceDetails = (key, brand) => {
     currentBrand = brand;
     database.ref(`devices/${brand}/${key}`).once('value', snapshot => {
         if (!snapshot.exists()) {
@@ -7295,75 +7331,114 @@ const loadDeviceDetails = (key, brand) => {
 
         if (isEntradaNotaView) {
             contentContainer.innerHTML = `
-                <div style="width: 100%; background: #fff; border-radius: 20px; padding: 20px; display: flex; justify-content: center; margin-bottom: 20px;">
-                    <img src="${device.imageUrl}" style="max-height: 180px; object-fit: contain; margin: 0;">
-                </div>
-                
-                <h2 style="color: #fff; font-size: 1.4rem; margin-bottom: 1rem; width: 100%; text-align: center;">${device.name}</h2>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
-                    <div style="background: #27ae60; padding: 15px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: rgba(255,255,255,0.8); display: block;">Preço Venda <span id="venda-indicator"></span></span>
-                        <strong id="device-price-venda" style="font-size: 1rem; color: #fff;">Carregando...</strong>
+                <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
+                    <div style="flex-shrink: 0; width: 140px; height: 160px; background: #fff; border-radius: 24px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; background: var(--primary-color); filter: blur(30px); opacity: 0.2;"></div>
+                        <img src="${device.imageUrl}" alt="${device.name}" style="max-width: 100%; max-height: 100%; object-fit: contain; position: relative; z-index: 2;">
                     </div>
-                    <div style="background: #e67e22; padding: 15px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: rgba(255,255,255,0.8); display: block;">Preço Limite <span id="limite-indicator"></span></span>
-                        <strong id="device-price-limite" style="font-size: 1rem; color: #fff;">Carregando...</strong>
-                    </div>
-                    <div style="background: #fff; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #000;">
-                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 900; color: #000; display: block;">Custo Bruto <span id="custo-indicator"></span></span>
-                        <strong id="device-price-custo" style="font-size: 1rem; color: #000;">Carregando...</strong>
-                    </div>
-                    <div style="background: #c0392b; padding: 15px; border-radius: 12px; text-align: center;">
-                        <span style="font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: rgba(255,255,255,0.8); display: block;">Zero Lucro <span id="zero-lucro-indicator"></span></span>
-                        <strong id="device-price-zero-lucro" style="font-size: 1rem; color: #fff;">Carregando...</strong>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.25); border-radius: 24px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                        <span style="font-size: 0.7rem; text-transform: uppercase; color: var(--primary-color); font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px;">${brand}</span>
+                        <h2 style="font-size: 1.2rem; color: #fff; margin: 0; line-height: 1.2; font-weight: 700;">${device.name}</h2>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 10px; background: rgba(46, 204, 113, 0.15); padding: 4px 10px; border-radius: 20px; align-self: flex-start;">
+                            <div style="width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 8px #2ecc71;"></div>
+                            <span style="font-size: 0.6rem; font-weight: 600; color: #2ecc71; text-transform: uppercase;">Atualizado</span>
+                        </div>
                     </div>
                 </div>
 
-                <div style="width: 100%; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 15px;">
-                     <h4 style="color: #f1c40f; margin-bottom: 5px; font-size: 0.8rem; text-transform: uppercase;">Especificações Técnicas</h4>
-                     <p style="font-size: 0.85rem; line-height: 1.4; color: #eee; margin: 0;">${device.techSpecs || 'Sem especificações.'}</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 20px;">
-                    <button id="edit-device-btn" class="action-button" style="height: auto; aspect-ratio: initial; padding: 15px; background: #2980b9; font-size: 0.8rem;"><i class="fa-solid fa-pencil"></i> EDITAR</button>
-                    <button id="delete-device-btn" class="action-button delete-button" style="height: auto; aspect-ratio: initial; padding: 15px; font-size: 0.8rem; margin: 0;"><i class="fa-solid fa-trash"></i> APAGAR</button>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; padding-bottom: 30px;">
+                    <div class="kpi-card" style="padding: 15px !important; align-items: flex-start !important; text-align: left !important; border-left: 5px solid #2ecc71 !important;">
+                        <span class="kpi-title">PREÇO VENDA ✅ <span id="venda-indicator"></span></span>
+                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.6rem !important;">Carregando...</span>
+                    </div>
+                    
+                    <div class="kpi-card" style="padding: 15px !important; align-items: flex-start !important; text-align: left !important; background: #fff !important; border-left: 5px solid #000 !important;">
+                        <span class="kpi-title" style="color: #000 !important; font-weight: 900 !important;">PREÇO DE CUSTO 💸 <span id="custo-indicator"></span></span>
+                        <span id="device-price-custo" class="kpi-value" style="font-size: 1.6rem !important; color: #000 !important;">Carregando...</span>
+                    </div>
                 </div>
             `;
         } else {
             const payMobiHTML = brand !== 'apple' ? `
-                <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin-top: 20px; border-left: 5px solid #fff; width: 100%;">
-                    <h3 style="margin: 0; font-size: 1.8rem; color: #fff; text-transform: none;">Pay mobi: <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.8rem;"></span></h3>
-                    <p style="font-size: 1.2rem; margin: 10px 0 5px 0; font-weight: 600;">Entrada: <span id="device-price-entrada">...</span></p>
-                    <p id="paymobi-12x" style="font-size: 1.2rem; margin: 5px 0 0 0; font-weight: 700; color: #fff;">12X de ...</p>
-                    <p id="paymobi-12x-total" style="font-size: 0.9rem; margin: 0 0 10px 0; opacity: 0.8; color: #eee; font-weight: 400;">A financiar ...</p>
-                    <p id="paymobi-18x" style="font-size: 1.2rem; margin: 5px 0 0 0; font-weight: 700; color: #fff;">18X de ...</p>
-                    <p id="paymobi-18x-total" style="font-size: 0.9rem; margin: 0 0 5px 0; opacity: 0.8; color: #eee; font-weight: 400;">A financiar ...</p>
-                    <p style="font-size: 0.8rem; opacity: 0.8; margin-top: 10px;">Obs: Quinzenal</p>
+                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); border-radius: 20px; padding: 20px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.2); width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <div style="width: 40px; height: 40px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 1.2rem;">P</div>
+                        <h3 style="margin: 0; font-size: 1.3rem; color: #fff; text-transform: none; font-weight: 800;">Pay Joy / Mobi <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.7rem; font-weight: 400; opacity: 0.6;"></span></h3>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; margin-bottom: 10px;">
+                        <span style="font-size: 0.8rem; opacity: 0.8;">Entrada Mínima:</span>
+                        <strong id="device-price-entrada" style="font-size: 1.1rem; color: #2ecc71;">...</strong>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                            <span style="font-size: 0.6rem; display: block; opacity: 0.7; margin-bottom: 4px;">12X QUINZENAL</span>
+                            <strong id="paymobi-12x" style="font-size: 0.85rem; display: block;">...</strong>
+                            <span id="paymobi-12x-total" style="font-size: 0.6rem; opacity: 0.5;">...</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                            <span style="font-size: 0.6rem; display: block; opacity: 0.7; margin-bottom: 4px;">18X QUINZENAL</span>
+                            <strong id="paymobi-18x" style="font-size: 0.85rem; display: block;">...</strong>
+                            <span id="paymobi-18x-total" style="font-size: 0.6rem; opacity: 0.5;">...</span>
+                        </div>
+                    </div>
                 </div>
             ` : '';
 
             contentContainer.innerHTML = `
-                <img src="${device.imageUrl}" alt="${device.name}" style="max-height: 250px; width: auto; align-self: center; margin-bottom: 20px;">
-                <h3>Preço de venda ✅ <span class="price-update-indicator" id="venda-indicator"></span></h3>
-                <pre id="device-price-venda">Carregando...</pre>
-                <h3>Preço limite 🚨 <span class="price-update-indicator" id="limite-indicator"></span></h3>
-                <pre id="device-price-limite">Carregando...</pre>
-                <div id="cost-price-container" style="display: none; width: 100%;">
-                    <h3 style="color: #fff; text-transform: uppercase;">Preço de Custo 💸 <span class="price-update-indicator" id="custo-indicator"></span></h3>
-                    <pre id="device-price-custo" style="background: rgba(255,255,255,0.9); color: #000; font-weight: 900; font-size: 1.1rem; border: 2px solid #000;">Carregando...</pre>
+                <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
+                    <div style="flex-shrink: 0; width: 140px; height: 160px; background: #fff; border-radius: 24px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; background: var(--primary-color); filter: blur(30px); opacity: 0.2;"></div>
+                        <img src="${device.imageUrl}" alt="${device.name}" style="max-width: 100%; max-height: 100%; object-fit: contain; position: relative; z-index: 2;">
+                    </div>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.25); border-radius: 24px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                        <span style="font-size: 0.7rem; text-transform: uppercase; color: var(--primary-color); font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px;">${brand}</span>
+                        <h2 style="font-size: 1.2rem; color: #fff; margin: 0; line-height: 1.2; font-weight: 700;">${device.name}</h2>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 10px; background: rgba(46, 204, 113, 0.15); padding: 4px 10px; border-radius: 20px; align-self: flex-start;">
+                            <div style="width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 8px #2ecc71;"></div>
+                            <span style="font-size: 0.6rem; font-weight: 600; color: #2ecc71; text-transform: uppercase;">Atualizado</span>
+                        </div>
+                    </div>
                 </div>
-                <h3>Lucro Zero🔒 <span class="price-update-indicator" id="zero-lucro-indicator"></span></h3>
-                <pre id="device-price-zero-lucro">Carregando...</pre>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
+                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #2ecc71 !important;">
+                        <span class="kpi-title">VENDA ✅ <span id="venda-indicator"></span></span>
+                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                    </div>
+                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #f1c40f !important;">
+                        <span class="kpi-title">LIMITE 🚨 <span id="limite-indicator"></span></span>
+                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                    </div>
+                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #e74c3c !important; grid-column: span 2;">
+                        <span class="kpi-title">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
+                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                    </div>
+                </div>
+
                 ${payMobiHTML}
-                <h3>Seguro Contra queda 🛡 <span class="price-update-indicator" id="seguro-queda-indicator"></span></h3>
-                <pre id="device-seguro-queda">Carregando...</pre>
-                <h3>Garantia Estendida (+1 Ano) ⚙ <span class="price-update-indicator" id="garantia-estendida-indicator"></span></h3>
-                <pre id="device-garantia-estendida">Carregando...</pre>
-                <h3>⚙️ Ficha Técnica</h3>
-                <pre>${device.techSpecs || 'Não informado.'}</pre>
-                <button id="edit-device-btn" class="action-button" style="margin-top: 1rem; background-color: #2980b9; width: 100%; height: auto; padding: 15px;"><i class="fa-solid fa-pencil"></i> Editar Dispositivo</button>
-                <button id="delete-device-btn" class="action-button delete-button" style="margin-top: 1rem; width: 100%; height: auto; padding: 15px;"><i class="fa-solid fa-trash-can"></i> Deletar Dispositivo</button>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 15px;">
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fa-solid fa-shield-halved" style="color: #3498db; margin-bottom: 8px;"></i>
+                        <span style="display: block; font-size: 0.6rem; text-transform: uppercase; opacity: 0.7;">Seguro Queda</span>
+                        <strong id="device-seguro-queda" style="font-size: 0.85rem; display: block; margin-top: 4px;">...</strong>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fa-solid fa-calendar-plus" style="color: #9b59b6; margin-bottom: 8px;"></i>
+                        <span style="display: block; font-size: 0.6rem; text-transform: uppercase; opacity: 0.7;">Garantia +1 Ano</span>
+                        <strong id="device-garantia-estendida" style="font-size: 0.85rem; display: block; margin-top: 4px;">...</strong>
+                    </div>
+                </div>
+
+                <div class="employee-meta-card" style="max-width: none; margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.2);">
+                    <h4 style="text-align: left; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-microchip"></i> Ficha Técnica</h4>
+                    <p style="font-size: 0.8rem; line-height: 1.6; color: #ccc; margin: 0; white-space: pre-wrap;">${device.techSpecs || 'Especificações não detalhadas.'}</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 25px; padding-bottom: 30px;">
+                    <button id="edit-device-btn" class="action-button" style="height: auto; aspect-ratio: initial; padding: 15px; background: #2980b9; font-size: 0.8rem; border-radius: 14px;"><i class="fa-solid fa-pencil"></i> EDITAR</button>
+                    <button id="delete-device-btn" class="action-button delete-button" style="height: auto; aspect-ratio: initial; padding: 15px; font-size: 0.8rem; margin: 0; border-radius: 14px;"><i class="fa-solid fa-trash"></i> APAGAR</button>
+                </div>
             `;
         }
 
@@ -7387,7 +7462,6 @@ const loadDeviceDetails = (key, brand) => {
         showPage('deviceDetailPage');
         fetchAndDisplayPriceForDevice(device.name);
 
-        // Usa onclick para garantir que não acumule múltiplos eventos ao abrir e voltar várias vezes
         const editBtn = document.getElementById('edit-device-btn');
         const deleteBtn = document.getElementById('delete-device-btn');
         const backBtn = document.getElementById('back-to-brand-from-detail');
@@ -12893,7 +12967,15 @@ async function calculateAndDisplayStoreRanking() {
                         const grid = document.getElementById('entrada-nota-results-grid');
                         grid.innerHTML = '';
                         const normalizedFilter = filterText.toLowerCase().trim();
-                        const filteredDevices = devices.filter(device => device.name.toLowerCase().includes(normalizedFilter));
+                        
+                        // FILTRO: Remove itens que não tem nome, que tem 'undefined' no nome ou que não tem imagem válida
+                        const filteredDevices = devices.filter(device => 
+                            device.name && 
+                            !device.name.toLowerCase().includes('undefined') && 
+                            device.imageUrl && 
+                            device.imageUrl !== '' &&
+                            device.name.toLowerCase().includes(normalizedFilter)
+                        );
 
                         if (filteredDevices.length === 0) {
                             grid.innerHTML = '<p style="padding: 2rem; text-align: center; width: 100%; opacity: 0.6;">Nenhum aparelho encontrado no estoque.</p>';
@@ -13372,41 +13454,128 @@ async function calculateAndDisplayStoreRanking() {
                 showPage('telemarketingSelectionPage');
             });
 
-            document.getElementById('tm-admin-save-list-btn').addEventListener('click', async () => {
+            // Lógica para Abrir Seleção de Arquivo Excel
+            document.getElementById('tm-admin-excel-btn').addEventListener('click', () => {
+                document.getElementById('tm-admin-excel-input').click();
+            });
+
+            // Lógica para Processar o Arquivo Excel
+            document.getElementById('tm-admin-excel-input').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
                 const campaign = document.getElementById('tm-admin-campaign-select').value;
-                const rawText = document.getElementById('tm-admin-raw-list').value.trim();
                 const statusEl = document.getElementById('tm-admin-status');
+                statusEl.textContent = 'Lendo arquivo Excel...';
 
-                if (!rawText) return;
-                statusEl.textContent = 'Processando lista...';
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    try {
+                        const data = new Uint8Array(event.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                const lines = rawText.split('\n');
-                const updates = {};
+                        const updates = {};
+                        let count = 0;
 
-                lines.forEach(line => {
-                    const trimmedLine = line.trim();
-                    const lastSpaceIndex = trimmedLine.lastIndexOf(' ');
-                    
-                    if (lastSpaceIndex !== -1) {
-                        const name = trimmedLine.substring(0, lastSpaceIndex).trim();
-                        const number = trimmedLine.substring(lastSpaceIndex + 1).trim().replace(/\D/g, '');
-                        
-                        if (name && number) {
-                            const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
-                            updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
-                                name, number, status: 'available', addedAt: new Date().toISOString()
-                            };
+                        // Pula as primeiras 9 linhas (cabeçalho do relatório)
+                        // De acordo com a imagem, os dados começam na linha 10 (index 9)
+                        for (let i = 9; i < jsonData.length; i++) {
+                            const row = jsonData[i];
+                            // Coluna C (Nome) é index 1, Coluna M (Fones) é index 12
+                            const name = row[1];
+                            const phone = row[12];
+
+                            if (name && phone) {
+                                const cleanPhone = String(phone).replace(/\D/g, '');
+                                if (cleanPhone.length >= 8) {
+                                    const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
+                                    updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
+                                        name: String(name).trim(),
+                                        number: cleanPhone,
+                                        status: 'available',
+                                        addedAt: new Date().toISOString()
+                                    };
+                                    count++;
+                                }
+                            }
                         }
+
+                        if (count > 0) {
+                            await database.ref().update(updates);
+                            statusEl.textContent = `${count} clientes adicionados com sucesso!`;
+                        } else {
+                            statusEl.textContent = 'Nenhum dado válido encontrado no formato esperado.';
+                        }
+
+                    } catch (err) {
+                        console.error(err);
+                        statusEl.textContent = 'Erro ao processar o arquivo.';
                     }
-                });
+                    e.target.value = null; // Limpa o input
+                };
+                reader.readAsArrayBuffer(file);
+            });
+
+            // Lógica para Limpar Lista Atual (Clientes Antigos)
+            document.getElementById('tm-admin-clear-current-list').addEventListener('click', async () => {
+                const campaign = document.getElementById('tm-admin-list-filter').value;
+                if (!confirm(`Tem certeza que deseja apagar TODOS os clientes da campanha ${campaign} para iniciar uma nova lista?`)) return;
+
+                const statusEl = document.getElementById('tm-admin-status');
+                statusEl.textContent = 'Limpando lista...';
 
                 try {
-                    await database.ref().update(updates);
-                    statusEl.textContent = 'Lista adicionada com sucesso!';
-                    document.getElementById('tm-admin-raw-list').value = '';
-                } catch (e) { 
-                    statusEl.textContent = 'Erro ao salvar.';
-                    console.error(e); 
+                    await database.ref(`telemarketing/campaigns/${campaign}`).remove();
+                    statusEl.textContent = 'Lista limpa com sucesso!';
+                } catch (e) {
+                    statusEl.textContent = 'Erro ao limpar.';
+                    console.error(e);
+                }
+            });
+
+            // Lógica para Salvar Backup da Lista Atual (TXT)
+            document.getElementById('tm-admin-backup-list').addEventListener('click', async () => {
+                const campaign = document.getElementById('tm-admin-list-filter').value;
+                const statusEl = document.getElementById('tm-admin-status');
+                
+                statusEl.textContent = 'Gerando backup...';
+
+                try {
+                    const snapshot = await database.ref(`telemarketing/campaigns/${campaign}`).get();
+                    if (!snapshot.exists()) {
+                        alert('Não há clientes nesta campanha para fazer backup.');
+                        statusEl.textContent = '';
+                        return;
+                    }
+
+                    let backupText = `BACKUP TELEMARKETING - CAMPANHA ${campaign}\n`;
+                    backupText += `Data: ${new Date().toLocaleString('pt-BR')}\n`;
+                    backupText += `--------------------------------------------\n\n`;
+
+                    snapshot.forEach(child => {
+                        const client = child.val();
+                        backupText += `${client.name} ${client.number}\n`;
+                    });
+
+                    const blob = new Blob([backupText], { type: 'text/plain;charset=utf-8' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `backup_TM_${campaign}_${getTodayDateString()}.txt`;
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+
+                    statusEl.textContent = 'Backup concluído!';
+                    setTimeout(() => statusEl.textContent = '', 2000);
+
+                } catch (e) {
+                    console.error(e);
+                    statusEl.textContent = 'Erro ao gerar backup.';
                 }
             });
 
