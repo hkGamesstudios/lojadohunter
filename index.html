@@ -4062,6 +4062,18 @@
                             <input type="checkbox" id="visibility-store-ranking-toggle" data-key="storeRanking" class="visibility-toggle">
                         </label>
                     </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Exibir Caixa Cupom</span>
+                            <input type="checkbox" id="visibility-cupom-toggle" data-key="cupom" class="visibility-toggle">
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0.5rem;">
+                        <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <span>Exibir Caixa Cupom</span>
+                            <input type="checkbox" id="visibility-cupom-toggle" data-key="cupom" class="visibility-toggle">
+                        </label>
+                    </div>
                     <p id="visibility-status-message" class="status-message"></p>
                 </div>
             </div>
@@ -5066,7 +5078,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.7 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.8 - Aruana '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7248,7 +7260,7 @@ const loadAndDisplayCollaboratorMetas = () => {
             if (el) el.textContent = msg;
         };
 
-        const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'entrada', 'seguro-queda', 'garantia-estendida'];
+        const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'cupom', 'entrada', 'seguro-queda', 'garantia-estendida'];
         ids.forEach(id => updateIndicator(`${id}-indicator`, '(...)'));
 
         try {
@@ -7262,6 +7274,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 precoLimite: data.precoLimite || 'N/A',
                 precoCusto: data.precoDeCusto || 'N/A',
                 zeroLucro: data.zeroLucro || 'N/A',
+                cupom: data.cupom || 'N/A',
                 entradaMinima: data.entradaMinima || 'N/A',
                 seguroQueda: data.seguroContraQueda || 'N/A',
                 garantiaEstendida: data.garantiaEstendidaDe1Ano || 'N/A'
@@ -7273,6 +7286,7 @@ const loadAndDisplayCollaboratorMetas = () => {
             updateText('device-price-limite', newValues.precoLimite);
             updateText('device-price-custo', newValues.precoCusto);
             updateText('device-price-zero-lucro', newValues.zeroLucro);
+            updateText('device-price-cupom', newValues.cupom);
             updateText('device-price-entrada', newValues.entradaMinima);
             updateText('device-seguro-queda', newValues.seguroQueda);
             updateText('device-garantia-estendida', newValues.garantiaEstendida);
@@ -7406,6 +7420,10 @@ const loadAndDisplayCollaboratorMetas = () => {
                         <span class="kpi-title">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
                         <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
                     </div>
+                    <div id="device-cupom-card" class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #3498db !important; grid-column: span 2; display: none;">
+                        <span class="kpi-title">CUPOM 🎟️ <span id="cupom-indicator"></span></span>
+                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                    </div>
                 </div>
 
                 ${payMobiHTML}
@@ -7446,6 +7464,14 @@ const loadAndDisplayCollaboratorMetas = () => {
                 if (el) el.textContent = fields[id];
             }
         }
+
+        // Verifica visibilidade do Cupom antes de mostrar a página
+        database.ref('globalSettings/visibility/cupom').get().then(snap => {
+            const cupomCard = document.getElementById('device-cupom-card');
+            if (cupomCard) {
+                cupomCard.style.display = (snap.exists() && snap.val() === true) ? 'flex' : 'none';
+            }
+        });
 
         showPage('deviceDetailPage');
         fetchAndDisplayPriceForDevice(device.name);
@@ -10444,6 +10470,13 @@ async function calculateAndDisplayStoreRanking() {
                     element.style.display = isVisible ? 'block' : 'none';
                 }
             }
+
+            // Lógica específica para o Cupom dentro da ficha técnica
+            const cupomCard = document.getElementById('device-cupom-card');
+            if (cupomCard) {
+                cupomCard.style.display = (settings.cupom === true) ? 'flex' : 'none';
+            }
+
         } catch (error) {
             console.error("Erro ao aplicar configurações de visibilidade:", error);
         }
