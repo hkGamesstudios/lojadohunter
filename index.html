@@ -3009,6 +3009,24 @@
         </div>
     </div>
 
+    <!-- TELA DE PAINEL DE GANHOS (COMISSÕES) -->
+    <div id="earnings-panel-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-earnings" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Ganhos dos Colaboradores</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch; gap: 1rem; padding-top: 1rem;">
+            <div id="earnings-summary-card" class="kpi-card" style="margin-bottom: 0.5rem; background: rgba(46, 204, 113, 0.2) !important; border: 1px solid #2ecc71 !important;">
+                <span class="kpi-title">TOTAL DE COMISSÕES ESTIMADAS</span>
+                <span id="total-earnings-global" class="kpi-value" style="color: #2ecc71 !important;">R$ 0,00</span>
+            </div>
+            <div id="earnings-list-container" class="ranking-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Lista de ganhos injetada via JS -->
+            </div>
+            <div style="height: 50px;"></div>
+        </div>
+    </div>
+
     <!-- TELA DE GERENCIAMENTO DE RANKS -->
     <div id="supabase-management-page" style="display: none;">
         <div class="collaborator-header">
@@ -3942,6 +3960,7 @@
                 <button id="open-ranks-management-btn" class="gs-action-btn"><i class="fa-solid fa-trophy"></i><span>Ranks</span></button>
                 
                 <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
+<button id="open-earnings-panel-btn" class="gs-action-btn" style="border: 2px solid #2ecc71;"><i class="fa-solid fa-hand-holding-dollar"></i><span>Ganhos</span></button>
                 <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
                 <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
                 <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
@@ -5078,7 +5097,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.1.8 - Aruana '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.1.9 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5123,7 +5142,7 @@ Transporte - R$ 5,00"></textarea></div>
     let isEntradaNotaView = false;
     const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
-    const storeManagers = ['Mainara', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
+    const storeManagers = ['Eliseu', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
@@ -5176,6 +5195,8 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('holidays-management-page').classList.add('page');
     document.getElementById('sundays-management-page').classList.add('page');
     document.getElementById('day-off-management-page').classList.add('page');
+    document.getElementById('overtime-management-page').classList.add('page');
+    document.getElementById('earnings-panel-page').classList.add('page');
     document.getElementById('device-search-overlay').classList.add('page');
     document.getElementById('avisos-management-page').classList.add('page'); // Nova página
     document.getElementById('feedback-page').classList.add('page');
@@ -5231,6 +5252,7 @@ Transporte - R$ 5,00"></textarea></div>
         sundaysManagementPage: document.getElementById('sundays-management-page'),
         dayOffManagementPage: document.getElementById('day-off-management-page'),
         overtimeManagementPage: document.getElementById('overtime-management-page'),
+        earningsPanelPage: document.getElementById('earnings-panel-page'),
         pontoPage: document.getElementById('ponto-page'),
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
         pontoHistoryPage: document.getElementById('ponto-history-page'),
@@ -10054,6 +10076,93 @@ async function calculateAndDisplayServiceRanking() {
             });
     };
 
+    const loadEarningsPanel = async () => {
+        showPage('earningsPanelPage');
+        const container = document.getElementById('earnings-list-container');
+        const globalTotalEl = document.getElementById('total-earnings-global');
+        container.innerHTML = '<p style="text-align:center; padding:2rem;">Calculando ganhos...</p>';
+
+        try {
+            const [salesSnap, metasSnap, profilesSnap] = await Promise.all([
+                database.ref('salesData').get(),
+                database.ref('metas').get(),
+                database.ref('userProfiles').get()
+            ]);
+
+            const salesData = salesSnap.exists() ? salesSnap.val() : {};
+            const metasData = metasSnap.exists() ? metasSnap.val() : {};
+            const profilesData = profilesSnap.exists() ? profilesSnap.val() : {};
+
+            container.innerHTML = '';
+            let globalCommissionTotal = 0;
+
+            // Filtrar apenas quem não é admin/gerente sênior para o painel de comissão
+            const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
+
+            sellers.forEach(name => {
+                const key = name.toLowerCase();
+                const actualSales = parseFloat(salesData[key]?.vendas || 0);
+                const salesGoal = parseFloat(metasData[key]?.venda || 0);
+                const photo = profilesData[key]?.photoURL || DEFAULT_PROFILE_PHOTO;
+
+                if (salesGoal <= 0) return;
+
+                const percentage = (actualSales / salesGoal) * 100;
+                let multiplier = 0;
+                let tierText = "Abaixo de 50%";
+                let tierColor = "#e74c3c";
+
+                if (percentage >= 120) {
+                    multiplier = 0.015;
+                    tierText = "Meta 120% atingida (1,5%)";
+                    tierColor = "#9b59b6";
+                } else if (percentage >= 100) {
+                    multiplier = 0.01;
+                    tierText = "Meta 100% atingida (1,0%)";
+                    tierColor = "#2ecc71";
+                } else if (percentage >= 50) {
+                    multiplier = 0.005;
+                    tierText = "Meta 50% atingida (0,5%)";
+                    tierColor = "#f1c40f";
+                }
+
+                const commission = actualSales * multiplier;
+                globalCommissionTotal += commission;
+
+                const card = document.createElement('div');
+                card.className = 'rank-item';
+                card.style.borderLeft = `6px solid ${tierColor}`;
+                card.innerHTML = `
+                    <img src="${photo}" class="rank-photo" style="width: 45px; height: 45px;">
+                    <div class="rank-details">
+                        <div class="rank-name" style="justify-content: space-between;">
+                            <span style="font-weight:700;">${name}</span>
+                            <span style="color: ${tierColor}; font-weight:800; font-size:1.1rem;">${formatBRL(commission)}</span>
+                        </div>
+                        <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 2px; display: flex; justify-content: space-between;">
+                            <span>Vendido: ${formatBRL(actualSales)}</span>
+                            <span style="font-weight: 600;">${tierText}</span>
+                        </div>
+                        <div class="progress-bar-container" style="height: 8px; margin-top: 6px;">
+                            <div class="progress-bar" style="width: ${Math.min(100, percentage)}%; background: ${tierColor};"></div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            globalTotalEl.textContent = formatBRL(globalCommissionTotal);
+
+            if (container.innerHTML === '') {
+                container.innerHTML = '<p style="text-align:center; padding:2rem; opacity:0.5;">Nenhum dado de venda para calcular.</p>';
+            }
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align:center; padding:2rem; color:#e74c3c;">Erro ao processar dados.</p>';
+        }
+    };
+
 
 
 
@@ -11668,6 +11777,7 @@ async function calculateAndDisplayStoreRanking() {
                     loadTMAdminClientList();
                 });
                 safeAddListener('open-tm-stats-btn', 'click', loadTelemarketingStats);
+                safeAddListener('open-earnings-panel-btn', 'click', loadEarningsPanel);
                 safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
                 safeAddListener('back-to-gs-from-tm-stats', 'click', () => showPage('gsPage'));
 
@@ -11936,6 +12046,7 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('back-to-gs-from-sundays').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-day-off').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-overtime').addEventListener('click', () => showPage('gsPage'));
+            document.getElementById('back-to-gs-from-earnings').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-avisos').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-ranks').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-gs-from-supabase').addEventListener('click', () => showPage('gsPage'));
