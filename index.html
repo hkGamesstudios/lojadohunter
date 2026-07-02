@@ -3010,20 +3010,22 @@
     </div>
 
     <!-- TELA DE PAINEL DE GANHOS (COMISSÕES) -->
-    <div id="earnings-panel-page" style="display: none;">
-        <div class="collaborator-header">
-            <button id="back-to-gs-from-earnings" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Ganhos dos Colaboradores</h2>
-        </div>
-        <div class="collaborator-content" style="align-items: stretch; gap: 1rem; padding-top: 1rem;">
-            <div id="earnings-summary-card" class="kpi-card" style="margin-bottom: 0.5rem; background: rgba(46, 204, 113, 0.2) !important; border: 1px solid #2ecc71 !important;">
-                <span class="kpi-title">TOTAL DE COMISSÕES ESTIMADAS</span>
-                <span id="total-earnings-global" class="kpi-value" style="color: #2ecc71 !important;">R$ 0,00</span>
+    <div id="earnings-panel-page" style="display: none; align-items: center;">
+        <div style="width: 100%; max-width: 450px; display: flex; flex-direction: column;">
+            <div class="collaborator-header" style="width: 100%; position: relative;">
+                <button id="back-to-gs-from-earnings" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+                <h2 style="padding: 0 60px;">Ganhos dos Colaboradores</h2>
             </div>
-            <div id="earnings-list-container" class="ranking-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <!-- Lista de ganhos injetada via JS -->
+            <div class="collaborator-content" style="align-items: stretch; gap: 1rem; padding: 1.5rem;">
+                <div id="earnings-summary-card" class="kpi-card" style="margin-bottom: 0.5rem; background: rgba(46, 204, 113, 0.2) !important; border: 1px solid #2ecc71 !important;">
+                    <span class="kpi-title">TOTAL DE COMISSÕES ESTIMADAS</span>
+                    <span id="total-earnings-global" class="kpi-value" style="color: #2ecc71 !important;">R$ 0,00</span>
+                </div>
+                <div id="earnings-list-container" class="ranking-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <!-- Lista de ganhos injetada via JS -->
+                </div>
+                <div style="height: 50px;"></div>
             </div>
-            <div style="height: 50px;"></div>
         </div>
     </div>
 
@@ -5091,7 +5093,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.0 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.1 - Afonso '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
