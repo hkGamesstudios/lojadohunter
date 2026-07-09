@@ -5093,7 +5093,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.2 - o meu deus '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.3 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -11542,15 +11542,19 @@ async function calculateAndDisplayStoreRanking() {
                 const msgSnap = await database.ref(`telemarketing/configs/${campaign}/message`).get();
                 const template = msgSnap.exists() ? msgSnap.val() : "Olá {cliente}!";
 
-                database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').limitToFirst(50).on('value', snapshot => {
-                    container.innerHTML = '';
-                    if (!snapshot.exists()) {
-                        container.innerHTML = '<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente disponível nesta campanha no momento.</p>';
-                        return;
-                    }
+                const userCity = storeMapping.pinheiro.includes(currentUserName) ? 'pinheiro' : 'bacabal';
 
-                    snapshot.forEach(child => {
-                        const client = child.val();
+            database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').on('value', snapshot => {
+                container.innerHTML = '';
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente disponível nesta campanha no momento.</p>';
+                    return;
+                }
+
+                let countAdded = 0;
+                snapshot.forEach(child => {
+                    const client = child.val();
+                    if (client.city === userCity && countAdded < 50) {
                         const card = document.createElement('div');
                         card.className = 'tm-contact-card';
                         card.id = `tm-card-${child.key}`;
@@ -11568,8 +11572,14 @@ async function calculateAndDisplayStoreRanking() {
                             </a>
                         `;
                         container.appendChild(card);
-                    });
+                        countAdded++;
+                    }
                 });
+
+                if (countAdded === 0) {
+                    container.innerHTML = `<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente de ${userCity.toUpperCase()} disponível.</p>`;
+                }
+            });
             };
 
             window.claimTMContact = async (campaign, clientKey) => {
@@ -13575,6 +13585,34 @@ async function calculateAndDisplayStoreRanking() {
 
             document.getElementById('tm-admin-list-filter').addEventListener('change', loadTMAdminClientList);
 
+            document.getElementById('tm-admin-save-msg-btn').addEventListener('click', async () => {
+                const campaign = document.getElementById('tm-admin-campaign-select').value;
+                const message = document.getElementById('tm-admin-message-template').value.trim();
+                const statusEl = document.getElementById('tm-admin-status');
+
+                if (!message) {
+                    alert('Digite uma mensagem antes de salvar.');
+                    return;
+                }
+
+                statusEl.textContent = 'Salvando mensagem...';
+                try {
+                    await database.ref(`telemarketing/configs/${campaign}/message`).set(message);
+                    statusEl.textContent = 'Mensagem salva com sucesso!';
+                    setTimeout(() => statusEl.textContent = '', 2000);
+                } catch (e) {
+                    console.error(e);
+                    statusEl.textContent = 'Erro ao salvar mensagem.';
+                }
+            });
+
+            document.querySelectorAll('.tm-campaign-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const campaign = btn.dataset.campaign;
+                    loadTelemarketingContacts(campaign);
+                });
+            });
+
             document.getElementById('back-to-main-from-tm-select').addEventListener('click', showMainPage);
             document.getElementById('back-to-tm-selection').addEventListener('click', () => {
                 database.ref().off();
@@ -13618,10 +13656,12 @@ async function calculateAndDisplayStoreRanking() {
                             if (name && phone) {
                                 const cleanPhone = String(phone).replace(/\D/g, '');
                                 if (cleanPhone.length >= 8) {
+                                    const cityTarget = row[2] && String(row[2]).toLowerCase().includes('bacabal') ? 'bacabal' : 'pinheiro';
                                     const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
                                     updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
                                         name: String(name).trim(),
                                         number: cleanPhone,
+                                        city: cityTarget,
                                         status: 'available',
                                         addedAt: new Date().toISOString()
                                     };
@@ -13710,7 +13750,17 @@ async function calculateAndDisplayStoreRanking() {
             const triggerTM = document.createElement('button');
             triggerTM.id = 'trigger-tm-selection';
             triggerTM.style.display = 'none';
-            triggerTM.onclick = () => showPage('telemarketingSelectionPage');
+            triggerTM.onclick = () => {
+                const userKey = currentUserName.toLowerCase();
+                const isAdmin = newAdmins.includes(currentUserName);
+                const isManager = managers.includes(currentUserName);
+                
+                showPage('telemarketingSelectionPage');
+                
+                database.ref(`telemarketing/configs/PHO/message`).get().then(snap => {
+                    if (snap.exists()) document.getElementById('tm-admin-message-template').value = snap.val();
+                });
+            };
             document.body.appendChild(triggerTM);
         });
     </script>
