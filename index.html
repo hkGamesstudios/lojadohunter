@@ -3153,6 +3153,13 @@
 
             <div class="employee-meta-card">
                 <h4>Importar Lista (EXCEL)</h4>
+                <div class="input-group">
+                    <label>Filtrar para qual Cidade?</label>
+                    <select id="tm-admin-import-city" class="data-input">
+                        <option value="pinheiro">Pinheiro</option>
+                        <option value="bacabal">Bacabal</option>
+                    </select>
+                </div>
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <button id="tm-admin-excel-btn" class="action-button full-width" style="height: auto; aspect-ratio: auto; padding: 1.5rem; background: #27ae60;"><i class="fa-solid fa-file-excel"></i> SUBIR LISTA EXCEL</button>
                     <input type="file" id="tm-admin-excel-input" accept=".xlsx, .xls, .csv" style="display: none;">
@@ -5093,7 +5100,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.3 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.4 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -13630,6 +13637,7 @@ async function calculateAndDisplayStoreRanking() {
                 if (!file) return;
 
                 const campaign = document.getElementById('tm-admin-campaign-select').value;
+                const cityTarget = document.getElementById('tm-admin-import-city').value;
                 const statusEl = document.getElementById('tm-admin-status');
                 statusEl.textContent = 'Lendo arquivo Excel...';
 
@@ -13645,18 +13653,14 @@ async function calculateAndDisplayStoreRanking() {
                         const updates = {};
                         let count = 0;
 
-                        // Pula as primeiras 9 linhas (cabeçalho do relatório)
-                        // De acordo com a imagem, os dados começam na linha 10 (index 9)
                         for (let i = 9; i < jsonData.length; i++) {
                             const row = jsonData[i];
-                            // Coluna C (Nome) é index 1, Coluna M (Fones) é index 12
                             const name = row[1];
                             const phone = row[12];
 
                             if (name && phone) {
                                 const cleanPhone = String(phone).replace(/\D/g, '');
                                 if (cleanPhone.length >= 8) {
-                                    const cityTarget = row[2] && String(row[2]).toLowerCase().includes('bacabal') ? 'bacabal' : 'pinheiro';
                                     const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
                                     updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
                                         name: String(name).trim(),
@@ -13672,16 +13676,16 @@ async function calculateAndDisplayStoreRanking() {
 
                         if (count > 0) {
                             await database.ref().update(updates);
-                            statusEl.textContent = `${count} clientes adicionados com sucesso!`;
+                            statusEl.textContent = `${count} clientes de ${cityTarget.toUpperCase()} adicionados!`;
                         } else {
-                            statusEl.textContent = 'Nenhum dado válido encontrado no formato esperado.';
+                            statusEl.textContent = 'Nenhum dado válido encontrado.';
                         }
 
                     } catch (err) {
                         console.error(err);
                         statusEl.textContent = 'Erro ao processar o arquivo.';
                     }
-                    e.target.value = null; // Limpa o input
+                    e.target.value = null;
                 };
                 reader.readAsArrayBuffer(file);
             });
