@@ -5198,7 +5198,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.8 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.9 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -13774,21 +13774,16 @@ async function calculateAndDisplayStoreRanking() {
 
                         for (let i = 0; i < jsonData.length; i++) {
                             const row = jsonData[i];
-                            if (!row || row.length < 2) continue;
+                            // Verifica se a linha existe e tem colunas suficientes para chegar na M (index 12)
+                            if (!row || row.length <= 12) continue;
 
+                            // Nome na coluna B ou C (index 1 ou 2)
                             const name = row[1] || row[2]; 
-                            let phone = null;
-                            
-                            for (let j = 0; j < row.length; j++) {
-                                let cellVal = String(row[j] || "");
-                                let clean = cellVal.replace(/\D/g, '');
-                                if (clean.length >= 8 && clean.length <= 11) {
-                                    phone = clean;
-                                    break;
-                                }
-                            }
+                            // Telefone na coluna M (index 12)
+                            let rawPhone = String(row[12] || "");
+                            let phone = rawPhone.replace(/\D/g, '');
 
-                            if (name && phone && String(name).toLowerCase() !== 'nome') {
+                            if (name && phone && phone.length >= 8 && String(name).toLowerCase() !== 'nome') {
                                 const newKey = database.ref().child('telemarketing/campaigns').push().key;
                                 
                                 updates[`/telemarketing/campaigns/${campaign}/${newKey}`] = {
@@ -13808,7 +13803,7 @@ async function calculateAndDisplayStoreRanking() {
                             statusEl.textContent = `Sucesso! ${count} clientes de ${cityTarget.toUpperCase()} importados para ${campaign}.`;
                         } else {
                             statusEl.style.color = '#f1c40f';
-                            statusEl.textContent = 'Erro: Nenhuma linha válida encontrada (verifique nomes e telefones).';
+                            statusEl.textContent = 'Erro: Nenhuma linha válida encontrada na Coluna M.';
                         }
 
                     } catch (err) {
