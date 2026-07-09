@@ -2776,34 +2776,118 @@
 
         /* --- ESTILOS TELEMARKETING --- */
         .tm-contact-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 1rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 1.2rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            transition: transform 0.2s ease;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
-        .tm-contact-info h4 { margin: 0; font-size: 1rem; color: #fff; }
-        .tm-contact-info p { margin: 2px 0 0 0; font-size: 0.8rem; color: #aaa; }
+        .tm-contact-info {
+            flex-grow: 1;
+        }
+        .tm-contact-info h4 { 
+            margin: 0; 
+            font-size: 1rem; 
+            color: #fff; 
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .tm-contact-info p { 
+            margin: 4px 0 0 0; 
+            font-size: 0.75rem; 
+            color: rgba(255, 255, 255, 0.6); 
+            font-family: monospace;
+        }
         .tm-wa-btn {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             background: #25d366;
             color: #fff;
-            border-radius: 50%;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             flex-shrink: 0;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .tm-wa-btn:active {
+            transform: scale(0.9);
         }
         .tm-wa-btn i {
             display: block;
             line-height: 1;
+        }
+        /* --- ESTILOS ADMIN TELEMARKETING --- */
+        .tm-admin-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .tm-admin-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tm-client-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        .tm-client-row:hover {
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .tm-status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        .tm-status-available { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
+        .tm-status-claimed { background: #e74c3c; box-shadow: 0 0 8px #e74c3c; }
+
+        .tm-client-details {
+            flex-grow: 1;
+            line-height: 1.2;
+        }
+        .tm-client-details strong { font-size: 0.9rem; color: #fff; display: block; }
+        .tm-client-details span { font-size: 0.7rem; color: rgba(255,255,255,0.5); font-family: monospace; }
+        
+        .tm-cit
+        .tm-contact-avatar {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 107, 0, 0.2);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            font-size: 1.1rem;
         }
         .tm-agent-card {
             background: rgba(0,0,0,0.3);
@@ -3101,7 +3185,7 @@
             <button class="action-button full-width tm-campaign-btn" data-campaign="PHO" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem;">
                 <div class="tool-icon-wrapper" style="background: #e67e22;"><i class="fa-solid fa-headset"></i></div>
                 <div style="text-align: left;">
-                    <strong style="display: block; font-size: 1.1rem;">Telemarketing PHO</strong>
+                    <strong style="display: block; font-size: 1.1rem;">PHO</strong>
                     <span style="font-size: 0.7rem; opacity: 0.7;">Campanha Ativa</span>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 1rem; opacity: 0.5;"></i>
@@ -3109,7 +3193,7 @@
             <button class="action-button full-width tm-campaign-btn" data-campaign="BAC" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem;">
                 <div class="tool-icon-wrapper" style="background: #e67e22;"><i class="fa-solid fa-headset"></i></div>
                 <div style="text-align: left;">
-                    <strong style="display: block; font-size: 1.1rem;">Telemarketing BAC</strong>
+                    <strong style="display: block; font-size: 1.1rem;">BAC</strong>
                     <span style="font-size: 0.7rem; opacity: 0.7;">Campanha Ativa</span>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 1rem; opacity: 0.5;"></i>
@@ -3132,55 +3216,69 @@
     <div id="telemarketing-admin-page" style="display: none;">
         <div class="collaborator-header">
             <button id="back-to-gs-from-tm-admin" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Gerenciar Clientes TM</h2>
+            <h2>Painel Admin TM</h2>
         </div>
-        <div class="collaborator-content" style="align-items: stretch;">
-            <div class="employee-meta-card">
-                <h4>Configurar Campanha</h4>
+        <div class="collaborator-content" style="align-items: stretch; padding-bottom: 3rem;">
+            
+            <!-- CONFIGURAÇÃO DE MENSAGEM -->
+            <div class="tm-admin-card" style="border-left: 5px solid #2980b9;">
+                <div class="tm-admin-section-title"><i class="fa-solid fa-message"></i> Configurar Mensagem</div>
                 <div class="input-group">
-                    <label>Selecione a Campanha</label>
+                    <label>Campanha Selecionada</label>
                     <select id="tm-admin-campaign-select" class="data-input">
                         <option value="PHO">PHO</option>
                         <option value="BAC">BAC</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Mensagem Pronta (Use {cliente} e {vendedor})</label>
+                    <label>Template de Mensagem</label>
                     <textarea id="tm-admin-message-template" class="data-input" rows="4" placeholder="Olá {cliente}, aqui é {vendedor} da Loja do Hunter..."></textarea>
-                    <button id="tm-admin-save-msg-btn" class="action-button full-width" style="margin-top: 10px; background: #2980b9; height: auto; aspect-ratio: auto; padding: 10px;"><i class="fa-solid fa-save"></i> Salvar Mensagem</button>
+                    <p style="font-size: 0.65rem; color: #aaa; margin-top: 5px;">* Use as tags {cliente} e {vendedor} para personalizar.</p>
                 </div>
+                <button id="tm-admin-save-msg-btn" class="action-button full-width" style="height: auto; padding: 12px; background: #2980b9; margin: 0;"><i class="fa-solid fa-save"></i> Atualizar Mensagem</button>
             </div>
 
-            <div class="employee-meta-card">
-                <h4>Importar Lista (EXCEL)</h4>
+            <!-- IMPORTAÇÃO EXCEL -->
+            <div class="tm-admin-card" style="border-left: 5px solid #27ae60;">
+                <div class="tm-admin-section-title"><i class="fa-solid fa-file-import"></i> Importar Nova Lista</div>
                 <div class="input-group">
-                    <label>Filtrar para qual Cidade?</label>
+                    <label>Importar para qual Campanha?</label>
+                    <select id="tm-admin-import-campaign" class="data-input">
+                        <option value="PHO">PHO</option>
+                        <option value="BAC">BAC</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Para qual cidade são estes clientes?</label>
                     <select id="tm-admin-import-city" class="data-input">
                         <option value="pinheiro">Pinheiro</option>
                         <option value="bacabal">Bacabal</option>
                     </select>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                    <button id="tm-admin-excel-btn" class="action-button full-width" style="height: auto; aspect-ratio: auto; padding: 1.5rem; background: #27ae60;"><i class="fa-solid fa-file-excel"></i> SUBIR LISTA EXCEL</button>
-                    <input type="file" id="tm-admin-excel-input" accept=".xlsx, .xls, .csv" style="display: none;">
-                </div>
+                <button id="tm-admin-excel-btn" class="action-button full-width" style="height: auto; padding: 1.2rem; background: #27ae60; margin: 0;"><i class="fa-solid fa-file-excel"></i> SELECIONAR ARQUIVO EXCEL</button>
+                <input type="file" id="tm-admin-excel-input" accept=".xlsx, .xls, .csv" style="display: none;">
                 <p id="tm-admin-status" class="status-message"></p>
             </div>
 
-            <div class="employee-meta-card">
-                <h4>Gerenciar Fila</h4>
+            <!-- VISUALIZAÇÃO E LIMPEZA -->
+            <div class="tm-admin-card" style="border-left: 5px solid #f39c12;">
+                <div class="tm-admin-section-title"><i class="fa-solid fa-list-check"></i> Gerenciar Fila de Espera</div>
                 <div class="input-group">
-                    <label>Visualizar Campanha</label>
+                    <label>Filtrar Campanha na Lista</label>
                     <select id="tm-admin-list-filter" class="data-input">
                         <option value="PHO">PHO</option>
                         <option value="BAC">BAC</option>
                     </select>
                 </div>
-                <div id="tm-admin-client-list-container" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
-                    <!-- Lista de clientes injetada via JS -->
+                
+                <div id="tm-admin-client-list-container" style="max-height: 350px; overflow-y: auto; padding-right: 5px; margin-bottom: 1.5rem;">
+                    <!-- Lista injetada aqui -->
                 </div>
-                <button id="tm-admin-clear-current-list" class="action-button full-width delete-button"><i class="fa-solid fa-trash-can"></i> LIMPAR TODOS OS CLIENTES ANTIGOS</button>
-                <button id="tm-admin-backup-list" class="action-button full-width" style="margin-top: 10px; background: #34495e; height: auto; aspect-ratio: auto; padding: 1rem;"><i class="fa-solid fa-file-arrow-down"></i> SALVAR BACKUP (TXT)</button>
+
+                <div style="display: flex; gap: 10px;">
+                    <button id="tm-admin-backup-list" class="action-button" style="flex: 1; height: auto; padding: 12px; background: #34495e; font-size: 0.7rem;"><i class="fa-solid fa-download"></i> BACKUP</button>
+                    <button id="tm-admin-clear-current-list" class="action-button delete-button" style="flex: 2; height: auto; padding: 12px; font-size: 0.7rem; margin: 0;"><i class="fa-solid fa-trash-can"></i> LIMPAR CAMPANHA</button>
+                </div>
             </div>
         </div>
     </div>
@@ -5100,7 +5198,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.6 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.7 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6255,63 +6353,57 @@ function showScreen(screenElement) {
                 if (!file) return;
 
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    const text = e.target.result;
+                reader.onload = async (event) => {
                     try {
-                        const newSalesData = {};
-                        
-                        // Encontra todos os blocos de dados de colaboradores no texto
-                        const collaboratorBlocks = text.split('---').slice(1); // Divide por '---' e remove o cabeçalho
+                        const data = new Uint8Array(event.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                        collaboratorBlocks.forEach(block => {
-                            // Extrai o nome do colaborador
-                            const nameMatch = block.match(/^\s*([\w\s]+)\s*\n/);
-                            if (!nameMatch) return;
-                            
-                            const name = nameMatch[1].trim();
-                            const key = name.toLowerCase();
+                        const updates = {};
+                        let count = 0;
 
-                            // Extrai os valores usando expressões regulares (mais robusto)
-                            const vendasMatch = block.match(/Vendas:\s*R\$\s*([\d.,]+)/);
-                            const p1p2Match = block.match(/P1\/P2:\s*R\$\s*([\d.,]+)/);
-                            const seguroMatch = block.match(/Seguro:\s*(\d+)/);
-                            const cartaoMatch = block.match(/Cartão:\s*(\d+)/);
+                        for (let i = 0; i < jsonData.length; i++) {
+                            const row = jsonData[i];
+                            if (!row || row.length < 2) continue;
 
-                            // Converte os valores extraídos para o formato numérico correto
-                            const vendas = vendasMatch ? parseFromBRLInput(vendasMatch[1]) : 0;
-                            const p1p2 = p1p2Match ? parseFromBRLInput(p1p2Match[1]) : 0;
-                            const seguro = seguroMatch ? parseInt(seguroMatch[1], 10) : 0;
-                            const cartao = cartaoMatch ? parseInt(cartaoMatch[1], 10) : 0;
+                            const name = row[1] || row[2]; 
+                            const phone = row[12] || row[11] || row[13];
 
-                            // Adiciona ao objeto que será salvo no Firebase
-                            newSalesData[key] = { vendas, p1p2, seguro, cartao };
-                        });
-
-                        if (Object.keys(newSalesData).length === 0) {
-                            alert('Nenhum dado válido encontrado no arquivo de backup.');
-                            return;
+                            if (name && phone && String(name).toLowerCase() !== 'nome') {
+                                const cleanPhone = String(phone).replace(/\D/g, '');
+                                
+                                if (String(name).trim().length > 2 && cleanPhone.length >= 8) {
+                                    const newKey = database.ref().child('telemarketing/campaigns').push().key;
+                                    
+                                    updates[`/telemarketing/campaigns/${campaign}/${newKey}`] = {
+                                        name: String(name).trim(),
+                                        number: cleanPhone,
+                                        city: cityTarget,
+                                        status: 'available',
+                                        addedAt: new Date().toISOString()
+                                    };
+                                    count++;
+                                }
+                            }
                         }
 
-                        if (confirm('Dados do backup foram lidos. Deseja substituir os dados atuais no Firebase com estes dados? ESSA AÇÃO NÃO PODE SER DESFEITA.')) {
-                            database.ref('salesData').set(newSalesData)
-                                .then(() => {
-                                    alert('Backup restaurado com sucesso! Os dados foram atualizados.');
-                                    // Recarrega os dados na tela para refletir a restauração
-                                    loadDashboardData();
-                                    buildAndLoadCorrectionPage();
-                                })
-                                .catch(error => {
-                                    alert('Erro ao restaurar o backup.');
-                                    console.error(error);
-                                });
+                        if (count > 0) {
+                            await database.ref().update(updates);
+                            statusEl.style.color = '#2ecc71';
+                            statusEl.textContent = `Sucesso! ${count} clientes de ${cityTarget.toUpperCase()} importados para ${campaign}.`;
+                        } else {
+                            statusEl.style.color = '#f1c40f';
+                            statusEl.textContent = 'Erro: Nenhuma linha válida encontrada.';
                         }
 
-                    } catch (error) {
-                        alert('Erro ao processar o arquivo de backup. Verifique o formato do arquivo.');
-                        console.error(error);
+                    } catch (err) {
+                        console.error("Erro na importação TM:", err);
+                        statusEl.style.color = '#e74c3c';
+                        statusEl.textContent = 'Erro crítico ao ler o Excel.';
                     } finally {
-                        // Limpa o valor do input para permitir o upload do mesmo arquivo novamente
-                        event.target.value = null;
+                        document.getElementById('tm-admin-excel-input').value = '';
                     }
                 };
                 reader.readAsText(file);
@@ -11570,13 +11662,15 @@ async function calculateAndDisplayStoreRanking() {
                             let finalMsg = template.replace(/{cliente}/g, client.name || 'Cliente').replace(/{vendedor}/g, currentUserName);
                             const encodedMsg = encodeURIComponent(finalMsg);
                             
+                            const firstLetter = (client.name || 'C').charAt(0).toUpperCase();
                             card.innerHTML = `
+                                <div class="tm-contact-avatar">${firstLetter}</div>
                                 <div class="tm-contact-info">
                                     <h4>${client.name}</h4>
-                                    <p>${client.number}</p>
+                                    <p><i class="fa-solid fa-phone" style="font-size: 0.6rem; margin-right: 5px; opacity: 0.7;"></i>${client.number}</p>
                                 </div>
                                 <a href="https://wa.me/55${client.number.replace(/\D/g,'')}?text=${encodedMsg}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
-                                    <i class="fa-brands fa-whatsapp" style="font-size: 1.8rem;"></i>
+                                    <i class="fa-brands fa-whatsapp"></i>
                                 </a>
                             `;
                             container.appendChild(card);
@@ -11668,34 +11762,36 @@ async function calculateAndDisplayStoreRanking() {
             const loadTMAdminClientList = () => {
                 const campaign = document.getElementById('tm-admin-list-filter').value;
                 const container = document.getElementById('tm-admin-client-list-container');
-                container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Carregando clientes...</p>';
+                container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Carregando fila...</p>';
 
                 database.ref(`telemarketing/campaigns/${campaign}`).on('value', snapshot => {
                     container.innerHTML = '';
                     if (!snapshot.exists()) {
-                        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem;">Nenhum cliente nesta campanha.</p>';
+                        container.innerHTML = '<p style="text-align:center; opacity:0.5; padding:1rem; font-size:0.8rem;">Fila vazia para esta campanha.</p>';
                         return;
                     }
 
                     snapshot.forEach(child => {
                         const client = child.val();
-                        const statusColor = client.status === 'available' ? '#2ecc71' : '#e74c3c';
-                        const item = document.createElement('div');
-                        item.className = 'mt-list-item';
-                        item.style.padding = '0.5rem 0.75rem';
-                        item.innerHTML = `
-                            <div class="mt-list-item-text">
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <div style="width:8px; height:8px; border-radius:50%; background:${statusColor};"></div>
+                        const statusClass = client.status === 'available' ? 'tm-status-available' : 'tm-status-claimed';
+                        const cityLabel = client.city ? client.city.substring(0,3).toUpperCase() : '???';
+                        
+                        const row = document.createElement('div');
+                        row.className = 'tm-client-row';
+                        row.innerHTML = `
+                            <div class="tm-status-indicator ${statusClass}"></div>
+                            <div class="tm-client-details">
+                                <div style="display:flex; align-items:center;">
                                     <strong>${client.name}</strong>
+                                    <span class="tm-city-badge">${cityLabel}</span>
                                 </div>
-                                <span style="font-size:0.75rem; opacity:0.7;">${client.number}</span>
+                                <span>${client.number}</span>
                             </div>
-                            <button class="delete-button-small" onclick="deleteTMClient('${campaign}', '${child.key}')" style="width:35px; height:35px;">
-                                <i class="fa-solid fa-trash-can" style="font-size:0.9rem;"></i>
+                            <button class="delete-button-small" onclick="deleteTMClient('${campaign}', '${child.key}')" style="width:32px; height:32px; background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3);">
+                                <i class="fa-solid fa-xmark" style="font-size:0.8rem;"></i>
                             </button>
                         `;
-                        container.appendChild(item);
+                        container.appendChild(row);
                     });
                 });
             };
@@ -13653,10 +13749,12 @@ async function calculateAndDisplayStoreRanking() {
                 const file = e.target.files[0];
                 if (!file) return;
 
-                const campaign = document.getElementById('tm-admin-campaign-select').value;
+                const campaign = document.getElementById('tm-admin-import-campaign').value;
                 const cityTarget = document.getElementById('tm-admin-import-city').value;
                 const statusEl = document.getElementById('tm-admin-status');
-                statusEl.textContent = 'Lendo arquivo Excel...';
+                const fileInput = e.target;
+
+                statusEl.textContent = 'Processando arquivo...';
 
                 const reader = new FileReader();
                 reader.onload = async (event) => {
@@ -13670,39 +13768,52 @@ async function calculateAndDisplayStoreRanking() {
                         const updates = {};
                         let count = 0;
 
-                        for (let i = 9; i < jsonData.length; i++) {
+                        for (let i = 0; i < jsonData.length; i++) {
                             const row = jsonData[i];
-                            const name = row[1];
-                            const phone = row[12];
+                            if (!row || row.length < 2) continue;
 
-                            if (name && phone) {
-                                const cleanPhone = String(phone).replace(/\D/g, '');
-                                if (cleanPhone.length >= 8) {
-                                    const newKey = database.ref().child(`telemarketing/campaigns/${campaign}`).push().key;
-                                    updates[`telemarketing/campaigns/${campaign}/${newKey}`] = {
-                                        name: String(name).trim(),
-                                        number: cleanPhone,
-                                        city: cityTarget,
-                                        status: 'available',
-                                        addedAt: new Date().toISOString()
-                                    };
-                                    count++;
+                            const name = row[1] || row[2]; 
+                            let phone = null;
+                            
+                            for (let j = 0; j < row.length; j++) {
+                                let cellVal = String(row[j] || "");
+                                let clean = cellVal.replace(/\D/g, '');
+                                if (clean.length >= 8 && clean.length <= 11) {
+                                    phone = clean;
+                                    break;
                                 }
+                            }
+
+                            if (name && phone && String(name).toLowerCase() !== 'nome') {
+                                const newKey = database.ref().child('telemarketing/campaigns').push().key;
+                                
+                                updates[`/telemarketing/campaigns/${campaign}/${newKey}`] = {
+                                    name: String(name).trim(),
+                                    number: phone,
+                                    city: cityTarget,
+                                    status: 'available',
+                                    addedAt: new Date().toISOString()
+                                };
+                                count++;
                             }
                         }
 
                         if (count > 0) {
                             await database.ref().update(updates);
-                            statusEl.textContent = `${count} clientes de ${cityTarget.toUpperCase()} adicionados!`;
+                            statusEl.style.color = '#2ecc71';
+                            statusEl.textContent = `Sucesso! ${count} clientes de ${cityTarget.toUpperCase()} importados para ${campaign}.`;
                         } else {
-                            statusEl.textContent = 'Nenhum dado válido encontrado.';
+                            statusEl.style.color = '#f1c40f';
+                            statusEl.textContent = 'Erro: Nenhuma linha válida encontrada (verifique nomes e telefones).';
                         }
 
                     } catch (err) {
-                        console.error(err);
-                        statusEl.textContent = 'Erro ao processar o arquivo.';
+                        console.error("Erro na importação TM:", err);
+                        statusEl.style.color = '#e74c3c';
+                        statusEl.textContent = 'Erro crítico ao ler o Excel.';
+                    } finally {
+                        fileInput.value = '';
                     }
-                    e.target.value = null;
                 };
                 reader.readAsArrayBuffer(file);
             });
