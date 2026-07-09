@@ -5100,7 +5100,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.4 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.5 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -13465,7 +13465,7 @@ async function calculateAndDisplayStoreRanking() {
 
             // Mapeamento de cliques internos da pasta
             const folderMappings = [
-                { id: 'f-telemarketing', original: 'trigger-tm-selection' },
+                { id: 'f-telemarketing', action: () => showPage('telemarketingSelectionPage') },
                 { id: 'f-my-profile', original: 'open-my-profile-btn' },
                 { id: 'f-previsao', original: 'previsao-btn' },
                 { id: 'f-os', original: 'open-os-modal' },
@@ -13482,11 +13482,15 @@ async function calculateAndDisplayStoreRanking() {
 
             folderMappings.forEach(map => {
                 const el = document.getElementById(map.id);
-                const target = document.getElementById(map.original);
-                if (el && target) {
+                if (el) {
                     el.addEventListener('click', () => {
                         closeFolder();
-                        setTimeout(() => { target.click(); }, 100);
+                        if (map.action) {
+                            setTimeout(map.action, 100);
+                        } else if (map.original) {
+                            const target = document.getElementById(map.original);
+                            if (target) setTimeout(() => { target.click(); }, 100);
+                        }
                     });
                 }
             });
