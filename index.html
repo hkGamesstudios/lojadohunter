@@ -5100,7 +5100,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.5 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.2.6 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -11548,45 +11548,51 @@ async function calculateAndDisplayStoreRanking() {
 
                 const msgSnap = await database.ref(`telemarketing/configs/${campaign}/message`).get();
                 const template = msgSnap.exists() ? msgSnap.val() : "Olá {cliente}!";
+                const userCity = (storeMapping.pinheiro.includes(currentUserName)) ? 'pinheiro' : 'bacabal';
 
-                const userCity = storeMapping.pinheiro.includes(currentUserName) ? 'pinheiro' : 'bacabal';
+                database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').on('value', snapshot => {
+                    container.innerHTML = '';
+                    
+                    if (!snapshot.exists()) {
+                        container.innerHTML = `<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente disponível na campanha ${campaign}.</p>`;
+                        return;
+                    }
 
-            database.ref(`telemarketing/campaigns/${campaign}`).orderByChild('status').equalTo('available').on('value', snapshot => {
-                container.innerHTML = '';
-                if (!snapshot.exists()) {
-                    container.innerHTML = '<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente disponível nesta campanha no momento.</p>';
-                    return;
-                }
-
-                let countAdded = 0;
-                snapshot.forEach(child => {
-                    const client = child.val();
-                    if (client.city === userCity && countAdded < 50) {
-                        const card = document.createElement('div');
-                        card.className = 'tm-contact-card';
-                        card.id = `tm-card-${child.key}`;
-
-                        let finalMsg = template.replace(/{cliente}/g, client.name).replace(/{vendedor}/g, currentUserName);
-                        const encodedMsg = encodeURIComponent(finalMsg);
+                    let countAdded = 0;
+                    snapshot.forEach(child => {
+                        const client = child.val();
                         
-                        card.innerHTML = `
-                            <div class="tm-contact-info">
-                                <h4>${client.name}</h4>
-                                <p>${client.number}</p>
-                            </div>
-                            <a href="https://wa.me/55${client.number.replace(/\D/g,'')}?text=${encodedMsg}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
-                                <i class="fa-brands fa-whatsapp" style="font-size: 1.8rem;"></i>
-                            </a>
-                        `;
-                        container.appendChild(card);
-                        countAdded++;
+                        if (client.city === userCity && countAdded < 50) {
+                            const card = document.createElement('div');
+                            card.className = 'tm-contact-card';
+                            card.id = `tm-card-${child.key}`;
+
+                            let finalMsg = template.replace(/{cliente}/g, client.name || 'Cliente').replace(/{vendedor}/g, currentUserName);
+                            const encodedMsg = encodeURIComponent(finalMsg);
+                            
+                            card.innerHTML = `
+                                <div class="tm-contact-info">
+                                    <h4>${client.name}</h4>
+                                    <p>${client.number}</p>
+                                </div>
+                                <a href="https://wa.me/55${client.number.replace(/\D/g,'')}?text=${encodedMsg}" target="_blank" class="tm-wa-btn" onclick="claimTMContact('${campaign}', '${child.key}')">
+                                    <i class="fa-brands fa-whatsapp" style="font-size: 1.8rem;"></i>
+                                </a>
+                            `;
+                            container.appendChild(card);
+                            countAdded++;
+                        }
+                    });
+
+                    if (countAdded === 0) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:2rem; color:#aaa;">
+                                <i class="fa-solid fa-person-circle-question" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p>Nenhum cliente de <strong>${userCity.toUpperCase()}</strong> disponível na campanha <strong>${campaign}</strong>.</p>
+                                <p style="font-size: 0.7rem; margin-top: 10px;">Peça para a gerência subir uma lista específica para sua cidade nesta campanha.</p>
+                            </div>`;
                     }
                 });
-
-                if (countAdded === 0) {
-                    container.innerHTML = `<p style="text-align:center; padding:2rem; color:#aaa;">Nenhum cliente de ${userCity.toUpperCase()} disponível.</p>`;
-                }
-            });
             };
 
             window.claimTMContact = async (campaign, clientKey) => {
@@ -13595,6 +13601,13 @@ async function calculateAndDisplayStoreRanking() {
             setupPromoCarousel();
 
             document.getElementById('tm-admin-list-filter').addEventListener('change', loadTMAdminClientList);
+            
+            document.getElementById('tm-admin-campaign-select').addEventListener('change', (e) => {
+                const campaign = e.target.value;
+                database.ref(`telemarketing/configs/${campaign}/message`).get().then(snap => {
+                    document.getElementById('tm-admin-message-template').value = snap.exists() ? snap.val() : "";
+                });
+            });
 
             document.getElementById('tm-admin-save-msg-btn').addEventListener('click', async () => {
                 const campaign = document.getElementById('tm-admin-campaign-select').value;
@@ -13765,7 +13778,8 @@ async function calculateAndDisplayStoreRanking() {
                 
                 showPage('telemarketingSelectionPage');
                 
-                database.ref(`telemarketing/configs/PHO/message`).get().then(snap => {
+                const campaignToLoad = document.getElementById('tm-admin-campaign-select').value;
+                database.ref(`telemarketing/configs/${campaignToLoad}/message`).get().then(snap => {
                     if (snap.exists()) document.getElementById('tm-admin-message-template').value = snap.val();
                 });
             };
