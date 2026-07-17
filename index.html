@@ -1070,13 +1070,31 @@
         #telemarketing-selection-page .collaborator-content,
         #telemarketing-list-page .collaborator-content,
         #telemarketing-admin-page .collaborator-content,
-        #telemarketing-stats-page .collaborator-content {
-            width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
-            align-items: stretch;
-            flex-direction: column;
-        }
+        #telemarketing-stats-page .collaborator-content,
+#afiliados-selection-page .collaborator-content,
+#afiliados-stores-page .collaborator-content,
+#afiliados-admin-page .collaborator-content {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+#af-stores-container .action-button {
+    aspect-ratio: 1/1;
+    padding: 1rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+#af-stores-container img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
 
                 /* ================================================= */
         /* == ESTILOS PARA A SEÇÃO MT (MOSTRUÁRIO)        == */
@@ -3190,8 +3208,8 @@
                 </div>
                 <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 1rem; opacity: 0.5;"></i>
             </button>
-            <button class="action-button full-width tm-campaign-btn" data-campaign="BAC" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #2980b9;">
-                <div class="tool-icon-wrapper" style="background: #2980b9;"><i class="fa-solid fa-location-dot"></i></div>
+            <button class="action-button full-width tm-campaign-btn" data-campaign="BAC" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
                 <div style="text-align: left;">
                     <strong style="display: block; font-size: 1.1rem;">BACABAL (BAC)</strong>
                     <span style="font-size: 0.7rem; opacity: 0.7;">Lista de Clientes Bacabal</span>
@@ -3285,20 +3303,81 @@
 
     <!-- TELA TELEMARKETING: ETAPA 4 (ESTATÍSTICAS GS) -->
     <div id="telemarketing-stats-page" style="display: none;">
-        <div class="collaborator-header">
-            <button id="back-to-gs-from-tm-stats" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Envios Telemarketing</h2>
+    <div class="collaborator-header">
+        <button id="back-to-gs-from-tm-stats" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2>Envios Telemarketing</h2>
+    </div>
+    <div class="collaborator-content" style="align-items: stretch;">
+        <div id="tm-stats-summary" class="kpi-card" style="margin-bottom: 1rem; text-align: center;">
+            <span class="kpi-title">TOTAL DE ENVIOS HOJE</span>
+            <span id="tm-total-today-val" class="kpi-value" style="font-size: 3rem; color: #e67e22;">0</span>
         </div>
-        <div class="collaborator-content" style="align-items: stretch;">
-            <div id="tm-stats-summary" class="kpi-card" style="margin-bottom: 1rem; text-align: center;">
-                <span class="kpi-title">TOTAL DE ENVIOS HOJE</span>
-                <span id="tm-total-today-val" class="kpi-value" style="font-size: 3rem; color: #e67e22;">0</span>
-            </div>
-            <div id="tm-stats-list-container" class="ranking-list">
-                <!-- Lista de agentes e seus envios injetados via JS -->
-            </div>
+        <div id="tm-stats-list-container" class="ranking-list">
+            <!-- Lista de agentes e seus envios injetados via JS -->
         </div>
     </div>
+</div>
+
+<!-- TELA AFILIADOS: ETAPA 1 (SELEÇÃO CIDADE) -->
+<div id="afiliados-selection-page" style="display: none;">
+    <div class="collaborator-header" style="flex-direction: column; padding: 1rem; height: auto; gap: 0.5rem;">
+        <button id="back-to-main-from-afiliados-select" class="back-button" style="position: static; transform: none; align-self: flex-start; margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2 style="padding: 0; text-align: center; width: 100%;">Afiliados</h2>
+    </div>
+    <div class="collaborator-content" style="gap: 1.5rem; padding-top: 2rem;">
+        <p style="text-align: center; font-size: 0.9rem; color: #ccc;">Selecione a unidade</p>
+        <button class="action-button full-width af-city-btn" data-city="PHO" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+            <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
+            <div style="text-align: left;">
+                <strong style="display: block; font-size: 1.1rem;">PINHEIRO (PHO)</strong>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 1rem; opacity: 0.5;"></i>
+        </button>
+        <button class="action-button full-width af-city-btn" data-city="BAC" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+            <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
+            <div style="text-align: left;">
+                <strong style="display: block; font-size: 1.1rem;">BACABAL (BAC)</strong>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left: auto; font-size: 1rem; opacity: 0.5;"></i>
+        </button>
+    </div>
+</div>
+
+<!-- TELA AFILIADOS: ETAPA 2 (LISTA DE LOJAS) -->
+<div id="afiliados-stores-page" style="display: none;">
+    <div class="collaborator-header" style="flex-direction: column; padding: 1rem; height: auto; gap: 0.5rem;">
+        <button id="back-to-af-selection" class="back-button" style="position: static; transform: none; align-self: flex-start; margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2 id="af-stores-title" style="padding: 0; text-align: center; width: 100%;">Lojas Parceiras</h2>
+    </div>
+    <div id="af-stores-container" class="collaborator-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.5rem; align-items: start;">
+        <!-- Lojas injetadas aqui -->
+    </div>
+</div>
+
+<!-- TELA AFILIADOS: ADMIN GS -->
+<div id="afiliados-admin-page" style="display: none;">
+    <div class="collaborator-header" style="flex-direction: column; padding: 1rem; height: auto; gap: 0.5rem;">
+        <button id="back-to-gs-from-af-admin" class="back-button" style="position: static; transform: none; align-self: flex-start; margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2 style="padding: 0; text-align: center; width: 100%;">Gerenciar Afiliados</h2>
+    </div>
+    <div class="collaborator-content" style="align-items: stretch; padding-bottom: 3rem;">
+        <div class="tm-admin-card" style="border-left: 5px solid #f39c12;">
+            <div class="tm-admin-section-title"><i class="fa-solid fa-shop"></i> Configurar Contatos</div>
+            <div class="input-group">
+                <label>Selecione a Unidade</label>
+                <select id="af-admin-city-select" class="data-input">
+                    <option value="PHO">Pinheiro (PHO)</option>
+                    <option value="BAC">Bacabal (BAC)</option>
+                </select>
+            </div>
+            <div id="af-admin-inputs-container">
+                <!-- Gerado via JS -->
+            </div>
+            <button id="af-admin-save-btn" class="action-button full-width" style="height: auto; padding: 15px; background: #27ae60; margin-top: 1rem;"><i class="fa-solid fa-save"></i> Salvar Todos os Números</button>
+            <p id="af-admin-status" class="status-message"></p>
+        </div>
+    </div>
+</div>
 
     <div id="login-overlay" class="modal-overlay" style="display: none; backdrop-filter: blur(10px); background-color: rgba(0,0,0,0.8);">
         <div id="login-form-section" class="modal-content">
@@ -3435,8 +3514,9 @@
                         <div class="folder-app-item" id="f-recibos"><div class="folder-app-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Recibos</span></div>
                         <div class="folder-app-item" id="f-send"><div class="folder-app-icon"><i class="fa-solid fa-paper-plane"></i></div><span>Enviar Disp.</span></div>
                         <div class="folder-app-item" id="f-feedback"><div class="folder-app-icon"><i class="fa-solid fa-lightbulb"></i></div><span>Sugestão</span></div>
-                        <div class="folder-app-item" id="f-telemarketing"><div class="folder-app-icon"><i class="fa-solid fa-headset"></i></div><span>Telemarketing</span></div>
-                </div>
+                    <div class="folder-app-item" id="f-telemarketing"><div class="folder-app-icon"><i class="fa-solid fa-headset"></i></div><span>Telemarketing</span></div>
+                    <div class="folder-app-item" id="f-afiliados"><div class="folder-app-icon"><i class="fa-solid fa-handshake"></i></div><span>Afiliados</span></div>
+            </div>
 
                     
 
@@ -4083,8 +4163,9 @@
                 <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
                 <button id="open-tm-admin-btn" class="gs-action-btn"><i class="fa-solid fa-users-gear"></i><span>Clientes TM</span></button>
                 <button id="open-tm-stats-btn" class="gs-action-btn"><i class="fa-solid fa-chart-line"></i><span>Envios TM</span></button>
-                <button id="open-daily-increase-page" class="gs-action-btn" style="border: 2px solid #f1c40f;"><i class="fa-solid fa-arrow-up-right-dots"></i><span>Aumento %</span></button>
-            </div>
+            <button id="open-afiliados-admin-btn" class="gs-action-btn"><i class="fa-solid fa-handshake"></i><span>Afiliados</span></button>
+            <button id="open-daily-increase-page" class="gs-action-btn" style="border: 2px solid #f1c40f;"><i class="fa-solid fa-arrow-up-right-dots"></i><span>Aumento %</span></button>
+        </div>
 
             <!-- KPIs principais -->
             <div class="dashboard-grid">
@@ -5199,7 +5280,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.2.9 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5314,7 +5395,13 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('telemarketing-selection-page').classList.add('page');
     document.getElementById('telemarketing-list-page').classList.add('page');
     document.getElementById('telemarketing-admin-page').classList.add('page');
-    document.getElementById('telemarketing-stats-page').classList.add('page');
+document.getElementById('telemarketing-stats-page').classList.add('page');
+document.getElementById('afiliados-selection-page').classList.add('page');
+document.getElementById('afiliados-stores-page').classList.add('page');
+document.getElementById('afiliados-admin-page').classList.add('page');
+document.getElementById('afiliados-selection-page').classList.add('page');
+document.getElementById('afiliados-stores-page').classList.add('page');
+document.getElementById('afiliados-admin-page').classList.add('page');
 
     // ADICIONANDO AS NOVAS PÁGINAS DE SUBMISSÃO
     document.getElementById('stock-requests-page').classList.add('page');
@@ -5374,15 +5461,16 @@ Transporte - R$ 5,00"></textarea></div>
         telemarketingListPage: document.getElementById('telemarketing-list-page'),
         telemarketingAdminPage: document.getElementById('telemarketing-admin-page'),
         telemarketingStatsPage: document.getElementById('telemarketing-stats-page'),
+    afiliadosSelectionPage: document.getElementById('afiliados-selection-page'),
+    afiliadosStoresPage: document.getElementById('afiliados-stores-page'),
+    afiliadosAdminPage: document.getElementById('afiliados-admin-page'),
         dailyIncreaseManagementPage: document.getElementById('daily-increase-management-page'),
         telemarketingSelectionPage: document.getElementById('telemarketing-selection-page'),
         telemarketingListPage: document.getElementById('telemarketing-list-page'),
-        telemarketingAdminPage: document.getElementById('telemarketing-admin-page'),
-        telemarketingStatsPage: document.getElementById('telemarketing-stats-page'),
 
 
         // ADICIONANDO AS NOVAS PÁGINAS DE SUBMISSÃO
-        stockRequestsPage: document.getElementById('stock-requests-page'),
+        stockRequestsPage: document.getElementById('stock-requests-page'),  
         recibosSubmissionsPage: document.getElementById('recibos-submissions-page'),
         quizSubmissionsPage: document.getElementById('quiz-submissions-page'),
         feedbackSubmissionsPage: document.getElementById('feedback-submissions-page'),
@@ -7028,48 +7116,95 @@ function showScreen(screenElement) {
     // As funções loadgsData e savegsData foram removidas pois se tornaram obsoletas
     // com a implementação do novo Dashboard e da página de Configurações Gerais.
             const buildAndLoadMetasPage = () => {
-    const container = document.getElementById('metas-content-container');
-    container.innerHTML = `<p style="text-align: center;">Carregando dados...</p>`;
-
-    database.ref('metas').get().then(metasSnapshot => {
-        const allMetas = metasSnapshot.exists() ? metasSnapshot.val() : {};
-        container.innerHTML = '';
-
-        // NOVO CONTAINER: META DA LOJA
-        container.innerHTML += `
-            <div class="employee-meta-card" style="border: 2px solid var(--primary-color);">
-                <h4 style="color: var(--primary-color);">META DA LOJA (GERENTES)</h4>
-                <div class="input-group">
-                    <label>Gerente de Pinheiro (Eliseu)</label>
-                    <input type="text" id="meta-loja-eliseu" class="data-input" placeholder="0,00" value="${formatToBRLInput(allMetas['eliseu']?.metaLoja)}">
-                </div>
-                <div class="input-group">
-                    <label>Gerente de Bacabal (Tacilio)</label>
-                    <input type="text" id="meta-loja-tacilio" class="data-input" placeholder="0,00" value="${formatToBRLInput(allMetas['tacilio']?.metaLoja)}">
-                </div>
+        const container = document.getElementById('metas-content-container');
+        showPage('metasConfigPage');
+        
+        container.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; width: 100%;">
+                <p style="text-align: center; color: #ccc; font-size: 0.9rem;">Configurar Metas por Loja</p>
+                <button class="action-button full-width" onclick="renderMetasForm('pinheiro')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                    <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
+                    <strong style="font-size: 1.1rem;">PINHEIRO</strong>
+                </button>
+                <button class="action-button full-width" onclick="renderMetasForm('bacabal')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                    <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
+                    <strong style="font-size: 1.1rem;">BACABAL</strong>
+                </button>
             </div>
         `;
+    };
 
-        allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
-            const key = name.toLowerCase();
-            const metasData = allMetas[key] || {};
+    window.renderMetasForm = async (store) => {
+        const container = document.getElementById('metas-content-container');
+        container.innerHTML = `<p style="text-align: center; padding: 2rem;">Buscando metas de ${store}...</p>`;
+        
+        const employees = storeMapping[store];
+        const managerName = store === 'pinheiro' ? 'Eliseu' : 'Tacilio';
+        const managerKey = managerName.toLowerCase();
+
+        try {
+            const snap = await database.ref('metas').get();
+            const allMetas = snap.exists() ? snap.val() : {};
             
+            container.innerHTML = `<button onclick="buildAndLoadMetasPage()" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Alterar Loja</button>`;
+
+            // Card da Gerente/Loja
             container.innerHTML += `
-                <div class="employee-meta-card">
-                    <h4>Metas e Prêmios: ${name}</h4>
-                    <div class="meta-group-title">Metas</div>
-                    <div class="input-group"><label for="venda-${key}">Meta de Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(metasData.venda)}"></div>
-                    <div class="input-group"><label for="meta-servico-${key}">Meta de Serviço (R$)</label><input type="text" inputmode="decimal" id="meta-servico-${key}" class="data-input" value="${formatToBRLInput(metasData.meta_servico)}"></div>
-                </div>`;
+                <div class="employee-meta-card" style="border: 2px solid var(--primary-color);">
+                    <h4 style="color: var(--primary-color);">META LOJA ${store.toUpperCase()}</h4>
+                    <div class="input-group">
+                        <label>Gerente ${managerName}</label>
+                        <input type="text" id="meta-loja-input" class="data-input" placeholder="0,00" value="${formatToBRLInput(allMetas[managerKey]?.metaLoja)}">
+                    </div>
+                </div>
+            `;
+
+            employees.filter(name => name !== 'Beatriz').forEach(name => {
+                const key = name.toLowerCase();
+                const data = allMetas[key] || {};
+                container.innerHTML += `
+                    <div class="employee-meta-card">
+                        <h4>Metas: ${name}</h4>
+                        <div class="input-group"><label>Meta Venda (R$)</label><input type="text" id="venda-${key}" class="data-input" value="${formatToBRLInput(data.venda)}"></div>
+                        <div class="input-group"><label>Meta Serviço (R$)</label><input type="text" id="meta-servico-${key}" class="data-input" value="${formatToBRLInput(data.meta_servico)}"></div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <button id="save-metas-store-btn" class="action-button full-width" style="margin-top: 1rem; background: #27ae60; height: auto; padding: 15px;">
+                    <i class="fa-solid fa-save"></i> Salvar Metas ${store.toUpperCase()}
+                </button>
+                <p id="metas-status-message" class="status-message"></p>
+                <div style="height: 50px;"></div>
+            `;
+
+            document.getElementById('save-metas-store-btn').onclick = () => saveStoreMetas(store);
+        } catch (e) { console.error(e); }
+    };
+
+    const saveStoreMetas = async (store) => {
+        const statusEl = document.getElementById('metas-status-message');
+        const employees = storeMapping[store];
+        const managerKey = (store === 'pinheiro' ? 'Eliseu' : 'Tacilio').toLowerCase();
+        
+        statusEl.textContent = 'Salvando...';
+        const updates = {};
+
+        employees.filter(name => name !== 'Beatriz').forEach(name => {
+            const key = name.toLowerCase();
+            updates[`/metas/${key}/venda`] = parseFromBRLInput(document.getElementById(`venda-${key}`).value);
+            updates[`/metas/${key}/meta_servico`] = parseFromBRLInput(document.getElementById(`meta-servico-${key}`).value);
         });
 
-        container.innerHTML += `
-            <button id="save-all-metas" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Todas as Metas</button>
-            <p id="metas-status-message" class="status-message"></p>
-        `;
-        document.getElementById('save-all-metas').addEventListener('click', saveAllMetas);
-    });
-};
+        updates[`/metas/${managerKey}/metaLoja`] = parseFromBRLInput(document.getElementById('meta-loja-input').value);
+
+        try {
+            await database.ref().update(updates);
+            statusEl.textContent = 'Metas salvas com sucesso!';
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+        } catch (e) { console.error(e); statusEl.textContent = 'Erro ao salvar.'; }
+    };
 
 const saveAllMetas = () => {
     const statusMessage = document.getElementById('metas-status-message');
@@ -7275,12 +7410,37 @@ const loadAndDisplayCollaboratorMetas = () => {
         });
     };
 
-    const loadBrandDevices = (brand) => {
+    const loadBrandDevices = (brand, subFilter = null) => {
         currentBrand = brand;
-        document.getElementById('brand-page-title').textContent = brand.charAt(0).toUpperCase() + brand.slice(1);
-        const grid = document.getElementById('brand-devices-grid');
         
-        // Estilização robusta para evitar empilhamento
+        const grid = document.getElementById('brand-devices-grid');
+        const titleEl = document.getElementById('brand-page-title');
+        
+        titleEl.textContent = brand.toUpperCase();
+        if (subFilter) titleEl.textContent += ` - ${subFilter.toUpperCase()}`;
+
+        if (brand === 'apple' && !subFilter) {
+            grid.style.display = 'flex';
+            grid.style.flexDirection = 'column';
+            grid.style.alignItems = 'stretch';
+            grid.style.gap = '1.5rem';
+            grid.style.padding = '2rem 1rem';
+            
+            grid.innerHTML = `
+                <p style="text-align: center; color: #ccc; font-size: 0.9rem;">Selecione a Categoria</p>
+                <button class="action-button full-width" onclick="loadBrandDevices('apple', 'LACRADO')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                    <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-box"></i></div>
+                    <strong style="font-size: 1.1rem;">LACRADO</strong>
+                </button>
+                <button class="action-button full-width" onclick="loadBrandDevices('apple', 'SWAP')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                    <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-rotate"></i></div>
+                    <strong style="font-size: 1.1rem;">SWAP</strong>
+                </button>
+            `;
+            showPage('brandDevicesPage');
+            return;
+        }
+
         grid.style.display = 'flex';
         grid.style.flexDirection = 'row';
         grid.style.flexWrap = 'wrap';
@@ -7294,6 +7454,16 @@ const loadAndDisplayCollaboratorMetas = () => {
 
         database.ref(`devices/${brand}`).once('value', snapshot => {
             grid.innerHTML = '';
+            
+            if (brand === 'apple' && subFilter) {
+                const backCat = document.createElement('button');
+                backCat.className = 'back-button';
+                backCat.style.cssText = "position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; width: 100%; font-size: 0.8rem; font-weight: bold;";
+                backCat.innerHTML = `<i class="fa-solid fa-chevron-left"></i> Escolher Outra Categoria`;
+                backCat.onclick = () => loadBrandDevices('apple');
+                grid.appendChild(backCat);
+            }
+
             if (snapshot.exists()) {
                 const devices = snapshot.val();
                 let hasValidDevice = false;
@@ -7303,6 +7473,12 @@ const loadAndDisplayCollaboratorMetas = () => {
                     
                     if (!device.name || device.name.toLowerCase().includes('undefined') || !device.imageUrl || device.imageUrl === '') {
                         return;
+                    }
+
+                    if (brand === 'apple' && subFilter) {
+                        const nameUpper = device.name.toUpperCase();
+                        if (subFilter === 'SWAP' && !nameUpper.startsWith('SWAP')) return;
+                        if (subFilter === 'LACRADO' && !nameUpper.startsWith('APPLE')) return;
                     }
 
                     hasValidDevice = true;
@@ -11420,23 +11596,40 @@ async function calculateAndDisplayStoreRanking() {
         } catch (e) { console.error(e); }
     };
 
-    const openManualSalePage = async () => {
+    const openManualSalePage = () => {
         const container = document.getElementById('manual-sale-content-container');
-        container.innerHTML = `<p style="text-align: center;">Carregando dados de hoje...</p>`;
         showPage('manualSalePage');
-
-        const todayString = getTodayDateString();
         
+        container.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; width: 100%;">
+                <p style="text-align: center; color: #ccc; font-size: 0.9rem;">Selecione a Unidade</p>
+                <button class="action-button full-width" onclick="renderManualSaleForm('pinheiro')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                    <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
+                    <strong style="font-size: 1.1rem;">PINHEIRO</strong>
+                </button>
+                <button class="action-button full-width" onclick="renderManualSaleForm('bacabal')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
+                    <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
+                    <strong style="font-size: 1.1rem;">BACABAL</strong>
+                </button>
+            </div>
+        `;
+    };
+
+    window.renderManualSaleForm = async (store) => {
+        const container = document.getElementById('manual-sale-content-container');
+        container.innerHTML = `<p style="text-align: center; padding: 2rem;">Carregando equipe de ${store}...</p>`;
+        
+        const todayString = getTodayDateString();
+        const employees = storeMapping[store];
+
         try {
             const snapshot = await database.ref(`dailySales/${todayString}`).get();
             const dailyData = snapshot.exists() ? snapshot.val() : {};
-
-            container.innerHTML = '';
+            container.innerHTML = `<button onclick="openManualSalePage()" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Alterar Loja</button>`;
             
-            allCollaborators.filter(name => name !== 'Beatriz').forEach(name => {
+            employees.filter(name => name !== 'Beatriz').forEach(name => {
                 const key = name.toLowerCase();
                 const userDaily = dailyData[key] || { vendas: 0, servico: 0 };
-
                 container.innerHTML += `
                     <div class="employee-meta-card">
                         <h4 style="color: #fff; margin-bottom: 10px;">${name}</h4>
@@ -11453,19 +11646,53 @@ async function calculateAndDisplayStoreRanking() {
             });
 
             container.innerHTML += `
-                <button id="save-manual-sales-btn" class="action-button full-width" style="margin-top: 1rem; background: #27ae60;">
-                    <i class="fa-solid fa-check-double"></i> Atualizar Valores de Hoje
+                <button id="save-manual-sales-btn" class="action-button full-width" style="margin-top: 1rem; background: #27ae60; height: auto; padding: 15px;">
+                    <i class="fa-solid fa-check-double"></i> Salvar Vendas ${store.toUpperCase()}
                 </button>
                 <p id="manual-sale-status" class="status-message"></p>
                 <div style="height: 50px;"></div>
             `;
+            document.getElementById('save-manual-sales-btn').onclick = () => saveTodayManualSalesByStore(store);
+        } catch (e) { console.error(e); }
+    };
 
-            document.getElementById('save-manual-sales-btn').addEventListener('click', saveTodayManualSales);
+    const saveTodayManualSalesByStore = async (store) => {
+        const statusEl = document.getElementById('manual-sale-status');
+        const employees = storeMapping[store];
+        if (!confirm(`Confirmar atualização de hoje para a loja ${store.toUpperCase()}?`)) return;
+        
+        statusEl.textContent = 'Salvando...';
+        const todayString = getTodayDateString();
+        
+        try {
+            const [salesSnap, dailySnap] = await Promise.all([
+                database.ref('salesData').get(),
+                database.ref(`dailySales/${todayString}`).get()
+            ]);
 
-        } catch (error) {
-            container.innerHTML = '<p>Erro ao carregar dados.</p>';
-            console.error(error);
-        }
+            const currentSalesData = salesSnap.exists() ? salesSnap.val() : {};
+            const currentDailyData = dailySnap.exists() ? dailySnap.val() : {};
+            const updates = {};
+
+            employees.filter(name => name !== 'Beatriz').forEach(name => {
+                const key = name.toLowerCase();
+                const newVendaHoje = parseFromBRLInput(document.getElementById(`manual-venda-${key}`).value);
+                const newServicoHoje = parseFromBRLInput(document.getElementById(`manual-servico-${key}`).value);
+                const oldVendaHoje = currentDailyData[key]?.vendas || 0;
+                const oldServicoHoje = currentDailyData[key]?.servico || 0;
+                const totalVendaAcumulada = currentSalesData[key]?.vendas || 0;
+                const totalServicoAcumulado = currentSalesData[key]?.servico || 0;
+
+                updates[`/dailySales/${todayString}/${key}/vendas`] = newVendaHoje;
+                updates[`/dailySales/${todayString}/${key}/servico`] = newServicoHoje;
+                updates[`/salesData/${key}/vendas`] = totalVendaAcumulada + (newVendaHoje - oldVendaHoje);
+                updates[`/salesData/${key}/servico`] = totalServicoAcumulado + (newServicoHoje - oldServicoHoje);
+            });
+
+            await database.ref().update(updates);
+            statusEl.textContent = 'Atualizado com sucesso!';
+            setTimeout(() => { statusEl.textContent = ''; }, 3000);
+        } catch (e) { console.error(e); statusEl.textContent = 'Erro ao salvar.'; }
     };
 
     const saveTodayManualSales = async () => {
@@ -11897,7 +12124,12 @@ async function calculateAndDisplayStoreRanking() {
                     loadTMAdminClientList();
                 });
                 safeAddListener('open-tm-stats-btn', 'click', loadTelemarketingStats);
-                safeAddListener('open-earnings-panel-btn', 'click', loadEarningsPanel);
+            safeAddListener('open-afiliados-admin-btn', 'click', () => {
+                showPage('afiliadosAdminPage');
+                loadAfiliadosAdmin();
+            });
+            safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
+            safeAddListener('back-to-gs-from-af-admin', 'click', () => showPage('gsPage'));
                 safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
                 safeAddListener('back-to-gs-from-tm-stats', 'click', () => showPage('gsPage'));
 
@@ -13573,6 +13805,8 @@ async function calculateAndDisplayStoreRanking() {
             // Mapeamento de cliques internos da pasta
             const folderMappings = [
                 { id: 'f-telemarketing', action: () => showPage('telemarketingSelectionPage') },
+            { id: 'f-afiliados', action: () => showPage('afiliadosSelectionPage') },
+            { id: 'f-afiliados', action: () => showPage('afiliadosSelectionPage') },
                 { id: 'f-my-profile', original: 'open-my-profile-btn' },
                 { id: 'f-previsao', original: 'previsao-btn' },
                 { id: 'f-os', original: 'open-os-modal' },
@@ -13836,7 +14070,92 @@ async function calculateAndDisplayStoreRanking() {
             });
 
             // Lógica para Salvar Backup da Lista Atual (TXT)
-            document.getElementById('tm-admin-backup-list').addEventListener('click', async () => {
+            const AFILIADOS_STORES_LIST = [
+            { id: 'magalu', name: 'Magalu', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Magazine_Luiza_logo.svg/1200px-Magazine_Luiza_logo.svg.png' },
+            { id: 'casasbahia', name: 'Casas Bahia', img: 'https://seeklogo.com/images/C/casas-bahia-logo-500D58C4F6-seeklogo.com.png' },
+            { id: 'noroeste', name: 'Noroeste', img: 'https://noroeste.com/assets/img/logo-noroeste.png' },
+            { id: 'paraiba', name: 'A. Paraíba', img: 'https://www.armazemparaiba.com.br/arquivos/logo-paraiba.png' },
+            { id: 'novomundo', name: 'Novo Mundo', img: 'https://www.novomundo.com.br/assets/images/logo_novo_mundo.png' }
+        ];
+
+        const loadAfiliadosStores = async (city) => {
+            const container = document.getElementById('af-stores-container');
+            document.getElementById('af-stores-title').textContent = city === 'PHO' ? 'Pinheiro (PHO)' : 'Bacabal (BAC)';
+            container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Carregando lojas...</p>';
+            showPage('afiliadosStoresPage');
+
+            try {
+                const snap = await database.ref(`afiliados/${city}`).get();
+                const numbers = snap.exists() ? snap.val() : {};
+                container.innerHTML = '';
+
+                AFILIADOS_STORES_LIST.forEach(store => {
+                    const phone = numbers[store.id] || "";
+                    const btn = document.createElement('button');
+                    btn.className = 'action-button';
+                    btn.style.height = "auto";
+                    btn.style.aspectRatio = "1/1";
+                    btn.innerHTML = `
+                        <img src="${store.img}" alt="${store.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/606/606547.png'" style="width:50px; height:50px; object-fit:contain; margin-bottom:8px;">
+                        <span>${store.name}</span>
+                    `;
+                    btn.onclick = () => {
+                        if (!phone) return alert('Número não cadastrado para esta loja.');
+                        window.open(`https://wa.me/55${phone.replace(/\D/g,'')}`, '_blank');
+                    };
+                    container.appendChild(btn);
+                });
+            } catch (e) { console.error(e); }
+        };
+
+        const loadAfiliadosAdmin = async () => {
+            const city = document.getElementById('af-admin-city-select').value;
+            const container = document.getElementById('af-admin-inputs-container');
+            container.innerHTML = '<p style="text-align:center;">Buscando dados...</p>';
+
+            try {
+                const snap = await database.ref(`afiliados/${city}`).get();
+                const data = snap.exists() ? snap.val() : {};
+                container.innerHTML = '';
+
+                AFILIADOS_STORES_LIST.forEach(store => {
+                    const val = data[store.id] || "";
+                    container.innerHTML += `
+                        <div class="input-group">
+                            <label>${store.name} (WhatsApp)</label>
+                            <input type="text" id="af-input-${store.id}" class="data-input" value="${val}" placeholder="Ex: 989XXXXXXXX">
+                        </div>
+                    `;
+                });
+            } catch (e) { console.error(e); }
+        };
+
+        document.querySelectorAll('.af-city-btn').forEach(btn => {
+            btn.addEventListener('click', () => loadAfiliadosStores(btn.dataset.city));
+        });
+
+        document.getElementById('back-to-main-from-afiliados-select').addEventListener('click', showMainPage);
+        document.getElementById('back-to-af-selection').addEventListener('click', () => showPage('afiliadosSelectionPage'));
+        document.getElementById('af-admin-city-select').addEventListener('change', loadAfiliadosAdmin);
+
+        document.getElementById('af-admin-save-btn').addEventListener('click', async () => {
+            const city = document.getElementById('af-admin-city-select').value;
+            const status = document.getElementById('af-admin-status');
+            const updates = {};
+
+            AFILIADOS_STORES_LIST.forEach(store => {
+                updates[store.id] = document.getElementById(`af-input-${store.id}`).value.trim();
+            });
+
+            status.textContent = 'Salvando...';
+            try {
+                await database.ref(`afiliados/${city}`).set(updates);
+                status.textContent = 'Salvo com sucesso!';
+                setTimeout(() => status.textContent = '', 2000);
+            } catch (e) { console.error(e); status.textContent = 'Erro ao salvar.'; }
+        });
+
+        document.getElementById('tm-admin-backup-list').addEventListener('click', async () => {
                 const campaign = document.getElementById('tm-admin-list-filter').value;
                 const statusEl = document.getElementById('tm-admin-status');
                 
