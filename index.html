@@ -3319,12 +3319,12 @@
 </div>
 
 <!-- TELA AFILIADOS: ETAPA 1 (SELEÇÃO CIDADE) -->
-<div id="afiliados-selection-page" style="display: none;">
-    <div class="collaborator-header" style="flex-direction: column; padding: 1rem; height: auto; gap: 0.5rem;">
-        <button id="back-to-main-from-afiliados-select" class="back-button" style="position: static; transform: none; align-self: flex-start; margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-        <h2 style="padding: 0; text-align: center; width: 100%;">Afiliados</h2>
+<div id="afiliados-selection-page" style="display: none; flex-direction: column; align-items: center;">
+    <div class="collaborator-header" style="flex-direction: column; align-items: center; padding: 1.5rem 1rem; height: auto; width: 100%; max-width: 450px;">
+        <button id="back-to-main-from-afiliados-select" class="back-button" style="position: static; transform: none; margin-bottom: 10px; background: rgba(255,255,255,0.1); padding: 8px 30px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2 style="padding: 0; text-align: center;">Afiliados</h2>
     </div>
-    <div class="collaborator-content" style="gap: 1.5rem; padding-top: 2rem;">
+    <div class="collaborator-content" style="gap: 1.5rem; padding-top: 1rem; width: 100%; max-width: 450px;">
         <p style="text-align: center; font-size: 0.9rem; color: #ccc;">Selecione a unidade</p>
         <button class="action-button full-width af-city-btn" data-city="PHO" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
             <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
@@ -3344,23 +3344,23 @@
 </div>
 
 <!-- TELA AFILIADOS: ETAPA 2 (LISTA DE LOJAS) -->
-<div id="afiliados-stores-page" style="display: none;">
-    <div class="collaborator-header" style="flex-direction: column; padding: 1rem; height: auto; gap: 0.5rem;">
-        <button id="back-to-af-selection" class="back-button" style="position: static; transform: none; align-self: flex-start; margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-        <h2 id="af-stores-title" style="padding: 0; text-align: center; width: 100%;">Lojas Parceiras</h2>
+<div id="afiliados-stores-page" style="display: none; flex-direction: column; align-items: center;">
+    <div class="collaborator-header" style="flex-direction: column; align-items: center; padding: 1.5rem 1rem; height: auto; width: 100%; max-width: 450px;">
+        <button id="back-to-af-selection" class="back-button" style="position: static; transform: none; margin-bottom: 10px; background: rgba(255,255,255,0.1); padding: 8px 30px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2 id="af-stores-title" style="padding: 0; text-align: center;">Lojas Parceiras</h2>
     </div>
-    <div id="af-stores-container" class="collaborator-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.5rem; align-items: start;">
+    <div id="af-stores-container" class="collaborator-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.5rem; align-items: start; width: 100%; max-width: 450px;">
         <!-- Lojas injetadas aqui -->
     </div>
 </div>
 
 <!-- TELA AFILIADOS: ADMIN GS -->
-<div id="afiliados-admin-page" style="display: none;">
-    <div class="collaborator-header" style="flex-direction: column; padding: 1rem; height: auto; gap: 0.5rem;">
-        <button id="back-to-gs-from-af-admin" class="back-button" style="position: static; transform: none; align-self: flex-start; margin-bottom: 0.5rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-        <h2 style="padding: 0; text-align: center; width: 100%;">Gerenciar Afiliados</h2>
+<div id="afiliados-admin-page" style="display: none; flex-direction: column; align-items: center;">
+    <div class="collaborator-header" style="flex-direction: column; align-items: center; padding: 1.5rem 1rem; height: auto; width: 100%; max-width: 450px;">
+        <button id="back-to-gs-from-af-admin" class="back-button" style="position: static; transform: none; margin-bottom: 10px; background: rgba(255,255,255,0.1); padding: 8px 30px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2 style="padding: 0; text-align: center;">Gerenciar Afiliados</h2>
     </div>
-    <div class="collaborator-content" style="align-items: stretch; padding-bottom: 3rem;">
+    <div class="collaborator-content" style="align-items: stretch; padding-bottom: 3rem; width: 100%; max-width: 450px;">
         <div class="tm-admin-card" style="border-left: 5px solid #f39c12;">
             <div class="tm-admin-section-title"><i class="fa-solid fa-shop"></i> Configurar Contatos</div>
             <div class="input-group">
@@ -5280,7 +5280,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.0 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.1 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7801,9 +7801,12 @@ const loadAndDisplayCollaboratorMetas = () => {
 
         const filteredList = sheetDeviceListCache.filter(name => {
             const lowerCaseName = name.toLowerCase();
-            // Condição 1: O nome do aparelho DEVE começar com o nome da marca.
-            const matchesBrand = brandFilter ? lowerCaseName.startsWith(lowerCaseBrand) : true;
-            // Condição 2: O nome do aparelho DEVE incluir o texto digitado na busca.
+            let matchesBrand = brandFilter ? lowerCaseName.startsWith(lowerCaseBrand) : true;
+            
+            if (brandFilter === 'apple' && !matchesBrand) {
+                matchesBrand = lowerCaseName.startsWith('swap');
+            }
+
             const matchesSearch = filter ? lowerCaseName.includes(lowerCaseFilter) : true;
             return matchesBrand && matchesSearch;
         });
@@ -14075,7 +14078,8 @@ async function calculateAndDisplayStoreRanking() {
             { id: 'casasbahia', name: 'Casas Bahia', img: 'https://seeklogo.com/images/C/casas-bahia-logo-500D58C4F6-seeklogo.com.png' },
             { id: 'noroeste', name: 'Noroeste', img: 'https://noroeste.com/assets/img/logo-noroeste.png' },
             { id: 'paraiba', name: 'A. Paraíba', img: 'https://www.armazemparaiba.com.br/arquivos/logo-paraiba.png' },
-            { id: 'novomundo', name: 'Novo Mundo', img: 'https://www.novomundo.com.br/assets/images/logo_novo_mundo.png' }
+            { id: 'novomundo', name: 'Novo Mundo', img: 'https://www.novomundo.com.br/assets/images/logo_novo_mundo.png' },
+            { id: 'casadoscelulares', name: 'Casa Celulares', img: 'https://cdn-icons-png.flaticon.com/512/606/606547.png' }
         ];
 
         const loadAfiliadosStores = async (city) => {
