@@ -5280,7 +5280,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.1 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.2 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10371,13 +10371,19 @@ async function calculateAndDisplayServiceRanking() {
             container.innerHTML = '';
             let globalCommissionTotal = 0;
 
-            // Filtrar apenas quem não é admin/gerente sênior para o painel de comissão
             const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
 
             sellers.forEach(name => {
                 const key = name.toLowerCase();
                 const actualSales = parseFloat(salesData[key]?.vendas || 0);
-                const salesGoal = parseFloat(metasData[key]?.venda || 0);
+                
+                let salesGoal = parseFloat(metasData[key]?.venda || 0);
+                
+                // Se for gerente (Eliseu/Tacilio) e a meta individual for 0, usa a meta da loja
+                if (salesGoal <= 0 && metasData[key]?.metaLoja) {
+                    salesGoal = parseFloat(metasData[key].metaLoja);
+                }
+
                 const photo = profilesData[key]?.photoURL || DEFAULT_PROFILE_PHOTO;
 
                 if (salesGoal <= 0) return;
@@ -12062,6 +12068,7 @@ async function calculateAndDisplayStoreRanking() {
                 safeAddListener('verificar-ponto-btn', 'click', showPontoVerificationList);
                 safeAddListener('open-collaborator-profile-btn', 'click', openCollaboratorProfileAsGS);
                 safeAddListener('open-overtime-management-page', 'click', openOvertimeManagementPage);
+                safeAddListener('open-earnings-panel-btn', 'click', loadEarningsPanel);
                 
                 safeAddListener('open-holidays-management-page', 'click', () => {
                     loadAndRenderList('holidays', 'holidays-list-container', 'Feriado'); 
