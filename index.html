@@ -3119,9 +3119,21 @@
                 <h2 style="padding: 0 60px;">Ganhos dos Colaboradores</h2>
             </div>
             <div class="collaborator-content" style="align-items: stretch; gap: 1rem; padding: 1.5rem;">
-                <div id="earnings-summary-card" class="kpi-card" style="margin-bottom: 0.5rem; background: rgba(46, 204, 113, 0.2) !important; border: 1px solid #2ecc71 !important;">
-                    <span class="kpi-title">TOTAL DE COMISSÕES ESTIMADAS</span>
-                    <span id="total-earnings-global" class="kpi-value" style="color: #2ecc71 !important;">R$ 0,00</span>
+                <div id="earnings-summary-card" class="kpi-card" style="margin-bottom: 0.5rem; background: rgba(46, 204, 113, 0.2) !important; border: 1px solid #2ecc71 !important; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="text-align: center;">
+                        <span class="kpi-title">TOTAL GERAL ESTIMADO</span>
+                        <span id="total-earnings-global" class="kpi-value" style="color: #2ecc71 !important; display: block; font-size: 1.8rem !important;">R$ 0,00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; width: 100%;">
+                        <div style="flex: 1; text-align: center; border-right: 1px solid rgba(255,255,255,0.05);">
+                            <span class="kpi-title" style="font-size: 0.55rem !important; opacity: 0.7;">PINHEIRO</span>
+                            <span id="total-earnings-pinheiro" class="kpi-value" style="font-size: 1rem !important; display: block; color: #fff !important; margin-top: 4px;">R$ 0,00</span>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <span class="kpi-title" style="font-size: 0.55rem !important; opacity: 0.7;">BACABAL</span>
+                            <span id="total-earnings-bacabal" class="kpi-value" style="font-size: 1rem !important; display: block; color: #fff !important; margin-top: 4px;">R$ 0,00</span>
+                        </div>
+                    </div>
                 </div>
                 <div id="earnings-list-container" class="ranking-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
                     <!-- Lista de ganhos injetada via JS -->
@@ -5280,7 +5292,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.3 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.4 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7249,26 +7261,34 @@ const loadAndDisplayCollaboratorMetas = () => {
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #2ecc71;"><i class="fa-solid fa-chart-line"></i> PRÊMIO POR META</h4>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-chart-line"></i> PRÊMIO POR META</h4>
                 <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>50%</strong> da meta individual, o colaborador passa a receber:</p>
                 <p style="margin:8px 0 0 0; font-weight: 700; color: #2ecc71;">• 1% de prêmio sobre cada venda realizada.</p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #9b59b6;"><i class="fa-solid fa-trophy"></i> SUPERAÇÃO DE META</h4>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-trophy"></i> SUPERAÇÃO DE META</h4>
                 <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>120%</strong> da meta, o colaborador recebe:</p>
                 <p style="margin:8px 0 0 0; font-weight: 700; color: #9b59b6;">• R$ 500,00 de prêmio fixo.</p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #3498db;"><i class="fa-solid fa-shield-halved"></i> PRÊMIO POR SERVIÇOS</h4>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-shield-halved"></i> PRÊMIO POR SERVIÇOS</h4>
                 <p style="margin:0; font-size: 0.9rem;">Independente da meta de vendas, você recebe:</p>
                 <p style="margin:8px 0 0 0; font-weight: 600;">• 10% sobre Garantia Estendida.</p>
                 <p style="margin:5px 0 0 0; font-weight: 600;">• 10% sobre Seguro Contra Queda.</p>
             </div>
 
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-medal"></i> Incentivos por Ranking de Vendas</h4>
+                <p style="margin:0; font-size: 0.9rem;">🥇 1º Lugar: <strong>R$ 300,00 a R$ 500,00</strong></p>
+                <p style="margin:0; font-size: 0.9rem;">🥈 2º Lugar: <strong>R$ 200,00 a R$ 400,00</strong></p>
+                <p style="margin:0; font-size: 0.9rem;">🥉 3º Lugar: <strong>R$ 100,00 a R$ 200,00</strong></p>
+                <p style="margin:8px 0 0 0; font-size: 0.7rem; opacity: 0.7; font-style: italic;">_Os valores variam de acordo com o desafio ou campanha vigente._</p>
+            </div>
+
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-                <h4 style="margin:0 0 10px 0; color: #e67e22;"><i class="fa-solid fa-utensils"></i> BENEFÍCIOS</h4>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-utensils"></i> BENEFÍCIOS</h4>
                 <p style="margin:0; font-size: 0.9rem;">• Ticket Alimentação: <strong>R$ 200,00</strong> / mês.</p>
             </div>
         </div>
@@ -10473,6 +10493,9 @@ async function calculateAndDisplayServiceRanking() {
         showPage('earningsPanelPage');
         const container = document.getElementById('earnings-list-container');
         const globalTotalEl = document.getElementById('total-earnings-global');
+        const pinheiroTotalEl = document.getElementById('total-earnings-pinheiro');
+        const bacabalTotalEl = document.getElementById('total-earnings-bacabal');
+        
         container.innerHTML = '<p style="text-align:center; padding:2rem;">Calculando ganhos...</p>';
 
         try {
@@ -10488,6 +10511,8 @@ async function calculateAndDisplayServiceRanking() {
 
             container.innerHTML = '';
             let grandTotalSum = 0;
+            let sumPinheiro = 0;
+            let sumBacabal = 0;
 
             const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
 
@@ -10497,7 +10522,10 @@ async function calculateAndDisplayServiceRanking() {
                 const photo = profilesData[key]?.photoURL || DEFAULT_PROFILE_PHOTO;
 
                 if (data.goal <= 0) return;
+                
                 grandTotalSum += data.total;
+                if (storeMapping.pinheiro.includes(name)) sumPinheiro += data.total;
+                else if (storeMapping.bacabal.includes(name)) sumBacabal += data.total;
 
                 const card = document.createElement('div');
                 card.className = 'rank-item';
@@ -10531,6 +10559,8 @@ async function calculateAndDisplayServiceRanking() {
             });
 
             globalTotalEl.textContent = formatBRL(grandTotalSum);
+            pinheiroTotalEl.textContent = formatBRL(sumPinheiro);
+            bacabalTotalEl.textContent = formatBRL(sumBacabal);
 
             if (container.innerHTML === '') {
                 container.innerHTML = '<p style="text-align:center; padding:2rem; opacity:0.5;">Nenhum dado de venda para calcular.</p>';
