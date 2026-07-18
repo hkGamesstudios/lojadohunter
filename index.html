@@ -3992,8 +3992,8 @@
             <!-- NOVA GRADE DE AÇÕES PRINCIPAIS -->
             <div class="collaborator-actions-grid">
                 <a href="#" id="view-metas-btn" class="action-button">
-                    <i class="fa-solid fa-trophy"></i>
-                    <span>Metas</span>
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Política Salarial</span>
                 </a>
                 <a href="#" id="bater-ponto-btn" class="action-button">
                     <i class="fa-solid fa-camera-retro"></i>
@@ -5280,7 +5280,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.2 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.3 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7237,20 +7237,42 @@ const saveAllMetas = () => {
 };
 const loadAndDisplayCollaboratorMetas = () => {
     const container = document.getElementById('metas-display-content');
-    const key = currentUserName.toLowerCase();
-    container.innerHTML = `<p>Carregando suas metas...</p>`;
-    database.ref(`metas/${key}`).get().then(snapshot => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            container.innerHTML = `
-                <h3>METAS</h3>
-                <p><strong>Meta de Venda:</strong> ${formatBRL(data.venda)}</p>
-                <p><strong>Meta de Serviço:</strong> ${formatBRL(data.meta_servico || 0)}</p>
-            `;
-        } else {
-            container.innerHTML = `<p>Nenhuma meta foi configurada para você ainda.</p>`;
-        }
-    });
+    const salaryValue = (currentUserName === 'Gabrielly') ? "R$ 888,00" : "R$ 1.621,00";
+    
+    container.innerHTML = `
+        <div style="width:100%; color: white; font-family: 'Poppins', sans-serif; line-height: 1.6;">
+            <h3 style="text-align:center; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px;">POLÍTICA SALARIAL</h3>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-money-bill-1-wave"></i> SALÁRIO FIXO</h4>
+                <p style="margin:0; font-size: 0.9rem;">• Seu Salário Fixo: <strong>${salaryValue}</strong></p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <h4 style="margin:0 0 10px 0; color: #2ecc71;"><i class="fa-solid fa-chart-line"></i> PRÊMIO POR META</h4>
+                <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>50%</strong> da meta individual, o colaborador passa a receber:</p>
+                <p style="margin:8px 0 0 0; font-weight: 700; color: #2ecc71;">• 1% de prêmio sobre cada venda realizada.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <h4 style="margin:0 0 10px 0; color: #9b59b6;"><i class="fa-solid fa-trophy"></i> SUPERAÇÃO DE META</h4>
+                <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>120%</strong> da meta, o colaborador recebe:</p>
+                <p style="margin:8px 0 0 0; font-weight: 700; color: #9b59b6;">• R$ 500,00 de prêmio fixo.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <h4 style="margin:0 0 10px 0; color: #3498db;"><i class="fa-solid fa-shield-halved"></i> PRÊMIO POR SERVIÇOS</h4>
+                <p style="margin:0; font-size: 0.9rem;">Independente da meta de vendas, você recebe:</p>
+                <p style="margin:8px 0 0 0; font-weight: 600;">• 10% sobre Garantia Estendida.</p>
+                <p style="margin:5px 0 0 0; font-weight: 600;">• 10% sobre Seguro Contra Queda.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                <h4 style="margin:0 0 10px 0; color: #e67e22;"><i class="fa-solid fa-utensils"></i> BENEFÍCIOS</h4>
+                <p style="margin:0; font-size: 0.9rem;">• Ticket Alimentação: <strong>R$ 200,00</strong> / mês.</p>
+            </div>
+        </div>
+    `;
 };
     const resetSendDeviceForm = () => {
         document.querySelector('#send-device-page h2').textContent = 'Enviar Novo Dispositivo';
@@ -8409,66 +8431,99 @@ const loadAndDisplayCollaboratorMetas = () => {
         });
     };
 
-    const loadAndDisplayIndividualSalesData = () => {
-    const container = document.getElementById('individual-sales-data');
-    container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`;
-    const userKey = currentUserName.toLowerCase();
-    
-    const isManager = managers.includes(currentUserName);
+    const loadAndDisplayIndividualSalesData = async () => {
+        const container = document.getElementById('individual-sales-data');
+        container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`;
+        const userKey = currentUserName.toLowerCase();
+        
+        try {
+            const [salesSnap, metasSnap] = await Promise.all([
+                database.ref('salesData').get(),
+                database.ref('metas').get()
+            ]);
 
-    // Se o usuário logado for um gerente, faz a soma dos dados da loja para exibição.
-    if (isManager) {
-        // Define qual a lista de funcionários da loja da gerente
-        const storeEmployees = storeMapping.pinheiro.includes(currentUserName) 
-            ? storeMapping.pinheiro 
-            : storeMapping.bacabal;
+            const allSales = salesSnap.exists() ? salesSnap.val() : {};
+            const allMetas = metasSnap.exists() ? metasSnap.val() : {};
+            const isManager = managers.includes(currentUserName);
+            const data = getEarningsData(currentUserName, allSales, allMetas);
 
-        database.ref('salesData').get().then(snapshot => {
-            if (!snapshot.exists()) {
-                container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
-                return;
-            }
-            const allSales = snapshot.val();
-            
-            // Variáveis para somar os totais da loja inteira
-            let totalVendasDaLoja = 0;
-            let totalServicoDaLoja = 0;
-
-            // Itera sobre cada funcionário da loja para somar seus valores
-            storeEmployees.forEach(employeeName => {
-                const employeeKey = employeeName.toLowerCase();
-                const employeeData = allSales[employeeKey] || {};
-                totalVendasDaLoja += parseFloat(employeeData.vendas || 0);
-                totalServicoDaLoja += parseFloat(employeeData.servico || 0);
-            });
-
-            // Exibe o card com os dados somados da loja
-            container.innerHTML = `
-                <div class="sales-data-card">
-                    <h4>Resultados Atuais (Loja)</h4>
-                    <p>📈 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
-                    <p>🔧 SERVIÇO: ${formatBRL(totalServicoDaLoja)}</p>
-                </div>
-            `;
-        });
-    } else {
-        // Se não for gerente, busca e exibe apenas os dados individuais do colaborador.
-        database.ref(`salesData/${userKey}`).get().then(snapshot => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
+            if (isManager) {
                 container.innerHTML = `
-                                            <div class="sales-data-card">
-                        <h4>Resultados Atuais</h4>
-                        <p>📈 VENDAS: ${formatBRL(data.vendas)}</p>
-                        <p>🔧 SERVIÇO: ${formatBRL(data.servico || 0)}</p>
+                    <div class="sales-data-card">
+                        <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">Resultados da Loja (Gerência)</h4>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DA LOJA:</p>
+                                <p style="font-size:1.1rem; margin:0; font-weight:700; color:var(--primary-color)">${formatBRL(data.goal)}</p>
+                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
+                                <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA: ${formatBRL(Math.max(0, data.goal - data.sold))}</p>
+                                
+                                <div class="progress-bar-container" style="height: 16px; margin-top: 10px;">
+                                    <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
+                                    <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `;
             } else {
-                 container.innerHTML = `<div class="sales-data-card"><p>Nenhum dado de venda encontrado.</p></div>`;
+                container.innerHTML = `
+                    <div class="sales-data-card">
+                        <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">Resultados Individuais</h4>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DE VENDAS:</p>
+                                <p style="font-size:1rem; margin:0; font-weight:700;">${formatBRL(data.goal)}</p>
+                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
+                                <div class="progress-bar-container" style="height: 14px; margin-top: 6px; margin-bottom: 10px;">
+                                    <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
+                                    <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO SERVIÇO / SEGURO:</p>
+                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.servSold)} / META: ${formatBRL(data.servGoal)}</p>
+                                <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
+                                    <div class="progress-bar" style="width: ${Math.min(100, (data.servPerc / 125) * 100)}%; background-color: #9b59b6;"></div>
+                                    <span class="progress-percentage">${data.servPerc.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
-        });
-    }
-};
+
+            // Exibe card de ganhos para todos (Gerentes usam a soma da loja)
+            const earningsCard = document.createElement('div');
+            earningsCard.className = 'rank-item';
+            earningsCard.style.marginTop = '15px';
+            earningsCard.style.width = '100%';
+            earningsCard.style.maxWidth = '380px';
+            earningsCard.style.borderLeft = `6px solid ${data.tierColor}`;
+            
+            const labelVenda = data.isManager ? "Loja" : "Venda";
+
+            earningsCard.innerHTML = `
+                <div class="rank-details">
+                    <div class="rank-name" style="justify-content: space-between;">
+                        <span style="font-weight:700;">Ganhos Estimados</span>
+                        <span style="color: ${data.tierColor}; font-weight:800; font-size:1.2rem;">${formatBRL(data.total)}</span>
+                    </div>
+                    <div style="font-size: 0.65rem; opacity: 0.8; margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        <span>Salário Fixo: ${formatBRL(data.base)}</span>
+                        <span style="text-align:right;">Comm. ${labelVenda}: ${formatBRL(data.comm)}</span>
+                        <span style="font-weight:700; color:${data.tierColor}">${data.tierText}</span>
+                        <span style="text-align:right;">Comm. Seguro: ${formatBRL(data.servComm)}</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(earningsCard);
+
+        } catch (error) {
+            console.error(error);
+            container.innerHTML = `<div class="sales-data-card"><p>Erro ao carregar dados.</p></div>`;
+        }
+    };
 
     const loadManagerPanel = () => {
     const container = document.getElementById('manager-sales-panel-content');
@@ -10351,6 +10406,69 @@ async function calculateAndDisplayServiceRanking() {
             });
     };
 
+    const getEarningsData = (name, salesData, metasData) => {
+        const key = name.toLowerCase();
+        let actualSales = parseFloat(salesData[key]?.vendas || 0);
+        let actualService = parseFloat(salesData[key]?.servico || 0);
+        let salesGoal = parseFloat(metasData[key]?.venda || 0);
+        let serviceGoal = parseFloat(metasData[key]?.meta_servico || 0);
+        let isManagerLine = false;
+
+        if (name === 'Eliseu' || name === 'Tacilio') {
+            isManagerLine = true;
+            const store = (name === 'Eliseu') ? 'pinheiro' : 'bacabal';
+            const storeEmployees = storeMapping[store];
+            
+            actualSales = 0;
+            actualService = 0;
+            storeEmployees.forEach(empName => {
+                const k = empName.toLowerCase();
+                actualSales += parseFloat(salesData[k]?.vendas || 0);
+                actualService += parseFloat(salesData[k]?.servico || 0);
+            });
+            salesGoal = parseFloat(metasData[key]?.metaLoja || 0);
+            serviceGoal = 0; 
+        }
+
+        const baseSalary = (name === 'Gabrielly') ? 888 : 1621;
+        const percentage = salesGoal > 0 ? (actualSales / salesGoal) * 100 : 0;
+        const servicePercentage = serviceGoal > 0 ? (actualService / serviceGoal) * 100 : 0;
+        
+        let commission = 0;
+        let tierText = "Abaixo de 50%";
+        let tierColor = "#e74c3c";
+
+        if (percentage >= 50) {
+            commission = actualSales * 0.01;
+            tierText = "Comissão 1% Ativa";
+            tierColor = "#2ecc71";
+        }
+
+        if (percentage >= 120) {
+            commission += 500;
+            tierText = "Meta 120% + R$ 500";
+        }
+
+        const serviceCommission = actualService * 0.10;
+        const totalEarnings = baseSalary + commission + serviceCommission;
+
+        return {
+            total: totalEarnings,
+            base: baseSalary,
+            comm: commission,
+            servComm: serviceCommission,
+            perc: percentage,
+            servPerc: servicePercentage,
+            tierText: tierText,
+            tierColor: tierColor,
+            sold: actualSales,
+            goal: salesGoal,
+            servSold: actualService,
+            servGoal: serviceGoal,
+            isManager: isManagerLine
+        };
+    };
+
     const loadEarningsPanel = async () => {
         showPage('earningsPanelPage');
         const container = document.getElementById('earnings-list-container');
@@ -10369,70 +10487,50 @@ async function calculateAndDisplayServiceRanking() {
             const profilesData = profilesSnap.exists() ? profilesSnap.val() : {};
 
             container.innerHTML = '';
-            let globalCommissionTotal = 0;
+            let grandTotalSum = 0;
 
             const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
 
             sellers.forEach(name => {
                 const key = name.toLowerCase();
-                const actualSales = parseFloat(salesData[key]?.vendas || 0);
-                
-                let salesGoal = parseFloat(metasData[key]?.venda || 0);
-                
-                // Se for gerente (Eliseu/Tacilio) e a meta individual for 0, usa a meta da loja
-                if (salesGoal <= 0 && metasData[key]?.metaLoja) {
-                    salesGoal = parseFloat(metasData[key].metaLoja);
-                }
-
+                const data = getEarningsData(name, salesData, metasData);
                 const photo = profilesData[key]?.photoURL || DEFAULT_PROFILE_PHOTO;
 
-                if (salesGoal <= 0) return;
-
-                const percentage = (actualSales / salesGoal) * 100;
-                let multiplier = 0;
-                let tierText = "Abaixo de 50%";
-                let tierColor = "#e74c3c";
-
-                if (percentage >= 120) {
-                    multiplier = 0.015;
-                    tierText = "Meta 120% atingida (1,5%)";
-                    tierColor = "#9b59b6";
-                } else if (percentage >= 100) {
-                    multiplier = 0.01;
-                    tierText = "Meta 100% atingida (1,0%)";
-                    tierColor = "#2ecc71";
-                } else if (percentage >= 50) {
-                    multiplier = 0.005;
-                    tierText = "Meta 50% atingida (0,5%)";
-                    tierColor = "#f1c40f";
-                }
-
-                const commission = actualSales * multiplier;
-                globalCommissionTotal += commission;
+                if (data.goal <= 0) return;
+                grandTotalSum += data.total;
 
                 const card = document.createElement('div');
                 card.className = 'rank-item';
-                card.style.borderLeft = `6px solid ${tierColor}`;
+                card.style.borderLeft = `6px solid ${data.tierColor}`;
+                
+                const labelVenda = data.isManager ? "Venda Loja" : "Vendido";
+                const servBarWidth = Math.min(100, (data.servPerc / 125) * 100);
+
                 card.innerHTML = `
                     <img src="${photo}" class="rank-photo" style="width: 45px; height: 45px;">
                     <div class="rank-details">
                         <div class="rank-name" style="justify-content: space-between;">
-                            <span style="font-weight:700;">${name}</span>
-                            <span style="color: ${tierColor}; font-weight:800; font-size:1.1rem;">${formatBRL(commission)}</span>
+                            <span style="font-weight:700;">${name} ${data.isManager ? '(Gerente)' : ''}</span>
+                            <span style="color: ${data.tierColor}; font-weight:800; font-size:1.1rem;">${formatBRL(data.total)}</span>
                         </div>
-                        <div style="font-size: 0.7rem; opacity: 0.8; margin-top: 2px; display: flex; justify-content: space-between;">
-                            <span>Vendido: ${formatBRL(actualSales)}</span>
-                            <span style="font-weight: 600;">${tierText}</span>
+                        <div style="font-size: 0.62rem; opacity: 0.8; margin-top: 2px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 2px 8px;">
+                            <span>${labelVenda}: ${formatBRL(data.sold)}</span>
+                            <span style="text-align:right;">Seguro (10%): ${formatBRL(data.servComm)}</span>
+                            <span style="font-weight: 700; color:${data.tierColor}">${data.tierText}</span>
+                            <span style="text-align:right; font-weight: 600;">Fixo: ${formatBRL(data.base)}</span>
                         </div>
                         <div class="progress-bar-container" style="height: 8px; margin-top: 6px;">
-                            <div class="progress-bar" style="width: ${Math.min(100, percentage)}%; background: ${tierColor};"></div>
+                            <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background: ${data.tierColor};"></div>
+                        </div>
+                        <div class="progress-bar-container" style="height: 8px; margin-top: 4px;">
+                            <div class="progress-bar" style="width: ${servBarWidth}%; background: #9b59b6;"></div>
                         </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
 
-            globalTotalEl.textContent = formatBRL(globalCommissionTotal);
+            globalTotalEl.textContent = formatBRL(grandTotalSum);
 
             if (container.innerHTML === '') {
                 container.innerHTML = '<p style="text-align:center; padding:2rem; opacity:0.5;">Nenhum dado de venda para calcular.</p>';
