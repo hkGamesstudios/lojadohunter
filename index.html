@@ -3358,7 +3358,7 @@
 <!-- TELA AFILIADOS: ETAPA 2 (LISTA DE LOJAS) -->
 <div id="afiliados-stores-page" style="display: none; flex-direction: column; align-items: center;">
     <div class="collaborator-header" style="flex-direction: column; align-items: center; padding: 1.5rem 1rem; height: auto; width: 100%; max-width: 450px;">
-        <button id="back-to-af-selection" class="back-button" style="position: static; transform: none; margin-bottom: 10px; background: rgba(255,255,255,0.1); padding: 8px 30px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <button id="back-to-main-from-af-stores" class="back-button" style="position: static; transform: none; margin-bottom: 10px; background: rgba(255,255,255,0.1); padding: 8px 30px; border-radius: 20px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
         <h2 id="af-stores-title" style="padding: 0; text-align: center;">Lojas Parceiras</h2>
     </div>
     <div id="af-stores-container" class="collaborator-content" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1.5rem; align-items: start; width: 100%; max-width: 450px;">
@@ -5292,7 +5292,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.5 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.6 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -13923,8 +13923,7 @@ async function calculateAndDisplayStoreRanking() {
             // Mapeamento de cliques internos da pasta
             const folderMappings = [
                 { id: 'f-telemarketing', action: () => showPage('telemarketingSelectionPage') },
-            { id: 'f-afiliados', action: () => showPage('afiliadosSelectionPage') },
-            { id: 'f-afiliados', action: () => showPage('afiliadosSelectionPage') },
+                { id: 'f-afiliados', action: () => loadAfiliadosStores() },
                 { id: 'f-my-profile', original: 'open-my-profile-btn' },
                 { id: 'f-previsao', original: 'previsao-btn' },
                 { id: 'f-os', original: 'open-os-modal' },
@@ -14190,12 +14189,12 @@ async function calculateAndDisplayStoreRanking() {
             // Lógica para Salvar Backup da Lista Atual (TXT)
             const loadAfiliadosStores = async (city) => {
             const container = document.getElementById('af-stores-container');
-            document.getElementById('af-stores-title').textContent = city === 'PHO' ? 'Pinheiro (PHO)' : 'Bacabal (BAC)';
+            document.getElementById('af-stores-title').textContent = "Lojas Parceiras";
             container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Carregando lojas...</p>';
             showPage('afiliadosStoresPage');
 
             try {
-                const snap = await database.ref(`afiliados_custom/${city}`).get();
+                const snap = await database.ref(`afiliados_custom/global`).get();
                 container.innerHTML = '';
 
                 if (!snap.exists()) {
@@ -14211,7 +14210,8 @@ async function calculateAndDisplayStoreRanking() {
                     btn.style.aspectRatio = "1/1";
                     btn.innerHTML = `
                         <img src="${store.iconUrl}" alt="${store.name}" style="width:50px; height:50px; object-fit:contain; margin-bottom:8px;">
-                        <span>${store.name}</span>
+                        <span style="font-weight:700;">${store.name}</span>
+                        <span style="font-size:0.6rem; opacity:0.7;">${store.collabName || ''}</span>
                     `;
                     btn.onclick = () => {
                         window.open(`https://wa.me/55${store.number.replace(/\D/g,'')}`, '_blank');
@@ -14222,12 +14222,15 @@ async function calculateAndDisplayStoreRanking() {
         };
 
         const loadAfiliadosAdmin = async () => {
-            const city = document.getElementById('af-admin-city-select').value;
+            const selectEl = document.getElementById('af-admin-city-select');
+            if(selectEl) selectEl.parentElement.style.display = 'none';
+
             const container = document.getElementById('af-admin-inputs-container');
             container.innerHTML = `
                 <div class="tm-admin-card" style="border-left: 5px solid #2ecc71; background: rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
                     <div class="tm-admin-section-title"><i class="fa-solid fa-plus"></i> Novo Afiliado</div>
                     <div class="input-group"><label>Nome da Loja</label><input type="text" id="af-new-name" class="data-input"></div>
+                    <div class="input-group"><label>Nome do Colaborador</label><input type="text" id="af-new-collab" class="data-input"></div>
                     <div class="input-group"><label>WhatsApp</label><input type="text" id="af-new-number" class="data-input" placeholder="Ex: 989XXXXXXXX"></div>
                     <div class="input-group">
                         <label>Ícone da Loja</label>
@@ -14245,16 +14248,16 @@ async function calculateAndDisplayStoreRanking() {
                 if(e.target.files[0]) document.getElementById('af-icon-status').textContent = "Ícone selecionado: " + e.target.files[0].name;
             };
 
-            document.getElementById('af-save-new-btn').onclick = () => saveNewAfiliado(city);
+            document.getElementById('af-save-new-btn').onclick = () => saveNewAfiliado();
 
-            renderAfiliadosList(city);
+            renderAfiliadosList();
         };
 
-        const renderAfiliadosList = async (city) => {
+        const renderAfiliadosList = async () => {
             const listContainer = document.getElementById('af-list-container');
             listContainer.innerHTML = '<p style="text-align:center; opacity:0.5;">Carregando lista...</p>';
             
-            const snap = await database.ref(`afiliados_custom/${city}`).get();
+            const snap = await database.ref(`afiliados_custom/global`).get();
             listContainer.innerHTML = '';
             
             if (snap.exists()) {
@@ -14266,9 +14269,10 @@ async function calculateAndDisplayStoreRanking() {
                         <img src="${item.iconUrl}" style="width:30px; height:30px; object-fit:contain; margin-right:10px;">
                         <div class="tm-client-details">
                             <strong>${item.name}</strong>
+                            <span style="display:block; font-size:0.7rem; color:var(--primary-color);">${item.collabName || 'S/ Colaborador'}</span>
                             <span>${item.number}</span>
                         </div>
-                        <button class="delete-button-small" onclick="deleteAfiliado('${city}', '${child.key}')">
+                        <button class="delete-button-small" onclick="deleteAfiliado('${child.key}')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     `;
@@ -14277,8 +14281,9 @@ async function calculateAndDisplayStoreRanking() {
             }
         };
 
-        const saveNewAfiliado = async (city) => {
+        const saveNewAfiliado = async () => {
             const name = document.getElementById('af-new-name').value.trim();
+            const collabName = document.getElementById('af-new-collab').value.trim();
             const number = document.getElementById('af-new-number').value.trim();
             const fileInput = document.getElementById('af-new-icon-file');
             const status = document.getElementById('af-admin-status');
@@ -14294,8 +14299,8 @@ async function calculateAndDisplayStoreRanking() {
 
                 const { data: urlData } = supabaseClient.storage.from('device-images').getPublicUrl(filePath);
                 
-                await database.ref(`afiliados_custom/${city}`).push({
-                    name, number, iconUrl: urlData.publicUrl, timestamp: new Date().toISOString()
+                await database.ref(`afiliados_custom/global`).push({
+                    name, collabName, number, iconUrl: urlData.publicUrl, timestamp: new Date().toISOString()
                 });
 
                 status.textContent = 'Afiliado cadastrado!';
@@ -14304,9 +14309,9 @@ async function calculateAndDisplayStoreRanking() {
             } catch (e) { console.error(e); status.textContent = 'Erro ao salvar.'; }
         };
 
-        window.deleteAfiliado = async (city, key) => {
+        window.deleteAfiliado = async (key) => {
             if (confirm('Deseja excluir este afiliado?')) {
-                await database.ref(`afiliados_custom/${city}/${key}`).remove();
+                await database.ref(`afiliados_custom/global/${key}`).remove();
                 loadAfiliadosAdmin();
             }
         };
@@ -14315,8 +14320,7 @@ async function calculateAndDisplayStoreRanking() {
             btn.addEventListener('click', () => loadAfiliadosStores(btn.dataset.city));
         });
 
-        document.getElementById('back-to-main-from-afiliados-select').addEventListener('click', showMainPage);
-        document.getElementById('back-to-af-selection').addEventListener('click', () => showPage('afiliadosSelectionPage'));
+        document.getElementById('back-to-main-from-af-stores').addEventListener('click', showMainPage);
         document.getElementById('af-admin-city-select').addEventListener('change', loadAfiliadosAdmin);
 
         document.getElementById('tm-admin-backup-list').addEventListener('click', async () => {
