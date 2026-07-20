@@ -5292,7 +5292,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.4 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.5 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -9517,18 +9517,9 @@ async function calculateAndDisplayRanking() {
                     </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container" style="height: 14px; margin-top: 2px; overflow: hidden; border-radius: 8px;">
-                        <div class="commission-ruler" style="border-radius: 8px;">
-                            <div class="segment seg-05" style="font-size: 0.45rem;">0,5%</div>
-                            <div class="segment seg-10" style="font-size: 0.45rem;">1%</div>
-                            <div class="segment seg-15" style="font-size: 0.45rem;">1,5%</div>
-                        </div>
                         <div class="progress-bar" style="width: ${progressBarWidth}%; border-radius: 8px;"></div>
                         <span class="progress-percentage" style="z-index: 2; font-size: 0.65rem;">${collab.percentage.toFixed(1)}%</span>
                         ${fireIconHtml}
-                    </div>
-                    <div style="font-size: 0.62rem; color: rgba(255,255,255,0.7); margin-top: 5px; display: flex; justify-content: space-between; font-weight: 600; letter-spacing: -0.2px;">
-                        <span>Faltam: ${formatBRL(remaining).replace(',00', '')}</span>
-                        <span style="color: #f1c40f;">${formatBRL(dailyNeeded).replace(',00', '')} / dia</span>
                     </div>
                 </div>
             `;
@@ -10458,7 +10449,7 @@ async function calculateAndDisplayServiceRanking() {
         let tierText = "Abaixo de 50%";
         let tierColor = "#e74c3c";
 
-        if (percentage >= 50) {
+        if (percentage >= 50 || name === 'Gabrielly') {
             commission = actualSales * 0.01;
             tierText = "Comissão 1% Ativa";
             tierColor = "#2ecc71";
@@ -10775,17 +10766,8 @@ async function calculateAndDisplayStoreRanking() {
                 </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container">
-                        <div class="commission-ruler">
-                            <div class="segment seg-05">0,5%</div>
-                            <div class="segment seg-10">1%</div>
-                            <div class="segment seg-15">1,5%</div>
-                        </div>
                         <div class="progress-bar" style="width: ${progressBarWidth}%;"></div>
                         <span class="progress-percentage" style="z-index: 2;">${collab.percentage.toFixed(1)}%</span>
-                    </div>
-                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.8); margin-top: 6px; display: flex; justify-content: space-between; font-weight: 600;">
-                        <span>Faltam: ${formatBRL(remaining)}</span>
-                        <span>${formatBRL(dailyNeeded)} / dia</span>
                     </div>
                 </div>
             `;
@@ -13259,7 +13241,7 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('restore-supabase-json-btn').addEventListener('click', () => document.getElementById('supabase-restore-input').click());
             document.getElementById('supabase-restore-input').addEventListener('change', handleSupabaseRestore);
 
-            document.getElementById('save-aviso-btn').addEventListener('click', () => {
+            document.getElementById('save-aviso-btn').addEventListener('click', async () => {
                 const managerPhotoInput = document.getElementById('aviso-photo-upload');
                 const contentImageInput = document.getElementById('aviso-content-image-upload');
                 const managerPhotoFile = managerPhotoInput.files[0];
@@ -13279,34 +13261,32 @@ async function calculateAndDisplayStoreRanking() {
                 saveButton.style.opacity = '0.5';
                 finalStatusEl.textContent = 'Processando imagens...';
 
-                const uploadManagerPhoto = () => {
-                    managerPhotoStatusEl.textContent = 'Enviando imagem de perfil...';
-                    const filePath = `avisos_avatars/${new Date().getTime()}_${managerPhotoFile.name}`;
-                    const fileRef = storage.ref().child(filePath);
-                    return fileRef.put(managerPhotoFile).then(snapshot => snapshot.ref.getDownloadURL());
+                const uploadToSupabase = async (file, bucket, statusEl, statusMsg) => {
+                    statusEl.textContent = statusMsg;
+                    const filePath = `avisos/${new Date().getTime()}_${file.name}`;
+                    const { error: uploadError } = await supabaseClient.storage.from(bucket).upload(filePath, file);
+                    if (uploadError) throw uploadError;
+                    const { data: urlData } = supabaseClient.storage.from(bucket).getPublicUrl(filePath);
+                    return urlData.publicUrl;
                 };
 
-                const uploadContentImage = () => {
-                    if (!contentImageFile) {
-                        return Promise.resolve(null); // Resolve com null se não houver arquivo
+                try {
+                    const managerPhotoURL = await uploadToSupabase(managerPhotoFile, 'profile-pictures', managerPhotoStatusEl, 'Enviando imagem de perfil...');
+                    
+                    let contentImageURL = null;
+                    if (contentImageFile) {
+                        contentImageURL = await uploadToSupabase(contentImageFile, 'device-images', contentPhotoStatusEl, 'Enviando foto/GIF do aviso...');
                     }
-                    contentPhotoStatusEl.textContent = 'Enviando foto/GIF do aviso...';
-                    const filePath = `avisos_content/${new Date().getTime()}_${contentImageFile.name}`;
-                    const fileRef = storage.ref().child(filePath);
-                    return fileRef.put(contentImageFile).then(snapshot => snapshot.ref.getDownloadURL());
-                };
 
-                Promise.all([uploadManagerPhoto(), uploadContentImage()])
-                    .then(([managerPhotoURL, contentImageURL]) => {
-                        finalStatusEl.textContent = 'Imagens enviadas! Salvando aviso...';
-                        saveAviso(managerPhotoURL, contentImageURL);
-                    })
-                    .catch(error => {
-                        console.error("Erro no upload de imagens do aviso:", error);
-                        finalStatusEl.textContent = 'Erro ao enviar uma das imagens.';
-                        saveButton.disabled = false;
-                        saveButton.style.opacity = '1';
-                    });
+                    finalStatusEl.textContent = 'Imagens enviadas! Salvando aviso...';
+                    saveAviso(managerPhotoURL, contentImageURL);
+
+                } catch (error) {
+                    console.error("Erro no upload de imagens do aviso:", error);
+                    finalStatusEl.textContent = 'Erro ao enviar uma das imagens.';
+                    saveButton.disabled = false;
+                    saveButton.style.opacity = '1';
+                }
             });
             document.getElementById('avisos-list-container').addEventListener('click', (event) => {
                 const deleteButton = event.target.closest('.delete-button-small');
@@ -14208,39 +14188,33 @@ async function calculateAndDisplayStoreRanking() {
             });
 
             // Lógica para Salvar Backup da Lista Atual (TXT)
-            const AFILIADOS_STORES_LIST = [
-            { id: 'magalu', name: 'Magalu', img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Magazine_Luiza_logo.svg/1200px-Magazine_Luiza_logo.svg.png' },
-            { id: 'casasbahia', name: 'Casas Bahia', img: 'https://seeklogo.com/images/C/casas-bahia-logo-500D58C4F6-seeklogo.com.png' },
-            { id: 'noroeste', name: 'Noroeste', img: 'https://noroeste.com/assets/img/logo-noroeste.png' },
-            { id: 'paraiba', name: 'A. Paraíba', img: 'https://www.armazemparaiba.com.br/arquivos/logo-paraiba.png' },
-            { id: 'novomundo', name: 'Novo Mundo', img: 'https://www.novomundo.com.br/assets/images/logo_novo_mundo.png' },
-            { id: 'casadoscelulares', name: 'Casa Celulares', img: 'https://cdn-icons-png.flaticon.com/512/606/606547.png' }
-        ];
-
-        const loadAfiliadosStores = async (city) => {
+            const loadAfiliadosStores = async (city) => {
             const container = document.getElementById('af-stores-container');
             document.getElementById('af-stores-title').textContent = city === 'PHO' ? 'Pinheiro (PHO)' : 'Bacabal (BAC)';
             container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Carregando lojas...</p>';
             showPage('afiliadosStoresPage');
 
             try {
-                const snap = await database.ref(`afiliados/${city}`).get();
-                const numbers = snap.exists() ? snap.val() : {};
+                const snap = await database.ref(`afiliados_custom/${city}`).get();
                 container.innerHTML = '';
 
-                AFILIADOS_STORES_LIST.forEach(store => {
-                    const phone = numbers[store.id] || "";
+                if (!snap.exists()) {
+                    container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; opacity:0.5;">Nenhum afiliado cadastrado.</p>';
+                    return;
+                }
+
+                snap.forEach(child => {
+                    const store = child.val();
                     const btn = document.createElement('button');
                     btn.className = 'action-button';
                     btn.style.height = "auto";
                     btn.style.aspectRatio = "1/1";
                     btn.innerHTML = `
-                        <img src="${store.img}" alt="${store.name}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/606/606547.png'" style="width:50px; height:50px; object-fit:contain; margin-bottom:8px;">
+                        <img src="${store.iconUrl}" alt="${store.name}" style="width:50px; height:50px; object-fit:contain; margin-bottom:8px;">
                         <span>${store.name}</span>
                     `;
                     btn.onclick = () => {
-                        if (!phone) return alert('Número não cadastrado para esta loja.');
-                        window.open(`https://wa.me/55${phone.replace(/\D/g,'')}`, '_blank');
+                        window.open(`https://wa.me/55${store.number.replace(/\D/g,'')}`, '_blank');
                     };
                     container.appendChild(btn);
                 });
@@ -14250,23 +14224,91 @@ async function calculateAndDisplayStoreRanking() {
         const loadAfiliadosAdmin = async () => {
             const city = document.getElementById('af-admin-city-select').value;
             const container = document.getElementById('af-admin-inputs-container');
-            container.innerHTML = '<p style="text-align:center;">Buscando dados...</p>';
+            container.innerHTML = `
+                <div class="tm-admin-card" style="border-left: 5px solid #2ecc71; background: rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                    <div class="tm-admin-section-title"><i class="fa-solid fa-plus"></i> Novo Afiliado</div>
+                    <div class="input-group"><label>Nome da Loja</label><input type="text" id="af-new-name" class="data-input"></div>
+                    <div class="input-group"><label>WhatsApp</label><input type="text" id="af-new-number" class="data-input" placeholder="Ex: 989XXXXXXXX"></div>
+                    <div class="input-group">
+                        <label>Ícone da Loja</label>
+                        <button id="af-icon-upload-btn" class="action-button full-width" style="height:auto; padding:10px; background:#34495e;"><i class="fa-solid fa-image"></i> Selecionar Ícone</button>
+                        <input type="file" id="af-new-icon-file" accept="image/*" style="display: none;">
+                        <p id="af-icon-status" style="font-size:0.7rem; color:#2ecc71; margin-top:5px;"></p>
+                    </div>
+                    <button id="af-save-new-btn" class="action-button full-width" style="height:auto; padding:12px; background:#27ae60;"><i class="fa-solid fa-save"></i> CADASTRAR</button>
+                </div>
+                <div id="af-list-container"></div>
+            `;
 
-            try {
-                const snap = await database.ref(`afiliados/${city}`).get();
-                const data = snap.exists() ? snap.val() : {};
-                container.innerHTML = '';
+            document.getElementById('af-icon-upload-btn').onclick = () => document.getElementById('af-new-icon-file').click();
+            document.getElementById('af-new-icon-file').onchange = (e) => {
+                if(e.target.files[0]) document.getElementById('af-icon-status').textContent = "Ícone selecionado: " + e.target.files[0].name;
+            };
 
-                AFILIADOS_STORES_LIST.forEach(store => {
-                    const val = data[store.id] || "";
-                    container.innerHTML += `
-                        <div class="input-group">
-                            <label>${store.name} (WhatsApp)</label>
-                            <input type="text" id="af-input-${store.id}" class="data-input" value="${val}" placeholder="Ex: 989XXXXXXXX">
+            document.getElementById('af-save-new-btn').onclick = () => saveNewAfiliado(city);
+
+            renderAfiliadosList(city);
+        };
+
+        const renderAfiliadosList = async (city) => {
+            const listContainer = document.getElementById('af-list-container');
+            listContainer.innerHTML = '<p style="text-align:center; opacity:0.5;">Carregando lista...</p>';
+            
+            const snap = await database.ref(`afiliados_custom/${city}`).get();
+            listContainer.innerHTML = '';
+            
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const item = child.val();
+                    const row = document.createElement('div');
+                    row.className = 'tm-client-row';
+                    row.innerHTML = `
+                        <img src="${item.iconUrl}" style="width:30px; height:30px; object-fit:contain; margin-right:10px;">
+                        <div class="tm-client-details">
+                            <strong>${item.name}</strong>
+                            <span>${item.number}</span>
                         </div>
+                        <button class="delete-button-small" onclick="deleteAfiliado('${city}', '${child.key}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     `;
+                    listContainer.appendChild(row);
                 });
-            } catch (e) { console.error(e); }
+            }
+        };
+
+        const saveNewAfiliado = async (city) => {
+            const name = document.getElementById('af-new-name').value.trim();
+            const number = document.getElementById('af-new-number').value.trim();
+            const fileInput = document.getElementById('af-new-icon-file');
+            const status = document.getElementById('af-admin-status');
+
+            if (!name || !number || !fileInput.files[0]) return alert('Preencha todos os campos e selecione um ícone.');
+
+            status.textContent = 'Enviando ícone...';
+            try {
+                const file = fileInput.files[0];
+                const filePath = `afiliados_icons/${new Date().getTime()}_${file.name}`;
+                const { error: uploadError } = await supabaseClient.storage.from('device-images').upload(filePath, file);
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = supabaseClient.storage.from('device-images').getPublicUrl(filePath);
+                
+                await database.ref(`afiliados_custom/${city}`).push({
+                    name, number, iconUrl: urlData.publicUrl, timestamp: new Date().toISOString()
+                });
+
+                status.textContent = 'Afiliado cadastrado!';
+                loadAfiliadosAdmin();
+                setTimeout(() => status.textContent = '', 2000);
+            } catch (e) { console.error(e); status.textContent = 'Erro ao salvar.'; }
+        };
+
+        window.deleteAfiliado = async (city, key) => {
+            if (confirm('Deseja excluir este afiliado?')) {
+                await database.ref(`afiliados_custom/${city}/${key}`).remove();
+                loadAfiliadosAdmin();
+            }
         };
 
         document.querySelectorAll('.af-city-btn').forEach(btn => {
@@ -14276,23 +14318,6 @@ async function calculateAndDisplayStoreRanking() {
         document.getElementById('back-to-main-from-afiliados-select').addEventListener('click', showMainPage);
         document.getElementById('back-to-af-selection').addEventListener('click', () => showPage('afiliadosSelectionPage'));
         document.getElementById('af-admin-city-select').addEventListener('change', loadAfiliadosAdmin);
-
-        document.getElementById('af-admin-save-btn').addEventListener('click', async () => {
-            const city = document.getElementById('af-admin-city-select').value;
-            const status = document.getElementById('af-admin-status');
-            const updates = {};
-
-            AFILIADOS_STORES_LIST.forEach(store => {
-                updates[store.id] = document.getElementById(`af-input-${store.id}`).value.trim();
-            });
-
-            status.textContent = 'Salvando...';
-            try {
-                await database.ref(`afiliados/${city}`).set(updates);
-                status.textContent = 'Salvo com sucesso!';
-                setTimeout(() => status.textContent = '', 2000);
-            } catch (e) { console.error(e); status.textContent = 'Erro ao salvar.'; }
-        });
 
         document.getElementById('tm-admin-backup-list').addEventListener('click', async () => {
                 const campaign = document.getElementById('tm-admin-list-filter').value;
