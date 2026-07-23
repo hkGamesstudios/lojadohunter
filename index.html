@@ -3451,20 +3451,20 @@
         </header>
 
         <main>
-            <!-- NOVA Seção de Avisos Gerais -->
-            <section id="avisos-gerais" style="display: none;">
-                <h2 class="section-title">Avisos da Gerência</h2>
-                <div id="avisos-container" class="ranking-list">
-                    <!-- O JavaScript irá popular os avisos aqui -->
-                </div>
-            </section>
-
             <!-- NOVA Seção de Stories -->
             <section id="stories-section" style="padding-top: 1.5rem; padding-bottom: 0;">
                 <div id="stories-container">
                     <div id="stories-scroll">
                         <!-- Círculos dos stories serão inseridos aqui pelo JS -->
                     </div>
+                </div>
+            </section>
+
+            <!-- NOVA Seção de Avisos Gerais -->
+            <section id="avisos-gerais" style="display: none;">
+                <h2 class="section-title">Avisos da Gerência</h2>
+                <div id="avisos-container" class="ranking-list">
+                    <!-- O JavaScript irá popular os avisos aqui -->
                 </div>
             </section>
 
@@ -5284,7 +5284,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.8 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.9 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -11620,12 +11620,10 @@ async function calculateAndDisplayStoreRanking() {
                                     const loadAndDisplayDailyStoreSales = async () => {
         const container = document.getElementById('daily-store-sales-data');
         if (!storeManagers.includes(currentUserName)) {
-            // container.style.display = 'none'; // Deixa a função de visibilidade global controlar isso
             return;
         }
 
         container.innerHTML = `<div class="sales-data-card"><p>Carregando vendas do dia...</p></div>`;
-        // container.style.display = 'block'; // Deixa a função de visibilidade global controlar isso
 
         const todayString = getTodayDateString();
         const storeEmployees = storeMapping.pinheiro.includes(currentUserName)
@@ -11655,79 +11653,6 @@ async function calculateAndDisplayStoreRanking() {
             console.error("Erro ao carregar vendas do dia da loja:", error);
             container.innerHTML = `<div class="sales-data-card"><p>Erro ao carregar vendas do dia.</p></div>`;
         }
-    };
-
-    const updateDailyGoalPanel = async (userKey) => {
-        const targetEl = document.getElementById('daily-target-value');
-        const soldEl = document.getElementById('daily-sold-value');
-        const leftEl = document.getElementById('daily-left-value');
-        const titleEl = document.getElementById('daily-goal-title');
-        const todayString = getTodayDateString();
-        
-        const userName = currentUserName;
-        const isStoreManager = storeManagers.includes(userName);
-
-        try {
-            const [metasSnap, allSalesSnap, allDailySnap, increaseSnap] = await Promise.all([
-                database.ref('metas').get(),
-                database.ref('salesData').get(),
-                database.ref(`dailySales/${todayString}`).get(),
-                database.ref('globalSettings/dailyGoalIncrease').get()
-            ]);
-
-            const allMetas = metasSnap.exists() ? metasSnap.val() : {};
-            const allSales = allSalesSnap.exists() ? allSalesSnap.val() : {};
-            const allDaily = allDailySnap.exists() ? allDailySnap.val() : {};
-            const increasePercent = increaseSnap.exists() ? parseFloat(increaseSnap.val() || 0) : 0;
-            const multiplier = 1 + (increasePercent / 100);
-
-            let metaMensal = 0;
-            let vendaTotal = 0;
-            let vendaHoje = 0;
-
-            if (isStoreManager) {
-                const store = storeMapping.pinheiro.includes(userName) ? 'pinheiro' : 'bacabal';
-                const storeEmployees = storeMapping[store];
-                
-                metaMensal = parseFloat(allMetas[userKey]?.metaLoja || 0);
-                
-                storeEmployees.forEach(empName => {
-                    const empKey = empName.toLowerCase();
-                    vendaTotal += parseFloat(allSales[empKey]?.vendas || 0);
-                    vendaHoje += parseFloat(allDaily[empKey]?.vendas || 0);
-                });
-
-                if (titleEl) titleEl.textContent = `META DO DIA - LOJA ${store.toUpperCase()}`;
-            } else {
-                metaMensal = parseFloat(allMetas[userKey]?.venda || 0);
-                vendaTotal = parseFloat(allSales[userKey]?.vendas || 0);
-                vendaHoje = parseFloat(allDaily[userKey]?.vendas || 0);
-                
-                if (titleEl) titleEl.textContent = `META DO DIA - ${userName.toUpperCase()}`;
-            }
-
-            const getWorkingDaysLeft = () => {
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = now.getMonth();
-                const lastDay = new Date(year, month + 1, 0).getDate();
-                let days = 0;
-                for (let d = now.getDate(); d <= lastDay; d++) {
-                    const date = new Date(year, month, d);
-                    if (date.getDay() !== 0) days++; 
-                }
-                return days || 1;
-            };
-
-            const workingDaysLeft = getWorkingDaysLeft();
-            const metaDiariaBase = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / workingDaysLeft);
-            const metaDiariaComAumento = metaDiariaBase * multiplier;
-
-            if (targetEl) targetEl.textContent = formatBRL(metaDiariaComAumento);
-            if (soldEl) soldEl.textContent = formatBRL(vendaHoje);
-            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiariaComAumento - vendaHoje));
-
-        } catch (e) { console.error(e); }
     };
 
     const openManualSalePage = () => {
