@@ -3451,6 +3451,14 @@
         </header>
 
         <main>
+            <!-- NOVA Seção de Avisos Gerais -->
+            <section id="avisos-gerais" style="display: none;">
+                <h2 class="section-title">Avisos da Gerência</h2>
+                <div id="avisos-container" class="ranking-list">
+                    <!-- O JavaScript irá popular os avisos aqui -->
+                </div>
+            </section>
+
             <!-- NOVA Seção de Stories -->
             <section id="stories-section" style="padding-top: 1.5rem; padding-bottom: 0;">
                 <div id="stories-container">
@@ -3461,15 +3469,8 @@
             </section>
 
             <!-- PAINEL META DO DIA NO PAINEL PRINCIPAL -->
-            <section id="main-daily-goal-section" style="padding-top: 1rem; padding-bottom: 0;">
-                <div id="daily-goal-panel" class="sales-data-card" style="width: 100%; max-width: 420px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
-                    <h4 id="daily-goal-title" style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">META DO DIA</h4>
-                    <div style="display: flex; flex-direction: column; gap: 8px; font-weight: 600; color: #eee; font-size: 1rem;">
-                        <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span id="daily-target-value">R$ 0,00</span></div>
-                        <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span id="daily-sold-value">R$ 0,00</span></div>
-                        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; color: #f1c40f;"><span>Falta:</span><span id="daily-left-value">R$ 0,00</span></div>
-                    </div>
-                </div>
+            <section id="main-daily-goal-section" style="padding-top: 1rem; padding-bottom: 0; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                <!-- Paineis injetados via JS -->
             </section>
 
             <!-- PASTA DE APPS ESTILO ANDROID -->
@@ -3642,14 +3643,6 @@
             </div>
         </section>
 
-            <!-- NOVA Seção de Avisos Gerais -->
-            <section id="avisos-gerais" style="display: none;">
-                <h2 class="section-title">Avisos da Gerência</h2>
-                <div id="avisos-container" class="ranking-list">
-                    <!-- O JavaScript irá popular os avisos aqui -->
-                </div>
-            </section>
-            
             <!-- Seção de Ferramentas (Oculta, os itens agora estão na gaveta superior) -->
             <section id="ferramentas" style="display: none;">
                 <h2 class="section-title">Aplicativos</h2>
@@ -5291,7 +5284,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.3.7 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.3.8 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8006,14 +7999,11 @@ const loadAndDisplayCollaboratorMetas = () => {
     };
 
     const updateDailyGoalPanel = async (userKey) => {
-        const targetEl = document.getElementById('daily-target-value');
-        const soldEl = document.getElementById('daily-sold-value');
-        const leftEl = document.getElementById('daily-left-value');
-        const titleEl = document.getElementById('daily-goal-title');
+        const section = document.getElementById('main-daily-goal-section');
+        if (!section) return;
+        section.innerHTML = '';
         const todayString = getTodayDateString();
-        
-        const userName = currentUserName;
-        const isStoreManager = storeManagers.includes(userName);
+        const isAdminMulti = ['Paulo', 'Keliane', 'Ducielma'].includes(currentUserName);
 
         try {
             const [metasSnap, allSalesSnap, allDailySnap, increaseSnap] = await Promise.all([
@@ -8029,31 +8019,6 @@ const loadAndDisplayCollaboratorMetas = () => {
             const increasePercent = increaseSnap.exists() ? parseFloat(increaseSnap.val() || 0) : 0;
             const multiplier = 1 + (increasePercent / 100);
 
-            let metaMensal = 0;
-            let vendaTotal = 0;
-            let vendaHoje = 0;
-
-            if (isStoreManager) {
-                const store = storeMapping.pinheiro.includes(userName) ? 'pinheiro' : 'bacabal';
-                const storeEmployees = storeMapping[store];
-                
-                metaMensal = parseFloat(allMetas[userKey]?.metaLoja || 0);
-                
-                storeEmployees.forEach(empName => {
-                    const empKey = empName.toLowerCase();
-                    vendaTotal += parseFloat(allSales[empKey]?.vendas || 0);
-                    vendaHoje += parseFloat(allDaily[empKey]?.vendas || 0);
-                });
-
-                if (titleEl) titleEl.textContent = `META DO DIA - LOJA ${store.toUpperCase()}`;
-            } else {
-                metaMensal = parseFloat(allMetas[userKey]?.venda || 0);
-                vendaTotal = parseFloat(allSales[userKey]?.vendas || 0);
-                vendaHoje = parseFloat(allDaily[userKey]?.vendas || 0);
-                
-                if (titleEl) titleEl.textContent = `META DO DIA - ${userName.toUpperCase()}`;
-            }
-
             const getWorkingDaysLeft = () => {
                 const now = new Date();
                 const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -8064,13 +8029,55 @@ const loadAndDisplayCollaboratorMetas = () => {
                 }
                 return days || 1;
             };
+            const workingDaysLeft = getWorkingDaysLeft();
 
-            const metaDiariaBase = Math.max(0, (metaMensal - (vendaTotal - vendaHoje)) / getWorkingDaysLeft());
-            const metaDiariaComAumento = metaDiariaBase * multiplier;
+            const createPanelHTML = (title, meta, sold) => {
+                const dailyBase = Math.max(0, (meta - (sold.total - sold.today)) / workingDaysLeft);
+                const dailyFinal = dailyBase * multiplier;
+                const dailyLeft = Math.max(0, dailyFinal - sold.today);
 
-            if (targetEl) targetEl.textContent = formatBRL(metaDiariaComAumento);
-            if (soldEl) soldEl.textContent = formatBRL(vendaHoje);
-            if (leftEl) leftEl.textContent = formatBRL(Math.max(0, metaDiariaComAumento - vendaHoje));
+                return `
+                    <div class="sales-data-card" style="width: 100%; max-width: 420px; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
+                        <h4 style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">${title}</h4>
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-weight: 600; color: #eee; font-size: 1rem;">
+                            <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(dailyFinal)}</span></div>
+                            <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.today)}</span></div>
+                            <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; color: #f1c40f;"><span>Falta:</span><span>${formatBRL(dailyLeft)}</span></div>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const getStoreSoldData = (store) => {
+                let total = 0;
+                let today = 0;
+                storeMapping[store].forEach(empName => {
+                    const k = empName.toLowerCase();
+                    total += parseFloat(allSales[k]?.vendas || 0);
+                    today += parseFloat(allDaily[k]?.vendas || 0);
+                });
+                return { total, today };
+            };
+
+            if (isAdminMulti) {
+                const pinMeta = parseFloat(allMetas['eliseu']?.metaLoja || 0);
+                const pinSold = getStoreSoldData('pinheiro');
+                section.innerHTML += createPanelHTML("META DO DIA - LOJA PINHEIRO", pinMeta, pinSold);
+                
+                const bacMeta = parseFloat(allMetas['tacilio']?.metaLoja || 0);
+                const bacSold = getStoreSoldData('bacabal');
+                section.innerHTML += createPanelHTML("META DO DIA - LOJA BACABAL", bacMeta, bacSold);
+            } else if (storeManagers.includes(currentUserName)) {
+                const store = storeMapping.pinheiro.includes(currentUserName) ? 'pinheiro' : 'bacabal';
+                const meta = parseFloat(allMetas[userKey]?.metaLoja || 0);
+                const sold = getStoreSoldData(store);
+                section.innerHTML = createPanelHTML(`META DO DIA - LOJA ${store.toUpperCase()}`, meta, sold);
+            } else {
+                const meta = parseFloat(allMetas[userKey]?.venda || 0);
+                const soldTotal = parseFloat(allSales[userKey]?.vendas || 0);
+                const soldToday = parseFloat(allDaily[userKey]?.vendas || 0);
+                section.innerHTML = createPanelHTML(`META DO DIA - ${currentUserName.toUpperCase()}`, meta, { total: soldTotal, today: soldToday });
+            }
 
         } catch (e) { console.error(e); }
     };
@@ -8477,9 +8484,17 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
                                 <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA: ${formatBRL(Math.max(0, data.goal - data.sold))}</p>
                                 
-                                <div class="progress-bar-container" style="height: 16px; margin-top: 10px;">
+                                <div class="progress-bar-container" style="height: 16px; margin-top: 10px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
                                     <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
+                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO SERVIÇO / SEGURO DA LOJA:</p>
+                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.servSold)} / META: ${formatBRL(data.servGoal)}</p>
+                                <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
+                                    <div class="progress-bar" style="width: ${Math.min(100, (data.servPerc / 125) * 100)}%; background-color: #9b59b6;"></div>
+                                    <span class="progress-percentage">${data.servPerc.toFixed(1)}%</span>
                                 </div>
                             </div>
                         </div>
@@ -10431,13 +10446,14 @@ async function calculateAndDisplayServiceRanking() {
             
             actualSales = 0;
             actualService = 0;
+            serviceGoal = 0;
             storeEmployees.forEach(empName => {
                 const k = empName.toLowerCase();
                 actualSales += parseFloat(salesData[k]?.vendas || 0);
                 actualService += parseFloat(salesData[k]?.servico || 0);
+                serviceGoal += parseFloat(metasData[k]?.meta_servico || 0);
             });
             salesGoal = parseFloat(metasData[key]?.metaLoja || 0);
-            serviceGoal = 0; 
         }
 
         const baseSalary = (name === 'Gabrielly') ? 888 : 1621;
