@@ -3476,19 +3476,24 @@
             <!-- PASTA DE APPS ESTILO ANDROID -->
             <section id="apps-folder-section" style="padding-top: 1rem; padding-bottom: 1rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%;">
                 <div style="display: flex; justify-content: space-evenly; align-items: flex-start; width: 100%; max-width: 450px; margin: 0 auto;">
-                    <div class="folder-wrapper" id="direct-brasilcard" style="width: 30%; flex-shrink: 0;">
+                    <div class="folder-wrapper" id="direct-brasilcard" style="width: 23%; flex-shrink: 0;">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/bras.PNG">
                         <span>Hunter Card</span>
                     </div>
 
-                    <div class="folder-wrapper" id="direct-odrescred" style="width: 30%; flex-shrink: 0;">
+                    <div class="folder-wrapper" id="direct-odrescred" style="width: 23%; flex-shrink: 0;">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/odres.PNG">
                         <span>Odrescred</span>
                     </div>
 
-                    <div class="folder-wrapper" id="direct-payjoy" style="width: 30%; flex-shrink: 0;">
+                    <div class="folder-wrapper" id="direct-payjoy" style="width: 23%; flex-shrink: 0;">
                         <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ponto-pictures/eduardo/merc.PNG">
                         <span>Pay joy</span>
+                    </div>
+
+                    <div class="folder-wrapper" id="direct-wiwap" style="width: 23%; flex-shrink: 0;">
+                        <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/ecs/discovery/1784993472507_IMG_7390.PNG">
+                        <span>WIWAP</span>
                     </div>
                 </div>
                 
@@ -4559,7 +4564,8 @@
             <button id="close-os-modal-btn" class="modal-close-btn">×</button>
             <h3 class="modal-title">Assistência Técnica</h3>
             <div class="modal-button-container">
-                <a href="https://w.app/gkesxd" target="_blank" class="modal-btn">Realme</a>
+                <a href="https://wa.me/559888687618" target="_blank" class="modal-btn">M&J Cell Realme</a>
+                <a href="https://wa.me/551144401418" target="_blank" class="modal-btn">Ibiraquera Realme</a>
             </div>
         </div>
     </div>
@@ -5295,7 +5301,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.4.1 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.4.2 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -14014,6 +14020,10 @@ async function calculateAndDisplayStoreRanking() {
 
             document.getElementById('direct-odrescred').addEventListener('click', () => {
                 openExternalLinkAndExit('https://vendas.odrescred.com.br/login');
+            });
+
+            document.getElementById('direct-wiwap').addEventListener('click', () => {
+                openExternalLinkAndExit('https://wipcred.com.br');
             });
 
             // --- LÓGICA DO SEGUNDO CARROSSEL (RANKING) ---
