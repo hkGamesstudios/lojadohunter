@@ -5301,7 +5301,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.4.2 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.4.3 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7627,41 +7627,90 @@ const loadAndDisplayCollaboratorMetas = () => {
             };
 
             priceCache[deviceName] = newValues;
-
-            updateText('device-price-venda', newValues.precoVenda);
-            updateText('device-price-limite', newValues.precoLimite);
-            updateText('device-price-custo', newValues.precoCusto);
-            updateText('device-price-zero-lucro', newValues.zeroLucro);
-            updateText('device-price-cupom', newValues.cupom);
-            updateText('device-price-entrada', newValues.entradaMinima);
-            updateText('device-seguro-queda', newValues.seguroQueda);
-            updateText('device-garantia-estendida', newValues.garantiaEstendida);
-
-            const parseVal = (str) => parseFloat(str?.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
-            const pVenda = parseVal(newValues.precoVenda);
-            const pEntrada = parseVal(newValues.entradaMinima);
-
-            if (pVenda > 0 && pEntrada > 0) {
-                const base = pVenda - pEntrada;
-                const fmt = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                updateText('paymobi-12x', `12X de R$ ${fmt((base * 2.1) / 12)}`);
-                updateText('paymobi-12x-total', `Total R$ ${fmt(base * 2.1)}`);
-                updateText('paymobi-18x', `18X de R$ ${fmt((base * 2.6) / 18)}`);
-                updateText('paymobi-18x-total', `Total R$ ${fmt(base * 2.6)}`);
-            }
+            
+            // Inicializa cálculos matemáticos baseados nos checkboxes
+            window.updateMathPrices(deviceName);
 
             ids.forEach(id => updateIndicator(`${id}-indicator`, ''));
 
         } catch (e) {
             ids.forEach(id => updateIndicator(`${id}-indicator`, '(Erro)'));
-            // Se falhar, tenta manter o que está no cache ou limpa o carregando
             if(priceCache[deviceName]) {
-                 const c = priceCache[deviceName];
-                 updateText('device-price-venda', c.precoVenda);
-                 updateText('device-price-limite', c.precoLimite);
-                 updateText('device-price-custo', c.precoCusto);
-                 updateText('device-price-zero-lucro', c.zeroLucro);
+                 window.updateMathPrices(deviceName);
             }
+        }
+    };
+
+    window.updateMathPrices = (deviceName) => {
+        const data = priceCache[deviceName];
+        if (!data) return;
+
+        const parseVal = (str) => parseFloat(String(str)?.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        const checkSeguro = document.getElementById('check-seguro-queda')?.checked || false;
+        const checkGarantia = document.getElementById('check-garantia-estendida')?.checked || false;
+
+        const valSeguro = parseVal(data.seguroQueda);
+        const valGarantia = parseVal(data.garantiaEstendida);
+
+        let adicional = 0;
+        if (checkSeguro) adicional += valSeguro;
+        if (checkGarantia) adicional += valGarantia;
+
+        const baseVenda = parseVal(data.precoVenda) + adicional;
+        const baseLimite = parseVal(data.precoLimite) + adicional;
+        const baseZeroLucro = parseVal(data.zeroLucro) + adicional;
+        const baseCupom = parseVal(data.cupom) + adicional;
+
+        // Atualiza Cards Principais
+        const elVenda = document.getElementById('device-price-venda');
+        if (elVenda) elVenda.textContent = fmt(baseVenda);
+        
+        const elInstallments = document.getElementById('venda-installments');
+        if (elInstallments) elInstallments.textContent = `10X DE ${ (baseVenda / 10).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }`;
+
+        const elLimite = document.getElementById('device-price-limite');
+        if (elLimite) elLimite.textContent = fmt(baseLimite);
+        const elDiscLimite = document.getElementById('discount-limite');
+        if (elDiscLimite) elDiscLimite.textContent = `DESCONTO DE ${fmt(baseVenda - baseLimite)}`;
+
+        const elZero = document.getElementById('device-price-zero-lucro');
+        if (elZero) elZero.textContent = fmt(baseZeroLucro);
+        const elDiscZero = document.getElementById('discount-zero-lucro');
+        if (elDiscZero) elDiscZero.textContent = `DESCONTO DE ${fmt(baseVenda - baseZeroLucro)}`;
+
+        const elCupom = document.getElementById('device-price-cupom');
+        if (elCupom) elCupom.textContent = fmt(baseCupom);
+        const elDiscCupom = document.getElementById('discount-cupom');
+        if (elDiscCupom) elDiscCupom.textContent = `DESCONTO DE ${fmt(baseVenda - baseCupom)}`;
+
+        // Atualiza Valores Fixos
+        const elCusto = document.getElementById('device-price-custo');
+        if (elCusto) elCusto.textContent = data.precoCusto;
+
+        const elEntrada = document.getElementById('device-price-entrada');
+        if (elEntrada) elEntrada.textContent = data.entradaMinima;
+
+        const elSegText = document.getElementById('device-seguro-queda');
+        if (elSegText) elSegText.textContent = data.seguroQueda;
+
+        const elGarText = document.getElementById('device-garantia-estendida');
+        if (elGarText) elGarText.textContent = data.garantiaEstendida;
+
+        // Lógica PayMobi
+        const pEntrada = parseVal(data.entradaMinima);
+        if (baseVenda > 0 && pEntrada > 0) {
+            const baseFinanciada = baseVenda - pEntrada;
+            const fmtSemSimbolo = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const elP12 = document.getElementById('paymobi-12x');
+            if (elP12) elP12.textContent = `12X de R$ ${fmtSemSimbolo((baseFinanciada * 2.1) / 12)}`;
+            const elP12T = document.getElementById('paymobi-12x-total');
+            if (elP12T) elP12T.textContent = `Total R$ ${fmtSemSimbolo(baseFinanciada * 2.1)}`;
+            const elP18 = document.getElementById('paymobi-18x');
+            if (elP18) elP18.textContent = `18X de R$ ${fmtSemSimbolo((baseFinanciada * 2.6) / 18)}`;
+            const elP18T = document.getElementById('paymobi-18x-total');
+            if (elP18T) elP18T.textContent = `Total R$ ${fmtSemSimbolo(baseFinanciada * 2.6)}`;
         }
     };
     
@@ -7756,24 +7805,29 @@ const loadAndDisplayCollaboratorMetas = () => {
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
                     <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #2ecc71 !important;">
                         <span class="kpi-title">VENDA ✅ <span id="venda-indicator"></span></span>
-                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span id="venda-installments" style="font-size: 0.65rem; color: #2ecc71; font-weight: 800; text-transform: uppercase;"></span>
                     </div>
                     <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #f1c40f !important;">
                         <span class="kpi-title">LIMITE 🚨 <span id="limite-indicator"></span></span>
-                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span id="discount-limite" style="font-size: 0.6rem; font-weight: 700; color: #f1c40f; text-transform: uppercase;"></span>
                     </div>
                     <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #e74c3c !important; grid-column: span 2;">
                         <span class="kpi-title">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
-                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span id="discount-zero-lucro" style="font-size: 0.65rem; font-weight: 700; color: #e74c3c; text-transform: uppercase;"></span>
                     </div>
                     <div id="device-cupom-card" class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #3498db !important; grid-column: span 2; display: none;">
                         <span class="kpi-title">CUPOM 🎟️ <span id="cupom-indicator"></span></span>
-                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important;">Carregando...</span>
+                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span id="discount-cupom" style="font-size: 0.65rem; font-weight: 700; color: #3498db; text-transform: uppercase;"></span>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 15px;">
-                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center;">
+                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
+                        <input type="checkbox" id="check-seguro-queda" style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
                             <i class="fa-solid fa-shield-halved" style="color: #3498db; font-size: 1rem;"></i>
                             <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; letter-spacing: 0.5px;">Seguro Queda</span>
@@ -7781,7 +7835,8 @@ const loadAndDisplayCollaboratorMetas = () => {
                         <strong id="device-seguro-queda" style="font-size: 1.2rem; display: block; color: #fff;">...</strong>
                         <span id="seguro-queda-indicator" style="font-size: 0.6rem; opacity: 0.5;"></span>
                     </div>
-                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center;">
+                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
+                        <input type="checkbox" id="check-garantia-estendida" checked style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
                             <i class="fa-solid fa-calendar-plus" style="color: #9b59b6; font-size: 1rem;"></i>
                             <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; letter-spacing: 0.5px;">Garantia +1A</span>
@@ -7798,23 +7853,14 @@ const loadAndDisplayCollaboratorMetas = () => {
                     <button id="delete-device-btn" class="action-button delete-button" style="height: auto; aspect-ratio: initial; padding: 15px; font-size: 0.8rem; margin: 0; border-radius: 14px;"><i class="fa-solid fa-trash"></i> APAGAR</button>
                 </div>
             `;
-        }
 
-        const cachedData = priceCache[device.name];
-        if (cachedData) {
-            const fields = {
-                'device-price-venda': cachedData.precoVenda,
-                'device-price-limite': cachedData.precoLimite,
-                'device-price-custo': cachedData.precoCusto,
-                'device-price-zero-lucro': cachedData.zeroLucro,
-                'device-price-entrada': cachedData.entradaMinima,
-                'device-seguro-queda': cachedData.seguroQueda,
-                'device-garantia-estendida': cachedData.garantiaEstendida
-            };
-            for (let id in fields) {
-                const el = document.getElementById(id);
-                if (el) el.textContent = fields[id];
-            }
+            // Adiciona listeners para os checkboxes
+            setTimeout(() => {
+                const cS = document.getElementById('check-seguro-queda');
+                const cG = document.getElementById('check-garantia-estendida');
+                if (cS) cS.onchange = () => window.updateMathPrices(device.name);
+                if (cG) cG.onchange = () => window.updateMathPrices(device.name);
+            }, 50);
         }
 
         // Verifica visibilidade do Cupom antes de mostrar a página
