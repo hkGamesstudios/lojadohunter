@@ -5273,7 +5273,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.4.5 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.4.6 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7233,7 +7233,7 @@ const saveAllMetas = () => {
 };
 const loadAndDisplayCollaboratorMetas = () => {
     const container = document.getElementById('metas-display-content');
-    const salaryValue = (currentUserName === 'Gabrielly') ? "R$ 888,00" : "R$ 1.621,00";
+    const salaryValue = "R$ 1.621,00";
     
     container.innerHTML = `
         <div style="width:100%; color: white; font-family: 'Poppins', sans-serif; line-height: 1.6;">
@@ -8080,13 +8080,25 @@ const loadAndDisplayCollaboratorMetas = () => {
                 const dailyFinal = dailyBase * multiplier;
                 const dailyLeft = Math.max(0, dailyFinal - sold.today);
 
+                const serviceGoal = dailyFinal * 0.10;
+                const serviceLeft = Math.max(0, serviceGoal - sold.todayServ);
+
                 return `
                     <div class="sales-data-card" style="width: 100%; max-width: 420px; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
                         <h4 style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">${title}</h4>
-                        <div style="display: flex; flex-direction: column; gap: 8px; font-weight: 600; color: #eee; font-size: 1rem;">
+                        
+                        <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px;">
+                            <span style="font-size: 0.65rem; color: var(--primary-color); text-align: left; text-transform: uppercase; font-weight: 800;">Meta de Vendas</span>
                             <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(dailyFinal)}</span></div>
                             <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.today)}</span></div>
-                            <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; color: #f1c40f;"><span>Falta:</span><span>${formatBRL(dailyLeft)}</span></div>
+                            <div style="display: flex; justify-content: space-between; color: #f1c40f;"><span>Falta:</span><span>- ${formatBRL(dailyLeft)}</span></div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem;">
+                            <span style="font-size: 0.65rem; color: #9b59b6; text-align: left; text-transform: uppercase; font-weight: 800;">Meta de Serviço (10%)</span>
+                            <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(serviceGoal)}</span></div>
+                            <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.todayServ)}</span></div>
+                            <div style="display: flex; justify-content: space-between; color: #f1c40f;"><span>Falta:</span><span>- ${formatBRL(serviceLeft)}</span></div>
                         </div>
                     </div>
                 `;
@@ -8095,12 +8107,14 @@ const loadAndDisplayCollaboratorMetas = () => {
             const getStoreSoldData = (store) => {
                 let total = 0;
                 let today = 0;
+                let todayServ = 0;
                 storeMapping[store].forEach(empName => {
                     const k = empName.toLowerCase();
                     total += parseFloat(allSales[k]?.vendas || 0);
                     today += parseFloat(allDaily[k]?.vendas || 0);
+                    todayServ += parseFloat(allDaily[k]?.servico || 0);
                 });
-                return { total, today };
+                return { total, today, todayServ };
             };
 
             if (isAdminMulti) {
@@ -8120,7 +8134,8 @@ const loadAndDisplayCollaboratorMetas = () => {
                 const meta = parseFloat(allMetas[userKey]?.venda || 0);
                 const soldTotal = parseFloat(allSales[userKey]?.vendas || 0);
                 const soldToday = parseFloat(allDaily[userKey]?.vendas || 0);
-                section.innerHTML = createPanelHTML(`META DO DIA - ${currentUserName.toUpperCase()}`, meta, { total: soldTotal, today: soldToday });
+                const soldTodayServ = parseFloat(allDaily[userKey]?.servico || 0);
+                section.innerHTML = createPanelHTML(`META DO DIA - ${currentUserName.toUpperCase()}`, meta, { total: soldTotal, today: soldToday, todayServ: soldTodayServ });
             }
 
         } catch (e) { console.error(e); }
@@ -9692,9 +9707,10 @@ async function calculateAndDisplayServiceRanking() {
         database.ref('salesData').get(),
         database.ref('metas').get(),
         database.ref('userProfiles').get(),
+        database.ref('userStatuses').get(),
         database.ref('globalSettings/ranks/servicos').get()
-    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, configSnapshot]) => {
-        const config = configSnapshot.exists() ? configSnapshot.val() : { active: true, prizes: [1000, 500, 250] };
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, configSnapshot]) => {
+        const config = configSnapshot.exists() ? configSnapshot.val() : { active: true, prizes: [0, 0, 0, 0, 0] };
 
         if (config.active === false) {
             serviceSection.style.display = 'none';
@@ -9707,14 +9723,11 @@ async function calculateAndDisplayServiceRanking() {
             rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
             return;
         }
-        if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
-            rankingContainer.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
-            return;
-        }
 
         const salesData = salesSnapshot.val();
         const metasData = metasSnapshot.val();
         const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
+        const statusesData = statusesSnapshot.exists() ? statusesSnapshot.val() : {};
         const performanceData = [];
 
         const eligibleCollaborators = allCollaborators.filter(name => !managers.includes(name));
@@ -9736,60 +9749,75 @@ async function calculateAndDisplayServiceRanking() {
         performanceData.sort((a, b) => b.percentage - a.percentage);
 
         rankingContainer.innerHTML = '';
-        const top5 = performanceData.slice(0, 5);
+        const allRank = performanceData;
 
-        if (top5.length === 0) {
+        if (allRank.length === 0) {
             rankingContainer.innerHTML = '<p style="text-align: center;">Nenhuma meta de serviço definida.</p>';
             return;
         }
 
-        for (const [index, collab] of top5.entries()) {
+        for (const [index, collab] of allRank.entries()) {
             const rank = index + 1;
-
-            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
-            let prizeHTML = '';
-            const prizeVal = config.prizes ? config.prizes[index] : 0;
+            const medalIcon = index < 3 ? '<i class="fa-solid fa-medal"></i>' : '<i class="fa-solid fa-star"></i>';
             
-            if (prizeVal > 0) {
-                prizeHTML = `<span class="rank-prize" style="color: #fff; font-weight: bold; margin-right: 5px; font-size: 0.8rem;">${formatBRL(prizeVal)}</span>
-                             <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 40px; height: 40px; margin-left: 8px; vertical-align: middle; animation: pulse 2s infinite;">`;
+            let prizeContent = '';
+            const prizeValue = config.prizes ? config.prizes[index] : 0;
+            if (prizeValue > 0) {
+                prizeContent = `
+                    <div style="display: flex; align-items: center; gap: 4px; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 6px; flex-shrink: 0;">
+                        <span style="color: #fff; font-weight: 800; font-size: 0.7rem;">${formatBRL(prizeValue)}</span>
+                        <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 24px; height: 24px; animation: pulse 2s infinite;">
+                    </div>
+                `;
             }
 
             const rankItem = document.createElement('div');
-            rankItem.className = `rank-item rank-${rank}`;
+            rankItem.className = `rank-item rank-${rank > 3 ? 'low' : rank}`;
+            rankItem.style.padding = "0.8rem 1rem";
             
             const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
-            const defaultPhoto = DEFAULT_PROFILE_PHOTO;
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
-            const photoUrl = collaboratorProfile && collaboratorProfile.photoURL ? collaboratorProfile.photoURL : defaultPhoto;
+            const photoUrl = collaboratorProfile?.photoURL || DEFAULT_PROFILE_PHOTO;
+            const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown" style="top: -12px; color: #9b59b6;"></i>' : '';
 
-            // Nova imagem flutuante para o rank de serviços
-            const serviceIcon = `<img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 40px; height: 40px; margin-left: 8px; vertical-align: middle; animation: pulse 2s infinite;">`;
+            let statusBubbleHtml = '';
+            const userStatus = statusesData[collab.name.toLowerCase()];
+            if (userStatus && userStatus.text) {
+                const statusTimestamp = new Date(userStatus.timestamp);
+                const now = new Date();
+                const hoursDiff = (now - statusTimestamp) / (1000 * 60 * 60);
+                if (hoursDiff < 24) {
+                    statusBubbleHtml = `<div class="status-bubble" style="font-size: 0.65rem; padding: 2px 8px; margin-bottom: 5px;">${userStatus.text}</div>`;
+                }
+            }
 
             let fireIconHtml = '';
             if (rank === 1) {
                 const firePosition = Math.min(progressBarWidth, 98); 
-                fireIconHtml = `<i class="fas fa-fire fire-icon-purple" style="left: ${firePosition}%;"></i>`;
+                fireIconHtml = `<i class="fas fa-fire fire-icon-purple" style="left: ${firePosition}%; font-size: 1rem;"></i>`;
             }
 
             rankItem.innerHTML = `
-                <div class="rank-photo-container">
-                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+                <div class="rank-photo-container" style="width: 38px; height: 38px;">
+                    ${crownHtml}
+                    <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo" style="width: 100%; height: 100%;">
                 </div>
-                <div class="rank-medal" style="width: auto; padding-right: 8px;">
-                    <span style="font-weight: bold; margin-right: 2px;">${rank}º</span>
-                    ${medals[index]}
+                <div class="rank-medal" style="width: auto; padding: 0 4px; font-size: 1.1rem; color: #9b59b6;">
+                    <span style="font-weight: 800; font-size: 0.85rem; margin-right: 3px;">${rank}º</span>
+                    ${medalIcon}
                 </div>
-                <div class="rank-details">
-                    <div class="rank-name" style="justify-content: space-between;">
-                        <span>${collab.name}</span>
-                        <div style="display: flex; align-items: center;">
-                            ${prizeHTML}
+                <div class="rank-details" style="overflow: hidden;">
+                    <div class="rank-name" style="justify-content: space-between; align-items: center; gap: 4px; margin-bottom: 2px;">
+                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; font-weight: 700; font-size: 0.9rem;">${collab.name}</span>
+                        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                            <button class="parabens-btn" data-recipient-name="${collab.name}" style="margin: 0; padding: 4px; font-size: 1rem;"><i class="fa-solid fa-hands-clapping"></i></button>
+                            ${prizeContent}
                         </div>
                     </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: ${progressBarWidth}%; background-color: #9b59b6;"></div>
-                        <span class="progress-percentage">${collab.percentage.toFixed(1)}%</span>
+                    ${statusBubbleHtml}
+                    <div class="progress-bar-container" style="height: 14px; margin-top: 2px; overflow: hidden; border-radius: 8px;">
+                        <div class="progress-bar" style="width: ${progressBarWidth}%; border-radius: 8px; background-color: #9b59b6;"></div>
+                        <span class="progress-percentage" style="z-index: 2; font-size: 0.65rem;">${collab.percentage.toFixed(1)}%</span>
                         ${fireIconHtml}
                     </div>
                 </div>
@@ -10595,7 +10623,7 @@ async function calculateAndDisplayServiceRanking() {
             salesGoal = parseFloat(metasData[key]?.metaLoja || 0);
         }
 
-        const baseSalary = (name === 'Gabrielly') ? 888 : 1621;
+        const baseSalary = 1621;
         const percentage = salesGoal > 0 ? (actualSales / salesGoal) * 100 : 0;
         const servicePercentage = serviceGoal > 0 ? (actualService / serviceGoal) * 100 : 0;
         
@@ -10603,7 +10631,7 @@ async function calculateAndDisplayServiceRanking() {
         let tierText = "Abaixo de 50%";
         let tierColor = "#e74c3c";
 
-        if (percentage >= 50 || name === 'Gabrielly') {
+        if (percentage >= 50) {
             commission = actualSales * 0.01;
             tierText = "Comissão 1% Ativa";
             tierColor = "#2ecc71";
