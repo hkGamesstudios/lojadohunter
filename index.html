@@ -3911,6 +3911,7 @@
                     <a href="#" class="modal-btn collaborator-link" data-name="Eduardo">Eduardo</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Hananda">Hananda</a>
                     <a href="#" class="modal-btn collaborator-link" data-name="Gabrielly">Gabrielly</a>
+                    <a href="#" class="modal-btn collaborator-link" data-name="Rany">Rany</a>
                 </div>
             </div>
             <div id="colaborador-bacabal" class="modal-view" style="display: none;">
@@ -4017,6 +4018,10 @@
                     <i class="fa-solid fa-user-tie"></i>
                     <span>Painel Gerente</span>
                 </a>
+                <a href="#" id="manager-launch-sales-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    <span>Lançar Vendas</span>
+                </a>
                 <a href="#" id="closing-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-cash-register"></i>
                     <span>Fechamento</span>
@@ -4024,10 +4029,6 @@
                 <a href="#" id="add-my-story-btn" class="action-button">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add Story</span>
-                </a>
-                <a href="#" id="open-chats-btn" class="action-button">
-                    <i class="fa-solid fa-comments-dollar"></i>
-                    <span>Chats</span>
                 </a>
                 <a href="#" id="change-password-btn" class="action-button">
                     <i class="fa-solid fa-key"></i>
@@ -5273,7 +5274,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.4.7 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.4.8 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5316,13 +5317,13 @@ Transporte - R$ 5,00"></textarea></div>
 
                                 // --- ESTADO DA APLICAÇÃO ---
     let isEntradaNotaView = false;
-    const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma', 'Gabrielly'];
+    const allCollaborators = ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma', 'Gabrielly', 'Rany'];
     const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Eliseu', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
     const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
     const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
     const storeMapping = {
-        pinheiro: ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Keliane', 'Gabrielly'],
+        pinheiro: ['Mainara', 'Eliseu', 'Eduardo', 'Hananda', 'Keliane', 'Gabrielly', 'Rany'],
         bacabal: ['Aline', 'Tacilio', 'Demilson', 'Leonardo', 'Jose', 'Ducielma']
     };
     let currntUserName = ''; // Variável unificada para o usuário logado
@@ -7137,6 +7138,7 @@ function showScreen(screenElement) {
         const employees = storeMapping[store];
         const managerName = store === 'pinheiro' ? 'Eliseu' : 'Tacilio';
         const managerKey = managerName.toLowerCase();
+        const nonSales = ['Beatriz', 'Keliane', 'Ducielma', 'Leonardo', 'Jose'];
 
         try {
             const snap = await database.ref('metas').get();
@@ -7155,7 +7157,7 @@ function showScreen(screenElement) {
                 </div>
             `;
 
-            employees.filter(name => name !== 'Beatriz').forEach(name => {
+            employees.filter(name => !nonSales.includes(name)).forEach(name => {
                 const key = name.toLowerCase();
                 const data = allMetas[key] || {};
                 container.innerHTML += `
@@ -7183,11 +7185,12 @@ function showScreen(screenElement) {
         const statusEl = document.getElementById('metas-status-message');
         const employees = storeMapping[store];
         const managerKey = (store === 'pinheiro' ? 'Eliseu' : 'Tacilio').toLowerCase();
+        const nonSales = ['Beatriz', 'Keliane', 'Ducielma', 'Leonardo', 'Jose'];
         
         statusEl.textContent = 'Salvando...';
         const updates = {};
 
-        employees.filter(name => name !== 'Beatriz').forEach(name => {
+        employees.filter(name => !nonSales.includes(name)).forEach(name => {
             const key = name.toLowerCase();
             updates[`/metas/${key}/venda`] = parseFromBRLInput(document.getElementById(`venda-${key}`).value);
             updates[`/metas/${key}/meta_servico`] = parseFromBRLInput(document.getElementById(`meta-servico-${key}`).value);
@@ -11851,13 +11854,20 @@ async function calculateAndDisplayStoreRanking() {
         
         const todayString = getTodayDateString();
         const employees = storeMapping[store];
+        const nonSales = ['Beatriz', 'Keliane', 'Ducielma', 'Leonardo', 'Jose'];
+        const isAdmin = newAdmins.includes(currentUserName);
 
         try {
             const snapshot = await database.ref(`dailySales/${todayString}`).get();
             const dailyData = snapshot.exists() ? snapshot.val() : {};
-            container.innerHTML = `<button onclick="openManualSalePage()" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Alterar Loja</button>`;
             
-            employees.filter(name => name !== 'Beatriz').forEach(name => {
+            if (isAdmin) {
+                container.innerHTML = `<button onclick="openManualSalePage()" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Alterar Loja</button>`;
+            } else {
+                container.innerHTML = `<button onclick="showPage('collaboratorPage')" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>`;
+            }
+            
+            employees.filter(name => !nonSales.includes(name)).forEach(name => {
                 const key = name.toLowerCase();
                 const userDaily = dailyData[key] || { vendas: 0, servico: 0 };
                 container.innerHTML += `
@@ -11889,6 +11899,7 @@ async function calculateAndDisplayStoreRanking() {
     const saveTodayManualSalesByStore = async (store) => {
         const statusEl = document.getElementById('manual-sale-status');
         const employees = storeMapping[store];
+        const nonSales = ['Beatriz', 'Keliane', 'Ducielma', 'Leonardo', 'Jose'];
         if (!confirm(`Confirmar atualização de hoje para a loja ${store.toUpperCase()}?`)) return;
         
         statusEl.textContent = 'Salvando...';
@@ -11904,7 +11915,7 @@ async function calculateAndDisplayStoreRanking() {
             const currentDailyData = dailySnap.exists() ? dailySnap.val() : {};
             const updates = {};
 
-            employees.filter(name => name !== 'Beatriz').forEach(name => {
+            employees.filter(name => !nonSales.includes(name)).forEach(name => {
                 const key = name.toLowerCase();
                 const newVendaHoje = parseFromBRLInput(document.getElementById(`manual-venda-${key}`).value);
                 const newServicoHoje = parseFromBRLInput(document.getElementById(`manual-servico-${key}`).value);
@@ -11996,6 +12007,8 @@ async function calculateAndDisplayStoreRanking() {
         const isAdminProfile = newAdmins.includes(userName);
         const isCollaboratorProfile = !isAdminProfile;
         const isManager = managers.includes(userName);
+        const isStoreManager = storeManagers.includes(userName);
+        const isSecurity = ['Jose', 'Leonardo'].includes(userName);
 
         const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
         const metasBtn = document.getElementById('view-metas-btn');
@@ -12004,8 +12017,11 @@ async function calculateAndDisplayStoreRanking() {
         const pontoNotificationArea = document.getElementById('ponto-notification-area');
         const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
         const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
+        const storyBtn = document.getElementById('add-my-story-btn');
+        const passBtn = document.getElementById('change-password-btn');
+        const salesData = document.getElementById('individual-sales-data');
 
-        [gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown].forEach(el => {
+        [gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown, storyBtn, passBtn, salesData].forEach(el => {
             if (el) el.style.display = 'none';
         });
         
@@ -12013,15 +12029,22 @@ async function calculateAndDisplayStoreRanking() {
                         gsBtnInProfile.style.display = 'flex';
                     }
 
+                    const launchSalesBtn = document.getElementById('manager-launch-sales-btn');
+                    if (launchSalesBtn) launchSalesBtn.style.display = isStoreManager ? 'flex' : 'none';
+
                     // Exibir Entrada/Nota somente para gerentes
                     const entradaNotaBtn = document.getElementById('open-entrada-nota-btn');
                     if (entradaNotaBtn) entradaNotaBtn.style.display = isManager ? 'flex' : 'none';
                     
                     if (isCollaboratorProfile) {
-            if (metasBtn) metasBtn.style.display = 'flex';
-            if (achievementsSection) achievementsSection.style.display = 'block';
-
-            loadAndDisplayIndividualSalesData();
+            if (!isSecurity) {
+                if (metasBtn) metasBtn.style.display = 'flex';
+                if (achievementsSection) achievementsSection.style.display = 'block';
+                if (storyBtn) storyBtn.style.display = 'flex';
+                if (passBtn) passBtn.style.display = 'flex';
+                if (salesData) salesData.style.display = 'block';
+                loadAndDisplayIndividualSalesData();
+            }
             loadPersonalSalesHistoryChart();
             displayAchievements(userKey);
             
@@ -12605,6 +12628,13 @@ async function calculateAndDisplayStoreRanking() {
                 showPage('quizPage');
             });
 
+            const gsPageBtn = document.getElementById('open-gs-page');
+            if (gsPageBtn) {
+                gsPageBtn.addEventListener('click', () => {
+                    // Botão legado removido
+                });
+            }
+
             // --- MODAL DE COLABORADORES ---
             document.getElementById('close-modal-btn').addEventListener('click', closeModal);
             elements.modal.addEventListener('click', (event) => { if (event.target === elements.modal) closeModal(); });
@@ -12626,6 +12656,12 @@ async function calculateAndDisplayStoreRanking() {
                 document.getElementById('closing-submit-container').style.display = 'none';
                 document.getElementById('closing-status-message').textContent = '';
                 showPage('closingPage');
+            });
+
+            document.getElementById('manager-launch-sales-btn').addEventListener('click', () => {
+                const store = storeMapping.pinheiro.includes(currentUserName) ? 'pinheiro' : 'bacabal';
+                renderManualSaleForm(store);
+                showPage('manualSalePage');
             });
 
             // --- PÁGINA DE GERÊNCIA (DASHBOARD) ---
@@ -12738,6 +12774,15 @@ async function calculateAndDisplayStoreRanking() {
                 isEntradaNotaView = false;
                 showPage('collaboratorPage');
             });
+
+            document.getElementById('back-to-gs-from-manual-sale').addEventListener('click', () => {
+                if (newAdmins.includes(currentUserName)) {
+                    showPage('gsPage');
+                } else {
+                    showPage('collaboratorPage');
+                }
+            });
+
             document.getElementById('back-to-main-from-device-search').addEventListener('click', showMainPage);
 
             // --- LÓGICA DAS CALCULADORAS ---
@@ -13141,13 +13186,6 @@ async function calculateAndDisplayStoreRanking() {
             document.getElementById('send-story-reply-btn').addEventListener('click', sendStoryReply);
             document.getElementById('back-to-gs-from-story-creation').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('delete-my-story-btn').addEventListener('click', deleteMyStories);
-            document.getElementById('open-chats-btn').addEventListener('click', openChatPage);
-            document.getElementById('back-to-collab-from-chat').addEventListener('click', () => showPage('collaboratorPage'));
-            document.getElementById('back-to-chatlist-from-convo').addEventListener('click', () => {
-                database.ref(`chats/${currentOpenChatId}/messages`).off(); // Para de ouvir mensagens antigas
-                currentOpenChatId = null;
-                showPage('chatPage');
-            });
             document.getElementById('chat-list-container').addEventListener('click', (e) => {
                 const item = e.target.closest('.chat-list-item');
                 if(item) {
