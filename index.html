@@ -3587,9 +3587,16 @@
             
             <!-- Seção do Ranking de Gerentes -->
             <section id="store-ranking">
-                <h2 class="section-title">Ranking de Gerentes</h2>
+                <h2 class="section-title">Ranking de Gerentes (Vendas)</h2>
                 <div id="store-ranking-container" class="ranking-list">
                     <!-- O JavaScript irá popular este container -->
+                     <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
+                </div>
+            </section>
+
+            <section id="store-service-ranking">
+                <h2 class="section-title">Ranking de Gerentes (Serviços)</h2>
+                <div id="store-service-ranking-container" class="ranking-list">
                      <p style="text-align: center; padding: 1rem;">Carregando ranking...</p>
                 </div>
             </section>
@@ -4170,6 +4177,7 @@
                 
                 <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar</span></button>
                 <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Subir</span></button>
+                <button id="open-painel-celulares-btn" class="gs-action-btn"><i class="fa-solid fa-mobile-screen-button"></i><span>Painel Celulares</span></button>
                 <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
                 <button id="open-tm-admin-btn" class="gs-action-btn"><i class="fa-solid fa-users-gear"></i><span>Clientes TM</span></button>
                 <button id="open-tm-stats-btn" class="gs-action-btn"><i class="fa-solid fa-chart-line"></i><span>Envios TM</span></button>
@@ -4942,6 +4950,57 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- TELA PAINEL CELULARES -->
+    <div id="painel-celulares-page" style="display: none; flex-direction: column; background: #1a1a1a; z-index: 3500; position: fixed; top:0; left:0; width:100%; height:100%; overflow: hidden;">
+        <div class="collaborator-header" style="background: #222; flex-shrink: 0;">
+            <button id="back-to-gs-from-painel-cel" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Painel Celulares</h2>
+        </div>
+        
+        <!-- SLIDER / TOGGLE -->
+        <div style="display: flex; justify-content: center; padding: 15px; background: #222; flex-shrink: 0;">
+            <div style="display: flex; background: #000; border-radius: 30px; padding: 5px; width: 280px; position: relative; border: 1px solid #333;">
+                <div id="slider-indicator" style="position: absolute; width: 50%; height: calc(100% - 10px); background: var(--primary-color); border-radius: 25px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(0);"></div>
+                <button id="toggle-mode-left" style="flex: 1; border: none; background: none; color: #fff; z-index: 1; font-weight: 700; font-size: 0.7rem; cursor: pointer; height: 35px;">MODO PLANILHA</button>
+                <button id="toggle-mode-right" style="flex: 1; border: none; background: none; color: #fff; z-index: 1; font-weight: 700; font-size: 0.7rem; cursor: pointer; height: 35px;">SISTEMA INTERNO</button>
+            </div>
+        </div>
+
+        <div class="collaborator-content" style="padding-top: 10px; align-items: stretch; height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <button id="btn-pull-data" class="action-button" style="flex: 1; height: auto; padding: 12px; aspect-ratio: initial; background: #2980b9;"><i class="fa-solid fa-sync"></i> Puxar Dados</button>
+                <button id="btn-upload-xlsx" class="action-button" style="flex: 1; height: auto; padding: 12px; aspect-ratio: initial; background: #27ae60;"><i class="fa-solid fa-file-excel"></i> Upar XLSX</button>
+                <input type="file" id="xlsx-upload-input" accept=".xlsx, .xls" style="display: none;">
+            </div>
+
+            <div id="spreadsheet-editor-container" style="flex-grow: 1; overflow: scroll; background: #fff; border-radius: 12px; margin-bottom: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); -webkit-overflow-scrolling: touch;">
+                 <table id="celulares-edit-table" style="width: 100%; border-collapse: collapse; color: #000; font-size: 0.65rem; table-layout: fixed;">
+                    <thead style="background: #f8f8f8; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                        <tr>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 220px;">PRODUTO</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">ENTRADA MINIMA</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">LUCRO</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">PREÇO DE CUSTO</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">PREÇO DE VENDA</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">PREÇO LIMITE</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">ZERO LUCRO</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">CUPOM</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">SEGURO QUEDA</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">GARANTIA +1A</th>
+                        </tr>
+                    </thead>
+                    <tbody id="celulares-table-body"></tbody>
+                 </table>
+            </div>
+
+            <button id="save-painel-data-btn" class="action-button full-width" style="height: auto; padding: 15px; margin-bottom: 15px; flex-shrink: 0;"><i class="fa-solid fa-save"></i> SALVAR ALTERAÇÕES</button>
+        </div>
+    </div>
+
      <!-- TELA DE GERENCIAMENTO DE HORAS EXTRAS -->
     <div id="overtime-management-page" style="display: none;">
         <div class="collaborator-header">
@@ -5274,7 +5333,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.4.8 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.4.9 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5454,6 +5513,7 @@ document.getElementById('afiliados-admin-page').classList.add('page');
         storeCashManagementPage: document.getElementById('store-cash-management-page'),
         vendaRemotaCashManagementPage: document.getElementById('venda-remota-cash-management-page'),
         bonusManagementPage: document.getElementById('bonus-management-page'),
+        painelCelularesPage: document.getElementById('painel-celulares-page'),
         telemarketingSelectionPage: document.getElementById('telemarketing-selection-page'),
         telemarketingListPage: document.getElementById('telemarketing-list-page'),
         telemarketingAdminPage: document.getElementById('telemarketing-admin-page'),
@@ -7573,11 +7633,6 @@ const loadAndDisplayCollaboratorMetas = () => {
     let priceCache = {};
 
     const fetchAndDisplayPriceForDevice = async (deviceName) => {
-        const updateText = (id, val) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = val;
-        };
-
         const updateIndicator = (id, msg) => {
             const el = document.getElementById(id);
             if (el) el.textContent = msg;
@@ -7586,13 +7641,49 @@ const loadAndDisplayCollaboratorMetas = () => {
         const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'cupom', 'entrada', 'seguro-queda', 'garantia-estendida'];
         ids.forEach(id => updateIndicator(`${id}-indicator`, '(...)'));
 
+        const mode = localStorage.getItem('painelCelMode') || 'planilha';
+
+        if (mode === 'sistema') {
+            try {
+                const snapshot = await database.ref('systemDevicePrices').get();
+                if (snapshot.exists()) {
+                    const allData = snapshot.val();
+                    const found = Object.values(allData).find(item => 
+                        item.produto.trim().toUpperCase() === deviceName.trim().toUpperCase()
+                    );
+
+                    if (found) {
+                        // Força adição de "R$ " se não tiver para o motor de calculo
+                        const fix = (v) => (v && !v.includes('R$')) ? `R$ ${v}` : v;
+                        
+                        priceCache[deviceName] = {
+                            precoVenda: fix(found.precoDeVenda) || 'N/A',
+                            precoLimite: fix(found.precoLimite) || 'N/A',
+                            precoCusto: fix(found.precoDeCusto) || 'N/A',
+                            zeroLucro: fix(found.zeroLucro) || 'N/A',
+                            cupom: fix(found.cupom) || 'N/A',
+                            entradaMinima: fix(found.entradaMinima) || 'N/A',
+                            seguroQueda: fix(found.seguroQueda) || 'N/A',
+                            garantiaEstendida: fix(found.garantiaEstendida) || 'N/A'
+                        };
+                        window.updateMathPrices(deviceName);
+                        ids.forEach(id => updateIndicator(`${id}-indicator`, '(SISTEMA)'));
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Erro sistema:", err);
+            }
+        }
+
+        // Fallback: Se o modo for planilha OU se não encontrou o item no sistema interno
         try {
             const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`, { timeout: 15000 });
             if (!response.ok) throw new Error();
             const data = await response.json();
             if (data.error) throw new Error();
 
-            const newValues = {
+            priceCache[deviceName] = {
                 precoVenda: data.precoDeVenda || 'N/A',
                 precoLimite: data.precoLimite || 'N/A',
                 precoCusto: data.precoDeCusto || 'N/A',
@@ -7603,11 +7694,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 garantiaEstendida: data.garantiaEstendidaDe1Ano || 'N/A'
             };
 
-            priceCache[deviceName] = newValues;
-            
-            // Inicializa cálculos matemáticos baseados nos checkboxes
             window.updateMathPrices(deviceName);
-
             ids.forEach(id => updateIndicator(`${id}-indicator`, ''));
 
         } catch (e) {
@@ -10969,6 +11056,117 @@ async function calculateAndDisplayStoreRanking() {
     });
 };
 
+async function calculateAndDisplayStoreServiceRanking() {
+    const container = document.getElementById('store-service-ranking-container');
+    container.innerHTML = '<p style="text-align: center; padding: 1rem;">Calculando ranking...</p>';
+
+    Promise.all([
+        database.ref('salesData').get(),
+        database.ref('metas').get(),
+        database.ref('userProfiles').get(),
+        database.ref('userStatuses').get()
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
+        if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
+            container.innerHTML = '<p style="text-align: center;">Dados insuficientes.</p>';
+            return;
+        }
+
+        const salesData = salesSnapshot.val();
+        const metasData = metasSnapshot.val();
+        const profilesData = profilesSnapshot.exists() ? profilesSnapshot.val() : {};
+        const statusesData = statusesSnapshot.exists() ? statusesSnapshot.val() : {};
+        const performanceData = [];
+        
+        const managerConfigs = [
+            { name: 'Eliseu', store: 'pinheiro' },
+            { name: 'Tacilio', store: 'bacabal' }
+        ];
+
+        managerConfigs.forEach(config => {
+            const name = config.name;
+            const key = name.toLowerCase();
+            const storeEmployees = storeMapping[config.store];
+            
+            let totalStoreService = 0;
+            storeEmployees.forEach(employeeName => {
+                const employeeKey = employeeName.toLowerCase();
+                totalStoreService += parseFloat(salesData[employeeKey]?.servico || 0);
+            });
+
+            const serviceGoal = parseFloat(metasData[key]?.meta_servico || 0);
+            
+            if (serviceGoal > 0) {
+                const percentage = (totalStoreService / serviceGoal) * 100;
+                performanceData.push({ 
+                    name: name, 
+                    percentage: percentage,
+                    actualService: totalStoreService,
+                    serviceGoal: serviceGoal
+                });
+            } else {
+                performanceData.push({ 
+                    name: name, 
+                    percentage: 0,
+                    actualService: totalStoreService,
+                    serviceGoal: 0
+                });
+            }
+        });
+
+        performanceData.sort((a, b) => b.percentage - a.percentage);
+        container.innerHTML = '';
+
+        for (const [index, collab] of performanceData.entries()) {
+            const rank = index + 1;
+            const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
+            const rankItem = document.createElement('div');
+            rankItem.className = `rank-item rank-${rank}`;
+            rankItem.style.borderLeftColor = "#9b59b6";
+            
+            const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
+            const photoUrl = profilesData[collab.name.toLowerCase()]?.photoURL || DEFAULT_PROFILE_PHOTO;
+            const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown" style="color: #9b59b6;"></i>' : '';
+
+            let statusBubbleHtml = '';
+            const userStatus = statusesData[collab.name.toLowerCase()];
+            if (userStatus && userStatus.text) {
+                const statusTimestamp = new Date(userStatus.timestamp);
+                const now = new Date();
+                if ((now - statusTimestamp) / (1000 * 60 * 60) < 24) {
+                    statusBubbleHtml = `<div class="status-bubble">${userStatus.text}</div>`;
+                }
+            }
+
+            rankItem.innerHTML = `
+            <div class="rank-photo-container">
+                ${crownHtml}
+                <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo">
+            </div>
+            <div class="rank-medal" style="width: auto; padding-right: 8px; color: #9b59b6;">
+                <span style="font-weight: bold; margin-right: 2px;">${rank}º</span>
+                ${medals[index] || '<i class="fa-solid fa-star"></i>'}
+            </div>
+            <div class="rank-details">
+                <div class="rank-name">
+                    <span>${collab.name}</span>
+                    <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
+                </div>
+                    ${statusBubbleHtml}
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressBarWidth}%; background-color: #9b59b6;"></div>
+                        <span class="progress-percentage" style="z-index: 2;">${collab.percentage.toFixed(1)}%</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(rankItem);
+        };
+
+    }).catch(error => {
+        console.error("Erro ranking serviços gerentes:", error);
+        container.innerHTML = '<p style="text-align: center;">Erro ao carregar.</p>';
+    });
+}
+
     const stopPontoCamera = () => {
         if (cameraStream) {
             cameraStream.getTracks().forEach(track => track.stop());
@@ -12465,10 +12663,14 @@ async function calculateAndDisplayStoreRanking() {
                 });
                 safeAddListener('open-tm-stats-btn', 'click', loadTelemarketingStats);
             safeAddListener('open-afiliados-admin-btn', 'click', () => {
-                showPage('afiliadosAdminPage');
-                loadAfiliadosAdmin();
-            });
-            safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
+                    showPage('afiliadosAdminPage');
+                    loadAfiliadosAdmin();
+                });
+                safeAddListener('open-painel-celulares-btn', 'click', () => {
+                    showPage('painelCelularesPage');
+                    setPainelMode(currentPainelMode); 
+                });
+                safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
             safeAddListener('back-to-gs-from-af-admin', 'click', () => showPage('gsPage'));
                 safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
                 safeAddListener('back-to-gs-from-tm-stats', 'click', () => showPage('gsPage'));
@@ -13781,6 +13983,7 @@ async function calculateAndDisplayStoreRanking() {
                 calculateAndDisplayRanking();
                 calculateAndDisplayServiceRanking();
                 calculateAndDisplayStoreRanking();
+                calculateAndDisplayStoreServiceRanking();
                 loadManagerNotifications();
                     loadAndDisplayOvertime();
                     loadAndDisplayAvisos();
@@ -14620,6 +14823,182 @@ async function calculateAndDisplayStoreRanking() {
                     statusEl.textContent = 'Erro ao gerar backup.';
                 }
             });
+
+            // --- LÓGICA PAINEL CELULARES ---
+            let currentPainelMode = localStorage.getItem('painelCelMode') || 'planilha'; 
+
+            const setPainelMode = (mode) => {
+                currentPainelMode = mode;
+                localStorage.setItem('painelCelMode', mode); // Salva a escolha
+                
+                const indicator = document.getElementById('slider-indicator');
+                const editorContainer = document.getElementById('spreadsheet-editor-container');
+                const saveBtn = document.getElementById('save-painel-data-btn');
+                const pullBtn = document.getElementById('btn-pull-data');
+                const uploadBtn = document.getElementById('btn-upload-xlsx');
+                const tbody = document.getElementById('celulares-table-body');
+
+                if(mode === 'planilha') {
+                    indicator.style.transform = 'translateX(0)';
+                    editorContainer.style.display = 'none';
+                    saveBtn.style.display = 'none';
+                    pullBtn.style.display = 'none';
+                    uploadBtn.style.display = 'none';
+                    // Mensagem informativa para não ficar vazio
+                    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; padding: 20px;">Modo Planilha Ativo. Os dados são lidos diretamente do Google Sheets.</td></tr>';
+                } else {
+                    indicator.style.transform = 'translateX(100%)';
+                    editorContainer.style.display = 'block';
+                    saveBtn.style.display = 'flex';
+                    pullBtn.style.display = 'flex';
+                    uploadBtn.style.display = 'flex';
+                    loadPainelCelularesData('sistema');
+                }
+            };
+
+            // Listeners dos botões de modo
+            document.getElementById('toggle-mode-left').addEventListener('click', () => setPainelMode('planilha'));
+            document.getElementById('toggle-mode-right').addEventListener('click', () => setPainelMode('sistema'));
+
+            // Botão Voltar (Forçando o funcionamento)
+            document.getElementById('back-to-gs-from-painel-cel').onclick = (e) => {
+                e.preventDefault();
+                showPage('gsPage');
+            };
+
+            const loadPainelCelularesData = async (mode) => {
+                const tbody = document.getElementById('celulares-table-body');
+                
+                if(mode === 'planilha') {
+                    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding: 20px;">Modo Planilha Ativo.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding: 20px;">Carregando dados do sistema...</td></tr>';
+                
+                try {
+                    const snap = await database.ref('systemDevicePrices').get();
+                    const data = snap.exists() ? Object.values(snap.val()) : [];
+                    renderPainelTable(data);
+                } catch(e) {
+                    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center; color:red;">Erro ao conectar com o banco de dados.</td></tr>';
+                }
+            };
+
+            const renderPainelTable = (data) => {
+                const tbody = document.getElementById('celulares-table-body');
+                tbody.innerHTML = '';
+                
+                data.forEach((item) => {
+                    const tr = document.createElement('tr');
+                    
+                    const formatVal = (val) => {
+                        if (val === undefined || val === null || val === "") return "";
+                        let s = String(val).replace("R$", "").trim();
+                        if (s.includes(',')) return s;
+                        let n = parseFloat(s);
+                        if (!isNaN(n)) return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        return s;
+                    };
+
+                    tr.innerHTML = `
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; font-weight: bold; background: #fff;">${item.produto || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.entradaMinima)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.lucro)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.precoDeCusto)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemE || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.precoDeVenda)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemG || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.precoLimite)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemK || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.zeroLucro)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemM || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.cupom)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.seguroQueda)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.garantiaEstendida)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            };
+
+            document.getElementById('btn-pull-data').onclick = () => loadPainelCelularesData(currentPainelMode);
+            
+            document.getElementById('btn-upload-xlsx').onclick = () => document.getElementById('xlsx-upload-input').click();
+            
+            document.getElementById('xlsx-upload-input').onchange = (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const bstr = evt.target.result;
+                    const wb = XLSX.read(bstr, {type:'binary'});
+                    const wsname = wb.SheetNames[0];
+                    const ws = wb.Sheets[wsname];
+                    
+                    const rows = XLSX.utils.sheet_to_json(ws, {header: 1});
+                    const processedData = [];
+
+                    for(let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if(!row || row.length < 2) continue;
+
+                        processedData.push({
+                            produto: row[0] || "",             // A
+                            entradaMinima: row[1] || "",       // B
+                            lucro: row[2] || "",               // C
+                            precoDeCusto: row[3] || "",        // D
+                            margemE: row[4] || "",             // E
+                            precoDeVenda: row[5] || "",        // F
+                            margemG: row[6] || "",             // G
+                            precoLimite: row[7] || "",         // H
+                            margemK: row[10] || "",            // K
+                            zeroLucro: row[11] || "",          // L
+                            margemM: row[12] || "",            // M
+                            cupom: row[13] || "",              // N
+                            seguroQueda: row[14] || "",        // O (Presumido)
+                            garantiaEstendida: row[15] || ""   // P (Presumido)
+                        });
+                    }
+                    renderPainelTable(processedData);
+                };
+                reader.readAsBinaryString(file);
+            };
+
+            document.getElementById('save-painel-data-btn').onclick = async () => {
+                if(!confirm('Deseja salvar as alterações no modo ' + currentPainelMode.toUpperCase() + '?')) return;
+                
+                const rows = document.querySelectorAll('#celulares-table-body tr');
+                const updatedData = [];
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if(cells.length >= 14) {
+                        updatedData.push({
+                            produto: cells[0].innerText.trim(),
+                            entradaMinima: cells[1].innerText.trim(),
+                            lucro: cells[2].innerText.trim(),
+                            precoDeCusto: cells[3].innerText.trim(),
+                            margemE: cells[4].innerText.trim(),
+                            precoDeVenda: cells[5].innerText.trim(),
+                            margemG: cells[6].innerText.trim(),
+                            precoLimite: cells[7].innerText.trim(),
+                            margemK: cells[8].innerText.trim(),
+                            zeroLucro: cells[9].innerText.trim(),
+                            margemM: cells[10].innerText.trim(),
+                            cupom: cells[11].innerText.trim(),
+                            seguroQueda: cells[12].innerText.trim(),
+                            garantiaEstendida: cells[13].innerText.trim()
+                        });
+                    }
+                });
+
+                if(currentPainelMode === 'planilha') {
+                    alert('Alterações no modo Planilha devem ser feitas diretamente no Google Sheets para garantir a integridade das fórmulas.');
+                } else {
+                    await database.ref('systemDevicePrices').set(updatedData);
+                    alert('Sistema Interno atualizado com sucesso!');
+                }
+            };
 
             // Criar gatilho invisível para a pasta
             const triggerTM = document.createElement('button');
