@@ -3199,6 +3199,16 @@
                 <div class="input-group"><label>Prêmio 4º Lugar (R$)</label><input type="text" id="prize-servicos-4" class="data-input" placeholder="0,00"></div>
                 <div class="input-group"><label>Prêmio 5º Lugar (R$)</label><input type="text" id="prize-servicos-5" class="data-input" placeholder="0,00"></div>
             </div>
+            <div class="employee-meta-card">
+                <h4>Rank Gerente (Vendas)</h4>
+                <div class="input-group"><label>Prêmio 1º Lugar (R$)</label><input type="text" id="prize-ger-vendas-1" class="data-input" placeholder="0,00"></div>
+                <div class="input-group"><label>Prêmio 2º Lugar (R$)</label><input type="text" id="prize-ger-vendas-2" class="data-input" placeholder="0,00"></div>
+            </div>
+            <div class="employee-meta-card">
+                <h4>Rank Gerente (Serviços)</h4>
+                <div class="input-group"><label>Prêmio 1º Lugar (R$)</label><input type="text" id="prize-ger-servicos-1" class="data-input" placeholder="0,00"></div>
+                <div class="input-group"><label>Prêmio 2º Lugar (R$)</label><input type="text" id="prize-ger-servicos-2" class="data-input" placeholder="0,00"></div>
+            </div>
             <button id="save-ranks-settings-btn" class="action-button full-width"><i class="fa-solid fa-save"></i> Salvar Configurações</button>
             <p id="ranks-settings-status" class="status-message"></p>
         </div>
@@ -4985,12 +4995,12 @@ Transporte - R$ 5,00"></textarea></div>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">PREÇO DE VENDA</th>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">PREÇO LIMITE</th>
-                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">SEGURO QUEDA</th>
-                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">GARANTIA +1A</th>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">ZERO LUCRO</th>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 80px;">MARGEM</th>
                             <th style="border: 1px solid #ddd; padding: 8px; width: 120px;">CUPOM</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">SEGURO QUEDA</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; width: 110px;">GARANTIA +1A</th>
                         </tr>
                     </thead>
                     <tbody id="celulares-table-body"></tbody>
@@ -5333,7 +5343,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.5.0 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.5.1 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10910,10 +10920,13 @@ async function calculateAndDisplayStoreRanking() {
         database.ref('metas').get(),
         database.ref('userProfiles').get(),
         database.ref('userStatuses').get(),
-        database.ref('globalSettings/dailyGoalIncrease').get()
-    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, increaseSnapshot]) => {
+        database.ref('globalSettings/dailyGoalIncrease').get(),
+        database.ref('globalSettings/ranks/gerenteVendas').get()
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, increaseSnapshot, configSnapshot]) => {
+        const config = configSnapshot.exists() ? configSnapshot.val() : { prizes: [0, 0] };
         const increasePercent = increaseSnapshot.exists() ? parseFloat(increaseSnapshot.val() || 0) : 0;
         const multiplier = 1 + (increasePercent / 100);
+        
         if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
             container.innerHTML = '<p style="text-align: center;">Dados insuficientes para gerar o ranking.</p>';
             return;
@@ -10998,9 +11011,14 @@ async function calculateAndDisplayStoreRanking() {
 
             const medals = ['<i class="fa-solid fa-medal"></i>', '<i class="fa-solid fa-medal"></i>'];
             let prizeHTML = '';
-            if (rank === 1) {
-                prizeHTML = `<span class="rank-prize" style="color: #fff; font-weight: bold; margin-right: 5px; font-size: 0.8rem;">R$ 500,00</span>
-                             <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 40px; height: 40px; margin-left: 8px; vertical-align: middle; animation: pulse 2s infinite;">`;
+            const prizeValue = config.prizes ? config.prizes[index] : 0;
+            if (prizeValue > 0) {
+                prizeHTML = `
+                    <div style="display: flex; align-items: center; gap: 4px; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 6px; flex-shrink: 0;">
+                        <span style="color: #fff; font-weight: 800; font-size: 0.7rem;">${formatBRL(prizeValue)}</span>
+                        <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 24px; height: 24px; animation: pulse 2s infinite;">
+                    </div>
+                `;
             }
             
             const rankItem = document.createElement('div');
@@ -11035,10 +11053,12 @@ async function calculateAndDisplayStoreRanking() {
                 ${medals[index] || '<i class="fa-solid fa-star"></i>'}
             </div>
             <div class="rank-details">
-                <div class="rank-name">
+                <div class="rank-name" style="justify-content: space-between; align-items: center;">
                     <span>${collab.name}</span>
-                    <button class="parabens-btn" data-recipient-name="${collab.name}"><i class="fa-solid fa-hands-clapping"></i></button>
-                    <div class="prize-container">${prizeHTML}</div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <button class="parabens-btn" data-recipient-name="${collab.name}" style="margin:0;"><i class="fa-solid fa-hands-clapping"></i></button>
+                        ${prizeHTML}
+                    </div>
                 </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container">
@@ -11064,8 +11084,11 @@ async function calculateAndDisplayStoreServiceRanking() {
         database.ref('salesData').get(),
         database.ref('metas').get(),
         database.ref('userProfiles').get(),
-        database.ref('userStatuses').get()
-    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot]) => {
+        database.ref('userStatuses').get(),
+        database.ref('globalSettings/ranks/gerenteServicos').get()
+    ]).then(async ([salesSnapshot, metasSnapshot, profilesSnapshot, statusesSnapshot, configSnapshot]) => {
+        const config = configSnapshot.exists() ? configSnapshot.val() : { prizes: [0, 0] };
+        
         if (!salesSnapshot.exists() || !metasSnapshot.exists()) {
             container.innerHTML = '<p style="text-align: center;">Dados insuficientes.</p>';
             return;
@@ -11082,30 +11105,33 @@ async function calculateAndDisplayStoreServiceRanking() {
             { name: 'Tacilio', store: 'bacabal' }
         ];
 
-        managerConfigs.forEach(config => {
-            const name = config.name;
+        managerConfigs.forEach(configItem => {
+            const name = configItem.name;
             const key = name.toLowerCase();
-            const storeEmployees = storeMapping[config.store]; // 'pinheiro' ou 'bacabal'
+            const storeEmployees = storeMapping[configItem.store];
             
             let totalStoreService = 0;
+            let totalStoreServiceGoal = 0;
 
-            // SOMA O SERVIÇO DE TODOS OS FUNCIONÁRIOS DAQUELA LOJA
             if (storeEmployees) {
                 storeEmployees.forEach(employeeName => {
                     const employeeKey = employeeName.toLowerCase();
                     totalStoreService += parseFloat(salesData[employeeKey]?.servico || 0);
+                    totalStoreServiceGoal += parseFloat(metasData[employeeKey]?.meta_servico || 0);
                 });
             }
 
-            const serviceGoal = parseFloat(metasData[key]?.meta_servico || 0);
+            if (totalStoreServiceGoal === 0) {
+                totalStoreServiceGoal = parseFloat(metasData[key]?.metaLoja || 0) * 0.10;
+            }
             
-            if (serviceGoal > 0) {
-                const percentage = (totalStoreService / serviceGoal) * 100;
+            if (totalStoreServiceGoal > 0) {
+                const percentage = (totalStoreService / totalStoreServiceGoal) * 100;
                 performanceData.push({ 
                     name: name, 
                     percentage: percentage,
                     actualService: totalStoreService,
-                    serviceGoal: serviceGoal
+                    serviceGoal: totalStoreServiceGoal
                 });
             } else {
                 performanceData.push({ 
@@ -11131,6 +11157,17 @@ async function calculateAndDisplayStoreServiceRanking() {
             const photoUrl = profilesData[collab.name.toLowerCase()]?.photoURL || DEFAULT_PROFILE_PHOTO;
             const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown" style="color: #9b59b6; top: -12px;"></i>' : '';
 
+            let prizeHTML = '';
+            const prizeValue = config.prizes ? config.prizes[index] : 0;
+            if (prizeValue > 0) {
+                prizeHTML = `
+                    <div style="display: flex; align-items: center; gap: 4px; border-left: 1px solid rgba(255,255,255,0.15); padding-left: 6px; flex-shrink: 0;">
+                        <span style="color: #fff; font-weight: 800; font-size: 0.7rem;">${formatBRL(prizeValue)}</span>
+                        <img src="https://cdn-icons-png.flaticon.com/512/6073/6073235.png" style="width: 24px; height: 24px; animation: pulse 2s infinite;">
+                    </div>
+                `;
+            }
+
             let statusBubbleHtml = '';
             const userStatus = statusesData[collab.name.toLowerCase()];
             if (userStatus && userStatus.text) {
@@ -11139,6 +11176,12 @@ async function calculateAndDisplayStoreServiceRanking() {
                 if ((now - statusTimestamp) / (1000 * 60 * 60) < 24) {
                     statusBubbleHtml = `<div class="status-bubble" style="font-size: 0.65rem; padding: 2px 8px; margin-bottom: 5px;">${userStatus.text}</div>`;
                 }
+            }
+
+            let fireIconHtml = '';
+            if (rank === 1) {
+                const firePosition = Math.min(progressBarWidth, 98); 
+                fireIconHtml = `<i class="fas fa-fire fire-icon-purple" style="left: ${firePosition}%; font-size: 1rem;"></i>`;
             }
 
             rankItem.innerHTML = `
@@ -11153,12 +11196,16 @@ async function calculateAndDisplayStoreServiceRanking() {
             <div class="rank-details" style="overflow: hidden;">
                 <div class="rank-name" style="justify-content: space-between; align-items: center; gap: 4px; margin-bottom: 2px;">
                     <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; font-weight: 700; font-size: 0.9rem;">${collab.name}</span>
-                    <button class="parabens-btn" data-recipient-name="${collab.name}" style="margin: 0; padding: 4px; font-size: 1rem;"><i class="fa-solid fa-hands-clapping"></i></button>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <button class="parabens-btn" data-recipient-name="${collab.name}" style="margin: 0; padding: 4px; font-size: 1rem;"><i class="fa-solid fa-hands-clapping"></i></button>
+                        ${prizeHTML}
+                    </div>
                 </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container" style="height: 14px; margin-top: 2px; overflow: hidden; border-radius: 8px;">
                         <div class="progress-bar" style="width: ${progressBarWidth}%; border-radius: 8px; background-color: #9b59b6;"></div>
                         <span class="progress-percentage" style="z-index: 2; font-size: 0.65rem;">${collab.percentage.toFixed(1)}%</span>
+                        ${fireIconHtml}
                     </div>
                 </div>
             `;
@@ -13480,7 +13527,9 @@ async function calculateAndDisplayStoreServiceRanking() {
                     const data = snap.exists() ? snap.val() : {};
                     
                     const vConfig = data.vendas || { active: true, prizes: [0, 0, 0, 0, 0] };
-                    const sConfig = data.servicos || { active: true, prizes: [1000, 500, 250, 0, 0] };
+                    const sConfig = data.servicos || { active: true, prizes: [0, 0, 0, 0, 0] };
+                    const gVConfig = data.gerenteVendas || { prizes: [0, 0] };
+                    const gSConfig = data.gerenteServicos || { prizes: [0, 0] };
 
                     document.getElementById('rank-vendas-toggle').checked = vConfig.active !== false;
                     document.getElementById('prize-vendas-1').value = formatToBRLInput(vConfig.prizes ? vConfig.prizes[0] : 0);
@@ -13495,6 +13544,12 @@ async function calculateAndDisplayStoreServiceRanking() {
                     document.getElementById('prize-servicos-3').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[2] : 0);
                     document.getElementById('prize-servicos-4').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[3] : 0);
                     document.getElementById('prize-servicos-5').value = formatToBRLInput(sConfig.prizes ? sConfig.prizes[4] : 0);
+
+                    document.getElementById('prize-ger-vendas-1').value = formatToBRLInput(gVConfig.prizes ? gVConfig.prizes[0] : 0);
+                    document.getElementById('prize-ger-vendas-2').value = formatToBRLInput(gVConfig.prizes ? gVConfig.prizes[1] : 0);
+
+                    document.getElementById('prize-ger-servicos-1').value = formatToBRLInput(gSConfig.prizes ? gSConfig.prizes[0] : 0);
+                    document.getElementById('prize-ger-servicos-2').value = formatToBRLInput(gSConfig.prizes ? gSConfig.prizes[1] : 0);
 
                     statusEl.textContent = '';
                 } catch (e) {
@@ -13527,6 +13582,18 @@ async function calculateAndDisplayStoreServiceRanking() {
                             parseFromBRLInput(document.getElementById('prize-servicos-4').value),
                             parseFromBRLInput(document.getElementById('prize-servicos-5').value)
                         ]
+                    },
+                    gerenteVendas: {
+                        prizes: [
+                            parseFromBRLInput(document.getElementById('prize-ger-vendas-1').value),
+                            parseFromBRLInput(document.getElementById('prize-ger-vendas-2').value)
+                        ]
+                    },
+                    gerenteServicos: {
+                        prizes: [
+                            parseFromBRLInput(document.getElementById('prize-ger-servicos-1').value),
+                            parseFromBRLInput(document.getElementById('prize-ger-servicos-2').value)
+                        ]
                     }
                 };
 
@@ -13534,6 +13601,8 @@ async function calculateAndDisplayStoreServiceRanking() {
                     statusEl.textContent = 'Configurações salvas!';
                     calculateAndDisplayRanking();
                     calculateAndDisplayServiceRanking();
+                    calculateAndDisplayStoreRanking();
+                    calculateAndDisplayStoreServiceRanking();
                     setTimeout(() => statusEl.textContent = '', 2000);
                 }).catch(e => {
                     statusEl.textContent = 'Erro ao salvar!';
@@ -14914,12 +14983,12 @@ async function calculateAndDisplayStoreServiceRanking() {
                         <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.precoDeVenda)}</td>
                         <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemG || ""}</td>
                         <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.precoLimite)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemI || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.zeroLucro)}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemK || ""}</td>
+                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.cupom)}</td>
                         <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.seguroQueda)}</td>
                         <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.garantiaEstendida)}</td>
-                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemK || ""}</td>
-                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.zeroLucro)}</td>
-                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${item.margemM || ""}</td>
-                        <td contenteditable="true" style="border: 1px solid #ddd; padding: 5px; background: #fff;">${formatVal(item.cupom)}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -14955,12 +15024,12 @@ async function calculateAndDisplayStoreServiceRanking() {
                             precoDeVenda: row[5] || "",        // F
                             margemG: row[6] || "",             // G
                             precoLimite: row[7] || "",         // H
-                            seguroQueda: row[8] || "",         // I
-                            garantiaEstendida: row[9] || "",    // J
+                            margemI: row[8] || "",             // I
+                            zeroLucro: row[9] || "",           // J
                             margemK: row[10] || "",            // K
-                            zeroLucro: row[11] || "",          // L
-                            margemM: row[12] || "",            // M
-                            cupom: row[13] || ""               // N
+                            cupom: row[11] || "",              // L
+                            seguroQueda: row[12] || "",        // M
+                            garantiaEstendida: row[13] || ""   // N
                         });
                     }
                     renderPainelTable(processedData);
@@ -14986,12 +15055,12 @@ async function calculateAndDisplayStoreServiceRanking() {
                             precoDeVenda: cells[5].innerText.trim(),
                             margemG: cells[6].innerText.trim(),
                             precoLimite: cells[7].innerText.trim(),
-                            seguroQueda: cells[8].innerText.trim(),
-                            garantiaEstendida: cells[9].innerText.trim(),
+                            margemI: cells[8].innerText.trim(),
+                            zeroLucro: cells[9].innerText.trim(),
                             margemK: cells[10].innerText.trim(),
-                            zeroLucro: cells[11].innerText.trim(),
-                            margemM: cells[12].innerText.trim(),
-                            cupom: cells[13].innerText.trim()
+                            cupom: cells[11].innerText.trim(),
+                            seguroQueda: cells[12].innerText.trim(),
+                            garantiaEstendida: cells[13].innerText.trim()
                         });
                     }
                 });
