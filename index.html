@@ -5343,7 +5343,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.5.1 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '8.5.2 - E '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7651,7 +7651,8 @@ const loadAndDisplayCollaboratorMetas = () => {
         const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'cupom', 'entrada', 'seguro-queda', 'garantia-estendida'];
         ids.forEach(id => updateIndicator(`${id}-indicator`, '(...)'));
 
-        const mode = localStorage.getItem('painelCelMode') || 'planilha';
+        const modeSnap = await database.ref('globalSettings/painelCelMode').get();
+        const mode = modeSnap.exists() ? modeSnap.val() : 'planilha';
 
         if (mode === 'sistema') {
             try {
@@ -8634,6 +8635,9 @@ const loadAndDisplayCollaboratorMetas = () => {
             const isManager = managers.includes(currentUserName);
             const data = getEarningsData(currentUserName, allSales, allMetas, bonusesData);
 
+            const today = new Date().getDate();
+            const expectedSalesValue = (data.goal / 30) * today;
+
             if (isManager) {
                 container.innerHTML = `
                     <div class="sales-data-card">
@@ -8643,6 +8647,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DA LOJA:</p>
                                 <p style="font-size:1.1rem; margin:0; font-weight:700; color:var(--primary-color)">${formatBRL(data.goal)}</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
+                                <p style="font-size:0.85rem; margin:0; font-weight:700;">ESPERADO ATÉ HOJE: ${formatBRL(expectedSalesValue)}</p>
                                 <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA: ${formatBRL(Math.max(0, data.goal - data.sold))}</p>
                                 
                                 <div class="progress-bar-container" style="height: 16px; margin-top: 10px; margin-bottom: 10px;">
@@ -8670,6 +8675,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DE VENDAS:</p>
                                 <p style="font-size:1rem; margin:0; font-weight:700;">${formatBRL(data.goal)}</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
+                                <p style="font-size:0.85rem; margin:0; font-weight:700;">ESPERADO ATÉ HOJE: ${formatBRL(expectedSalesValue)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
                                     <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
@@ -12717,9 +12723,11 @@ async function calculateAndDisplayStoreServiceRanking() {
                     showPage('afiliadosAdminPage');
                     loadAfiliadosAdmin();
                 });
-                safeAddListener('open-painel-celulares-btn', 'click', () => {
+                safeAddListener('open-painel-celulares-btn', 'click', async () => {
+                    const modeSnap = await database.ref('globalSettings/painelCelMode').get();
+                    const currentMode = modeSnap.exists() ? modeSnap.val() : 'planilha';
                     showPage('painelCelularesPage');
-                    setPainelMode(currentPainelMode); 
+                    setPainelMode(currentMode); 
                 });
                 safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
             safeAddListener('back-to-gs-from-af-admin', 'click', () => showPage('gsPage'));
@@ -14898,11 +14906,11 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
 
             // --- LÓGICA PAINEL CELULARES ---
-            let currentPainelMode = localStorage.getItem('painelCelMode') || 'planilha'; 
+            let currentPainelMode = 'planilha'; 
 
-            const setPainelMode = (mode) => {
+            const setPainelMode = async (mode) => {
                 currentPainelMode = mode;
-                localStorage.setItem('painelCelMode', mode); // Salva a escolha
+                await database.ref('globalSettings/painelCelMode').set(mode);
                 
                 const indicator = document.getElementById('slider-indicator');
                 const editorContainer = document.getElementById('spreadsheet-editor-container');
