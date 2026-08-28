@@ -510,72 +510,21 @@
             overflow-x: hidden; /* Impede a rolagem horizontal */
         }
 
-        /* --- Estrutura Principal (Responsivo Mobile e Desktop) --- */
+        /* --- Estrutura Principal (Simula o Celular no PC) --- */
         .mobile-container {
-            max-width: 1200px; /* Largura máxima para Desktop */
+            max-width: 450px;
             width: 100%; 
             margin: 0 auto;
             background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: max-width 0.3s ease;
-        }
-
-        /* Limita a largura em telas menores para manter o aspecto de app */
-        @media (max-width: 1024px) {
-            .mobile-container {
-                max-width: 450px;
-            }
+            display: flex; /* Adicionado */
+            flex-direction: column; /* Adicionado */
+            align-items: center; /* Adicionado */
         }
 
         /* Garante que o main e o header ocupem a largura correta */
         .mobile-container > header,
         .mobile-container > main {
             width: 100%;
-        }
-
-        /* Ajustes específicos para a versão Desktop */
-        @media (min-width: 1025px) {
-            .brand-list {
-                grid-template-columns: repeat(6, 1fr); /* 6 colunas no desktop */
-            }
-            .tools-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 colunas no desktop */
-            }
-            .gs-actions-grid {
-                grid-template-columns: repeat(8, 1fr); /* 8 colunas no desktop */
-            }
-            .collaborator-actions-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 colunas no perfil */
-            }
-            .dashboard-grid {
-                grid-template-columns: repeat(3, 1fr); /* KPIs em linha */
-            }
-            .charts-section {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                max-width: 100%;
-            }
-            .chart-container {
-                flex: 1;
-                min-width: 400px;
-            }
-            #promo-carousel-container {
-                max-width: 900px;
-            }
-            .ranking-list {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* Ranking em duas colunas no desktop */
-                gap: 1.5rem;
-            }
-            .store-rank-item, .rank-item {
-                margin-bottom: 0;
-            }
-            #stories-scroll {
-                justify-content: center;
-            }
         }
         
         /* --- Cabeçalho --- */
@@ -2407,184 +2356,14 @@
         }
 
         /* Ajuste para o container de conteúdo principal do GS */
-        #gs-page .collaborator-content {
+                #gs-page .collaborator-content {
+            /* O padding-top foi removido para que o conteúdo flua a partir do topo */
+            /* O espaçamento agora é controlado pelo padding da grade de ações */
             flex-direction: column;
             justify-content: flex-start;
             gap: 1.5rem;
             overflow-y: auto;
-            overflow-x: hidden;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Layout GS Desktop - Correção de Escala e Alinhamento */
-        @media (min-width: 1025px) {
-            #gs-page .collaborator-content {
-                max-width: 1100px !important;
-                margin: 0 auto !important;
-                padding: 20px !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-            }
-
-            /* Grade de Ícones GS */
-            .gs-actions-grid {
-                display: grid !important;
-                grid-template-columns: repeat(8, 1fr) !important; 
-                gap: 12px !important;
-                width: 100% !important;
-                max-width: 1000px !important;
-                margin: 20px auto !important;
-            }
-
-            .gs-action-btn {
-                width: 100% !important;
-                min-width: 100px !important;
-                height: 100px !important;
-                aspect-ratio: 1/1 !important;
-                padding: 10px !important;
-            }
-
-            .gs-action-btn i {
-                font-size: 1.6rem !important;
-            }
-
-            .gs-action-btn span {
-                font-size: 0.6rem !important;
-                white-space: nowrap !important;
-            }
-
-            /* Grade de KPIs (Vendas) */
-            .dashboard-grid {
-                display: grid !important;
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 20px !important;
-                width: 100% !important;
-                max-width: 1000px !important;
-                margin: 20px auto !important;
-            }
-
-            .kpi-card {
-                width: 100% !important;
-                min-width: 250px !important; /* Impede que o card esmague o texto */
-                height: 140px !important;
-                padding: 20px !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: center !important;
-                align-items: center !important;
-            }
-
-            .kpi-value {
-                font-size: 1.8rem !important;
-                white-space: nowrap !important; /* Impede o número de quebrar linha */
-                display: block !important;
-                width: 100% !important;
-            }
-
-            /* Melhores do Mês */
-            .dashboard-grid + .dashboard-grid {
-                grid-template-columns: 1fr 1fr !important;
-                max-width: 800px !important;
-            }
-
-            .performance-card {
-                height: 140px !important;
-            }
-
-            /* Gráficos */
-            .charts-section {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 25px !important;
-                width: 100% !important;
-                max-width: 1000px !important;
-                margin: 20px auto !important;
-            }
-
-            .chart-container {
-                width: 100% !important;
-            }
-
-            .system-status-wrapper {
-                width: 100% !important;
-                max-width: 1000px !important;
-                margin: 0 auto !important;
-            }
-        }
-
-            .gs-action-btn i {
-                font-size: 2rem !important;
-                margin-bottom: 5px !important;
-            }
-
-            .gs-action-btn span {
-                display: block;
-                white-space: normal;
-                word-wrap: break-word;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 2rem;
-                padding: 0 2rem;
-                margin-top: 2rem;
-            }
-
-            .kpi-card {
-                min-height: 160px;
-                padding: 2rem !important;
-            }
-
-            .kpi-value {
-                font-size: 2.2rem !important;
-                word-break: break-all;
-                line-height: 1.2;
-            }
-
-            .performance-card {
-                min-height: 180px;
-            }
-
-            .performance-card .kpi-value {
-                font-size: 2.5rem !important;
-            }
-        }
-
-            .charts-section {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr;
-                gap: 2rem;
-                padding: 0 2rem;
-                max-width: 100% !important;
-            }
-
-            .chart-container {
-                margin-top: 0 !important;
-            }
-
-            .system-status-wrapper {
-                padding: 0 2rem;
-            }
-
-            #overtime-section, #manager-notifications-section {
-                grid-column: span 2;
-            }
-            
-            /* Ajuste para as listas no desktop ficarem lado a lado */
-            #overtime-section .chart-container, 
-            #manager-notifications-section .chart-container {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-            
-            #overtime-section h4, 
-            #manager-notifications-section h4 {
-                grid-column: span 2;
-            }
+            overflow-x: hidden; /* Impede a rolagem horizontal */
         }
 
                 /* --- ESTILOS PARA STORIES --- */
@@ -3285,92 +3064,23 @@
         }
 
         /* =================================================================== */
-        /* --- AJUSTES DE RESPONSIVIDADE (MOBILE E DESKTOP) --- */
+        /* --- AJUSTES PARA TELAS PEQUENAS (RESPONSIVIDADE) --- */
         /* =================================================================== */
         
-        /* Telas muito pequenas (Mobile Antigo) */
+        /* Aplica estas regras em telas com largura máxima de 360px */
         @media (max-width: 360px) {
+            /* Força a grade de ferramentas a ter apenas uma coluna */
             .tools-grid {
                 grid-template-columns: 1fr;
             }
+
+            /* Ajusta o padding para dar mais espaço */
             section {
                 padding: 1.5rem 0.75rem;
             }
+
             header {
                 padding: 1.25rem 0.75rem 0.75rem 0.75rem;
-            }
-        }
-
-        /* Ajustes para Ficha do Aparelho no Desktop */
-        @media (min-width: 1025px) {
-            #device-detail-content {
-                display: grid !important;
-                /* Organiza em 3 colunas: Info, Preços, PayMobi */
-                grid-template-columns: 300px 1fr 350px !important;
-                grid-template-rows: auto auto !important;
-                gap: 20px !important;
-                padding: 30px !important;
-                align-items: start !important;
-                max-width: 1300px !important;
-                margin: 0 auto !important;
-            }
-
-            /* Coluna 1: Imagem e Nome */
-            #device-detail-content > div:nth-child(1) {
-                grid-column: 1;
-                grid-row: 1;
-                flex-direction: column !important;
-                height: auto !important;
-            }
-
-            /* Coluna 2: Grade de Preços */
-            #device-detail-content > div:nth-child(2) {
-                grid-column: 2;
-                grid-row: 1;
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 15px !important;
-            }
-
-            /* Serviços (Seguro/Garantia) ficam abaixo dos preços */
-            #device-detail-content > div:nth-child(3) {
-                grid-column: 2;
-                grid-row: 2;
-                margin-top: 0 !important;
-            }
-
-            /* Coluna 3: Pay Mobi */
-            #device-detail-content > div:nth-child(4) {
-                grid-column: 3;
-                grid-row: 1 / span 2;
-                margin-top: 0 !important;
-                height: 100% !important;
-            }
-
-            /* Linha de Baixo: Botões de Ação */
-            #device-detail-content > div:last-child {
-                grid-column: 1 / span 3;
-                display: flex !important;
-                justify-content: center !important;
-                gap: 20px !important;
-                max-width: 600px !important;
-                margin: 20px auto !important;
-            }
-
-            /* Ajuste nos botões para não ficarem gigantes */
-            #device-detail-content .action-button {
-                flex: 1 !important;
-                min-width: 200px !important;
-                height: 70px !important;
-            }
-
-            /* Ajuste nos cards de preço para leitura horizontal */
-            #device-detail-content .kpi-card {
-                min-height: 110px !important;
-            }
-
-            #device-detail-content .kpi-value {
-                font-size: 1.4rem !important;
             }
         }
 
@@ -5633,7 +5343,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '8.6.2 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '9.0.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7941,8 +7651,7 @@ const loadAndDisplayCollaboratorMetas = () => {
         const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'cupom', 'entrada', 'seguro-queda', 'garantia-estendida'];
         ids.forEach(id => updateIndicator(`${id}-indicator`, '(...)'));
 
-        const modeSnap = await database.ref('globalSettings/painelCelMode').get();
-        const mode = modeSnap.exists() ? modeSnap.val() : 'planilha';
+        const mode = localStorage.getItem('painelCelMode') || 'planilha';
 
         if (mode === 'sistema') {
             try {
@@ -8126,7 +7835,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 </div>
             `;
         } else {
-            const payMobiHTML = (brand !== 'apple' && brand !== 'acessorios') ? `
+            const payMobiHTML = brand !== 'apple' ? `
                 <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); border-radius: 20px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.2); width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                         <div style="width: 40px; height: 40px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 1.2rem;">P</div>
@@ -8147,29 +7856,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                             <strong id="paymobi-18x" style="font-size: 0.85rem; display: block;">...</strong>
                             <span id="paymobi-18x-total" style="font-size: 0.6rem; opacity: 0.5;">...</span>
                         </div>
-                    </div>
-                </div>
-            ` : '';
-
-            const servicesHTML = brand !== 'acessorios' ? `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 15px;">
-                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
-                        <input type="checkbox" id="check-seguro-queda" style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
-                            <i class="fa-solid fa-shield-halved" style="color: #3498db; font-size: 1rem;"></i>
-                            <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; letter-spacing: 0.5px;">Seguro Queda</span>
-                        </div>
-                        <strong id="device-seguro-queda" style="font-size: 1.2rem; display: block; color: #fff;">...</strong>
-                        <span id="seguro-queda-indicator" style="font-size: 0.6rem; opacity: 0.5;"></span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
-                        <input type="checkbox" id="check-garantia-estendida" checked style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
-                            <i class="fa-solid fa-calendar-plus" style="color: #9b59b6; font-size: 1rem;"></i>
-                            <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; letter-spacing: 0.5px;">Garantia +1A</span>
-                        </div>
-                        <strong id="device-garantia-estendida" style="font-size: 1.2rem; display: block; color: #fff;">...</strong>
-                        <span id="garantia-estendida-indicator" style="font-size: 0.6rem; opacity: 0.5;"></span>
                     </div>
                 </div>
             ` : '';
@@ -8213,7 +7899,26 @@ const loadAndDisplayCollaboratorMetas = () => {
                     </div>
                 </div>
 
-                ${servicesHTML}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 15px;">
+                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
+                        <input type="checkbox" id="check-seguro-queda" style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
+                            <i class="fa-solid fa-shield-halved" style="color: #3498db; font-size: 1rem;"></i>
+                            <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; letter-spacing: 0.5px;">Seguro Queda</span>
+                        </div>
+                        <strong id="device-seguro-queda" style="font-size: 1.2rem; display: block; color: #fff;">...</strong>
+                        <span id="seguro-queda-indicator" style="font-size: 0.6rem; opacity: 0.5;"></span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
+                        <input type="checkbox" id="check-garantia-estendida" checked style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">
+                            <i class="fa-solid fa-calendar-plus" style="color: #9b59b6; font-size: 1rem;"></i>
+                            <span style="font-size: 0.6rem; text-transform: uppercase; font-weight: 800; opacity: 0.7; letter-spacing: 0.5px;">Garantia +1A</span>
+                        </div>
+                        <strong id="device-garantia-estendida" style="font-size: 1.2rem; display: block; color: #fff;">...</strong>
+                        <span id="garantia-estendida-indicator" style="font-size: 0.6rem; opacity: 0.5;"></span>
+                    </div>
+                </div>
 
                 ${payMobiHTML}
 
@@ -8929,9 +8634,6 @@ const loadAndDisplayCollaboratorMetas = () => {
             const isManager = managers.includes(currentUserName);
             const data = getEarningsData(currentUserName, allSales, allMetas, bonusesData);
 
-            const today = new Date().getDate();
-            const expectedSalesValue = (data.goal / 30) * today;
-
             if (isManager) {
                 container.innerHTML = `
                     <div class="sales-data-card">
@@ -8941,7 +8643,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DA LOJA:</p>
                                 <p style="font-size:1.1rem; margin:0; font-weight:700; color:var(--primary-color)">${formatBRL(data.goal)}</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
-                                <p style="font-size:0.85rem; margin:0; font-weight:700;">ESPERADO ATÉ HOJE: ${formatBRL(expectedSalesValue)}</p>
                                 <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA: ${formatBRL(Math.max(0, data.goal - data.sold))}</p>
                                 
                                 <div class="progress-bar-container" style="height: 16px; margin-top: 10px; margin-bottom: 10px;">
@@ -8969,7 +8670,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DE VENDAS:</p>
                                 <p style="font-size:1rem; margin:0; font-weight:700;">${formatBRL(data.goal)}</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
-                                <p style="font-size:0.85rem; margin:0; font-weight:700;">ESPERADO ATÉ HOJE: ${formatBRL(expectedSalesValue)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
                                     <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
@@ -10041,7 +9741,7 @@ async function calculateAndDisplayRanking() {
             rankItem.className = `rank-item rank-${rank > 3 ? 'low' : rank}`;
             rankItem.style.padding = "0.8rem 1rem";
             
-            const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
+            const progressBarWidth = Math.min(100, collab.percentage);
 
             const defaultPhoto = DEFAULT_PROFILE_PHOTO;
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
@@ -10175,7 +9875,7 @@ async function calculateAndDisplayServiceRanking() {
             rankItem.className = `rank-item rank-${rank > 3 ? 'low' : rank}`;
             rankItem.style.padding = "0.8rem 1rem";
             
-            const progressBarWidth = Math.min(100, (collab.percentage / 125) * 100);
+            const progressBarWidth = Math.min(100, collab.percentage);
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
             const photoUrl = collaboratorProfile?.photoURL || DEFAULT_PROFILE_PHOTO;
             const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown" style="top: -12px; color: #9b59b6;"></i>' : '';
@@ -13017,11 +12717,9 @@ async function calculateAndDisplayStoreServiceRanking() {
                     showPage('afiliadosAdminPage');
                     loadAfiliadosAdmin();
                 });
-                safeAddListener('open-painel-celulares-btn', 'click', async () => {
-                    const modeSnap = await database.ref('globalSettings/painelCelMode').get();
-                    const currentMode = modeSnap.exists() ? modeSnap.val() : 'planilha';
+                safeAddListener('open-painel-celulares-btn', 'click', () => {
                     showPage('painelCelularesPage');
-                    setPainelMode(currentMode); 
+                    setPainelMode(currentPainelMode); 
                 });
                 safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
             safeAddListener('back-to-gs-from-af-admin', 'click', () => showPage('gsPage'));
@@ -15200,11 +14898,11 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
 
             // --- LÓGICA PAINEL CELULARES ---
-            let currentPainelMode = 'planilha'; 
+            let currentPainelMode = localStorage.getItem('painelCelMode') || 'planilha'; 
 
-            const setPainelMode = async (mode) => {
+            const setPainelMode = (mode) => {
                 currentPainelMode = mode;
-                await database.ref('globalSettings/painelCelMode').set(mode);
+                localStorage.setItem('painelCelMode', mode); // Salva a escolha
                 
                 const indicator = document.getElementById('slider-indicator');
                 const editorContainer = document.getElementById('spreadsheet-editor-container');
