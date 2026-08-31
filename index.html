@@ -5343,7 +5343,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '9.0.0 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '9.0.1 - B '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7775,16 +7775,20 @@ const loadAndDisplayCollaboratorMetas = () => {
         // Lógica PayMobi
         const pEntrada = parseVal(data.entradaMinima);
         if (baseVenda > 0 && pEntrada > 0) {
-            const baseFinanciada = baseVenda - pEntrada;
+            const principal = baseVenda - pEntrada;
+            const i = 0.089; // Juros de 8.9%
             const fmtSemSimbolo = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            const elP12 = document.getElementById('paymobi-12x');
-            if (elP12) elP12.textContent = `12X de R$ ${fmtSemSimbolo((baseFinanciada * 2.1) / 12)}`;
-            const elP12T = document.getElementById('paymobi-12x-total');
-            if (elP12T) elP12T.textContent = `Total R$ ${fmtSemSimbolo(baseFinanciada * 2.1)}`;
-            const elP18 = document.getElementById('paymobi-18x');
-            if (elP18) elP18.textContent = `18X de R$ ${fmtSemSimbolo((baseFinanciada * 2.6) / 18)}`;
-            const elP18T = document.getElementById('paymobi-18x-total');
-            if (elP18T) elP18T.textContent = `Total R$ ${fmtSemSimbolo(baseFinanciada * 2.6)}`;
+            
+            for (let n = 5; n <= 10; n++) {
+                const elParcela = document.getElementById(`paymobi-${n}x`);
+                const elTotal = document.getElementById(`paymobi-${n}x-total`);
+                if (elParcela) {
+                    // Cálculo da parcela usando a fórmula Price (Juros Compostos)
+                    const valorParcela = principal * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
+                    elParcela.textContent = `${n} de R$ ${fmtSemSimbolo(valorParcela)}`;
+                    if (elTotal) elTotal.textContent = `Total R$ ${fmtSemSimbolo(valorParcela * n)}`;
+                }
+            }
         }
     };
     
@@ -7835,27 +7839,29 @@ const loadAndDisplayCollaboratorMetas = () => {
                 </div>
             `;
         } else {
+            let payMobiInstallmentsHTML = '';
+            for (let n = 5; n <= 10; n++) {
+                payMobiInstallmentsHTML += `
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px 5px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                        <span style="font-size: 0.55rem; display: block; opacity: 0.7; margin-bottom: 2px;">${n}X MENSAL</span>
+                        <strong id="paymobi-${n}x" style="font-size: 0.8rem; display: block; white-space: nowrap;">...</strong>
+                        <span id="paymobi-${n}x-total" style="font-size: 0.55rem; opacity: 0.5;">...</span>
+                    </div>
+                `;
+            }
+
             const payMobiHTML = brand !== 'apple' ? `
-                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); border-radius: 20px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.2); width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                        <div style="width: 40px; height: 40px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 1.2rem;">P</div>
-                        <h3 style="margin: 0; font-size: 1.3rem; color: #fff; text-transform: none; font-weight: 800;">Pay Mobi <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.7rem; font-weight: 400; opacity: 0.6;"></span></h3>
+                <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); border-radius: 20px; padding: 15px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.2); width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <div style="width: 35px; height: 35px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 1.1rem;">P</div>
+                        <h3 style="margin: 0; font-size: 1.2rem; color: #fff; text-transform: none; font-weight: 800;">Pay Mobi <span class="price-update-indicator" id="entrada-indicator" style="font-size: 0.7rem; font-weight: 400; opacity: 0.6;"></span></h3>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; margin-bottom: 10px;">
-                        <span style="font-size: 0.8rem; opacity: 0.8;">Entrada Mínima:</span>
-                        <strong id="device-price-entrada" style="font-size: 1.1rem; color: #2ecc71;">...</strong>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; margin-bottom: 10px;">
+                        <span style="font-size: 0.75rem; opacity: 0.8;">Entrada Mínima:</span>
+                        <strong id="device-price-entrada" style="font-size: 1rem; color: #2ecc71;">...</strong>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-                            <span style="font-size: 0.6rem; display: block; opacity: 0.7; margin-bottom: 4px;">12X QUINZENAL</span>
-                            <strong id="paymobi-12x" style="font-size: 0.85rem; display: block;">...</strong>
-                            <span id="paymobi-12x-total" style="font-size: 0.6rem; opacity: 0.5;">...</span>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
-                            <span style="font-size: 0.6rem; display: block; opacity: 0.7; margin-bottom: 4px;">18X QUINZENAL</span>
-                            <strong id="paymobi-18x" style="font-size: 0.85rem; display: block;">...</strong>
-                            <span id="paymobi-18x-total" style="font-size: 0.6rem; opacity: 0.5;">...</span>
-                        </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        ${payMobiInstallmentsHTML}
                     </div>
                 </div>
             ` : '';
