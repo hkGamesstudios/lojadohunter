@@ -4260,6 +4260,14 @@
             <div class="charts-section">
                 <div class="chart-container">
                     <h4>Configurações Gerais</h4>
+                    <div class="input-group" style="margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                        <label for="paymobi-interest-input">Juros PayMobi Mensal (%)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="paymobi-interest-input" class="data-input" step="0.1" placeholder="8.9">
+                            <button id="save-paymobi-interest-btn" class="action-button" style="height: auto; aspect-ratio: initial; padding: 0 15px; margin: 0; background: #27ae60;">OK</button>
+                        </div>
+                        <p style="font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-top: 5px;">Este valor altera o cálculo de parcelas PayMobi (Padrão: 8.9)</p>
+                    </div>
                     <div class="input-group" style="margin-bottom: 1.5rem;">
                         <label for="christmas-mode-toggle" style="display: flex; align-items: center; cursor: pointer;">
                             <input type="checkbox" id="christmas-mode-toggle" style="margin-right: 10px; width: 20px; height: 20px;">
@@ -5342,7 +5350,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '9.0.1 - B '; // Altere este número para atualizar a versão
+    const APP_VERSION = '9.0.2 - C '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5406,6 +5414,7 @@ Transporte - R$ 5,00"></textarea></div>
     let currentStoryIndex = 0; // Índice do story atual
     let storyTimeout = null; // Timer para avançar o story
     let currentOpenChatId = null; // ID da conversa de chat aberta
+    let globalPayMobiInterest = 8.9; // Variável global de juros
 
     // --- ELEMENTOS DO DOM ---
     const mainContainer = document.querySelector('.mobile-container');
@@ -7638,7 +7647,6 @@ const loadAndDisplayCollaboratorMetas = () => {
       
         return response;
     };
-
     let priceCache = {};
 
     const fetchAndDisplayPriceForDevice = async (deviceName) => {
@@ -7657,23 +7665,30 @@ const loadAndDisplayCollaboratorMetas = () => {
                 const snapshot = await database.ref('systemDevicePrices').get();
                 if (snapshot.exists()) {
                     const allData = snapshot.val();
-                    const found = Object.values(allData).find(item => 
-                        item.produto.trim().toUpperCase() === deviceName.trim().toUpperCase()
-                    );
+                    const normalize = (str) => String(str || "").toUpperCase().replace(/[\s\.\-\/]/g, "");
+                    const targetName = normalize(deviceName);
+
+                    const found = Object.values(allData).find(item => {
+                        const currentItemName = normalize(item.produto);
+                        return currentItemName === targetName || currentItemName.includes(targetName) || targetName.includes(currentItemName);
+                    });
 
                     if (found) {
-                        // Força adição de "R$ " se não tiver para o motor de calculo
-                        const fix = (v) => (v && !v.includes('R$')) ? `R$ ${v}` : v;
+                        const fix = (v) => {
+                            if (!v) return 'N/A';
+                            let val = String(v).replace('R$', '').trim();
+                            return `R$ ${val}`;
+                        };
                         
                         priceCache[deviceName] = {
-                            precoVenda: fix(found.precoDeVenda) || 'N/A',
-                            precoLimite: fix(found.precoLimite) || 'N/A',
-                            precoCusto: fix(found.precoDeCusto) || 'N/A',
-                            zeroLucro: fix(found.zeroLucro) || 'N/A',
-                            cupom: fix(found.cupom) || 'N/A',
-                            entradaMinima: fix(found.entradaMinima) || 'N/A',
-                            seguroQueda: fix(found.seguroQueda) || 'N/A',
-                            garantiaEstendida: fix(found.garantiaEstendida) || 'N/A'
+                            precoVenda: fix(found.precoDeVenda),
+                            precoLimite: fix(found.precoLimite),
+                            precoCusto: fix(found.precoDeCusto),
+                            zeroLucro: fix(found.zeroLucro),
+                            cupom: fix(found.cupom),
+                            entradaMinima: fix(found.entradaMinima),
+                            seguroQueda: fix(found.seguroQueda),
+                            garantiaEstendida: fix(found.garantiaEstendida)
                         };
                         window.updateMathPrices(deviceName);
                         ids.forEach(id => updateIndicator(`${id}-indicator`, '(SISTEMA)'));
@@ -7685,7 +7700,6 @@ const loadAndDisplayCollaboratorMetas = () => {
             }
         }
 
-        // Fallback: Se o modo for planilha OU se não encontrou o item no sistema interno
         try {
             const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(deviceName)}`, { timeout: 15000 });
             if (!response.ok) throw new Error();
@@ -7775,17 +7789,23 @@ const loadAndDisplayCollaboratorMetas = () => {
         const pEntrada = parseVal(data.entradaMinima);
         if (baseVenda > 0 && pEntrada > 0) {
             const principal = baseVenda - pEntrada;
-            const i = 0.089; // Juros de 8.9%
+            const i = globalPayMobiInterest / 100; 
             const fmtSemSimbolo = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             
             for (let n = 5; n <= 10; n++) {
                 const elParcela = document.getElementById(`paymobi-${n}x`);
                 const elTotal = document.getElementById(`paymobi-${n}x-total`);
                 if (elParcela) {
-                    // Cálculo da parcela usando a fórmula Price (Juros Compostos)
                     const valorParcela = principal * ( (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) );
-                    elParcela.textContent = `${n} de R$ ${fmtSemSimbolo(valorParcela)}`;
-                    if (elTotal) elTotal.textContent = `Total R$ ${fmtSemSimbolo(valorParcela * n)}`;
+                    const parentBox = elParcela.parentElement;
+
+                    if (valorParcela < 149.00) {
+                        if (parentBox) parentBox.style.display = 'none';
+                    } else {
+                        if (parentBox) parentBox.style.display = 'block';
+                        elParcela.textContent = `${n} de R$ ${fmtSemSimbolo(valorParcela)}`;
+                        if (elTotal) elTotal.textContent = `Total R$ ${fmtSemSimbolo(valorParcela * n)}`;
+                    }
                 }
             }
         }
@@ -12737,6 +12757,20 @@ async function calculateAndDisplayStoreServiceRanking() {
                 
                 safeAddListener('back-to-gs-from-bonus', 'click', () => showPage('gsPage'));
 
+                // Lógica de Carregar e Salvar Juros PayMobi no GS
+                database.ref('globalSettings/payMobiInterest').get().then(snap => {
+                    if(snap.exists()) document.getElementById('paymobi-interest-input').value = snap.val();
+                    else document.getElementById('paymobi-interest-input').value = 8.9;
+                });
+
+                safeAddListener('save-paymobi-interest-btn', 'click', () => {
+                    const val = parseFloat(document.getElementById('paymobi-interest-input').value);
+                    if(isNaN(val)) return alert('Valor inválido');
+                    database.ref('globalSettings/payMobiInterest').set(val).then(() => {
+                        alert('Taxa de juros PayMobi atualizada!');
+                    });
+                });
+
                 safeAddListener('view-stock-requests-btn', 'click', () => {
                     createGenericSubmissionViewer('stockRequests', 'stockRequestsPage', 'stock-requests-list', 'stock-requests-title', 'Solicitações de Estoque', (item) => {
                         const standardItems = item.items.filter(p => !p.isCustom);
@@ -12857,6 +12891,10 @@ async function calculateAndDisplayStoreServiceRanking() {
 
                 setupGSPageListeners();
                 loadVisibilitySettings();
+
+                // Garante que o input do GS mostre o valor atual do juros
+                const interestInput = document.getElementById('paymobi-interest-input');
+                if (interestInput) interestInput.value = globalPayMobiInterest;
 
                 showPage('gsPage');
 
@@ -14052,21 +14090,20 @@ async function calculateAndDisplayStoreServiceRanking() {
 
 
             // --- INICIALIZAÇÃO DA APLICAÇÃO (REFEITA COM LOGIN) ---
-                        const initializeApp = (isLoggedIn = false) => {
-                // Se a função for chamada para um usuário já logado, só carrega os dados
+            const initializeApp = async (isLoggedIn = false) => {
                 if (isLoggedIn) {
-                    loadCollaboratorProfilePicture(); // Carrega a foto de perfil imediatamente
-                loadAndDisplayCollaboratorStatus(); // Carrega o status para a tela principal
-                updateDailyGoalPanel(currentUserName.toLowerCase());
-                calculateAndDisplayRanking();
-                calculateAndDisplayServiceRanking();
-                calculateAndDisplayStoreRanking();
-                calculateAndDisplayStoreServiceRanking();
-                loadManagerNotifications();
+                    loadCollaboratorProfilePicture();
+                    loadAndDisplayCollaboratorStatus();
+                    updateDailyGoalPanel(currentUserName.toLowerCase());
+                    calculateAndDisplayRanking();
+                    calculateAndDisplayServiceRanking();
+                    calculateAndDisplayStoreRanking();
+                    calculateAndDisplayStoreServiceRanking();
+                    loadManagerNotifications();
                     loadAndDisplayOvertime();
                     loadAndDisplayAvisos();
                     loadAndDisplayStories();
-                    checkForUnreadMessages(); // Adicionada a checagem de mensagens
+                    checkForUnreadMessages();
                     
                     // Mostra ou esconde botão de acesso restrito (Enviar Dispositivo)
                     const sendDeviceBtn = document.getElementById('open-send-device-page');
@@ -14090,7 +14127,14 @@ async function calculateAndDisplayStoreServiceRanking() {
                     }
 
                     // Aplica as configurações de visibilidade na tela principal
-                    applyVisibilitySettings();
+                applyVisibilitySettings();
+
+                // Busca o juros global do banco de dados para todos os usuários
+                database.ref('globalSettings/payMobiInterest').on('value', snap => {
+                    if (snap.exists()) {
+                        globalPayMobiInterest = parseFloat(snap.val());
+                    }
+                });
 
                     const renderEntradaNotaResults = (devices, filterText = '') => {
                         const grid = document.getElementById('entrada-nota-results-grid');
