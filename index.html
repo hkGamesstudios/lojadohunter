@@ -5350,7 +5350,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '9.0.2 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '9.0.3 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8659,6 +8659,16 @@ const loadAndDisplayCollaboratorMetas = () => {
             const isManager = managers.includes(currentUserName);
             const data = getEarningsData(currentUserName, allSales, allMetas, bonusesData);
 
+            const now = new Date();
+            const currentDay = now.getDate();
+            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const daysRemaining = (lastDayOfMonth - currentDay) + 1;
+
+            const expectedToday = (data.goal / lastDayOfMonth) * currentDay;
+            const diffExpected = data.sold - expectedToday;
+            const remainingToSell = Math.max(0, data.goal - data.sold);
+            const neededPerDay = remainingToSell / daysRemaining;
+
             if (isManager) {
                 container.innerHTML = `
                     <div class="sales-data-card">
@@ -8668,7 +8678,10 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DA LOJA:</p>
                                 <p style="font-size:1.1rem; margin:0; font-weight:700; color:var(--primary-color)">${formatBRL(data.goal)}</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
-                                <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA: ${formatBRL(Math.max(0, data.goal - data.sold))}</p>
+                                <p style="font-size:0.85rem; margin:0; font-weight:600;">ESPERADO ATÉ HOJE: ${formatBRL(expectedToday)}</p>
+                                <p style="font-size:0.85rem; margin:0; color:${diffExpected >= 0 ? '#2ecc71' : '#e74c3c'};">DIFERENÇA: ${diffExpected >= 0 ? '+' : ''}${formatBRL(diffExpected)}</p>
+                                <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA VENDER: ${formatBRL(remainingToSell)}</p>
+                                <p style="font-size:0.85rem; margin:0; font-weight:700;">NECESSÁRIO POR DIA: ${formatBRL(neededPerDay)}</p>
                                 
                                 <div class="progress-bar-container" style="height: 16px; margin-top: 10px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
@@ -8693,8 +8706,9 @@ const loadAndDisplayCollaboratorMetas = () => {
                         <div style="display:flex; flex-direction:column; gap:12px;">
                             <div>
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DE VENDAS:</p>
-                                <p style="font-size:1rem; margin:0; font-weight:700;">${formatBRL(data.goal)}</p>
+                                <p style="font-size:1.1rem; margin:0; font-weight:700;">${formatBRL(data.goal)}</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
+                                <p style="font-size:0.85rem; margin:0; font-weight:600;">ESPERADO ATÉ HOJE: ${formatBRL(expectedToday)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
                                     <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
@@ -8713,7 +8727,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                 `;
             }
 
-            // Exibe card de ganhos para todos (Gerentes usam a soma da loja)
             const earningsCard = document.createElement('div');
             earningsCard.className = 'rank-item';
             earningsCard.style.marginTop = '15px';
