@@ -5350,7 +5350,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '9.0.3 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '9.0.4 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5415,6 +5415,7 @@ Transporte - R$ 5,00"></textarea></div>
     let storyTimeout = null; // Timer para avançar o story
     let currentOpenChatId = null; // ID da conversa de chat aberta
     let globalPayMobiInterest = 8.9; // Variável global de juros
+    let globalPainelCelMode = 'planilha';
 
     // --- ELEMENTOS DO DOM ---
     const mainContainer = document.querySelector('.mobile-container');
@@ -7658,7 +7659,7 @@ const loadAndDisplayCollaboratorMetas = () => {
         const ids = ['venda', 'limite', 'custo', 'zero-lucro', 'cupom', 'entrada', 'seguro-queda', 'garantia-estendida'];
         ids.forEach(id => updateIndicator(`${id}-indicator`, '(...)'));
 
-        const mode = localStorage.getItem('painelCelMode') || 'planilha';
+        const mode = globalPainelCelMode;
 
         if (mode === 'sistema') {
             try {
@@ -12757,7 +12758,9 @@ async function calculateAndDisplayStoreServiceRanking() {
                 });
                 safeAddListener('open-painel-celulares-btn', 'click', () => {
                     showPage('painelCelularesPage');
-                    setPainelMode(currentPainelMode); 
+                    if(typeof updatePainelModeUI === 'function') {
+                        updatePainelModeUI(globalPainelCelMode);
+                    }
                 });
                 safeAddListener('back-to-gs-from-tm-admin', 'click', () => showPage('gsPage'));
             safeAddListener('back-to-gs-from-af-admin', 'click', () => showPage('gsPage'));
@@ -14149,6 +14152,15 @@ async function calculateAndDisplayStoreServiceRanking() {
                     }
                 });
 
+                database.ref('globalSettings/painelCelMode').on('value', snap => {
+                    if (snap.exists()) {
+                        globalPainelCelMode = snap.val();
+                        if (typeof updatePainelModeUI === 'function') {
+                            updatePainelModeUI(globalPainelCelMode);
+                        }
+                    }
+                });
+
                     const renderEntradaNotaResults = (devices, filterText = '') => {
                         const grid = document.getElementById('entrada-nota-results-grid');
                         grid.innerHTML = '';
@@ -14960,18 +14972,15 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
 
             // --- LÓGICA PAINEL CELULARES ---
-            let currentPainelMode = localStorage.getItem('painelCelMode') || 'planilha'; 
-
-            const setPainelMode = (mode) => {
-                currentPainelMode = mode;
-                localStorage.setItem('painelCelMode', mode); // Salva a escolha
-                
+            window.updatePainelModeUI = (mode) => {
                 const indicator = document.getElementById('slider-indicator');
                 const editorContainer = document.getElementById('spreadsheet-editor-container');
                 const saveBtn = document.getElementById('save-painel-data-btn');
                 const pullBtn = document.getElementById('btn-pull-data');
                 const uploadBtn = document.getElementById('btn-upload-xlsx');
                 const tbody = document.getElementById('celulares-table-body');
+
+                if (!indicator) return;
 
                 if(mode === 'planilha') {
                     indicator.style.transform = 'translateX(0)';
@@ -14989,6 +14998,10 @@ async function calculateAndDisplayStoreServiceRanking() {
                     uploadBtn.style.display = 'flex';
                     loadPainelCelularesData('sistema');
                 }
+            };
+
+            const setPainelMode = (mode) => {
+                database.ref('globalSettings/painelCelMode').set(mode);
             };
 
             // Listeners dos botões de modo
@@ -15056,7 +15069,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                 });
             };
 
-            document.getElementById('btn-pull-data').onclick = () => loadPainelCelularesData(currentPainelMode);
+            document.getElementById('btn-pull-data').onclick = () => loadPainelCelularesData(globalPainelCelMode);
             
             document.getElementById('btn-upload-xlsx').onclick = () => document.getElementById('xlsx-upload-input').click();
             
@@ -15100,7 +15113,7 @@ async function calculateAndDisplayStoreServiceRanking() {
             };
 
             document.getElementById('save-painel-data-btn').onclick = async () => {
-                if(!confirm('Deseja salvar as alterações no modo ' + currentPainelMode.toUpperCase() + '?')) return;
+                if(!confirm('Deseja salvar as alterações no modo ' + globalPainelCelMode.toUpperCase() + '?')) return;
                 
                 const rows = document.querySelectorAll('#celulares-table-body tr');
                 const updatedData = [];
@@ -15127,14 +15140,13 @@ async function calculateAndDisplayStoreServiceRanking() {
                     }
                 });
 
-                if(currentPainelMode === 'planilha') {
+                if(globalPainelCelMode === 'planilha') {
                     alert('Alterações no modo Planilha devem ser feitas diretamente no Google Sheets para garantir a integridade das fórmulas.');
                 } else {
                     await database.ref('systemDevicePrices').set(updatedData);
                     alert('Sistema Interno atualizado com sucesso!');
                 }
             };
-
             // Criar gatilho invisível para a pasta
             const triggerTM = document.createElement('button');
             triggerTM.id = 'trigger-tm-selection';
