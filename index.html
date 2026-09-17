@@ -5374,7 +5374,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '9.0.5 - C '; // Altere este número para atualizar a versão
+    const APP_VERSION = '9.0.6 - D '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8727,7 +8727,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO ACESSÓRIOS DA LOJA:</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.accSold)} / META: ${formatBRL(data.accGoal)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
-                                    <div class="progress-bar" style="width: ${Math.min(100, (data.accPerc / 125) * 100)}%; background-color: #e67e22;"></div>
+                                    <div class="progress-bar" style="width: ${Math.min(100, (data.accPerc / 125) * 100)}%; background-color: #2ecc71;"></div>
                                     <span class="progress-percentage">${data.accPerc.toFixed(1)}%</span>
                                 </div>
                             </div>
@@ -8761,7 +8761,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                                 <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO ACESSÓRIOS:</p>
                                 <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.accSold)} / META: ${formatBRL(data.accGoal)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
-                                    <div class="progress-bar" style="width: ${Math.min(100, (data.accPerc / 125) * 100)}%; background-color: #e67e22;"></div>
+                                    <div class="progress-bar" style="width: ${Math.min(100, (data.accPerc / 125) * 100)}%; background-color: #2ecc71;"></div>
                                     <span class="progress-percentage">${data.accPerc.toFixed(1)}%</span>
                                 </div>
                             </div>
@@ -8841,7 +8841,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                     <div class="sales-data-card" style="border-left: 4px solid var(--primary-color);">
                         <h4>${employeeName} (Total Loja)</h4>
                         <p>📱 VENDAS: ${formatBRL(totalVendasDaLoja)}</p>
-                        <p>🛞 SERVIÇO: ${formatBRL(totalServicoDaLoja)}</p>
+                        <p>🛟 SERVIÇO: ${formatBRL(totalServicoDaLoja)}</p>
                         <p>🛍️ ACESSÓRIOS: ${formatBRL(totalAcessorioDaLoja)}</p>
                     </div>
                 `;
@@ -8853,7 +8853,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                     <div class="sales-data-card">
                         <h4>${employeeName}</h4>
                         <p>📱 VENDAS: ${formatBRL(data.vendas)}</p>
-                        <p>🛞 SERVIÇO: ${formatBRL(data.servico || 0)}</p>
+                        <p>🛟 SERVIÇO: ${formatBRL(data.servico || 0)}</p>
                         <p>🛍️ ACESSÓRIOS: ${formatBRL(data.acessorio || 0)}</p>
                     </div>
                 `;
@@ -9034,7 +9034,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                     <div class="employee-meta-card">
                         <h4>${name}</h4>
                         <div class="input-group"><label for="correction-vendas-${key}">📱 VENDAS (R$)</label><input type="text" id="correction-vendas-${key}" class="data-input" value="${formatToBRLInput(salesData.vendas)}"></div>
-                        <div class="input-group"><label for="correction-servico-${key}">🛞 SERVIÇO (R$)</label><input type="text" inputmode="decimal" id="correction-servico-${key}" class="data-input" value="${formatToBRLInput(salesData.servico)}"></div>
+                        <div class="input-group"><label for="correction-servico-${key}">🛟 SERVIÇO (R$)</label><input type="text" inputmode="decimal" id="correction-servico-${key}" class="data-input" value="${formatToBRLInput(salesData.servico)}"></div>
                         <div class="input-group"><label for="correction-acessorio-${key}">🛍️ ACESSÓRIOS (R$)</label><input type="text" inputmode="decimal" id="correction-acessorio-${key}" class="data-input" value="${formatToBRLInput(salesData.acessorio)}"></div>
                     </div>
                 `;
@@ -9063,7 +9063,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                     <div class="employee-meta-card" style="border-left: 4px solid var(--primary-color);">
                         <h4 style="color: #fff;">Editar Total Loja ${storeTitle}</h4>
                         <div class="input-group"><label for="${totalCardIdPrefix}-vendas">📱 TOTAL VENDAS</label><input type="text" id="${totalCardIdPrefix}-vendas" class="data-input" value="${formatToBRLInput(totals.vendas)}"></div>
-                        <div class="input-group"><label for="${totalCardIdPrefix}-servico">🛞 TOTAL SERVIÇO</label><input type="text" id="${totalCardIdPrefix}-servico" class="data-input" value="${formatToBRLInput(totals.servico)}"></div>
+                        <div class="input-group"><label for="${totalCardIdPrefix}-servico">🛟 TOTAL SERVIÇO</label><input type="text" id="${totalCardIdPrefix}-servico" class="data-input" value="${formatToBRLInput(totals.servico)}"></div>
                         <div class="input-group"><label for="${totalCardIdPrefix}-acessorio">🛍️ TOTAL ACESSÓRIOS</label><input type="text" id="${totalCardIdPrefix}-acessorio" class="data-input" value="${formatToBRLInput(totals.acessorio)}"></div>
                     </div>
                 `;
@@ -11258,12 +11258,12 @@ async function calculateAndDisplayAccessoryRanking() {
             const rankItem = document.createElement('div');
             rankItem.className = `rank-item rank-${rank > 3 ? 'low' : rank}`;
             rankItem.style.padding = "0.8rem 1rem";
-            rankItem.style.borderLeftColor = "#e67e22"; 
+            rankItem.style.borderLeftColor = "#2ecc71"; 
             
             const progressBarWidth = Math.min(100, collab.percentage);
             const collaboratorProfile = profilesData[collab.name.toLowerCase()];
             const photoUrl = collaboratorProfile?.photoURL || DEFAULT_PROFILE_PHOTO;
-            const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown" style="top: -12px; color: #e67e22;"></i>' : '';
+            const crownHtml = (rank === 1) ? '<i class="fas fa-crown rank-crown" style="top: -12px; color: #2ecc71;"></i>' : '';
 
             let statusBubbleHtml = '';
             const userStatus = statusesData[collab.name.toLowerCase()];
@@ -11279,7 +11279,7 @@ async function calculateAndDisplayAccessoryRanking() {
             let fireIconHtml = '';
             if (rank === 1) {
                 const firePosition = Math.min(progressBarWidth, 98); 
-                fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%; font-size: 1rem; color: #e67e22; text-shadow: 0 0 8px rgba(230, 126, 34, 0.7);"></i>`;
+                fireIconHtml = `<i class="fas fa-fire fire-icon" style="left: ${firePosition}%; font-size: 1rem; color: #2ecc71; text-shadow: 0 0 8px rgba(46, 204, 113, 0.7);"></i>`;
             }
 
             rankItem.innerHTML = `
@@ -11287,7 +11287,7 @@ async function calculateAndDisplayAccessoryRanking() {
                     ${crownHtml}
                     <img src="${photoUrl}" alt="Foto de ${collab.name}" class="rank-photo" style="width: 100%; height: 100%;">
                 </div>
-                <div class="rank-medal" style="width: auto; padding: 0 4px; font-size: 1.1rem; color: #e67e22;">
+                <div class="rank-medal" style="width: auto; padding: 0 4px; font-size: 1.1rem; color: #2ecc71;">
                     <span style="font-weight: 800; font-size: 0.85rem; margin-right: 3px;">${rank}º</span>
                     ${medalIcon}
                 </div>
@@ -11301,7 +11301,7 @@ async function calculateAndDisplayAccessoryRanking() {
                     </div>
                     ${statusBubbleHtml}
                     <div class="progress-bar-container" style="height: 14px; margin-top: 2px; overflow: hidden; border-radius: 8px;">
-                        <div class="progress-bar" style="width: ${progressBarWidth}%; border-radius: 8px; background-color: #e67e22;"></div>
+                        <div class="progress-bar" style="width: ${progressBarWidth}%; border-radius: 8px; background-color: #2ecc71;"></div>
                         <span class="progress-percentage" style="z-index: 2; font-size: 0.65rem;">${collab.percentage.toFixed(1)}%</span>
                         ${fireIconHtml}
                     </div>
@@ -12366,7 +12366,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                             <input type="text" id="manual-venda-${key}" class="data-input" value="${formatToBRLInput(userDaily.vendas)}">
                         </div>
                         <div class="input-group">
-                            <label>🛞 Serviço Hoje (R$)</label>
+                            <label>🛟 Serviço Hoje (R$)</label>
                             <input type="text" id="manual-servico-${key}" class="data-input" value="${formatToBRLInput(userDaily.servico)}">
                         </div>
                         <div class="input-group" style="margin-bottom: 0;">
@@ -13248,7 +13248,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                     <div class="employee-meta-card" style="margin-bottom: 2rem;">
                         <h4>${name}</h4>
                         <div class="input-group"><label for="closing-venda-${key}">VENDA 📱</label><input type="text" inputmode="decimal" id="closing-venda-${key}" class="data-input" placeholder="0,00"></div>
-                        <div class="input-group"><label for="closing-servico-${key}">SERVIÇO 🛞</label><input type="text" inputmode="decimal" id="closing-servico-${key}" class="data-input" placeholder="0,00"></div>
+                        <div class="input-group"><label for="closing-servico-${key}">SERVIÇO 🛟</label><input type="text" inputmode="decimal" id="closing-servico-${key}" class="data-input" placeholder="0,00"></div>
                         <div class="input-group"><label for="closing-acessorio-${key}">ACESSÓRIOS 🛍️</label><input type="text" inputmode="decimal" id="closing-acessorio-${key}" class="data-input" placeholder="0,00"></div>
                         <div class="input-group"><label for="closing-preco-site-${key}">PREÇO DE SITE 📡</label><input type="text" inputmode="decimal" id="closing-preco-site-${key}" class="data-input" placeholder="0,00"></div>
                     </div>
