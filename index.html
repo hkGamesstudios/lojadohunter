@@ -297,36 +297,36 @@
             background: transparent;
         }
 
-/* --- TEMA NATALINO (PADRÃO FORÇADO) --- */
-    body.theme-natal {
-        background: linear-gradient(160deg, #000000 0%, #3a0000 40%, #8b0000 100%);
+/* --- TEMA CLARO E ILUMINADO HUNTER --- */
+    body.theme-natal, body.theme-hunter, body {
+        background: linear-gradient(145deg, #ff944d 0%, #ff6b00 45%, #ffa85c 100%) !important;
     }
     
-    .theme-natal header {
-        background-color: rgba(40, 0, 0, 0.7);
-        border-bottom: 1px solid rgba(255, 50, 50, 0.2);
+    .theme-natal header, header {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.25);
     }
     
     .theme-natal .modal-content {
-    background: rgba(30, 0, 0, 0.85);
-    border: 1px solid rgba(255, 0, 0, 0.3);
-}
+        background: rgba(255, 120, 25, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
 
-.theme-natal .story-circle-wrapper.has-story {
-    background: linear-gradient(45deg, #ff0000, #2ecc71);
-}
+    .theme-natal .story-circle-wrapper.has-story {
+        background: linear-gradient(45deg, #FF6B00, #ff9e59);
+    }
 
-.theme-natal .story-circle-wrapper img {
-    border-color: #3a0000;
-    background-color: #3a0000;
-}
+    .theme-natal .story-circle-wrapper img {
+        border-color: #ff6b00;
+        background-color: #fff;
+    }
 
     /* Esconde o botão de trocar tema */
     #theme-toggle {
         display: none !important;
     }
 
-    /* Efeito de Neve */
+    /* Efeito de Partículas de Brilho Suave */
     #snow-container {
         position: fixed;
         top: 0;
@@ -338,21 +338,22 @@
         overflow: hidden;
     }
 
-    .snowflake {
+    .light-particle {
         position: absolute;
-        top: -2vh;
-        color: #fff;
-        font-size: 1em;
-        font-family: Arial, sans-serif;
-        text-shadow: 0 0 5px #000;
+        bottom: -20px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0) 100%);
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 235, 205, 0.5);
         opacity: 0.8;
-        animation: snowfall linear infinite;
-        will-change: transform;
+        animation: floatUpParticle linear infinite;
+        will-change: transform, opacity;
     }
 
-    @keyframes snowfall {
-        0% { transform: translateY(0) rotate(0deg); }
-        100% { transform: translateY(110vh) rotate(360deg); }
+    @keyframes floatUpParticle {
+        0% { transform: translateY(0) scale(0.6); opacity: 0; }
+        15% { opacity: 0.85; }
+        85% { opacity: 0.85; }
+        100% { transform: translateY(-115vh) scale(1.15); opacity: 0; }
     }
 
     
@@ -1051,7 +1052,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -1073,13 +1074,249 @@
         #telemarketing-stats-page .collaborator-content,
 #afiliados-selection-page .collaborator-content,
 #afiliados-stores-page .collaborator-content,
-#afiliados-admin-page .collaborator-content {
+#afiliados-admin-page .collaborator-content,
+#ia-hunter-page .collaborator-content {
         width: 100%;
         max-width: 450px;
         margin: 0 auto;
         align-items: stretch;
         flex-direction: column;
     }
+
+        /* --- ESTILOS DO ASSISTENTE IA HUNTER --- */
+        .ai-hunter-sphere {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #ff9f43 0%, #ff6b00 70%, #d35400 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(255, 107, 0, 0.5), inset 0 -4px 8px rgba(0,0,0,0.2), inset 0 4px 8px rgba(255,255,255,0.4);
+            animation: aiFloat 3s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .ai-hunter-sphere.state-thinking {
+            animation: aiThinking 0.8s ease-in-out infinite !important;
+            box-shadow: 0 0 30px rgba(255, 158, 67, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+        .ai-hunter-sphere.state-talking {
+            animation: aiTalking 0.28s ease-in-out infinite !important;
+            box-shadow: 0 12px 30px rgba(255, 107, 0, 0.7);
+        }
+.ai-hunter-eye {
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(255,255,255,0.8);
+        animation: aiEyesLookingPhone 10s ease-in-out infinite;
+        transition: transform 0.15s ease, height 0.1s ease;
+    }
+    .state-thinking .ai-hunter-eye {
+        animation: aiEyesThinking 0.8s ease-in-out infinite !important;
+    }
+    .state-talking .ai-hunter-eye {
+        animation: aiEyesTalking 0.28s ease-in-out infinite !important;
+    }
+    @keyframes aiEyesLookingPhone {
+        0%, 14% { transform: translate(0, 0) scaleY(1); }
+        15% { transform: translate(0, 0) scaleY(0.1); }
+        16%, 28% { transform: translate(0, 0) scaleY(1); }
+        32%, 44% { transform: translate(4px, -3px) scale(1); }
+        48%, 60% { transform: translate(0px, 4px) scale(0.95); }
+        61% { transform: translate(0px, 4px) scaleY(0.1); }
+        62%, 72% { transform: translate(0px, 4px) scaleY(1); }
+        76%, 88% { transform: translate(-4px, 0px) scale(1); }
+        89% { transform: translate(-4px, 0px) scaleY(0.1); }
+        90%, 94% { transform: translate(3px, 3px) scale(0.95); }
+        98%, 100% { transform: translate(0, 0) scaleY(1); }
+    }
+        @keyframes aiEyesThinking {
+            0%, 100% { transform: translate(-3px, -5px); }
+            50% { transform: translate(5px, 5px); }
+        }
+        @keyframes aiEyesTalking {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(0, -2px) scale(1.15, 0.85); }
+        }
+        @keyframes aiFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes aiThinking {
+            0%, 100% { transform: translateY(-4px) scale(0.96) rotate(-3deg); }
+            50% { transform: translateY(-14px) scale(1.04) rotate(3deg); }
+        }
+        @keyframes aiTalking {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.05, 0.95) translateY(-3px); }
+        }
+
+        /* Celular que a IA segura e interage - oculto por padrão, aparece ao consultar celular */
+        .ai-hunter-holding-phone {
+            display: none;
+            position: absolute;
+            bottom: -8px;
+            right: calc(50% - 62px);
+            width: 48px;
+            height: 60px;
+            z-index: 15;
+            transform-origin: bottom center;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5));
+            pointer-events: none;
+        }
+        .ai-hunter-holding-phone.active {
+            display: block;
+            animation: phoneInteraction 2.6s ease-in-out infinite, phonePullFromPocket 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .ai-hunter-holding-phone img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: rotate(-10deg);
+        }
+        @keyframes phonePullFromPocket {
+            0% { transform: translateY(50px) scale(0.2) rotate(40deg); opacity: 0; }
+            100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes phoneInteraction {
+            0%, 100% { transform: translateY(0) rotate(-6deg); }
+            50% { transform: translateY(-5px) rotate(4deg); }
+        }
+
+        /* Emojis flutuantes saindo do celular */
+        .ai-hunter-emoji-particle {
+            position: absolute;
+            bottom: 30px;
+            right: calc(50% - 40px);
+            font-size: 1.15rem;
+            pointer-events: none;
+            z-index: 25;
+            animation: floatUpEmoji 2s ease-out forwards;
+        }
+        @keyframes floatUpEmoji {
+            0% { transform: translate(0, 0) scale(0.4); opacity: 0; }
+            20% { opacity: 1; transform: translate(calc(var(--rand-x) * 0.4), -18px) scale(1.15); }
+            100% { transform: translate(var(--rand-x), -68px) scale(0.7); opacity: 0; }
+        }
+
+        /* Card de resultado de aparelho exibido pela IA com tamanho reduzido */
+        .ai-device-card {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 5px solid var(--primary-color);
+            border-radius: 14px;
+            padding: 10px;
+            margin-top: 10px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+        .ai-device-thumb {
+            width: 58px !important;
+            height: 64px !important;
+            min-width: 58px !important;
+            max-width: 58px !important;
+            min-height: 64px !important;
+            max-height: 64px !important;
+            background: #fff;
+            border-radius: 10px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+        }
+        .ai-device-thumb img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 50px !important;
+            max-height: 58px !important;
+            object-fit: contain !important;
+            display: block;
+        }
+        .ai-hunter-bubble img {
+            max-width: 58px !important;
+            max-height: 64px !important;
+            object-fit: contain !important;
+        }
+        .ai-device-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 0.72rem;
+            line-height: 1.25;
+            overflow: hidden;
+        }
+        .ai-device-details h4 {
+            margin: 0;
+            font-size: 0.88rem;
+            color: #fff;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ai-device-price-venda {
+            color: #2ecc71;
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+        .ai-hunter-bubble {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 4px solid var(--primary-color);
+            padding: 16px;
+            border-radius: 18px 18px 18px 4px;
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .ai-hunter-btn {
+            width: 100%;
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .ai-hunter-btn:hover {
+            background: rgba(255, 107, 0, 0.2);
+            border-color: #ff6b00;
+            transform: translateY(-2px);
+        }
+        .ai-hunter-btn:active {
+            transform: scale(0.97);
+        }
+        .ai-hunter-btn i {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
 
 #af-stores-container .action-button {
     aspect-ratio: 1/1;
@@ -1419,12 +1656,12 @@
         }
 
         /* CORREÇÃO: ESTILO DOS ÍCONES */
-        .action-button i {
-            font-size: 2.2rem; /* Um pouco maior */
-            margin: 0 0 0.5rem 0; /* Remove margem lateral, ajusta inferior */
-            color: var(--primary-color);
-            line-height: 1; /* Garante que o ícone não adicione altura extra */
-        }
+    .action-button i {
+        font-size: 2.2rem; /* Um pouco maior */
+        margin: 0 0 0.5rem 0; /* Remove margem lateral, ajusta inferior */
+        color: #ffffff;
+        line-height: 1; /* Garante que o ícone não adicione altura extra */
+    }
 
         /* CORREÇÃO: ESTILO DO TEXTO DENTRO DO BOTÃO */
         .action-button span {
@@ -3090,15 +3327,33 @@
 </head>
 <body>
 
-    <!-- NOVA TELA DE LOGIN ÚNICO -->
-    <!-- AVISO DE ATUALIZAÇÃO -->
-    <div id="update-notice-overlay">
-        <div class="update-notice-content">
-            <h2>Versão 6.0.0 - A</h2>
-            <p>Estamos mudando algumas coisas de lugar para melhorar sua praticidade no nosso app, alguns apps podem ter mudados de lugar.</p>
-            <button id="close-update-notice" class="update-notice-btn">( ok )</button>
+<!-- NOVA TELA DE LOGIN ÚNICO -->
+<!-- AVISO DE ATUALIZAÇÃO -->
+<div id="update-notice-overlay">
+    <div class="update-notice-content">
+        <h2>Versão 6.0.0 - A</h2>
+        <p>Estamos mudando algumas coisas de lugar para melhorar sua praticidade no nosso app, alguns apps podem ter mudados de lugar.</p>
+        <button id="close-update-notice" class="update-notice-btn">( ok )</button>
+    </div>
+</div>
+
+<!-- MODAL O QUE TEM DE NOVO -->
+<div id="whats-new-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div style="background: linear-gradient(150deg, rgba(45, 25, 10, 0.95), rgba(20, 10, 5, 0.98)); border: 1px solid rgba(255, 107, 0, 0.4); border-radius: 26px; padding: 1.5rem; max-width: 360px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255, 107, 0, 0.2); text-align: center; color: #fff; animation: modalContentEnter 0.4s var(--ease-out-back);">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 107, 0, 0.2); border: 1px solid rgba(255, 107, 0, 0.5); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; color: #ff9f43; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">
+            <i class="fa-solid fa-sparkles"></i> O que tem de novo
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0 0 12px 0; color: #fff;">Conheça a IA Hunter! 🧡</h3>
+        <div style="width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.15); background: #000;">
+            <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/goarchive/arquivos/1790135875165_img.png" alt="IA Hunter" style="width: 100%; height: auto; display: block; max-height: 220px; object-fit: contain;">
+        </div>
+        <p style="font-size: 0.8rem; color: #e0e0e0; line-height: 1.4; margin-bottom: 16px;">Sua nova assistente virtual inteligente agora está disponível para tirar dúvidas sobre metas, vendas, valores de celulares, serviços e muito mais em tempo real!</p>
+        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+            <button id="close-whats-new-btn" style="width: 100%; padding: 11px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 14px; color: #fff; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s;">Fechar</button>
+            <button id="dont-show-whats-new-btn" style="width: 100%; padding: 11px; background: linear-gradient(135deg, #ff8c3b, #ff6b00); border: none; border-radius: 14px; color: #fff; font-weight: 800; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4); transition: transform 0.2s;">Fechar e não mostrar mais</button>
         </div>
     </div>
+</div>
 
     <!-- TELA DE LANÇAMENTO DE VENDA MANUAL (ESTILO CORREÇÃO) -->
     <div id="manual-sale-page" style="display: none;">
@@ -3522,7 +3777,7 @@
                     </div>
                 </div>
                 
-                <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 5px;">
+                <div style="display: flex; justify-content: center; gap: 1.2rem; margin-top: 5px; flex-wrap: wrap;">
                     <div class="folder-wrapper" id="trigger-folder">
                         <div class="folder-preview-icon" style="width: 70px; height: 70px; padding: 12px; border-radius: 18px; gap: 6px; background: #f2ebe1; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; transition: transform 0.2s ease;">
                             <i class="fa-solid fa-id-card" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
@@ -3530,15 +3785,32 @@
                             <i class="fa-solid fa-boxes-stacked" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
                             <i class="fa-solid fa-calculator" style="font-size: 1rem; color: #333; display: flex; align-items: center; justify-content: center;"></i>
                         </div>
-                        <span style="background: #fff; color: #000; padding: 5px 20px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">Apps</span>
+                        <span style="background: #fff; color: #000; padding: 5px 16px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">Apps</span>
                     </div>
+
+                    <!-- BOTÃO IA HUNTER (VISÍVEL PARA TODOS) -->
+                <div class="folder-wrapper" id="trigger-ia-hunter">
+                    <style>
+                        @keyframes aiFloatMini {
+                            0%, 100% { transform: translateY(2px); }
+                            50% { transform: translateY(-3px); }
+                        }
+                    </style>
+                    <div class="folder-preview-icon" style="width: 70px; height: 70px; padding: 12px; border-radius: 18px; background: #fff5eb; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease;">
+                        <div class="ai-hunter-sphere" style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; gap: 7px; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.5), inset 0 -2px 4px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.5); animation: aiFloatMini 3s ease-in-out infinite;">
+                            <div class="ai-hunter-eye" style="width: 6px; height: 6px;"></div>
+                            <div class="ai-hunter-eye" style="width: 6px; height: 6px;"></div>
+                        </div>
+                    </div>
+                    <span style="background: #fff; color: #000; padding: 5px 14px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">IA Hunter</span>
+                </div>
 
                     <!-- BOTÃO GS PRINCIPAL (RESTRITO) -->
                     <div class="folder-wrapper" id="main-gs-trigger" style="display: none;">
                         <div class="folder-preview-icon" style="width: 70px; height: 70px; padding: 12px; border-radius: 18px; background: #f2f2f2; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease;">
                             <i class="fa-solid fa-chart-pie" style="font-size: 2.2rem; color: #000;"></i>
                         </div>
-                        <span style="background: #fff; color: #000; padding: 5px 20px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">Painel GS</span>
+                        <span style="background: #fff; color: #000; padding: 5px 16px !important; border-radius: 20px; font-weight: 900; margin-top: 10px; font-size: 0.75rem !important; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-shadow: none;">Painel GS</span>
                     </div>
                 </div>
             </section>
@@ -4991,6 +5263,48 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- TELA IA HUNTER -->
+<div id="ia-hunter-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden; background: radial-gradient(circle at 50% 12%, rgba(255, 235, 205, 0.45) 0%, transparent 55%), radial-gradient(circle at 85% 70%, rgba(255, 140, 30, 0.35) 0%, transparent 50%), linear-gradient(150deg, #ff944d 0%, #ff6b00 48%, #ffa85c 100%) !important;">
+    <div class="collaborator-header" style="width: 100%; position: relative; flex-shrink: 0; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.25);">
+        <button id="back-to-main-from-ia-hunter" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+        <h2>IA Hunter</h2>
+    </div>
+        <div class="collaborator-content" style="align-items: center; width: 100%; max-width: 450px; margin: 0 auto; padding: 1rem 1.5rem 2.5rem 1.5rem; flex-direction: column;">
+            <div class="ai-hunter-avatar-container" id="ia-hunter-avatar-box" style="display: flex; justify-content: center; align-items: center; margin: 1rem 0 1.4rem 0; height: 115px; position: relative;">
+                <div class="ai-hunter-sphere" id="ia-hunter-sphere">
+                    <div class="ai-hunter-eye"></div>
+                    <div class="ai-hunter-eye"></div>
+                </div>
+                <div class="ai-hunter-holding-phone" id="ia-hunter-phone-wrapper">
+                <img src="https://dverr7iyvl0k.cloudfront.net/Custom/Content/Products/14/98/14987_tel-cel-smart-motorola-moto-g56-5g-256gb-xt2529-gft-223168_z2_639076356838071540.webp" alt="Celular IA">
+            </div>
+            </div>
+
+            <div id="ia-hunter-chat-bubble" class="ai-hunter-bubble">
+                Olá! 🧡 Sou a <strong>IA Hunter</strong>. Como posso ajudar com suas metas, vendas e resultados hoje?
+            </div>
+
+            <div id="ia-hunter-thinking" style="display: none; margin: 10px 0; color: #fff; font-weight: 600; font-size: 13px;">
+                <i class="fa-solid fa-brain fa-bounce" style="color: #ff9f43; margin-right: 6px;"></i> Pensando...
+            </div>
+
+            <div id="ia-hunter-quick-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-top: 10px;">
+                <button class="ai-hunter-btn" onclick="askIAHunter('meta_vendas')"><i class="fa-solid fa-bullseye"></i> Meta de Vendas</button>
+                <button class="ai-hunter-btn" onclick="askIAHunter('vendas')"><i class="fa-solid fa-mobile-screen"></i> Vendas</button>
+                <button class="ai-hunter-btn" onclick="askIAHunter('servicos')"><i class="fa-solid fa-shield-halved"></i> Vendas de Serviços</button>
+                <button class="ai-hunter-btn" onclick="askIAHunter('acessorios')"><i class="fa-solid fa-headphones"></i> Venda de Acessórios</button>
+                <button class="ai-hunter-btn" onclick="askIAHunter('ranking')"><i class="fa-solid fa-trophy"></i> Posição no Ranking</button>
+                <button class="ai-hunter-btn" onclick="askIAHunter('salario')"><i class="fa-solid fa-sack-dollar"></i> Quanto seria meu Salário?</button>
+                <button class="ai-hunter-btn" style="grid-column: 1 / -1; justify-content: center; background: rgba(255, 107, 0, 0.2); border-color: rgba(255, 107, 0, 0.5);" onclick="askIAHunter('politica')"><i class="fa-solid fa-book-open"></i> Política Salarial</button>
+            </div>
+
+            <div style="width: 100%; margin-top: 1.2rem; display: flex; gap: 8px;">
+                <input type="text" id="ia-hunter-text-input" class="data-input" placeholder="Pergunte algo à IA Hunter..." style="margin-bottom: 0;">
+                <button id="ia-hunter-send-btn" class="action-button" style="width: 50px; height: 50px; padding: 0; margin: 0; aspect-ratio: 1/1; flex-shrink: 0;"><i class="fa-solid fa-paper-plane" style="margin: 0; font-size: 1.2rem;"></i></button>
+            </div>
+        </div>
+    </div>
+
     <!-- TELA PAINEL CELULARES -->
     <div id="painel-celulares-page" style="display: none; flex-direction: column; background: #1a1a1a; z-index: 3500; position: fixed; top:0; left:0; width:100%; height:100%; overflow: hidden;">
         <div class="collaborator-header" style="background: #222; flex-shrink: 0;">
@@ -5374,7 +5688,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '9.0.6 - D '; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.0 - A '; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8228,33 +8542,33 @@ const loadAndDisplayCollaboratorMetas = () => {
             const workingDaysLeft = getWorkingDaysLeft();
 
             const createPanelHTML = (title, meta, sold) => {
-                const dailyBase = Math.max(0, (meta - (sold.total - sold.today)) / workingDaysLeft);
-                const dailyFinal = dailyBase * multiplier;
-                const dailyLeft = Math.max(0, dailyFinal - sold.today);
+            const dailyBase = Math.max(0, (meta - (sold.total - sold.today)) / workingDaysLeft);
+            const dailyFinal = dailyBase * multiplier;
+            const dailyLeft = Math.max(0, dailyFinal - sold.today);
 
-                const serviceGoal = dailyFinal * 0.10;
-                const serviceLeft = Math.max(0, serviceGoal - sold.todayServ);
+            const serviceGoal = dailyFinal * 0.10;
+            const serviceLeft = Math.max(0, serviceGoal - sold.todayServ);
 
-                return `
-                    <div class="sales-data-card" style="width: 100%; max-width: 420px; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
-                        <h4 style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">${title}</h4>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px;">
-                            <span style="font-size: 0.65rem; color: var(--primary-color); text-align: left; text-transform: uppercase; font-weight: 800;">Meta de Vendas</span>
-                            <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(dailyFinal)}</span></div>
-                            <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.today)}</span></div>
-                            <div style="display: flex; justify-content: space-between; color: #f1c40f;"><span>Falta:</span><span>- ${formatBRL(dailyLeft)}</span></div>
-                        </div>
-
-                        <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem;">
-                            <span style="font-size: 0.65rem; color: #9b59b6; text-align: left; text-transform: uppercase; font-weight: 800;">Meta de Serviço</span>
-                            <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(serviceGoal)}</span></div>
-                            <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.todayServ)}</span></div>
-                            <div style="display: flex; justify-content: space-between; color: #f1c40f;"><span>Falta:</span><span>- ${formatBRL(serviceLeft)}</span></div>
-                        </div>
+            return `
+                <div class="sales-data-card" style="width: 100%; max-width: 420px; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
+                    <h4 style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">${title}</h4>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px;">
+                        <span style="display: inline-flex; align-items: center; gap: 5px; background: #ffffff; color: #d35400; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.5px; width: fit-content; text-transform: uppercase; box-shadow: 0 2px 6px rgba(0,0,0,0.2); margin-bottom: 6px;"><i class="fa-solid fa-mobile-screen"></i> Meta de Vendas</span>
+                        <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(dailyFinal)}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.today)}</span></div>
+                        <div style="display: flex; justify-content: space-between; color: #ffe600; font-weight: 700;"><span>Falta:</span><span>- ${formatBRL(dailyLeft)}</span></div>
                     </div>
-                `;
-            };
+
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem;">
+                        <span style="display: inline-flex; align-items: center; gap: 5px; background: #ffffff; color: #6c3483; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.5px; width: fit-content; text-transform: uppercase; box-shadow: 0 2px 6px rgba(0,0,0,0.2); margin-bottom: 6px;"><i class="fa-solid fa-shield-halved"></i> Meta de Serviço</span>
+                        <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(serviceGoal)}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.todayServ)}</span></div>
+                        <div style="display: flex; justify-content: space-between; color: #ffe600; font-weight: 700;"><span>Falta:</span><span>- ${formatBRL(serviceLeft)}</span></div>
+                    </div>
+                </div>
+            `;
+        };
 
             const getStoreSoldData = (store) => {
                 let total = 0;
@@ -12135,46 +12449,38 @@ async function calculateAndDisplayStoreServiceRanking() {
             }
         };
 
-        const createSnowflakes = () => {
+        const createLightParticles = () => {
             const container = document.getElementById('snow-container');
+            if (!container) return;
             container.innerHTML = '';
-            const snowflakeCount = 50; 
+            const particleCount = 45; 
 
-            for (let i = 0; i < snowflakeCount; i++) {
-                const flake = document.createElement('div');
-                flake.classList.add('snowflake');
-                flake.innerHTML = '❅'; 
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('light-particle');
                 
                 const left = Math.random() * 100;
-                const duration = Math.random() * 5 + 5; 
-                const delay = Math.random() * 5; 
-                const size = Math.random() * 1.5 + 0.5; 
+                const duration = Math.random() * 7 + 6; 
+                const delay = Math.random() * 6; 
+                const size = Math.random() * 8 + 4; 
 
-                flake.style.left = `${left}vw`;
-                flake.style.animationDuration = `${duration}s`;
-                flake.style.animationDelay = `${delay}s`;
-                flake.style.fontSize = `${size}em`;
+                particle.style.left = `${left}vw`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
 
-                container.appendChild(flake);
+                container.appendChild(particle);
             }
         };
         
         const applySelectedTheme = () => {
             database.ref('globalSettings/isChristmasMode').get().then(snapshot => {
-                const isChristmas = snapshot.exists() && snapshot.val() === true;
-                
-                if (isChristmas) {
-                    document.body.classList.remove('theme-hunter', 'theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx');
-                    createOrClearFloatingXs(false);
-                    createOrClearFloatingDots(false); 
-                    document.body.classList.add('theme-natal');
-                    createSnowflakes();
-                } else {
-                    document.body.classList.remove('theme-natal');
-                    const snow = document.getElementById('snow-container');
-                    if(snow) snow.innerHTML = '';
-                    createOrClearFloatingDots(true);
-                }
+                document.body.classList.remove('theme-rosa', 'theme-black', 'theme-claro', 'theme-lgbt', 'theme-grayx');
+                createOrClearFloatingXs(false);
+                createOrClearFloatingDots(false); 
+                document.body.classList.add('theme-hunter');
+                createLightParticles();
             });
         };
 
@@ -13530,31 +13836,39 @@ async function calculateAndDisplayStoreServiceRanking() {
             
             // Listeners para troca de foto de perfil
             const loadAndDisplayCollaboratorStatus = async () => {
-                // Parte 1: Carrega o status pessoal APENAS na página de perfil do usuário.
-                const profileDisplayContainer = document.getElementById('collaborator-status-display-container');
-                if (profileDisplayContainer && currentUserName) {
-                    profileDisplayContainer.innerHTML = ''; // Limpa antes de carregar
-                    const userKey = currentUserName.toLowerCase();
-                    try {
-                        const statusSnapshot = await database.ref(`userStatuses/${userKey}`).get();
-                        if (statusSnapshot.exists()) {
-                            const statusData = statusSnapshot.val();
-                            const statusTimestamp = new Date(statusData.timestamp);
-                            const now = new Date();
-                            if ((now - statusTimestamp) / (1000 * 60 * 60) < 24) { // Se o status for das últimas 24h
-                                const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
-                                const photoUrl = profileSnap.exists() && profileSnap.val().photoURL ? profileSnap.val().photoURL : DEFAULT_PROFILE_PHOTO;
-                                profileDisplayContainer.innerHTML = `
-                                    <div class="profile-status-bubble">
-                                        <img src="${photoUrl}" class="status-bubble-photo">
-                                        <span class="status-bubble-text">${statusData.text}</span>
-                                    </div>`;
-                            }
+            // Parte 1: Carrega o status pessoal APENAS na página de perfil do usuário.
+            const profileDisplayContainer = document.getElementById('collaborator-status-display-container');
+            if (profileDisplayContainer && currentUserName) {
+                profileDisplayContainer.innerHTML = ''; // Limpa antes de carregar
+                const userKey = currentUserName.toLowerCase();
+                try {
+                    const statusSnapshot = await database.ref(`userStatuses/${userKey}`).get();
+                    if (statusSnapshot.exists()) {
+                        const statusData = statusSnapshot.val();
+                        const statusTimestamp = new Date(statusData.timestamp);
+                        const now = new Date();
+                        if ((now - statusTimestamp) / (1000 * 60 * 60) < 24) { // Se o status for das últimas 24h
+                            const profileSnap = await database.ref(`userProfiles/${userKey}`).get();
+                            const photoUrl = profileSnap.exists() && profileSnap.val().photoURL ? profileSnap.val().photoURL : DEFAULT_PROFILE_PHOTO;
+                            profileDisplayContainer.innerHTML = `
+                                <div class="profile-status-bubble">
+                                    <img src="${photoUrl}" class="status-bubble-photo">
+                                    <span class="status-bubble-text">${statusData.text}</span>
+                                </div>`;
                         }
-                    } catch (error) {
-                        console.error("Erro ao carregar o status do perfil pessoal:", error);
                     }
+                } catch (error) {
+                    console.error("Erro ao carregar o status do perfil pessoal:", error);
                 }
+
+                if (userKey === 'gabrielly' || userKey === 'gabriely') {
+                    const tagHtml = `
+                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 182, 193, 0.4); padding: 6px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #ffb6c1; margin-top: -4px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); backdrop-filter: blur(6px);">
+                            🌹🌹🌹 Buquê de Isabela • Funcionária Preferida
+                        </div>`;
+                    profileDisplayContainer.innerHTML = tagHtml + (profileDisplayContainer.innerHTML ? `<br>${profileDisplayContainer.innerHTML}` : '');
+                }
+            }
 
                 // Parte 2: Carrega o status mais recente de QUALQUER usuário para a PÁGINA PRINCIPAL.
                 const mainDisplaySection = document.getElementById('main-status-display-section');
@@ -14848,19 +15162,54 @@ async function calculateAndDisplayStoreServiceRanking() {
                 }, 2000);
             }
 
-            // --- LÓGICA DO AVISO DE ATUALIZAÇÃO ---
-            const updateOverlay = document.getElementById('update-notice-overlay');
-            const closeUpdateBtn = document.getElementById('close-update-notice');
-            const UPDATE_VERSION_KEY = 'seen_update_6_0_0';
+           // --- LÓGICA DO AVISO DE ATUALIZAÇÃO ---
+        const updateOverlay = document.getElementById('update-notice-overlay');
+        const closeUpdateBtn = document.getElementById('close-update-notice');
+        const UPDATE_VERSION_KEY = 'seen_update_6_0_0';
 
-            if (!localStorage.getItem(UPDATE_VERSION_KEY)) {
-                updateOverlay.style.display = 'flex';
+        if (!localStorage.getItem(UPDATE_VERSION_KEY)) {
+            updateOverlay.style.display = 'flex';
+        }
+
+        closeUpdateBtn.addEventListener('click', () => {
+            localStorage.setItem(UPDATE_VERSION_KEY, 'true');
+            updateOverlay.style.display = 'none';
+        });
+
+        // --- LÓGICA DO MODAL O QUE TEM DE NOVO (IA HUNTER) ---
+        const checkAndShowWhatsNew = () => {
+            const loggedUser = currentUserName || localStorage.getItem('loggedInUser');
+            if (!loggedUser) return;
+            const userKey = loggedUser.toLowerCase();
+            const storageKey = `seen_whats_new_ia_${userKey}`;
+            if (!localStorage.getItem(storageKey)) {
+                const overlay = document.getElementById('whats-new-overlay');
+                if (overlay) overlay.style.display = 'flex';
             }
+        };
 
-            closeUpdateBtn.addEventListener('click', () => {
-                localStorage.setItem(UPDATE_VERSION_KEY, 'true');
-                updateOverlay.style.display = 'none';
+        setTimeout(checkAndShowWhatsNew, 1200);
+
+        const closeWhatsNewBtn = document.getElementById('close-whats-new-btn');
+        if (closeWhatsNewBtn) {
+            closeWhatsNewBtn.addEventListener('click', () => {
+                const overlay = document.getElementById('whats-new-overlay');
+                if (overlay) overlay.style.display = 'none';
             });
+        }
+
+        const dontShowWhatsNewBtn = document.getElementById('dont-show-whats-new-btn');
+        if (dontShowWhatsNewBtn) {
+            dontShowWhatsNewBtn.addEventListener('click', () => {
+                const loggedUser = currentUserName || localStorage.getItem('loggedInUser');
+                if (loggedUser) {
+                    const userKey = loggedUser.toLowerCase();
+                    localStorage.setItem(`seen_whats_new_ia_${userKey}`, 'true');
+                }
+                const overlay = document.getElementById('whats-new-overlay');
+                if (overlay) overlay.style.display = 'none';
+            });
+        }
 
             const setupTopBanners = () => {
                 const bannerImg = document.getElementById('main-banner-img');
@@ -15386,6 +15735,785 @@ async function calculateAndDisplayStoreServiceRanking() {
                     alert('Sistema Interno atualizado com sucesso!');
                 }
             };
+            // Registrar página da IA Hunter
+            const iaHunterPageEl = document.getElementById('ia-hunter-page');
+            if (iaHunterPageEl) {
+                iaHunterPageEl.classList.add('page');
+                elements.iaHunterPage = iaHunterPageEl;
+            }
+
+            // Sintetizador Web Audio estilo fala de Undertale
+            let undertaleAudioCtx = null;
+            const playUndertaleBlip = () => {
+                try {
+                    if (!undertaleAudioCtx) {
+                        undertaleAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (undertaleAudioCtx.state === 'suspended') {
+                        undertaleAudioCtx.resume();
+                    }
+                    const osc = undertaleAudioCtx.createOscillator();
+                    const gain = undertaleAudioCtx.createGain();
+                    osc.type = 'triangle';
+                    const pitch = 145 + (Math.random() * 25 - 12);
+                    osc.frequency.setValueAtTime(pitch, undertaleAudioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.09, undertaleAudioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, undertaleAudioCtx.currentTime + 0.045);
+                    osc.connect(gain);
+                    gain.connect(undertaleAudioCtx.destination);
+                    osc.start();
+                    osc.stop(undertaleAudioCtx.currentTime + 0.045);
+                } catch (e) {}
+            };
+
+            const ensureIAHunterBearDOM = () => {
+            const container = document.getElementById('ia-hunter-avatar-box');
+            if (!container) return;
+            if (!document.getElementById('ia-hunter-bear-wrapper')) {
+                const bearWrapper = document.createElement('div');
+                bearWrapper.id = 'ia-hunter-bear-wrapper';
+                bearWrapper.className = 'ai-hunter-holding-bear';
+                bearWrapper.innerHTML = `<img src="https://static.vecteezy.com/system/resources/previews/037/477/309/non_2x/3d-illustration-blue-teddy-bear-free-png.png" alt="Urso Azul">`;
+                container.appendChild(bearWrapper);
+            }
+            if (!document.getElementById('ia-hunter-bear-styles')) {
+                const style = document.createElement('style');
+                style.id = 'ia-hunter-bear-styles';
+                style.innerHTML = `
+                    .ai-hunter-holding-bear {
+                        display: none;
+                        position: absolute;
+                        bottom: -10px;
+                        right: calc(50% - 56px);
+                        width: 52px;
+                        height: 58px;
+                        z-index: 15;
+                        transform-origin: bottom center;
+                        filter: drop-shadow(0 8px 14px rgba(0,0,0,0.5));
+                        pointer-events: none;
+                    }
+                    .ai-hunter-holding-bear.active {
+                        display: block;
+                        animation: bearFloat 2.4s ease-in-out infinite, bearAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    }
+                    .ai-hunter-holding-bear img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        transform: rotate(-5deg);
+                    }
+                    @keyframes bearAppear {
+                        0% { transform: translateY(40px) scale(0.3) rotate(20deg); opacity: 0; }
+                        100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+                    }
+                    @keyframes bearFloat {
+                        0%, 100% { transform: translateY(0) rotate(-4deg); }
+                        50% { transform: translateY(-4px) rotate(3deg); }
+                    }
+                    .ai-hunter-heart-particle {
+                        position: absolute;
+                        bottom: 35px;
+                        right: calc(50% - 35px);
+                        font-size: 1.25rem;
+                        pointer-events: none;
+                        z-index: 25;
+                        animation: floatUpHeart 2s ease-out forwards;
+                    }
+                    @keyframes floatUpHeart {
+                        0% { transform: translate(0, 0) scale(0.3); opacity: 0; }
+                        20% { opacity: 1; transform: translate(calc(var(--rand-x) * 0.4), -20px) scale(1.2); }
+                        100% { transform: translate(var(--rand-x), -75px) scale(0.8); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        };
+
+        let iaHunterHeartInterval = null;
+
+        const showIAHunterBear = () => {
+            ensureIAHunterBearDOM();
+            hideIAHunterPhone();
+            const bearWrapper = document.getElementById('ia-hunter-bear-wrapper');
+            if (bearWrapper) {
+                bearWrapper.classList.add('active');
+            }
+            startIAHunterBearHearts();
+        };
+
+        const hideIAHunterBear = () => {
+            const bearWrapper = document.getElementById('ia-hunter-bear-wrapper');
+            if (bearWrapper) {
+                bearWrapper.classList.remove('active');
+            }
+            stopIAHunterBearHearts();
+        };
+
+        const startIAHunterBearHearts = () => {
+            if (iaHunterHeartInterval) clearInterval(iaHunterHeartInterval);
+            const container = document.getElementById('ia-hunter-avatar-box');
+            if (!container) return;
+
+            const hearts = ['💙', '💙', '✨', '💖', '🤍'];
+            iaHunterHeartInterval = setInterval(() => {
+                const page = document.getElementById('ia-hunter-page');
+                const bearWrapper = document.getElementById('ia-hunter-bear-wrapper');
+                if (!page || page.style.display === 'none' || !bearWrapper || !bearWrapper.classList.contains('active')) {
+                    clearInterval(iaHunterHeartInterval);
+                    return;
+                }
+                const p = document.createElement('span');
+                p.className = 'ai-hunter-heart-particle';
+                p.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                const randX = (Math.random() * 40 - 20) + 'px';
+                p.style.setProperty('--rand-x', randX);
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 2100);
+            }, 1200);
+        };
+
+        const stopIAHunterBearHearts = () => {
+            if (iaHunterHeartInterval) {
+                clearInterval(iaHunterHeartInterval);
+                iaHunterHeartInterval = null;
+            }
+        };
+
+        const checkAndTriggerIdleEasterEgg = () => {
+            ensureIAHunterBearDOM();
+            const phoneWrapper = document.getElementById('ia-hunter-phone-wrapper');
+            if (phoneWrapper && phoneWrapper.classList.contains('active')) {
+                hideIAHunterBear();
+                return;
+            }
+            hideIAHunterBear();
+            if (Math.random() < 0.2) {
+                showIAHunterBear();
+            }
+        };
+
+        // Controle de estados visuais da esfera
+        const setIAHunterState = (state) => {
+            const sphere = document.getElementById('ia-hunter-sphere');
+            if (!sphere) return;
+            sphere.classList.remove('state-thinking', 'state-talking');
+            if (state === 'thinking') {
+                sphere.classList.add('state-thinking');
+                hideIAHunterBear();
+            } else if (state === 'talking') {
+                sphere.classList.add('state-talking');
+                hideIAHunterBear();
+            } else if (state === 'idle') {
+                checkAndTriggerIdleEasterEgg();
+            }
+        };
+
+        // Gerenciamento dinâmico do celular na mão da IA e emojis flutuantes
+        let iaHunterEmojiInterval = null;
+
+        const showIAHunterPhone = () => {
+            hideIAHunterBear();
+            const phoneWrapper = document.getElementById('ia-hunter-phone-wrapper');
+            if (phoneWrapper) {
+                phoneWrapper.classList.add('active');
+            }
+            startIAHunterPhoneEmojis();
+        };
+
+        const hideIAHunterPhone = () => {
+            const phoneWrapper = document.getElementById('ia-hunter-phone-wrapper');
+            if (phoneWrapper) {
+                phoneWrapper.classList.remove('active');
+            }
+            stopIAHunterPhoneEmojis();
+            hideIAHunterBear();
+        };
+
+        const startIAHunterPhoneEmojis = () => {
+            if (iaHunterEmojiInterval) clearInterval(iaHunterEmojiInterval);
+            const container = document.getElementById('ia-hunter-avatar-box');
+            if (!container) return;
+
+            const emojis = ['💬', '📱', '✨', '🔥', '🧡', '⚡', '👍', '💰', '🎯', '📶'];
+            iaHunterEmojiInterval = setInterval(() => {
+                const page = document.getElementById('ia-hunter-page');
+                const phoneWrapper = document.getElementById('ia-hunter-phone-wrapper');
+                if (!page || page.style.display === 'none' || !phoneWrapper || !phoneWrapper.classList.contains('active')) {
+                    clearInterval(iaHunterEmojiInterval);
+                    return;
+                }
+                const p = document.createElement('span');
+                p.className = 'ai-hunter-emoji-particle';
+                p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                const randX = (Math.random() * 40 - 20) + 'px';
+                p.style.setProperty('--rand-x', randX);
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 2100);
+            }, 1400);
+        };
+
+        const stopIAHunterPhoneEmojis = () => {
+            if (iaHunterEmojiInterval) {
+                clearInterval(iaHunterEmojiInterval);
+                iaHunterEmojiInterval = null;
+            }
+        };
+
+            // Efeito máquina de escrever com som Undertale preservando tags HTML
+        let iaHunterTypingTimer = null;
+        const typeUndertaleResponse = (container, fullHTML, onFinish) => {
+            if (iaHunterTypingTimer) {
+                clearInterval(iaHunterTypingTimer);
+                iaHunterTypingTimer = null;
+            }
+
+            if (fullHTML.includes('<div')) {
+                setIAHunterState('talking');
+                container.innerHTML = fullHTML;
+                let blipCount = 0;
+                const blipInterval = setInterval(() => {
+                    playUndertaleBlip();
+                    blipCount++;
+                    if (blipCount >= 6) {
+                        clearInterval(blipInterval);
+                        setIAHunterState('idle');
+                        if (onFinish) onFinish();
+                    }
+                }, 50);
+                return;
+            }
+
+            container.innerHTML = '';
+            setIAHunterState('talking');
+
+            let i = 0;
+            let isInsideTag = false;
+            let tagBuffer = '';
+
+            iaHunterTypingTimer = setInterval(() => {
+                if (i >= fullHTML.length) {
+                    clearInterval(iaHunterTypingTimer);
+                    iaHunterTypingTimer = null;
+                    setIAHunterState('idle');
+                    if (onFinish) onFinish();
+                    return;
+                }
+
+                const char = fullHTML[i];
+
+                if (char === '<') {
+                    isInsideTag = true;
+                }
+
+                if (isInsideTag) {
+                    tagBuffer += char;
+                    if (char === '>') {
+                        isInsideTag = false;
+                        container.innerHTML += tagBuffer;
+                        tagBuffer = '';
+                    }
+                } else {
+                    container.innerHTML += char;
+                    if (char !== ' ' && char !== '\n' && char !== '\r' && char !== '\t') {
+                        playUndertaleBlip();
+                    }
+                }
+                i++;
+            }, 18);
+        };
+
+            // Consulta inteligente de aparelhos em Planilha e Sistema com suporte a nomes parecidos
+        const searchPhoneInDatabaseOrSheet = async (searchTerm) => {
+            const normalize = (str) => String(str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s\.\-\/]/g, "");
+            const targetNorm = normalize(searchTerm);
+            const defaultPhoneImg = "https://s2-g1.glbimg.com/LrHhIcC3-s9l4yK0CDvCL1Qjtr8=/0x0:1080x1080/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2020/1/5/mT09smTFSSbEAzbRhYSA/nokia-2.3-sand-left-quarter.png";
+
+            if (!targetNorm) return null;
+
+            const deviceImages = {};
+            try {
+                const devicesSnap = await database.ref('devices').get();
+                if (devicesSnap.exists()) {
+                    const brands = devicesSnap.val();
+                    for (const b in brands) {
+                        for (const k in brands[b]) {
+                            const dev = brands[b][k];
+                            if (dev && dev.name) {
+                                deviceImages[normalize(dev.name)] = dev.imageUrl || defaultPhoneImg;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            const findImageForName = (name) => {
+                const nNorm = normalize(name);
+                if (deviceImages[nNorm]) return deviceImages[nNorm];
+                for (const k in deviceImages) {
+                    if (k.includes(nNorm) || nNorm.includes(k)) {
+                        return deviceImages[k];
+                    }
+                }
+                return defaultPhoneImg;
+            };
+
+            const fixPrice = (v) => {
+                if (!v) return "R$ 0,00";
+                let s = String(v).replace("R$", "").trim();
+                return `R$ ${s}`;
+            };
+
+            let allSystemPrices = [];
+            try {
+                const systemSnap = await database.ref('systemDevicePrices').get();
+                if (systemSnap.exists()) {
+                    allSystemPrices = Object.values(systemSnap.val());
+                }
+            } catch (e) {}
+
+            const exactMatch = allSystemPrices.find(item => item && item.produto && normalize(item.produto) === targetNorm);
+            if (exactMatch) {
+                return {
+                    name: exactMatch.produto,
+                    imageUrl: findImageForName(exactMatch.produto),
+                    precoVenda: fixPrice(exactMatch.precoDeVenda),
+                    precoLimite: fixPrice(exactMatch.precoLimite),
+                    zeroLucro: fixPrice(exactMatch.zeroLucro),
+                    entradaMinima: fixPrice(exactMatch.entradaMinima),
+                    cupom: fixPrice(exactMatch.cupom),
+                    seguroQueda: fixPrice(exactMatch.seguroQueda),
+                    garantiaEstendida: fixPrice(exactMatch.garantiaEstendida),
+                    origem: "Sistema Interno"
+                };
+            }
+
+            const candidatesMap = new Map();
+            allSystemPrices.forEach(item => {
+                if (item && item.produto) {
+                    const pName = String(item.produto).trim();
+                    candidatesMap.set(normalize(pName), { name: pName, item: item });
+                }
+            });
+
+            Object.keys(deviceImages).forEach(normKey => {
+                if (!candidatesMap.has(normKey)) {
+                    candidatesMap.set(normKey, { name: normKey, item: null });
+                }
+            });
+
+            const isSimilarWord = (w1, w2) => {
+                if (w1 === w2 || w2.includes(w1) || w1.includes(w2)) return true;
+                if (Math.abs(w1.length - w2.length) > 2) return false;
+                let diff = 0;
+                const minL = Math.min(w1.length, w2.length);
+                for (let i = 0; i < minL; i++) {
+                    if (w1[i] !== w2[i]) diff++;
+                }
+                diff += Math.abs(w1.length - w2.length);
+                return diff <= 2;
+            };
+
+            const queryWords = targetNorm.split(/[^a-z0-9]+/).filter(w => w.length >= 2);
+
+            const matchedCandidates = [];
+            for (const [candNorm, candData] of candidatesMap.entries()) {
+                let isMatch = false;
+
+                if (candNorm.includes(targetNorm) || targetNorm.includes(candNorm)) {
+                    isMatch = true;
+                } else if (queryWords.length > 0) {
+                    const candWords = candNorm.split(/[^a-z0-9]+/).filter(Boolean);
+                    const allWordsFound = queryWords.every(qWord => 
+                        candWords.some(cWord => isSimilarWord(qWord, cWord))
+                    );
+                    if (allWordsFound) isMatch = true;
+                }
+
+                if (isMatch) {
+                    matchedCandidates.push(candData);
+                }
+            }
+
+            if (matchedCandidates.length > 1) {
+                const topOptions = matchedCandidates.slice(0, 4).map(c => c.name);
+                return {
+                    isMultiple: true,
+                    options: topOptions
+                };
+            }
+
+            if (matchedCandidates.length === 1) {
+                const single = matchedCandidates[0];
+                if (single.item) {
+                    return {
+                        name: single.name,
+                        imageUrl: findImageForName(single.name),
+                        precoVenda: fixPrice(single.item.precoDeVenda),
+                        precoLimite: fixPrice(single.item.precoLimite),
+                        zeroLucro: fixPrice(single.item.zeroLucro),
+                        entradaMinima: fixPrice(single.item.entradaMinima),
+                        cupom: fixPrice(single.item.cupom),
+                        seguroQueda: fixPrice(single.item.seguroQueda),
+                        garantiaEstendida: fixPrice(single.item.garantiaEstendida),
+                        origem: "Sistema Interno"
+                    };
+                }
+            }
+
+            try {
+                const response = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?deviceName=${encodeURIComponent(searchTerm)}`, { timeout: 10000 });
+                if (response.ok) {
+                    const sheetData = await response.json();
+                    if (sheetData && !sheetData.error && sheetData.precoDeVenda) {
+                        return {
+                            name: sheetData.name || searchTerm,
+                            imageUrl: findImageForName(sheetData.name || searchTerm),
+                            precoVenda: sheetData.precoDeVenda || "N/A",
+                            precoLimite: sheetData.precoLimite || "N/A",
+                            zeroLucro: sheetData.zeroLucro || "N/A",
+                            entradaMinima: sheetData.entradaMinima || "N/A",
+                            cupom: sheetData.cupom || "N/A",
+                            seguroQueda: sheetData.seguroContraQueda || "N/A",
+                            garantiaEstendida: sheetData.garantiaEstendidaDe1Ano || "N/A",
+                            origem: "Planilha Oficial"
+                        };
+                    }
+                }
+            } catch (e) {}
+
+            return null;
+        };
+
+            // Banco de dados de respostas rápidas para dúvidas frequentes
+            const iaHunterKnowledgeBase = [
+                {
+                    keywords: ['ponto', 'bater ponto', 'horario', 'tolerancia', 'almoco', 'entrada', 'saida'],
+                    answer: '⏰ <strong>Regras do Ponto:</strong>\n• Entrada semana: 07:40 às 08:30 (fds 06:40 às 07:30).\n• Almoço: 2h de intervalo (30 min de tolerância na volta).\n• Saída: liberada a partir das 17:40 (semana) ou 18:40 (fds).\n• Foto facial centralizada é obrigatória em cada registro.'
+                },
+                {
+                    keywords: ['falta', 'atestado', 'justificar', 'justificativa', 'esqueci o ponto', 'atraso'],
+                    answer: '📋 <strong>Faltas e Atestados:</strong>\n• Se atrasou ou esqueceu o ponto, use o botão <em>"Justificar Ocorrência"</em> que aparece na notificação do perfil.\n• Atestados médicos devem ser comunicados ao gerente da loja imediatamente.'
+                },
+                {
+                    keywords: ['folga', 'domingo', 'escala', 'trabalhar domingo'],
+                    answer: '📅 <strong>Folgas e Domingos:</strong>\n• Domingos trabalhados e folgas semanais são cadastrados pela gerência no Painel GS.\n• No seu dia de folga agendado ou feriado, o sistema de ponto desativa automaticamente.'
+                },
+                {
+                    keywords: ['hora extra', 'horas extras', 'banco de horas'],
+                    answer: '⏳ <strong>Horas Extras:</strong>\n• Calculadas automaticamente após o ponto de saída quando você ultrapassa 8h (dia de semana) ou 5h (fim de semana).\n• O total acumulado fica salvo no seu perfil e no Painel GS.'
+                },
+                {
+                    keywords: ['garantia', 'garantia estendida', 'seguro', 'seguro queda'],
+                    answer: '🛡️ <strong>Garantia Estendida e Seguro Queda:</strong>\n• Rendem <strong>10% de comissão direta</strong> para você em cada contrato fechado.\n• Essa comissão é paga independentemente de você bater a meta de aparelhos!'
+                },
+                {
+                    keywords: ['cdc', 'verba cdc', 'queima', 'crediario', 'limite cdc'],
+                    answer: '💳 <strong>Verba de CDC:</strong>\n• É o limite de crédito gerenciado pelo gerente da loja para concessão de crediário próprio.\n• Pode ser queimada ou recuperada pelo gerente no card do perfil.'
+                },
+                {
+                    keywords: ['preco de site', 'verba de site', 'site'],
+                    answer: '📡 <strong>Preço de Site:</strong>\n• Permite vender aparelhos pelo valor do site oficial parcelando em condições especiais da loja, debitando da verba de site da unidade.'
+                },
+                {
+                    keywords: ['assistencia', 'os', 'ordem de servico', 'conserto', 'defeito', 'imei'],
+                    answer: '🔧 <strong>Assistência Técnica (OS):</strong>\n• Acesse o app <em>"Assistência"</em> na pasta Apps.\n• Preencha cliente, telefone, modelo, IMEI e defeito.\n• <strong>ATENÇÃO:</strong> Sempre remover senhas de bloqueio e contas do aparelho antes do envio!'
+                },
+                {
+                    keywords: ['estoque', 'pedir aparelho', 'solicitar estoque', 'pedido cliente'],
+                    answer: '📦 <strong>Solicitar Estoque:</strong>\n• Abra <em>"Estoque"</em> na gaveta de Apps.\n• Escolha os modelos ou use <em>"Adicionar Pedido do Cliente"</em> (nome, cor e quantidade) e clique em enviar.'
+                },
+                {
+                    keywords: ['recibo', 'recibos', 'reembolso', 'gastos', 'despesa'],
+                    answer: '🧾 <strong>Lançamento de Recibos:</strong>\n• Despesas da loja (almoço, transporte, insumos) devem ser lançadas em <em>"Recibos"</em> na pasta de Apps com data e descrição detalhada.'
+                },
+                {
+                    keywords: ['hunter card', 'cartao hunter', 'brasil card', 'brasilcard'],
+                    answer: '💳 <strong>Hunter Card / Brasil Card:</strong>\n• Acesse diretamente pelo ícone do topo na tela inicial para fazer login no portal do lojista e aprovar cadastros.'
+                },
+                {
+                    keywords: ['payjoy', 'pay joy'],
+                    answer: '📱 <strong>PayJoy:</strong>\n• Use o atalho rápido <em>"Pay joy"</em> no topo da tela inicial para login direto no portal do lojista e liberação de crédito.'
+                },
+                {
+                    keywords: ['odrescred', 'odres'],
+                    answer: '🤝 <strong>Odrescred:</strong>\n• Atalho disponível no topo para login no sistema de vendas e liberação de propostas.'
+                },
+                {
+                    keywords: ['wiwap', 'wipcred'],
+                    answer: '⚡ <strong>WIWAP / Wipcred:</strong>\n• Sistema de crediário parceiro acessível diretamente pelo botão rápido superior.'
+                },
+                {
+                    keywords: ['telemarketing', 'tm', 'ligar', 'lista de clientes'],
+                    answer: '🎧 <strong>Telemarketing:</strong>\n• Acesse na gaveta de Apps > <em>"Telemarketing"</em>.\n• Selecione sua unidade (Pinheiro ou Bacabal) para puxar contatos com mensagem pronta no WhatsApp.'
+                },
+                {
+                    keywords: ['afiliados', 'lojas parceiras', 'afiliado'],
+                    answer: '🤝 <strong>Afiliados:</strong>\n• Acesse na gaveta de Apps > <em>"Afiliados"</em> para ver e chamar no WhatsApp os parceiros cadastrados da sua cidade.'
+                }
+            ];
+
+            // Função para consultar IA gratuita aberta quando não houver resposta local
+            const fetchFreeAIResponse = async (promptText) => {
+                const systemPrompt = "Você é a IA Hunter, assistente virtual inteligente e prestativa da LOJA DO HUNTER (rede de lojas de celulares e acessórios no Maranhão). Responda sempre em português do Brasil de maneira resumida, direta, amigável e com emojis, em no máximo 3 ou 4 frases curtas.";
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+                    const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}?system=${encodeURIComponent(systemPrompt)}&model=openai`;
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (res.ok) {
+                        const reply = await res.text();
+                        if (reply && reply.trim().length > 0 && !reply.includes('error')) {
+                            return reply.trim();
+                        }
+                    }
+                } catch (err) {
+                    console.warn("IA Gratuita offline ou timeout:", err);
+                }
+                return null;
+            };
+
+window.openIAHunterPage = () => {
+                const bubble = document.getElementById('ia-hunter-chat-bubble');
+                const name = currentUserName || 'Colaborador';
+                setIAHunterState('idle');
+                hideIAHunterPhone();
+                if (iaHunterTypingTimer) clearInterval(iaHunterTypingTimer);
+                bubble.innerHTML = `Olá, <strong>${name}</strong>! 🧡 Sou a <strong>IA Hunter</strong>. Como posso ajudar com suas metas, vendas, valores de celulares ou resultados hoje?`;
+                document.getElementById('ia-hunter-thinking').style.display = 'none';
+                document.getElementById('ia-hunter-text-input').value = '';
+                showPage('iaHunterPage');
+            };
+
+            window.askIAHunter = async (topic, queryText = '') => {
+                const bubble = document.getElementById('ia-hunter-chat-bubble');
+                const thinking = document.getElementById('ia-hunter-thinking');
+
+                setIAHunterState('thinking');
+                thinking.style.display = 'block';
+                bubble.style.opacity = '0.4';
+
+                const name = currentUserName;
+                if (!name) {
+                    thinking.style.display = 'none';
+                    setIAHunterState('idle');
+                    hideIAHunterPhone();
+                    bubble.style.opacity = '1';
+                    bubble.innerHTML = "⚠️ Você precisa estar logado para que eu possa verificar seus números!";
+                    return;
+                }
+
+                const userKey = name.toLowerCase();
+
+                try {
+                    const [salesSnap, metasSnap, bonusSnap] = await Promise.all([
+                        database.ref('salesData').get(),
+                        database.ref('metas').get(),
+                        database.ref('bonusData').get()
+                    ]);
+
+                    const salesData = salesSnap.exists() ? salesSnap.val() : {};
+                    const metasData = metasSnap.exists() ? metasSnap.val() : {};
+                    const bonusData = bonusSnap.exists() ? bonusSnap.val() : {};
+
+                    const data = getEarningsData(name, salesData, metasData, bonusData);
+
+                    const getRankPos = (type) => {
+                        const list = [];
+                        allCollaborators.filter(n => !managers.includes(n)).forEach(n => {
+                            const k = n.toLowerCase();
+                            let val = 0, goal = 0;
+                            if (type === 'vendas') {
+                                val = parseFloat(salesData[k]?.vendas || 0);
+                                goal = parseFloat(metasData[k]?.venda || 0);
+                            } else if (type === 'servicos') {
+                                val = parseFloat(salesData[k]?.servico || 0);
+                                goal = parseFloat(metasData[k]?.meta_servico || 0);
+                            } else if (type === 'acessorios') {
+                                val = parseFloat(salesData[k]?.acessorio || 0);
+                                goal = parseFloat(metasData[k]?.meta_acessorio || 0);
+                            }
+                            const pct = goal > 0 ? (val / goal) * 100 : 0;
+                            list.push({ name: n, pct });
+                        });
+                        list.sort((a, b) => b.pct - a.pct);
+                        const index = list.findIndex(item => item.name.toLowerCase() === userKey);
+                        return index !== -1 ? index + 1 : list.length;
+                    };
+
+                    const posVendas = getRankPos('vendas');
+                    const posServ = getRankPos('servicos');
+                    const posAces = getRankPos('acessorios');
+
+                    const prizeVendas = (posVendas === 1 ? 500 : posVendas === 2 ? 300 : posVendas === 3 ? 100 : 0);
+                    const prizeServ = (posServ === 1 ? 1000 : posServ === 2 ? 500 : posServ === 3 ? 200 : 0);
+                    const prizeAces = (posAces === 1 ? 300 : posAces === 2 ? 200 : posAces === 3 ? 100 : 0);
+
+                    let matchedKnowledgeAnswer = null;
+                    let matchedPhoneData = null;
+
+                    if (topic === 'custom') {
+                        const q = queryText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        
+                        // 1. Verifica se é pergunta sobre aparelho celular ou modelo
+                        const phoneKeywords = ['iphone', 'samsung', 'xiaomi', 'redmi', 'poco', 'realme', 'motorola', 'moto', 'itel', 'infinix', 'galaxy', 'note', 'celular', 'aparelho', 'preco do', 'quanto ta o', 'quanto e o', 'quanto custa'];
+                        const isPhoneSearch = phoneKeywords.some(k => q.includes(k));
+
+                        if (isPhoneSearch) {
+                            // Limpa termos comuns para isolar o nome do modelo
+                            const cleanSearch = q.replace(/preco do|quanto ta o|quanto custa o|quanto e o|celular|aparelho|valor do|qual o valor/gi, "").trim();
+                            matchedPhoneData = await searchPhoneInDatabaseOrSheet(cleanSearch || q);
+                            if (matchedPhoneData) {
+                                topic = 'phone_result';
+                            }
+                        }
+
+                        // 2. Verificações de metas, vendas, salário e ranking
+                        if (topic !== 'phone_result') {
+                            if (q.includes('salario') || q.includes('ganho') || q.includes('ganhar') || q.includes('receber') || q.includes('pagamento') || q.includes('dinheiro') || q.includes('comissao')) {
+                                topic = 'salario';
+                            } else if (q.includes('meta') && (q.includes('servico') || q.includes('seguro'))) {
+                                topic = 'servicos';
+                            } else if (q.includes('meta') && q.includes('acessorio')) {
+                                topic = 'acessorios';
+                            } else if (q.includes('meta')) {
+                                topic = 'meta_vendas';
+                            } else if (q.includes('servico') || q.includes('seguro') || q.includes('garantia')) {
+                                topic = 'servicos';
+                            } else if (q.includes('acessorio') || q.includes('fone') || q.includes('capinha') || q.includes('carregador')) {
+                                topic = 'acessorios';
+                            } else if (q.includes('ranking') || q.includes('posicao') || q.includes('lugar') || q.includes('colocacao') || q.includes('podio')) {
+                                topic = 'ranking';
+                            } else if (q.includes('politica') || q.includes('regra salarial') || q.includes('regras salariais')) {
+                                topic = 'politica';
+                            } else if (q.includes('venda') || q.includes('vendi') || q.includes('faturei')) {
+                                topic = 'vendas';
+                            } else {
+                                // 3. Busca no banco de dados de dúvidas da loja
+                                for (const item of iaHunterKnowledgeBase) {
+                                    if (item.keywords.some(k => q.includes(k))) {
+                                        matchedKnowledgeAnswer = item.answer;
+                                        break;
+                                    }
+                                }
+                                if (!matchedKnowledgeAnswer) {
+                                    // Tenta pesquisar se não é um aparelho antes de cair na IA livre
+                                    matchedPhoneData = await searchPhoneInDatabaseOrSheet(q);
+                                    if (matchedPhoneData) {
+                                        topic = 'phone_result';
+                                    } else {
+                                        topic = 'fallback_ai';
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    let responseHTML = '';
+                    const faltaVenda = Math.max(0, data.goal - data.sold);
+
+                    if (topic === 'phone_result' && matchedPhoneData) {
+                    if (matchedPhoneData.isMultiple && Array.isArray(matchedPhoneData.options)) {
+                        hideIAHunterPhone();
+                        let optionsButtons = '';
+                        matchedPhoneData.options.forEach(opt => {
+                            const safeOpt = opt.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+                            optionsButtons += `<button class="ai-hunter-btn" style="margin-top: 6px; width: 100%; justify-content: flex-start; text-align: left;" onclick="askIAHunter('custom', '${safeOpt}')"><i class="fa-solid fa-mobile-screen-button"></i> ${opt}</button>`;
+                        });
+                        responseHTML = `🤔 Encontrei aparelhos com nomes parecidos!\n\n<strong>Você está perguntando sobre qual deles?</strong>\n\n<div style="display: flex; flex-direction: column; gap: 6px; width: 100%; margin-top: 8px;">${optionsButtons}</div>`;
+                    } else {
+                        showIAHunterPhone();
+                        responseHTML = `📱 <strong>Informações do Aparelho:</strong>\n\n` +
+                            `<div class="ai-device-card">` +
+                                `<div class="ai-device-thumb">` +
+                                    `<img src="${matchedPhoneData.imageUrl}" alt="${matchedPhoneData.name}">` +
+                                `</div>` +
+                                `<div class="ai-device-details">` +
+                                    `<h4>${matchedPhoneData.name}</h4>` +
+                                    `<span>Venda: <strong class="ai-device-price-venda">${matchedPhoneData.precoVenda}</strong></span>` +
+                                    `<span style="color: #f1c40f;">Limite: <strong>${matchedPhoneData.precoLimite}</strong></span>` +
+                                    `<span style="color: #e74c3c;">Lucro Zero: <strong>${matchedPhoneData.zeroLucro}</strong></span>` +
+                                    `<span style="color: #3498db;">Entrada Mínima: <strong>${matchedPhoneData.entradaMinima}</strong></span>` +
+                                    `<span style="color: #ccc; font-size: 0.65rem;">Origem: ${matchedPhoneData.origem}</span>` +
+                                `</div>` +
+                            `</div>\n` +
+                            `• <strong>Seguro Queda:</strong> ${matchedPhoneData.seguroQueda}\n` +
+                            `• <strong>Garantia +1A:</strong> ${matchedPhoneData.garantiaEstendida}`;
+                    }
+                } else {
+                        hideIAHunterPhone();
+                        if (matchedKnowledgeAnswer) {
+                        responseHTML = matchedKnowledgeAnswer;
+                    } else if (topic === 'meta_vendas') {
+                        responseHTML = `🎯 <strong>Meta de Vendas (${name}):</strong>\n\n• <strong>Sua Meta:</strong> ${formatBRL(data.goal)}\n• <strong>Vendido até agora:</strong> ${formatBRL(data.sold)} (${data.perc.toFixed(1)}%)\n• <strong>Falta vender:</strong> ${faltaVenda > 0 ? formatBRL(faltaVenda) : '🎉 Meta 100% batida!'}\n• <strong>Status da Meta:</strong> ${data.tierText}`;
+                    } else if (topic === 'vendas') {
+                        responseHTML = `📱 <strong>Suas Vendas no Mês (${name}):</strong>\n\n• <strong>Total Vendido:</strong> ${formatBRL(data.sold)}\n• <strong>Meta de Venda:</strong> ${formatBRL(data.goal)}\n• <strong>Atingimento:</strong> ${data.perc.toFixed(1)}%\n\n${data.perc >= 120 ? '🚀 <em>Incrível! Você superou 120% da meta (+ R$ 500,00 fixo)!</em>' : (data.perc >= 50 ? '✅ <em>Meta de 50% atingida! Prêmio de 1% ativado em cada venda!</em>' : '⏳ <em>Abaixo dos 50%. Acelere para ativar seu prêmio de 1%!</em>')}`;
+                    } else if (topic === 'servicos') {
+                        responseHTML = `🛟 <strong>Vendas de Serviços / Seguros:</strong>\n\n• <strong>Serviços Vendidos:</strong> ${formatBRL(data.servSold)}\n• <strong>Meta de Serviços:</strong> ${formatBRL(data.servGoal)}\n• <strong>Atingimento:</strong> ${data.servPerc.toFixed(1)}%\n• <strong>Sua Comissão (10%):</strong> <span style="color: #2ecc71; font-weight: 700;">${formatBRL(data.servComm)}</span>\n\n<em>(10% sobre Garantia Estendida e Seguro Contra Queda independente da meta de vendas)</em>`;
+                    } else if (topic === 'acessorios') {
+                        responseHTML = `🎧 <strong>Venda de Acessórios:</strong>\n\n• <strong>Acessórios Vendidos:</strong> ${formatBRL(data.accSold)}\n• <strong>Meta de Acessórios:</strong> ${formatBRL(data.accGoal)}\n• <strong>Atingimento:</strong> ${data.accPerc.toFixed(1)}%\n• <strong>Sua Comissão (10%):</strong> <span style="color: #2ecc71; font-weight: 700;">${formatBRL(data.accComm)}</span>`;
+                    } else if (topic === 'ranking') {
+                        responseHTML = `🏆 <strong>Suas Posições nos Rankings:</strong>\n\n• 📱 <strong>Ranking de Vendas:</strong> <strong>${posVendas}º Lugar</strong> (${data.perc.toFixed(1)}%)${prizeVendas > 0 ? ' -> Prêmio atual: ' + formatBRL(prizeVendas) : ''}\n• 🛟 <strong>Ranking de Serviços:</strong> <strong>${posServ}º Lugar</strong> (${data.servPerc.toFixed(1)}%)${prizeServ > 0 ? ' -> Prêmio atual: ' + formatBRL(prizeServ) : ''}\n• 🎧 <strong>Ranking de Acessórios:</strong> <strong>${posAces}º Lugar</strong> (${data.accPerc.toFixed(1)}%)${prizeAces > 0 ? ' -> Prêmio atual: ' + formatBRL(prizeAces) : ''}\n\n${(posVendas === 1 || posServ === 1 || posAces === 1) ? '🔥 <em>Você está no topo do pódio!</em>' : '💪 <em>Bora acelerar para garantir a premiação no final do mês!</em>'}`;
+                    } else if (topic === 'salario') {
+                        const totalEstimatedWithTicket = data.total + 200 + (prizeVendas + prizeServ + prizeAces);
+                        responseHTML = `💰 <strong>Resumo do seu Salário Estimado (${name}):</strong>\n\n• <strong>Salário Fixo:</strong> R$ 1.621,00\n• <strong>Ticket Alimentação:</strong> R$ 200,00\n• <strong>Prêmio Vendas:</strong> ${data.perc >= 50 ? formatBRL(data.comm) + ' (1%' + (data.perc >= 120 ? ' + R$ 500 superação' : '') + ')' : 'R$ 0,00 (Abaixo de 50%)'}\n• <strong>Comissão Serviços (10%):</strong> ${formatBRL(data.servComm)}\n• <strong>Comissão Acessórios (10%):</strong> ${formatBRL(data.accComm)}\n${(prizeVendas + prizeServ + prizeAces) > 0 ? '• <strong>Prêmios de Ranking:</strong> ' + formatBRL(prizeVendas + prizeServ + prizeAces) + '\n' : ''}${data.bonus > 0 ? '• <strong>Bônus Adicional:</strong> ' + formatBRL(data.bonus) + '\n' : ''}\n👉 <strong>TOTAL ESTIMADO: <span style="color: #2ecc71; font-size: 1.15rem; font-weight: 800;">${formatBRL(totalEstimatedWithTicket)}</span></strong>`;
+                    } else if (topic === 'politica') {
+                        responseHTML = `🧡 <strong>POLÍTICA SALARIAL - LOJA DO HUNTER</strong>\n\n💰 <strong>Salário Fixo:</strong> R$ 1.621,00\n🍽️ <strong>Ticket Alimentação:</strong> R$ 200,00 / mês\n🎯 <strong>Prêmio por Meta:</strong> Ao atingir 50% = 1% sobre cada venda\n🚀 <strong>Superação de Meta:</strong> Ao atingir 120% = R$ 500,00 fixo\n🛠️ <strong>Serviços:</strong> 10% sobre Garantia Estendida e Seguro Queda\n🏆 <strong>Ranking de Serviços:</strong> 🥇 R$ 1.000 | 🥈 R$ 500 | 🥉 R$ 200\n🎧 <strong>Ranking de Acessórios:</strong> 🥇 R$ 300 | 🥈 R$ 200 | 🥉 R$ 100\n🏅 <strong>Ranking de Vendas:</strong> 🥇 R$ 500 | 🥈 R$ 300 | 🥉 R$ 100`;
+                    } else if (topic === 'fallback_ai') {
+                        const freeAIReply = await fetchFreeAIResponse(queryText);
+                        if (freeAIReply) {
+                            responseHTML = `💬 <strong>IA Hunter:</strong>\n\n${freeAIReply}`;
+                        } else {
+                            responseHTML = `Olá! Não encontrei essa informação no momento. Você pode me perguntar sobre: <strong>Meta de Vendas</strong>, <strong>Minhas Vendas</strong>, <strong>Valores de Celulares</strong>, <strong>Serviços</strong>, <strong>Acessórios</strong>, <strong>Ranking</strong> ou <strong>Salário</strong>! 🧡`;
+                        }
+                    } else {
+                    responseHTML = `Olá! Posso te responder sobre: <strong>Meta de Vendas</strong>, <strong>Vendas</strong>, <strong>Valores de Celulares</strong>, <strong>Vendas de Serviços</strong>, <strong>Acessórios</strong>, <strong>Ranking</strong> ou <strong>Salário</strong>! 🧡`;
+                }
+            }
+
+            thinking.style.display = 'none';
+            bubble.style.opacity = '1';
+            typeUndertaleResponse(bubble, responseHTML);
+
+        } catch (error) {
+                    console.error(error);
+                    thinking.style.display = 'none';
+                    setIAHunterState('idle');
+                    bubble.style.opacity = '1';
+                    bubble.innerHTML = "Ocorreu um erro ao consultar os dados. Tente novamente!";
+                }
+            };
+
+            const triggerIaBtn = document.getElementById('trigger-ia-hunter');
+            if (triggerIaBtn) {
+                triggerIaBtn.addEventListener('click', () => {
+                    window.openIAHunterPage();
+                });
+            }
+
+            const backFromIaBtn = document.getElementById('back-to-main-from-ia-hunter');
+            if (backFromIaBtn) {
+                backFromIaBtn.addEventListener('click', () => {
+                    hideIAHunterPhone();
+                    showMainPage();
+                });
+            }
+
+            const sendIaBtn = document.getElementById('ia-hunter-send-btn');
+            const inputIa = document.getElementById('ia-hunter-text-input');
+            const submitIaMsg = () => {
+                const text = inputIa.value.trim();
+                if (!text) return;
+                inputIa.value = '';
+                window.askIAHunter('custom', text);
+            };
+            if (sendIaBtn) sendIaBtn.addEventListener('click', submitIaMsg);
+            if (inputIa) {
+                inputIa.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') submitIaMsg();
+                });
+            }
+
             // Criar gatilho invisível para a pasta
             const triggerTM = document.createElement('button');
             triggerTM.id = 'trigger-tm-selection';
