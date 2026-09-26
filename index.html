@@ -1052,7 +1052,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page, #logs-management-page, #hide-gs-page, #ia-logs-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -2461,146 +2461,350 @@
 
         
 
-        /* --- Estilos para o novo Dashboard GS --- */
-        .gs-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
-            padding: 1.5rem 1rem 0 1rem; /* Adiciona padding para não colar no topo */
-            width: 100%;
-            max-width: 450px;
-            margin-left: auto; /* Garante a centralização */
-            margin-right: auto; /* Garante a centralização */
+        /* --- ESTILO APP MOBILE LARANJA & BRANCO MODERNO (PAINEL GS) --- */
+        #gs-page {
+            background: #FFFDF9 !important;
+            color: #2D2319;
         }
 
-        /* ESTILO PAINEL DE CONTROLE GS (FRUTIGER AERO / GLASS) */
-        .gs-action-btn {
+        #gs-page .collaborator-header {
+            background: linear-gradient(135deg, #FF6F00 0%, #FF9000 100%) !important;
+            border-bottom: none;
+            box-shadow: 0 8px 24px rgba(255, 111, 0, 0.22);
+            border-bottom-left-radius: 26px;
+            border-bottom-right-radius: 26px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1.4rem 1rem !important;
+        }
+
+        #gs-page .collaborator-header h2 {
+            color: #FFFFFF !important;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: 0.2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        #gs-page .collaborator-header .back-button {
+            color: #FFFFFF !important;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.22);
+            padding: 6px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        #gs-page .collaborator-content {
+            background: transparent;
+            padding: 1.2rem 1rem 3.5rem 1rem !important;
+            gap: 1.1rem;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .gs-module-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .gs-module-title {
+            font-size: 0.72rem;
+            font-weight: 900;
+            color: #FF6F00;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: #FFF1E2;
+            padding: 5px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            width: fit-content;
+            box-shadow: 0 2px 6px rgba(255, 111, 0, 0.08);
+            border: 1px solid rgba(255, 111, 0, 0.15);
+        }
+
+        .gs-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            width: 100%;
+        }
+
+        .gs-panel-card {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            aspect-ratio: 1 / 1;
-            padding: 0.8rem 0.4rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #fff;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            cursor: pointer;
             text-align: center;
+            background: #FFFFFF;
+            border: 1px solid #FFE7D1 !important;
+            border-radius: 22px;
+            padding: 1rem 0.6rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(255, 111, 0, 0.06);
+            transition: all 0.22s ease-in-out;
             position: relative;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-transform: uppercase;
+            width: 100%;
+            aspect-ratio: 1 / 1;
         }
 
-        .gs-action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
-            border-radius: 20px 20px 50% 50%;
-            pointer-events: none;
+        .gs-panel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 111, 0, 0.12);
+            border-color: #FFB370 !important;
         }
 
-        .gs-action-btn:active {
-            transform: scale(0.9);
-            background: rgba(255, 107, 0, 0.3);
-            border-color: #ff6b00;
+        .gs-panel-card:active {
+            transform: scale(0.96);
         }
 
-        .gs-action-btn i {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 107, 0, 0.8);
-        }
-
-        .gs-action-btn span {
-            z-index: 1;
-            line-height: 1.1;
-        }
-
-        /* KPI CARDS ESTILIZADOS */
-        .kpi-card {
-            background: rgba(0, 0, 0, 0.4) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 20px !important;
-            padding: 1.2rem !important;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-
-        .kpi-card::after {
-            content: '';
-            position: absolute;
-            top: -50%; right: -50%;
-            width: 100px; height: 100px;
-            background: var(--primary-color);
-            filter: blur(50px);
-            opacity: 0.2;
-        }
-
-        .kpi-title {
-            color: rgba(255,255,255,0.6) !important;
-            letter-spacing: 1px;
-            font-size: 0.65rem !important;
-        }
-
-        .kpi-value {
-            font-size: 2rem !important;
-            color: #fff !important;
-            font-weight: 900 !important;
-            background: none !important;
-            -webkit-text-fill-color: initial !important;
-        }
-
-        #gs-notification-indicator {
-            background-color: #e74c3c; /* Vermelho */
-            color: white;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-flex;
+        .gs-card-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #FFF3E6 0%, #FFE5CC 100%);
+            color: #FF6F00;
+            display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 5px;
-            vertical-align: top;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            margin-bottom: 0.55rem;
+            border: 1px solid rgba(255, 111, 0, 0.2);
+            box-shadow: 0 3px 8px rgba(255, 111, 0, 0.1);
         }
 
-        /* Novo estilo para a bolha de notificação */
+        .gs-card-info {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .gs-card-info strong {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #2D2319;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .gs-card-info span {
+            font-size: 0.62rem;
+            color: #8C7561;
+            font-weight: 500;
+            line-height: 1.15;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            opacity: 0.85;
+        }
+
+        .gs-card-arrow {
+            display: none !important;
+        }
+
         .gs-notification-bubble {
             position: absolute;
-            top: 8px; /* Posição no canto superior direito */
+            top: 8px;
             right: 8px;
-            background-color: #e74c3c; /* Vermelho */
-            color: white;
-            border-radius: 50%;
-            width: 20px; /* Um pouco maior para destaque */
-            height: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            background: linear-gradient(135deg, #FF3838 0%, #E02424 100%);
+            color: #FFFFFF;
+            border-radius: 12px;
+            padding: 3px 8px;
+            font-size: 0.65rem;
+            font-weight: 900;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid rgba(0,0,0,0.2); /* Borda para separar do fundo */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(224, 36, 36, 0.35);
+            margin-right: 0;
         }
 
-        /* Ajuste para o container de conteúdo principal do GS */
-                #gs-page .collaborator-content {
-            /* O padding-top foi removido para que o conteúdo flua a partir do topo */
-            /* O espaçamento agora é controlado pelo padding da grade de ações */
+        /* CARDS DE KPIS EM ESTILO MOBILE ORANGE & WHITE */
+        #gs-page .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.65rem;
+            width: 100%;
+        }
+
+        #gs-page .kpi-card {
+            background: #FFFFFF !important;
+            border: 1px solid #FFE4CC !important;
+            border-radius: 20px !important;
+            padding: 1rem 0.65rem !important;
+            box-shadow: 0 6px 18px rgba(255, 111, 0, 0.07) !important;
+            text-align: center !important;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #gs-page .kpi-card::after {
+            display: none !important;
+        }
+
+        #gs-page .kpi-title {
+            color: #947860 !important;
+            font-size: 0.6rem !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.6px !important;
+            margin-bottom: 5px;
+        }
+
+        #gs-page .kpi-value {
+            color: #FF6F00 !important;
+            font-size: 1.18rem !important;
+            font-weight: 900 !important;
+            line-height: 1.2;
+        }
+
+        #gs-page .performance-card {
+            background: #FFFFFF !important;
+            border: 1px solid #FFE4CC !important;
+            border-radius: 20px !important;
+            padding: 1rem !important;
+            box-shadow: 0 6px 18px rgba(255, 111, 0, 0.07) !important;
+        }
+
+        #gs-page .performance-card .kpi-title {
+            color: #947860 !important;
+            font-size: 0.65rem !important;
+            font-weight: 800 !important;
+        }
+
+        #gs-page .performance-card .kpi-value {
+            color: #FF6F00 !important;
+            font-size: 1.35rem !important;
+            font-weight: 900 !important;
+        }
+
+        /* GRÁFICOS E CAIXAS INTERNAS DO GS */
+        #gs-page .charts-section {
+            width: 100%;
+            margin-top: 0.4rem;
+            display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            gap: 1.5rem;
-            overflow-y: auto;
-            overflow-x: hidden; /* Impede a rolagem horizontal */
+            gap: 1.1rem;
+        }
+
+        #gs-page .chart-container {
+            background: #FFFFFF !important;
+            border: 1px solid #FFE4CC !important;
+            border-radius: 22px !important;
+            padding: 1.2rem !important;
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.06) !important;
+            color: #2D2319 !important;
+        }
+
+        #gs-page .chart-container h4 {
+            color: #2D2319 !important;
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #FFF0E0;
+            padding-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #gs-page .chart-container label,
+        #gs-page .chart-container span,
+        #gs-page .chart-container p {
+            color: #2D2319 !important;
+        }
+
+        #gs-page .chart-container p[style*="color: rgba(255, 255, 255"] {
+            color: #7A6652 !important;
+        }
+
+        #gs-page .chart-container .data-input {
+            background-color: #FFF9F2 !important;
+            border: 1px solid #FFD1A4 !important;
+            color: #2D2319 !important;
+        }
+
+        #gs-page .system-status-wrapper {
+            width: 100%;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        #gs-page .system-separator {
+            color: #B59E8B;
+            font-weight: 800;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+        }
+
+        #gs-page .system-status-card {
+            background: #FFFFFF !important;
+            border: 1px solid #FFE4CC !important;
+            border-radius: 20px;
+            box-shadow: 0 6px 18px rgba(255, 111, 0, 0.06);
+            color: #2D2319;
+            padding: 1rem;
+        }
+
+        #gs-page .system-info-brief {
+            color: #8C7561 !important;
+            font-weight: 500;
+        }
+
+        #gs-page .receipt-line {
+            color: #614D3C !important;
+        }
+
+        #gs-page .receipt-total {
+            color: #2D2319 !important;
+            border-top: 1px solid #FFE4CC !important;
+        }
+
+        #gs-page .payment-box {
+            background: #FFF9F2 !important;
+            border: 1px dashed #FFB87A;
+            border-radius: 16px;
+            color: #2D2319;
+            padding: 14px;
+        }
+
+        #gs-page .payment-box p {
+            color: #614D3C !important;
+        }
+
+        #gs-page .pix-key {
+            color: #FF6F00 !important;
+            font-weight: 700;
+        }
+
+        #gs-page .system-warning-text {
+            color: #D9381E !important;
+        }
+
+        #gs-page .mt-list-item {
+            background: #FFF9F2;
+            border: 1px solid #FFE4CC;
+            border-radius: 14px;
+            color: #2D2319;
         }
 
                 /* --- ESTILOS PARA STORIES --- */
@@ -3331,26 +3535,33 @@
 <!-- AVISO DE ATUALIZAÇÃO -->
 <div id="update-notice-overlay">
     <div class="update-notice-content">
-        <h2>Versão 6.0.0 - A</h2>
-        <p>Estamos mudando algumas coisas de lugar para melhorar sua praticidade no nosso app, alguns apps podem ter mudados de lugar.</p>
+        <h2>Versão 10.0.1 - B</h2>
+        <p>Atualização com novo Painel GS, melhorias na IA Hunter, meta de acessórios e novos recursos!</p>
         <button id="close-update-notice" class="update-notice-btn">( ok )</button>
     </div>
 </div>
 
 <!-- MODAL O QUE TEM DE NOVO -->
-<div id="whats-new-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 1.5rem;">
-    <div style="background: linear-gradient(150deg, rgba(45, 25, 10, 0.95), rgba(20, 10, 5, 0.98)); border: 1px solid rgba(255, 107, 0, 0.4); border-radius: 26px; padding: 1.5rem; max-width: 360px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255, 107, 0, 0.2); text-align: center; color: #fff; animation: modalContentEnter 0.4s var(--ease-out-back);">
-        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 107, 0, 0.2); border: 1px solid rgba(255, 107, 0, 0.5); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; color: #ff9f43; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">
-            <i class="fa-solid fa-sparkles"></i> O que tem de novo
+<div id="whats-new-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 1.2rem;">
+    <div style="background: linear-gradient(150deg, rgba(35, 20, 10, 0.96), rgba(18, 10, 5, 0.98)); border: 1px solid rgba(255, 107, 0, 0.4); border-radius: 22px; padding: 1.2rem; max-width: 350px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255, 107, 0, 0.2); text-align: center; color: #fff; animation: modalContentEnter 0.4s var(--ease-out-back);">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 107, 0, 0.2); border: 1px solid rgba(255, 107, 0, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; color: #ff9f43; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+            <i class="fa-solid fa-sparkles"></i> Novidades 10.0.1 - B
         </div>
-        <h3 style="font-size: 1.25rem; font-weight: 800; margin: 0 0 12px 0; color: #fff;">Conheça a IA Hunter! 🧡</h3>
-        <div style="width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.15); background: #000;">
-            <img src="https://shscuqqqezibwkibhyix.supabase.co/storage/v1/object/public/goarchive/arquivos/1790135875165_img.png" alt="IA Hunter" style="width: 100%; height: auto; display: block; max-height: 220px; object-fit: contain;">
+        <h3 style="font-size: 1.1rem; font-weight: 800; margin: 0 0 10px 0; color: #fff;">O que mudou nesta versão</h3>
+        
+        <div style="text-align: left; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 10px 12px; font-size: 0.72rem; line-height: 1.45; color: #e6e6e6; margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px;">
+            <div>• <strong>Bater Ponto:</strong> em destaque no perfil e direto pela IA.</div>
+            <div>• <strong>Meta do Dia:</strong> meta diária de acessórios adicionada.</div>
+            <div>• <strong>Ranking & Salário:</strong> prêmio de ranking exige 100% da meta.</div>
+            <div>• <strong>PayMobi:</strong> valor de serviço somado na entrada sem encarecer parcelas.</div>
+            <div>• <strong>Painel GS Moderno:</strong> cards quadrados e organizados.</div>
+            <div>• <strong>Logs & Controle:</strong> ranking de uso, ocultar botões do GS e depuração.</div>
+            <div>• <strong>IA Hunter GS:</strong> comandos administrativos simplificados.</div>
         </div>
-        <p style="font-size: 0.8rem; color: #e0e0e0; line-height: 1.4; margin-bottom: 16px;">Sua nova assistente virtual inteligente agora está disponível para tirar dúvidas sobre metas, vendas, valores de celulares, serviços e muito mais em tempo real!</p>
-        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-            <button id="close-whats-new-btn" style="width: 100%; padding: 11px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 14px; color: #fff; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s;">Fechar</button>
-            <button id="dont-show-whats-new-btn" style="width: 100%; padding: 11px; background: linear-gradient(135deg, #ff8c3b, #ff6b00); border: none; border-radius: 14px; color: #fff; font-weight: 800; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4); transition: transform 0.2s;">Fechar e não mostrar mais</button>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
+            <button id="close-whats-new-btn" style="width: 100%; padding: 9px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; color: #fff; font-weight: 700; font-size: 0.8rem; cursor: pointer;">Fechar</button>
+            <button id="dont-show-whats-new-btn" style="width: 100%; padding: 9px; background: linear-gradient(135deg, #ff8c3b, #ff6b00); border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);">Entendido</button>
         </div>
     </div>
 </div>
@@ -3822,24 +4033,11 @@
                     <div class="folder-apps-grid">
                         <div class="folder-app-item" id="f-my-profile"><div class="folder-app-icon"><i class="fa-solid fa-user-astronaut"></i></div><span>Meu Perfil</span></div>
                         <div class="folder-app-item" id="f-previsao"><div class="folder-app-icon"><i class="fa-solid fa-truck-fast"></i></div><span>Previsão</span></div>
-                        <div class="folder-app-item" id="f-os"><div class="folder-app-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><span>Assistência</span></div>
-                        <div class="folder-app-item" id="f-stock"><div class="folder-app-icon"><i class="fa-solid fa-boxes-stacked"></i></div><span>Estoque</span></div>
                         <div class="folder-app-item" id="f-quiz"><div class="folder-app-icon"><i class="fa-solid fa-comment-dots"></i></div><span>Quiz</span></div>
-                        <div class="folder-app-item" id="f-recibos"><div class="folder-app-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Recibos</span></div>
                         <div class="folder-app-item" id="f-send"><div class="folder-app-icon"><i class="fa-solid fa-paper-plane"></i></div><span>Enviar Disp.</span></div>
                         <div class="folder-app-item" id="f-feedback"><div class="folder-app-icon"><i class="fa-solid fa-lightbulb"></i></div><span>Sugestão</span></div>
-                    <div class="folder-app-item" id="f-telemarketing"><div class="folder-app-icon"><i class="fa-solid fa-headset"></i></div><span>Telemarketing</span></div>
-                    <div class="folder-app-item" id="f-afiliados"><div class="folder-app-icon"><i class="fa-solid fa-handshake"></i></div><span>Afiliados</span></div>
-            </div>
-
-                    
-
-                    <div class="folder-category-title">Perfil</div>
-                    <div class="folder-apps-grid">
-                        <div class="folder-app-item" id="f-ponto"><div class="folder-app-icon"><i class="fa-solid fa-camera-retro"></i></div><span>Bater Ponto</span></div>
-                        <div class="folder-app-item" id="f-add-story"><div class="folder-app-icon"><i class="fa-solid fa-plus"></i></div><span>Add Story</span></div>
-                        <div class="folder-app-item" id="f-change-pass"><div class="folder-app-icon"><i class="fa-solid fa-key"></i></div><span>Trocar Senha</span></div>
-                        <div class="folder-app-item" id="f-change-photo"><div class="folder-app-icon"><i class="fa-solid fa-camera-rotate"></i></div><span>Trocar Foto</span></div>
+                        <div class="folder-app-item" id="f-telemarketing"><div class="folder-app-icon"><i class="fa-solid fa-headset"></i></div><span>Telemarketing</span></div>
+                        <div class="folder-app-item" id="f-afiliados"><div class="folder-app-icon"><i class="fa-solid fa-handshake"></i></div><span>Afiliados</span></div>
                     </div>
                 </div>
             </div>
@@ -4272,6 +4470,12 @@
             <p id="ponto-countdown-timer" style="text-align: center; font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin: 0; min-height: 20px;"></p>
             <p id="ponto-live-countdown" style="text-align: center; font-size: 1.1rem; font-weight: 600; color: #f1c40f; margin: 0; min-height: 25px;"></p>
 
+            <!-- Botão Bater Ponto em Destaque -->
+            <a href="#" id="bater-ponto-btn" class="action-button full-width" style="display: none; flex-direction: row; align-items: center; justify-content: center; gap: 14px; width: 100%; max-width: 380px; padding: 18px 20px; background: linear-gradient(135deg, #ff8533 0%, #ff6b00 50%, #d35400 100%); border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 22px; box-shadow: 0 8px 25px rgba(255, 107, 0, 0.5), inset 0 2px 4px rgba(255,255,255,0.4); color: #ffffff; text-decoration: none; font-size: 1.05rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 0.5rem 0 1rem 0; aspect-ratio: initial; height: auto;">
+                <i class="fa-solid fa-camera-retro" style="font-size: 1.8rem; margin: 0; color: #ffffff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>
+                <span style="font-size: 1.05rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Bater Ponto</span>
+            </a>
+
             <!-- Painel de vendas individuais -->
             <div id="individual-sales-data"></div>
 
@@ -4317,10 +4521,6 @@
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span>Política Salarial</span>
                 </a>
-                <a href="#" id="bater-ponto-btn" class="action-button">
-                    <i class="fa-solid fa-camera-retro"></i>
-                    <span>Digitar Ponto</span>
-                </a>
                 <!-- NOVO BOTÃO GS DENTRO DO PERFIL -->
                 <a href="#" id="open-gs-from-profile-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-chart-pie"></i>
@@ -4337,10 +4537,6 @@
                 <a href="#" id="closing-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-cash-register"></i>
                     <span>Fechamento</span>
-                </a>
-                <a href="#" id="add-my-story-btn" class="action-button">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Add Story</span>
                 </a>
                 <a href="#" id="change-password-btn" class="action-button">
                     <i class="fa-solid fa-key"></i>
@@ -4409,7 +4605,6 @@
             </style>
 
             <div class="system-status-wrapper">
-                <div class="system-separator">-------------------------- Sistema</div>
                 <div class="system-status-card" onclick="const d = this.querySelector('.system-details-expand'); d.style.display = d.style.display === 'block' ? 'none' : 'block';">
                     <div class="system-status-header">
                         <div class="status-indicator" id="system-status-container">
@@ -4418,7 +4613,11 @@
                         </div>
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
                     </div>
+                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.1 - B</div>
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
+                    <button id="open-whats-new-btn" onclick="event.stopPropagation(); document.getElementById('whats-new-overlay').style.display = 'flex';" style="background: linear-gradient(135deg, #ff8533, #ff6b00); color: #ffffff; border: none; padding: 6px 14px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; box-shadow: 0 3px 10px rgba(255, 107, 0, 0.3);">
+                        <i class="fa-solid fa-sparkles"></i> Ver Novidades da Versão
+                    </button>
                     <div class="system-details-expand">
                         <div class="receipt-line"><span>Supabase (Servidor de Mídias)</span><span>R$ 120,00</span></div>
                         <div class="receipt-line"><span>Banco de Dados Realtime</span><span>R$ 60,00</span></div>
@@ -4446,49 +4645,342 @@
                 </div>
             </div>
 
-            <!-- Botões de Ação agora estão DENTRO da área de rolagem -->
-            <div class="gs-actions-grid">
-                <button id="open-settings-page" class="gs-action-btn"><i class="fa-solid fa-bullseye"></i><span>Metas</span></button>
-                <button id="open-correction-page" class="gs-action-btn"><i class="fa-solid fa-eraser"></i><span>Correção</span></button>
-                <button id="open-mt-management-page" class="gs-action-btn"><i class="fa-solid fa-gem"></i><span>Entradas</span></button>
-                <button id="verificar-ponto-btn" class="gs-action-btn"><i class="fa-solid fa-user-check"></i><span>Ponto</span></button>
-                
-                <button id="view-stock-requests-btn" class="gs-action-btn">
-                    <i class="fa-solid fa-boxes-stacked"></i>
-                    <span>Estoque</span>
-                    <span id="stock-indicator" class="gs-notification-bubble" style="display: none;">!</span>
-                </button>
+            <!-- ASSISTENTE IA HUNTER GS (ADMINISTRATIVO) -->
+            <div class="gs-admin-ai-card" style="width: 100%; max-width: 450px; background: #FFFFFF; border: 1px solid #FFE7D1; border-radius: 22px; padding: 1.1rem; box-shadow: 0 4px 18px rgba(255, 111, 0, 0.08); margin: 0.5rem auto 0.2rem auto; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="ai-hunter-sphere" style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; gap: 6px; box-shadow: 0 3px 10px rgba(255, 107, 0, 0.4);">
+                            <div class="ai-hunter-eye" style="width: 5px; height: 5px;"></div>
+                            <div class="ai-hunter-eye" style="width: 5px; height: 5px;"></div>
+                        </div>
+                        <div>
+                            <strong style="font-size: 0.9rem; color: #2D2319; display: block; line-height: 1.1;">IA Hunter GS</strong>
+                            <span style="font-size: 0.65rem; color: #FF6F00; font-weight: 700;">Comando & Funções do Sistema</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 0.65rem; background: #FFF1E2; color: #FF6F00; padding: 3px 8px; border-radius: 12px; font-weight: 800;">GS EXCLUSIVO</span>
+                </div>
 
-                <button id="view-quiz-submissions-btn" class="gs-action-btn">
-                    <i class="fa-solid fa-comment-dots"></i>
-                    <span>Quiz</span>
-                    <span id="quiz-indicator" class="gs-notification-bubble" style="display: none;">!</span>
-                </button>
+                <div id="gs-ai-chat-bubble" style="background: #FFF9F2; border: 1px solid #FFE4CC; border-radius: 14px; padding: 12px; font-size: 0.8rem; color: #2D2319; line-height: 1.4; word-break: break-word; white-space: pre-wrap;">Olá! Sou a <strong>IA Hunter do GS</strong>. Posso alterar metas, bonificações, acréscimo diário, juros e funções do sistema. Sempre pedirei sua confirmação antes de alterar algo!</div>
 
-                <button id="open-avisos-management-page" class="gs-action-btn"><i class="fa-solid fa-bullhorn"></i><span>Avisos</span></button>
-                <button id="open-quiz-management-btn" class="gs-action-btn"><i class="fa-solid fa-clipboard-question"></i><span>Criar Quiz</span></button>
-                <button id="open-ranks-management-btn" class="gs-action-btn"><i class="fa-solid fa-trophy"></i><span>Ranks</span></button>
-                
-                <button id="open-overtime-management-page" class="gs-action-btn"><i class="fa-solid fa-clock"></i><span>Horas</span></button>
-<button id="open-earnings-panel-btn" class="gs-action-btn" style="border: 2px solid #2ecc71;"><i class="fa-solid fa-hand-holding-dollar"></i><span>Ganhos</span></button>
-                <button id="open-day-off-management-page" class="gs-action-btn"><i class="fa-solid fa-bed"></i><span>Folgas</span></button>
-                <button id="open-holidays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-xmark"></i><span>Feriados</span></button>
-                <button id="open-sundays-management-page" class="gs-action-btn"><i class="fa-solid fa-calendar-check"></i><span>Domingos</span></button>
-                
-                <button id="open-collaborator-profile-btn" class="gs-action-btn"><i class="fa-solid fa-id-badge"></i><span>Perfis</span></button>
-                <button id="add-manual-sale-btn" class="gs-action-btn"><i class="fa-solid fa-cart-plus"></i><span>Venda</span></button>
-                <button id="open-supabase-management-btn" class="gs-action-btn"><i class="fa-solid fa-cloud"></i><span>S-Base</span></button>
-                <button id="clear-ponto-status-btn" class="gs-action-btn"><i class="fa-solid fa-user-clock"></i><span>Limpar</span></button>  
-                
-                <button id="save-backup-btn" class="gs-action-btn"><i class="fa-solid fa-save"></i><span>Salvar</span></button>
-                <button id="restore-backup-btn" class="gs-action-btn"><i class="fa-solid fa-upload"></i><span>Subir</span></button>
-                <button id="open-painel-celulares-btn" class="gs-action-btn"><i class="fa-solid fa-mobile-screen-button"></i><span>Painel Celulares</span></button>
-                <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
-                <button id="open-tm-admin-btn" class="gs-action-btn"><i class="fa-solid fa-users-gear"></i><span>Clientes TM</span></button>
-                <button id="open-tm-stats-btn" class="gs-action-btn"><i class="fa-solid fa-chart-line"></i><span>Envios TM</span></button>
-            <button id="open-afiliados-admin-btn" class="gs-action-btn"><i class="fa-solid fa-handshake"></i><span>Afiliados</span></button>
-                <button id="open-daily-increase-page" class="gs-action-btn" style="border: 2px solid #f1c40f;"><i class="fa-solid fa-arrow-up-right-dots"></i><span>Aumento %</span></button>
-                <button id="open-bonus-management-page" class="gs-action-btn"><i class="fa-solid fa-gift"></i><span>Bônus</span></button>
+                <div id="gs-ai-confirmation-box" style="display: none; background: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 14px; padding: 12px; text-align: center;">
+                    <p id="gs-ai-confirmation-text" style="font-size: 0.82rem; font-weight: 700; color: #856404; margin-bottom: 10px;"></p>
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button id="gs-ai-confirm-btn" style="background: #28a745; color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 0.8rem; font-weight: 800; cursor: pointer;"><i class="fa-solid fa-check"></i> Sim, é isso mesmo</button>
+                        <button id="gs-ai-cancel-btn" style="background: #dc3545; color: #fff; border: none; border-radius: 10px; padding: 8px 16px; font-size: 0.8rem; font-weight: 800; cursor: pointer;"><i class="fa-solid fa-xmark"></i> Cancelar</button>
+                    </div>
+                </div>
+
+                <div id="gs-ai-quick-actions" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;">
+                            <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('ajuda_comandos')"><i class="fa-solid fa-circle-question"></i> Exemplos Fáceis</button>
+                            <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('status_ponto')"><i class="fa-solid fa-user-clock"></i> Quem Bateu Ponto?</button>
+                            <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('resumo_vendas')"><i class="fa-solid fa-chart-pie"></i> Vendas de Hoje</button>
+                            <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('custom', 'manutencao status')"><i class="fa-solid fa-screwdriver-wrench"></i> Manutenção</button>
+                        </div>
+
+                <div style="display: flex; gap: 6px;">
+                    <input type="text" id="gs-ai-input" class="data-input" placeholder="Ex: alterar meta eliseu 60000..." style="margin-bottom: 0; padding: 10px 12px; font-size: 0.8rem; background: #FFF9F2; border-color: #FFE0C2; color: #2D2319;">
+                    <button id="gs-ai-send-btn" class="action-button" style="width: 44px; height: 44px; min-width: 44px; padding: 0; margin: 0; aspect-ratio: 1/1; background: linear-gradient(135deg, #ff8533, #ff6b00);"><i class="fa-solid fa-paper-plane" style="font-size: 1rem; margin: 0;"></i></button>
+                </div>
+            </div>
+
+            <!-- PAINÉIS EXECUTIVOS CORPORATIVOS -->
+            <div class="gs-module-section">
+                <div class="gs-module-title"><i class="fa-solid fa-chart-line"></i> Gestão de Vendas & Metas</div>
+                <div class="gs-cards-grid">
+                    <div class="gs-panel-card" id="open-logs-page" style="border-left-color: #34495e;">
+                        <div class="gs-card-icon-box" style="background:#ebedef; color:#34495e;"><i class="fa-solid fa-chart-simple"></i></div>
+                        <div class="gs-card-info">
+                            <strong>LOGS</strong>
+                            <span>Rank de uso dos funcionários</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-hide-gs-page" style="border-left-color: #7f8c8d;">
+                        <div class="gs-card-icon-box" style="background:#f2f4f4; color:#7f8c8d;"><i class="fa-solid fa-eye-slash"></i></div>
+                        <div class="gs-card-info">
+                            <strong>OCULTAR GS</strong>
+                            <span>Escolher botões visíveis</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-ia-logs-page" style="border-left-color: #ff9f43;">
+                        <div class="gs-card-icon-box" style="background:#fff5eb; color:#ff9f43;"><i class="fa-solid fa-brain"></i></div>
+                        <div class="gs-card-info">
+                            <strong>LOGS IA HUNTER</strong>
+                            <span>Perguntas dos usuários</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-settings-page" style="border-left-color: #ff6b00;">
+                        <div class="gs-card-icon-box"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Configurar Metas</strong>
+                            <span>Metas mensais por loja e colaboradores</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="add-manual-sale-btn" style="border-left-color: #27ae60;">
+                        <div class="gs-card-icon-box" style="background:#eafaf1; color:#27ae60;"><i class="fa-solid fa-cart-plus"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Lançar Vendas Diárias</strong>
+                            <span>Atualização de vendas e serviços do dia</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-earnings-panel-btn" style="border-left-color: #2ecc71;">
+                        <div class="gs-card-icon-box" style="background:#eafaf1; color:#2ecc71;"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Ganhos & Comissões</strong>
+                            <span>Comissões e estimativas da equipe</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-correction-page" style="border-left-color: #e67e22;">
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-eraser"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Correção de Vendas</strong>
+                            <span>Ajuste fino de lançamentos e totais acumulados</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-ranks-management-btn" style="border-left-color: #f1c40f;">
+                        <div class="gs-card-icon-box" style="background:#fef9e7; color:#f1c40f;"><i class="fa-solid fa-trophy"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Gestão de Rankings</strong>
+                            <span>Premiações e ativação de disputas</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-bonus-management-page" style="border-left-color: #8e44ad;">
+                        <div class="gs-card-icon-box" style="background:#f4ecf7; color:#8e44ad;"><i class="fa-solid fa-gift"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Bônus Extras</strong>
+                            <span>Lançamento de bonificações extras por equipe</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-daily-increase-page" style="border-left-color: #d35400;">
+                        <div class="gs-card-icon-box" style="background:#fbeee6; color:#d35400;"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Acréscimo % Meta</strong>
+                            <span>Ajuste temporário na meta diária geral</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gs-module-section">
+                <div class="gs-module-title"><i class="fa-solid fa-boxes-stacked"></i> Estoque & Produtos</div>
+                <div class="gs-cards-grid">
+                    <div class="gs-panel-card" id="open-painel-celulares-btn" style="border-left-color: #2980b9;">
+                        <div class="gs-card-icon-box" style="background:#ebf5fb; color:#2980b9;"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Painel de Celulares & Preços</strong>
+                            <span>Tabelas, margens, lucro zero e regras</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="view-stock-requests-btn" style="border-left-color: #34495e;">
+                        <div class="gs-card-icon-box" style="background:#ebedef; color:#34495e;"><i class="fa-solid fa-dolly"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Solicitações de Estoque</strong>
+                            <span>Pedidos de aparelhos enviados pelas lojas</span>
+                        </div>
+                        <span id="stock-indicator" class="gs-notification-bubble" style="display: none;">!</span>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-mt-management-page" style="border-left-color: #16a085;">
+                        <div class="gs-card-icon-box" style="background:#e8f8f5; color:#16a085;"><i class="fa-solid fa-gem"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Gerenciar Mostruário (Entradas)</strong>
+                            <span>Textos e valores promocionais de vitrine</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gs-module-section">
+                <div class="gs-module-title"><i class="fa-solid fa-users"></i> Equipe, Escala & RH</div>
+                <div class="gs-cards-grid">
+                    <div class="gs-panel-card" id="verificar-ponto-btn" style="border-left-color: #2980b9;">
+                        <div class="gs-card-icon-box" style="background:#ebf5fb; color:#2980b9;"><i class="fa-solid fa-user-check"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Histórico de Ponto Facial</strong>
+                            <span>Verificar horários, fotos faciais e presenças</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-collaborator-profile-btn" style="border-left-color: #ff6b00;">
+                        <div class="gs-card-icon-box"><i class="fa-solid fa-id-badge"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Perfis dos Colaboradores</strong>
+                            <span>Visualizar perfis individuais como administrador</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-overtime-management-page" style="border-left-color: #e74c3c;">
+                        <div class="gs-card-icon-box" style="background:#fdedec; color:#e74c3c;"><i class="fa-solid fa-clock"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Gestão de Horas Extras</strong>
+                            <span>Minutos acumulados e banco de horas</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-day-off-management-page" style="border-left-color: #1abc9c;">
+                        <div class="gs-card-icon-box" style="background:#e8f6f3; color:#1abc9c;"><i class="fa-solid fa-bed"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Escala de Folgas</strong>
+                            <span>Agendamento de folgas para desativar ponto</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-holidays-management-page" style="border-left-color: #e67e22;">
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-calendar-xmark"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Gerenciar Feriados</strong>
+                            <span>Datas com bloqueio de ponto geral</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-sundays-management-page" style="border-left-color: #27ae60;">
+                        <div class="gs-card-icon-box" style="background:#eafaf1; color:#27ae60;"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Domingos de Trabalho</strong>
+                            <span>Liberação de jornada aos domingos</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="clear-ponto-status-btn" style="border-left-color: #c0392b;">
+                        <div class="gs-card-icon-box" style="background:#f9ebea; color:#c0392b;"><i class="fa-solid fa-user-clock"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Resetar Status de Ponto</strong>
+                            <span>Limpar registros do dia de um colaborador</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gs-module-section">
+                <div class="gs-module-title"><i class="fa-solid fa-bullhorn"></i> Marketing & Parcerias</div>
+                <div class="gs-cards-grid">
+                    <div class="gs-panel-card" id="open-tm-admin-btn" style="border-left-color: #2980b9;">
+                        <div class="gs-card-icon-box" style="background:#ebf5fb; color:#2980b9;"><i class="fa-solid fa-users-gear"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Clientes Telemarketing</strong>
+                            <span>Importação Excel e fila de contatos</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-tm-stats-btn" style="border-left-color: #e67e22;">
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Métricas de Envios TM</strong>
+                            <span>Acompanhamento diário de disparos por equipe</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-afiliados-admin-btn" style="border-left-color: #27ae60;">
+                        <div class="gs-card-icon-box" style="background:#eafaf1; color:#27ae60;"><i class="fa-solid fa-handshake"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Gestão de Afiliados</strong>
+                            <span>Lojas parceiras e contatos cadastrados</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-avisos-management-page" style="border-left-color: #3498db;">
+                        <div class="gs-card-icon-box" style="background:#ebf5fb; color:#3498db;"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Avisos da Gerência</strong>
+                            <span>Mensagens e fotos ativas por 24h na tela inicial</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-quiz-management-btn" style="border-left-color: #8e44ad;">
+                        <div class="gs-card-icon-box" style="background:#f4ecf7; color:#8e44ad;"><i class="fa-solid fa-clipboard-question"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Gerenciar Perguntas do Quiz</strong>
+                            <span>Formulários de clima e pesquisas de opinião</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="view-quiz-submissions-btn" style="border-left-color: #9b59b6;">
+                        <div class="gs-card-icon-box" style="background:#f4ecf7; color:#9b59b6;"><i class="fa-solid fa-comment-dots"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Respostas Recebidas do Quiz</strong>
+                            <span>Feedbacks preenchidos pelos colaboradores</span>
+                        </div>
+                        <span id="quiz-indicator" class="gs-notification-bubble" style="display: none;">!</span>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gs-module-section">
+                <div class="gs-module-title"><i class="fa-solid fa-server"></i> Sistema & Segurança</div>
+                <div class="gs-cards-grid">
+                    <div class="gs-panel-card" id="open-depuracao-ponto-btn">
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-bug"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Depuração</strong>
+                            <span>Abrir bater ponto</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-supabase-management-btn" style="border-left-color: #34495e;">
+                        <div class="gs-card-icon-box" style="background:#ebedef; color:#34495e;"><i class="fa-solid fa-cloud"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Backup Supabase (ZIP)</strong>
+                            <span>Exportação e restauração total de mídias e fotos</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="save-backup-btn" style="border-left-color: #27ae60;">
+                        <div class="gs-card-icon-box" style="background:#eafaf1; color:#27ae60;"><i class="fa-solid fa-download"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Baixar Backup de Dados (.TXT)</strong>
+                            <span>Salvar cópia de segurança rápida de vendas e metas</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="restore-backup-btn" style="border-left-color: #d35400;">
+                        <div class="gs-card-icon-box" style="background:#fbeee6; color:#d35400;"><i class="fa-solid fa-upload"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Restaurar Backup de Dados</strong>
+                            <span>Subir arquivo TXT de contingência</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+                    <input type="file" id="backup-file-input" accept=".txt" style="display: none;">
+                </div>
             </div>
 
             <!-- KPIs principais -->
@@ -4507,7 +4999,7 @@
             <!-- Seção de Vendas Mensais -->
             <div class="charts-section">
                 <div class="chart-container">
-                    <h4>Vendas Mensais (Histórico)</h4>
+                    <h4><i class="fa-solid fa-chart-area" style="color: #ff6b00;"></i> Vendas Mensais (Histórico)</h4>
                     <canvas id="monthly-sales-chart"></canvas>
                 </div>
             </div>
@@ -4515,21 +5007,21 @@
             <!-- Seção de Gráficos de Vendas Atuais -->
             <div class="charts-section">
                 <div class="chart-container">
-                    <h4>Vendas Atuais por Loja</h4>
+                    <h4><i class="fa-solid fa-chart-pie" style="color: #ff6b00;"></i> Vendas Atuais por Loja</h4>
                     <canvas id="store-sales-chart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h4>Progresso da Meta Individual (%)</h4>
+                    <h4><i class="fa-solid fa-bars-progress" style="color: #ff6b00;"></i> Progresso da Meta Individual (%)</h4>
                     <canvas id="employee-goal-progress-chart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h4>Vendas Atuais por Funcionário</h4>
+                    <h4><i class="fa-solid fa-ranking-star" style="color: #ff6b00;"></i> Vendas Atuais por Funcionário</h4>
                     <canvas id="employee-sales-chart"></canvas>
                 </div>
             </div>
             
-            <!-- Seção de Notificações de Ponto -->
-            <div class="charts-section" id="manager-notifications-section" style="display: none;">
+            <!-- Seção de Notificações de Ponto (Oculta por padrão) -->
+            <div class="charts-section" id="manager-notifications-section" style="display: none !important;">
                 <div class="chart-container">
                     <h4>Notificações de Ponto</h4>
                     <div id="manager-notifications-list" class="ranking-list" style="gap: 0.5rem;">
@@ -4539,16 +5031,6 @@
                     <button id="clear-all-notifications-btn" class="action-button delete-button" style="margin-top: 1.5rem; display: none;">
                         <i class="fa-solid fa-trash-can"></i> Limpar Todas
                     </button>
-                </div>
-            </div>
-
-                        <!-- Seção de Horas Extras -->
-            <div class="charts-section" id="overtime-section">
-                <div class="chart-container">
-                    <h4>Horas Extras Acumuladas</h4>
-                    <div id="overtime-list-container" class="ranking-list" style="gap: 0.5rem;">
-                         <p style="text-align: center;">Carregando...</p>
-                    </div>
                 </div>
             </div>
             
@@ -5294,7 +5776,7 @@ Transporte - R$ 5,00"></textarea></div>
                 <button class="ai-hunter-btn" onclick="askIAHunter('servicos')"><i class="fa-solid fa-shield-halved"></i> Vendas de Serviços</button>
                 <button class="ai-hunter-btn" onclick="askIAHunter('acessorios')"><i class="fa-solid fa-headphones"></i> Venda de Acessórios</button>
                 <button class="ai-hunter-btn" onclick="askIAHunter('ranking')"><i class="fa-solid fa-trophy"></i> Posição no Ranking</button>
-                <button class="ai-hunter-btn" onclick="askIAHunter('salario')"><i class="fa-solid fa-sack-dollar"></i> Quanto seria meu Salário?</button>
+                <button class="ai-hunter-btn" onclick="askIAHunter('salario')"><i class="fa-solid fa-sack-dollar"></i> Quanto seria meus ganhos?</button>
                 <button class="ai-hunter-btn" style="grid-column: 1 / -1; justify-content: center; background: rgba(255, 107, 0, 0.2); border-color: rgba(255, 107, 0, 0.5);" onclick="askIAHunter('politica')"><i class="fa-solid fa-book-open"></i> Política Salarial</button>
             </div>
 
@@ -5631,6 +6113,62 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- TELA DE LOGS DE USO -->
+    <div id="logs-management-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden;">
+        <div class="collaborator-header" style="width: 100%; min-height: 65px; display: flex; align-items: center; justify-content: center; position: relative; padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0;">
+            <button id="back-to-gs-from-logs" class="back-button" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); z-index: 10;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; padding: 0 60px; font-size: 1.3rem; white-space: nowrap; text-align: center; flex-grow: 1;">Logs de Uso</h2>
+        </div>
+        <div class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.5rem 1rem; align-items: stretch; gap: 1rem; flex-direction: column;">
+            <div class="kpi-card" style="text-align: center;">
+                <span class="kpi-title">TOTAL DE CLIQUES & ACESSOS</span>
+                <span id="total-logs-count" class="kpi-value" style="font-size: 2.2rem; color: #ff6b00;">0</span>
+            </div>
+            <div class="employee-meta-card" style="max-width: none;">
+                <h4 style="margin-bottom: 1rem;">Ranking de Uso dos Funcionários</h4>
+                <div id="logs-list-container" class="ranking-list" style="display: flex; flex-direction: column; gap: 0.65rem;">
+                </div>
+                <button id="reset-logs-btn" class="action-button delete-button full-width" style="margin-top: 1.5rem;"><i class="fa-solid fa-trash-can"></i> Zerar Todos os Logs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA OCULTAR ITENS DO GS -->
+    <div id="hide-gs-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden;">
+        <div class="collaborator-header" style="width: 100%; min-height: 65px; display: flex; align-items: center; justify-content: center; position: relative; padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0;">
+            <button id="back-to-gs-from-hide-gs" class="back-button" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); z-index: 10;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; padding: 0 60px; font-size: 1.3rem; white-space: nowrap; text-align: center; flex-grow: 1;">Ocultar GS</h2>
+        </div>
+        <div class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.5rem 1rem 3rem 1rem; align-items: stretch; gap: 1rem; flex-direction: column;">
+            <div class="employee-meta-card" style="max-width: none;">
+                <h4 style="margin-bottom: 0.5rem;">Visibilidade dos Botões no GS</h4>
+                <p style="font-size: 0.75rem; color: #ccc; margin-bottom: 1.2rem; text-align: center;">Ative ou desative quais painéis e botões devem aparecer no Painel GS.</p>
+                <div id="hide-gs-toggles-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA LOGS IA HUNTER -->
+    <div id="ia-logs-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden;">
+        <div class="collaborator-header" style="width: 100%; min-height: 65px; display: flex; align-items: center; justify-content: center; position: relative; padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); flex-shrink: 0;">
+            <button id="back-to-gs-from-ia-logs" class="back-button" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); z-index: 10;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; padding: 0 60px; font-size: 1.3rem; white-space: nowrap; text-align: center; flex-grow: 1;">Logs IA Hunter</h2>
+        </div>
+        <div class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.5rem 1rem 3rem 1rem; align-items: stretch; gap: 1rem; flex-direction: column;">
+            <div class="kpi-card" style="text-align: center;">
+                <span class="kpi-title">TOTAL DE PERGUNTAS REGISTRADAS</span>
+                <span id="total-ia-logs-count" class="kpi-value" style="font-size: 2.2rem; color: #ff6b00;">0</span>
+            </div>
+            <div class="employee-meta-card" style="max-width: none;">
+                <h4 style="margin-bottom: 1rem;">Perguntas Recentes para a IA</h4>
+                <div id="ia-logs-list-container" class="ranking-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                </div>
+                <button id="clear-ia-logs-btn" class="action-button delete-button full-width" style="margin-top: 1.5rem;"><i class="fa-solid fa-trash-can"></i> Limpar Histórico da IA</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TELA DE CHATS -->
     <div id="chat-page" style="display: none;">
         <div class="collaborator-header">
@@ -5688,7 +6226,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.0 - A '; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.1 - B'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -5754,6 +6292,7 @@ Transporte - R$ 5,00"></textarea></div>
     let currentOpenChatId = null; // ID da conversa de chat aberta
     let globalPayMobiInterest = 8.9; // Variável global de juros
     let globalPainelCelMode = 'planilha';
+    let lastPageBeforePonto = 'collaboratorPage';
 
     // --- ELEMENTOS DO DOM ---
     const mainContainer = document.querySelector('.mobile-container');
@@ -5766,6 +6305,9 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('ponto-history-page').classList.add('page');
     document.getElementById('supabase-management-page').classList.add('page');
     document.getElementById('daily-increase-management-page').classList.add('page');
+    document.getElementById('logs-management-page').classList.add('page');
+    document.getElementById('hide-gs-page').classList.add('page');
+    document.getElementById('ia-logs-page').classList.add('page');
     document.getElementById('collaborator-page').classList.add('page');
     document.getElementById('gs-page').classList.add('page');
     document.getElementById('metas-config-page').classList.add('page');
@@ -5879,6 +6421,9 @@ document.getElementById('afiliados-admin-page').classList.add('page');
     afiliadosStoresPage: document.getElementById('afiliados-stores-page'),
     afiliadosAdminPage: document.getElementById('afiliados-admin-page'),
         dailyIncreaseManagementPage: document.getElementById('daily-increase-management-page'),
+        logsManagementPage: document.getElementById('logs-management-page'),
+        hideGsPage: document.getElementById('hide-gs-page'),
+        iaLogsPage: document.getElementById('ia-logs-page'),
         telemarketingSelectionPage: document.getElementById('telemarketing-selection-page'),
         telemarketingListPage: document.getElementById('telemarketing-list-page'),
 
@@ -6303,9 +6848,170 @@ document.getElementById('afiliados-admin-page').classList.add('page');
 
     // A função startLoginCameraVerification não é mais necessária e foi removida.
     
-    const completeLogin = (userName) => {
+    const logUserActivity = (userName) => {
+        if (!userName) return;
+        const key = userName.toLowerCase();
+        database.ref(`userAccessLogs/${key}`).transaction(current => {
+            const count = (current && current.count) ? current.count + 1 : 1;
+            return {
+                name: userName,
+                count: count,
+                lastAccess: new Date().toISOString()
+            };
+        });
+    };
+
+    const loadAndDisplayLogs = async () => {
+        showPage('logsManagementPage');
+        const container = document.getElementById('logs-list-container');
+        const totalEl = document.getElementById('total-logs-count');
+        container.innerHTML = '<p style="text-align:center; padding:1.5rem;">Carregando logs...</p>';
+
+        try {
+            const [logsSnap, profilesSnap] = await Promise.all([
+                database.ref('userAccessLogs').get(),
+                database.ref('userProfiles').get()
+            ]);
+
+            const logsData = logsSnap.exists() ? logsSnap.val() : {};
+            const profilesData = profilesSnap.exists() ? profilesSnap.val() : {};
+
+            let totalAcessos = 0;
+            const list = [];
+
+            allUsers.forEach(userName => {
+                const key = userName.toLowerCase();
+                const userLog = logsData[key] || { count: 0 };
+                const count = userLog.count || 0;
+                totalAcessos += count;
+                list.push({
+                    name: userName,
+                    key: key,
+                    count: count,
+                    lastAccess: userLog.lastAccess || null,
+                    photo: profilesData[key]?.photoURL || DEFAULT_PROFILE_PHOTO
+                });
+            });
+
+            list.sort((a, b) => b.count - a.count);
+
+            totalEl.textContent = totalAcessos;
+            container.innerHTML = '';
+
+            list.forEach((item, index) => {
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `${rank}º`));
+                const lastDate = item.lastAccess ? new Date(item.lastAccess).toLocaleString('pt-BR') : 'Sem registro';
+
+                const card = document.createElement('div');
+                card.className = 'rank-item';
+                card.style.cssText = 'padding: 0.85rem 1rem; border-left: 5px solid #ff6b00; background: #ffffff !important; box-shadow: 0 4px 12px rgba(0,0,0,0.04);';
+                card.innerHTML = `
+                    <span style="font-weight: 900; font-size: 1.1rem; width: 32px; text-align: center; color: #2D2319;">${medal}</span>
+                    <img src="${item.photo}" class="rank-photo" style="width: 40px; height: 40px;">
+                    <div class="rank-details">
+                        <div class="rank-name" style="justify-content: space-between; align-items: center;">
+                            <span style="color: #2D2319; font-weight: 800;">${item.name}</span>
+                            <span style="color: #ff6b00; font-weight: 900; font-size: 1rem;">${item.count} ${item.count === 1 ? 'vez' : 'vezes'}</span>
+                        </div>
+                        <div style="font-size: 0.65rem; color: #8C7561; margin-top: 2px;">
+                            Último acesso: ${lastDate}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align:center; color:#e74c3c;">Erro ao carregar logs.</p>';
+        }
+    };
+
+    const resetAllLogs = async () => {
+                if (confirm('Tem certeza que deseja zerar os logs de acesso de todos os funcionários?')) {
+                    await database.ref('userAccessLogs').remove();
+                    loadAndDisplayLogs();
+                }
+            };
+
+            const logIAHunterQuery = (userName, query) => {
+                if (!userName || !query) return;
+                database.ref('iaHunterLogs').push({
+                    userName: userName,
+                    userKey: userName.toLowerCase(),
+                    query: query,
+                    timestamp: new Date().toISOString()
+                });
+            };
+
+            const loadAndDisplayIALogs = async () => {
+                showPage('iaLogsPage');
+                const container = document.getElementById('ia-logs-list-container');
+                const totalEl = document.getElementById('total-ia-logs-count');
+                container.innerHTML = '<p style="text-align: center; padding: 1.5rem;">Carregando perguntas...</p>';
+
+                try {
+                    const [logsSnap, profilesSnap] = await Promise.all([
+                        database.ref('iaHunterLogs').limitToLast(100).get(),
+                        database.ref('userProfiles').get()
+                    ]);
+
+                    const profilesData = profilesSnap.exists() ? profilesSnap.val() : {};
+                    container.innerHTML = '';
+
+                    if (!logsSnap.exists()) {
+                        totalEl.textContent = '0';
+                        container.innerHTML = '<p style="text-align: center; padding: 1.5rem; opacity: 0.6;">Nenhuma pergunta registrada ainda.</p>';
+                        return;
+                    }
+
+                    const logs = [];
+                    logsSnap.forEach(child => {
+                        logs.push({ key: child.key, ...child.val() });
+                    });
+                    logs.reverse();
+
+                    totalEl.textContent = logs.length;
+
+                    logs.forEach(log => {
+                        const photo = profilesData[log.userKey]?.photoURL || DEFAULT_PROFILE_PHOTO;
+                        const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString('pt-BR') : 'Data não registrada';
+
+                        const card = document.createElement('div');
+                        card.className = 'rank-item';
+                        card.style.cssText = 'padding: 0.9rem 1rem; border-left: 5px solid #ff9f43; background: #ffffff !important; box-shadow: 0 4px 12px rgba(0,0,0,0.04);';
+                        card.innerHTML = `
+                            <img src="${photo}" class="rank-photo" style="width: 40px; height: 40px;">
+                            <div class="rank-details" style="overflow: hidden;">
+                                <div class="rank-name" style="justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <span style="color: #2D2319; font-weight: 800; font-size: 0.95rem;">${log.userName}</span>
+                                    <span style="font-size: 0.65rem; color: #8C7561;">${dateStr}</span>
+                                </div>
+                                <div style="background: #FFF9F2; border: 1px solid #FFE7D1; border-radius: 12px; padding: 8px 12px; font-size: 0.8rem; color: #2D2319; font-weight: 600; word-break: break-word;">
+                                    💬 "${log.query}"
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } catch (e) {
+                    console.error(e);
+                    container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Erro ao carregar histórico da IA.</p>';
+                }
+            };
+
+            const clearAllIALogs = async () => {
+                if (confirm('Tem certeza que deseja apagar todo o histórico de perguntas feitas para a IA Hunter?')) {
+                    await database.ref('iaHunterLogs').remove();
+                    loadAndDisplayIALogs();
+                }
+            };
+
+            const completeLogin = (userName) => {
         localStorage.setItem('loggedInUser', userName);
         currentUserName = userName; // Define o usuário global
+        logUserActivity(userName);
         
         const loginOverlay = document.getElementById('login-overlay');
         loginOverlay.classList.add('is-exiting');
@@ -6686,11 +7392,24 @@ function showScreen(screenElement) {
     isNavigating = true;
     document.body.classList.add('navigating');
 
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    if (screenElement) screenElement.scrollTop = 0;
+
     const currentScreen = document.querySelector('.page.visible, .modal-overlay.visible');
 
     const finalizeNavigation = () => {
         isNavigating = false;
         document.body.classList.remove('navigating');
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        if (screenElement) {
+            screenElement.scrollTop = 0;
+            const content = screenElement.querySelector('.collaborator-content');
+            if (content) content.scrollTop = 0;
+        }
     };
 
     const showNext = () => {
@@ -6703,9 +7422,20 @@ function showScreen(screenElement) {
         });
 
         screenElement.style.display = (screenElement === mainContainer) ? 'block' : 'flex';
-        
+        screenElement.scrollTop = 0;
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        const innerContent = screenElement.querySelector('.collaborator-content');
+        if (innerContent) innerContent.scrollTop = 0;
+
         requestAnimationFrame(() => {
             screenElement.classList.add('visible');
+            screenElement.scrollTop = 0;
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            if (innerContent) innerContent.scrollTop = 0;
             staggerAnimate(screenElement);
             // Reduz o tempo de trava para 500ms para evitar sensação de travamento
             setTimeout(finalizeNavigation, 500);
@@ -7655,7 +8385,6 @@ const saveAllMetas = () => {
 };
 const loadAndDisplayCollaboratorMetas = () => {
     const container = document.getElementById('metas-display-content');
-    const salaryValue = "R$ 1.621,00";
     
     container.innerHTML = `
         <div style="width:100%; color: white; font-family: 'Poppins', sans-serif; line-height: 1.6;">
@@ -7663,39 +8392,58 @@ const loadAndDisplayCollaboratorMetas = () => {
             
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
                 <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-money-bill-1-wave"></i> SALÁRIO FIXO</h4>
-                <p style="margin:0; font-size: 0.9rem;">• Seu Salário Fixo: <strong>${salaryValue}</strong></p>
+                <p style="margin:0; font-size: 0.9rem;">• Salário fixo: <strong>R$ 1.621,00</strong></p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-chart-line"></i> PRÊMIO POR META</h4>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-bullseye"></i> PRÊMIO POR META DE VENDAS</h4>
                 <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>50%</strong> da meta individual, o colaborador passa a receber:</p>
                 <p style="margin:8px 0 0 0; font-weight: 700; color: #2ecc71;">• 1% de prêmio sobre cada venda realizada.</p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-trophy"></i> SUPERAÇÃO DE META</h4>
-                <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>120%</strong> da meta, o colaborador recebe:</p>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-rocket"></i> SUPERAÇÃO DE META</h4>
+                <p style="margin:0; font-size: 0.9rem;">Ao atingir <strong>120%</strong> da meta individual, o colaborador recebe:</p>
                 <p style="margin:8px 0 0 0; font-weight: 700; color: #9b59b6;">• R$ 500,00 de prêmio fixo.</p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-shield-halved"></i> PRÊMIO POR SERVIÇOS</h4>
-                <p style="margin:0; font-size: 0.9rem;">Independente da meta de vendas, você recebe:</p>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-screwdriver-wrench"></i> COMISSÃO POR SERVIÇOS</h4>
+                <p style="margin:0; font-size: 0.9rem;">Independentemente da meta de vendas:</p>
                 <p style="margin:8px 0 0 0; font-weight: 600;">• 10% sobre Garantia Estendida.</p>
                 <p style="margin:5px 0 0 0; font-weight: 600;">• 10% sobre Seguro Contra Queda.</p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
-                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-medal"></i> Incentivos por Ranking de Vendas</h4>
-                <p style="margin:0; font-size: 0.9rem;">🥇 1º Lugar: <strong>R$ 300,00 a R$ 500,00</strong></p>
-                <p style="margin:0; font-size: 0.9rem;">🥈 2º Lugar: <strong>R$ 200,00 a R$ 400,00</strong></p>
-                <p style="margin:0; font-size: 0.9rem;">🥉 3º Lugar: <strong>R$ 100,00 a R$ 200,00</strong></p>
-                <p style="margin:8px 0 0 0; font-size: 0.7rem; opacity: 0.7; font-style: italic;">_Os valores variam de acordo com o desafio ou campanha vigente._</p>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-headphones"></i> COMISSÃO POR ACESSÓRIOS</h4>
+                <p style="margin:0; font-size: 0.9rem;">Independentemente da meta de vendas:</p>
+                <p style="margin:8px 0 0 0; font-weight: 600; color: #2ecc71;">• 10% de comissão sobre as vendas de acessórios.</p>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-trophy"></i> RANKINGS DE PREMIAÇÃO</h4>
+                <p style="margin:0 0 6px 0; font-size: 0.85rem; font-weight: 700; color: #9b59b6;">🏆 RANKING DE SERVIÇOS</p>
+                <p style="margin:0; font-size: 0.85rem;">🥇 1º Lugar: <strong>R$ 1.000,00</strong></p>
+                <p style="margin:0; font-size: 0.85rem;">🥈 2º Lugar: <strong>R$ 500,00</strong></p>
+                <p style="margin:0 0 10px 0; font-size: 0.85rem;">🥉 3º Lugar: <strong>R$ 200,00</strong></p>
+                
+                <p style="margin:0 0 6px 0; font-size: 0.85rem; font-weight: 700; color: #2ecc71;">🎧 RANKING DE ACESSÓRIOS</p>
+                <p style="margin:0; font-size: 0.85rem;">🥇 1º Lugar: <strong>R$ 300,00</strong></p>
+                <p style="margin:0; font-size: 0.85rem;">🥈 2º Lugar: <strong>R$ 200,00</strong></p>
+                <p style="margin:0 0 10px 0; font-size: 0.85rem;">🥉 3º Lugar: <strong>R$ 100,00</strong></p>
+                
+                <p style="margin:0 0 6px 0; font-size: 0.85rem; font-weight: 700; color: #f1c40f;">🏅 RANKING DE VENDAS</p>
+                <p style="margin:0; font-size: 0.85rem;">🥇 1º Lugar: <strong>R$ 500,00</strong></p>
+                <p style="margin:0; font-size: 0.85rem;">🥈 2º Lugar: <strong>R$ 300,00</strong></p>
+                <p style="margin:0 0 8px 0; font-size: 0.85rem;">🥉 3º Lugar: <strong>R$ 100,00</strong></p>
+                
+                <p style="margin:0; font-size: 0.72rem; opacity: 0.8; font-style: italic;">* Os valores dos rankings poderão variar de acordo com o desafio ou campanha vigente.</p>
+                <p style="margin:4px 0 0 0; font-size: 0.72rem; color: #ff9f43; font-weight: 600;">* Premiação de ranking só é paga ao atingir 100% da meta!</p>
             </div>
 
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
-                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-utensils"></i> BENEFÍCIOS</h4>
-                <p style="margin:0; font-size: 0.9rem;">• Ticket Alimentação: <strong>R$ 200,00</strong> / mês.</p>
+                <h4 style="margin:0 0 10px 0; color: #f1c40f;"><i class="fa-solid fa-utensils"></i> BENEFÍCIO</h4>
+                <p style="margin:0; font-size: 0.9rem;">• Ticket Alimentação: <strong>R$ 200,00</strong> por mês.</p>
             </div>
         </div>
     `;
@@ -8117,8 +8865,11 @@ const loadAndDisplayCollaboratorMetas = () => {
         const elCusto = document.getElementById('device-price-custo');
         if (elCusto) elCusto.textContent = data.precoCusto;
 
+        const baseEntrada = parseVal(data.entradaMinima);
+        const entradaFinal = baseEntrada + adicional;
+
         const elEntrada = document.getElementById('device-price-entrada');
-        if (elEntrada) elEntrada.textContent = data.entradaMinima;
+        if (elEntrada) elEntrada.textContent = fmt(entradaFinal);
 
         const elSegText = document.getElementById('device-seguro-queda');
         if (elSegText) elSegText.textContent = data.seguroQueda;
@@ -8127,9 +8878,9 @@ const loadAndDisplayCollaboratorMetas = () => {
         if (elGarText) elGarText.textContent = data.garantiaEstendida;
 
         // Lógica PayMobi
-        const pEntrada = parseVal(data.entradaMinima);
-        if (baseVenda > 0 && pEntrada > 0) {
-            const principal = baseVenda - pEntrada;
+        const rawVenda = parseVal(data.precoVenda);
+        if (rawVenda > 0 && baseEntrada > 0) {
+            const principal = rawVenda - baseEntrada;
             const i = globalPayMobiInterest / 100; 
             const fmtSemSimbolo = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             
@@ -8549,6 +9300,15 @@ const loadAndDisplayCollaboratorMetas = () => {
             const serviceGoal = dailyFinal * 0.10;
             const serviceLeft = Math.max(0, serviceGoal - sold.todayServ);
 
+            let accGoal = 0;
+            if (sold.metaAcc && sold.metaAcc > 0) {
+                const accBase = Math.max(0, (sold.metaAcc - ((sold.totalAcc || 0) - (sold.todayAcc || 0))) / workingDaysLeft);
+                accGoal = accBase * multiplier;
+            } else {
+                accGoal = dailyFinal * 0.05;
+            }
+            const accLeft = Math.max(0, accGoal - (sold.todayAcc || 0));
+
             return `
                 <div class="sales-data-card" style="width: 100%; max-width: 420px; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
                     <h4 style="color: white; font-size: 1.1rem; margin-bottom: 0.8rem; text-transform: uppercase;">${title}</h4>
@@ -8560,11 +9320,18 @@ const loadAndDisplayCollaboratorMetas = () => {
                         <div style="display: flex; justify-content: space-between; color: #ffe600; font-weight: 700;"><span>Falta:</span><span>- ${formatBRL(dailyLeft)}</span></div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem;">
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px;">
                         <span style="display: inline-flex; align-items: center; gap: 5px; background: #ffffff; color: #6c3483; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.5px; width: fit-content; text-transform: uppercase; box-shadow: 0 2px 6px rgba(0,0,0,0.2); margin-bottom: 6px;"><i class="fa-solid fa-shield-halved"></i> Meta de Serviço</span>
                         <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(serviceGoal)}</span></div>
                         <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.todayServ)}</span></div>
                         <div style="display: flex; justify-content: space-between; color: #ffe600; font-weight: 700;"><span>Falta:</span><span>- ${formatBRL(serviceLeft)}</span></div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: #eee; font-size: 0.9rem;">
+                        <span style="display: inline-flex; align-items: center; gap: 5px; background: #ffffff; color: #1e8449; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.5px; width: fit-content; text-transform: uppercase; box-shadow: 0 2px 6px rgba(0,0,0,0.2); margin-bottom: 6px;"><i class="fa-solid fa-headphones"></i> Meta de Acessórios</span>
+                        <div style="display: flex; justify-content: space-between;"><span>Meta:</span><span>${formatBRL(accGoal)}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span>Venda:</span><span>${formatBRL(sold.todayAcc || 0)}</span></div>
+                        <div style="display: flex; justify-content: space-between; color: #ffe600; font-weight: 700;"><span>Falta:</span><span>- ${formatBRL(accLeft)}</span></div>
                     </div>
                 </div>
             `;
@@ -8574,13 +9341,19 @@ const loadAndDisplayCollaboratorMetas = () => {
                 let total = 0;
                 let today = 0;
                 let todayServ = 0;
+                let todayAcc = 0;
+                let totalAcc = 0;
+                let metaAcc = 0;
                 storeMapping[store].forEach(empName => {
                     const k = empName.toLowerCase();
                     total += parseFloat(allSales[k]?.vendas || 0);
                     today += parseFloat(allDaily[k]?.vendas || 0);
                     todayServ += parseFloat(allDaily[k]?.servico || 0);
+                    todayAcc += parseFloat(allDaily[k]?.acessorio || 0);
+                    totalAcc += parseFloat(allSales[k]?.acessorio || 0);
+                    metaAcc += parseFloat(allMetas[k]?.meta_acessorio || 0);
                 });
-                return { total, today, todayServ };
+                return { total, today, todayServ, todayAcc, totalAcc, metaAcc };
             };
 
             if (isAdminMulti) {
@@ -8598,10 +9371,20 @@ const loadAndDisplayCollaboratorMetas = () => {
                 section.innerHTML = createPanelHTML(`META DO DIA - LOJA ${store.toUpperCase()}`, meta, sold);
             } else {
                 const meta = parseFloat(allMetas[userKey]?.venda || 0);
+                const metaAcc = parseFloat(allMetas[userKey]?.meta_acessorio || 0);
                 const soldTotal = parseFloat(allSales[userKey]?.vendas || 0);
                 const soldToday = parseFloat(allDaily[userKey]?.vendas || 0);
                 const soldTodayServ = parseFloat(allDaily[userKey]?.servico || 0);
-                section.innerHTML = createPanelHTML(`META DO DIA - ${currentUserName.toUpperCase()}`, meta, { total: soldTotal, today: soldToday, todayServ: soldTodayServ });
+                const soldTotalAcc = parseFloat(allSales[userKey]?.acessorio || 0);
+                const soldTodayAcc = parseFloat(allDaily[userKey]?.acessorio || 0);
+                section.innerHTML = createPanelHTML(`META DO DIA - ${currentUserName.toUpperCase()}`, meta, { 
+                    total: soldTotal, 
+                    today: soldToday, 
+                    todayServ: soldTodayServ,
+                    todayAcc: soldTodayAcc,
+                    totalAcc: soldTotalAcc,
+                    metaAcc: metaAcc
+                });
             }
 
         } catch (e) { console.error(e); }
@@ -8805,11 +9588,16 @@ const loadAndDisplayCollaboratorMetas = () => {
     };
 
     const renderMonthlySalesChart = (monthlyData) => {
-        const ctx = document.getElementById('monthly-sales-chart').getContext('2d');
-        const sortedMonths = Object.keys(monthlyData).sort(); // Ordem cronológica para o gráfico
+        const canvas = document.getElementById('monthly-sales-chart');
+        const ctx = canvas.getContext('2d');
+        const sortedMonths = Object.keys(monthlyData).sort();
 
         const labels = sortedMonths;
         const data = sortedMonths.map(month => monthlyData[month].totalVendas);
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+        gradient.addColorStop(0, 'rgba(255, 107, 0, 0.32)');
+        gradient.addColorStop(1, 'rgba(255, 107, 0, 0.0)');
 
         if (monthlySalesChartInstance) {
             monthlySalesChartInstance.destroy();
@@ -8822,18 +9610,46 @@ const loadAndDisplayCollaboratorMetas = () => {
                     label: 'Vendas Mensais',
                     data: data,
                     fill: true,
-                    backgroundColor: 'rgba(41, 128, 185, 0.2)',
-                    borderColor: 'rgba(41, 128, 185, 1)',
-                    tension: 0.1
+                    backgroundColor: gradient,
+                    borderColor: '#ff6b00',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#ff6b00',
+                    pointBorderWidth: 2.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
                 }]
             },
             options: {
                 responsive: true,
                 scales: { 
-                    x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                    y: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    x: { 
+                        ticks: { color: '#8C7561', font: { family: 'Poppins', size: 10, weight: '600' } }, 
+                        grid: { display: false } 
+                    },
+                    y: { 
+                        ticks: { 
+                            color: '#8C7561', 
+                            font: { family: 'Poppins', size: 10 },
+                            callback: function(value) { return 'R$ ' + (value >= 1000 ? (value/1000).toFixed(0) + 'k' : value); }
+                        }, 
+                        grid: { color: '#FFF0E0' } 
+                    }
                 },
-                plugins: { legend: { display: false } }
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#2D2319',
+                        titleFont: { family: 'Poppins', size: 11, weight: 'bold' },
+                        bodyFont: { family: 'Poppins', size: 11 },
+                        padding: 10,
+                        cornerRadius: 12,
+                        callbacks: {
+                            label: function(context) { return ' Vendas: R$ ' + context.parsed.y.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
+                        }
+                    }
+                }
             }
         });
     };
@@ -8841,7 +9657,7 @@ const loadAndDisplayCollaboratorMetas = () => {
     const renderStoreChart = (vendasPinheiro, vendasBacabal) => {
         const ctx = document.getElementById('store-sales-chart').getContext('2d');
         if (storeChartInstance) {
-            storeChartInstance.destroy(); // Destroi o gráfico anterior para evitar sobreposição
+            storeChartInstance.destroy();
         }
         storeChartInstance = new Chart(ctx, {
             type: 'doughnut',
@@ -8850,14 +9666,40 @@ const loadAndDisplayCollaboratorMetas = () => {
                 datasets: [{
                     label: 'Vendas por Loja',
                     data: [vendasPinheiro, vendasBacabal],
-                    backgroundColor: ['rgba(255, 107, 0, 0.8)', 'rgba(41, 128, 185, 0.8)'],
-                    borderColor: ['#FF6B00', '#2980b9'],
-                    borderWidth: 1
+                    backgroundColor: ['#ff6b00', '#ffa94d'],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                    hoverOffset: 6
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { labels: { color: 'white' } } }
+                cutout: '68%',
+                plugins: { 
+                    legend: { 
+                        position: 'bottom',
+                        labels: { 
+                            color: '#2D2319', 
+                            font: { family: 'Poppins', size: 12, weight: '700' },
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        } 
+                    },
+                    tooltip: {
+                        backgroundColor: '#2D2319',
+                        padding: 10,
+                        cornerRadius: 12,
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const val = context.parsed;
+                                const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                                return ` ${context.label}: R$ ${val.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} (${pct}%)`;
+                            }
+                        }
+                    }
+                }
             }
         });
     };
@@ -8865,12 +9707,10 @@ const loadAndDisplayCollaboratorMetas = () => {
     const renderEmployeeGoalProgressChart = (salesData, metasData) => {
         const ctx = document.getElementById('employee-goal-progress-chart').getContext('2d');
         
-        // 1. Calcular a porcentagem da meta para cada funcionário
         const goalProgress = allCollaborators.map(name => {
             const key = name.toLowerCase();
             const sales = parseFloat(salesData[key]?.vendas || 0);
             const goal = parseFloat(metasData[key]?.venda || 0);
-            // Calcula a porcentagem, mas se a meta for 0, a porcentagem também é 0 para evitar erros.
             const percentage = goal > 0 ? (sales / goal) * 100 : 0;
             return {
                 name: name,
@@ -8878,10 +9718,8 @@ const loadAndDisplayCollaboratorMetas = () => {
             };
         });
 
-        // 2. Ordenar os funcionários pela maior porcentagem atingida
         goalProgress.sort((a, b) => b.percentage - a.percentage);
 
-        // 3. Extrair os nomes e as porcentagens ordenadas
         const sortedLabels = goalProgress.map(item => item.name);
         const sortedData = goalProgress.map(item => item.percentage);
 
@@ -8896,9 +9734,9 @@ const loadAndDisplayCollaboratorMetas = () => {
                 datasets: [{
                     label: 'Progresso da Meta',
                     data: sortedData,
-                    backgroundColor: 'rgba(46, 204, 113, 0.6)', // Cor verde para progresso
-                    borderColor: '#2ecc71',
-                    borderWidth: 1
+                    backgroundColor: '#2ecc71',
+                    borderRadius: 8,
+                    borderWidth: 0
                 }]
             },
             options: {
@@ -8907,28 +9745,26 @@ const loadAndDisplayCollaboratorMetas = () => {
                 scales: {
                     x: {
                         ticks: { 
-                            color: 'white',
-                            // Adiciona o símbolo de % no eixo X
+                            color: '#8C7561',
+                            font: { family: 'Poppins', size: 10, weight: '600' },
                             callback: function(value) { return value + '%'; }
                         },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
+                        grid: { color: '#FFF0E0' }
                     },
-                    y: { ticks: { color: 'white' }, grid: { display: false } }
+                    y: { 
+                        ticks: { color: '#2D2319', font: { family: 'Poppins', size: 11, weight: '700' } }, 
+                        grid: { display: false } 
+                    }
                 },
                 plugins: {
                     legend: { display: false },
-                    // Configura o tooltip para mostrar a porcentagem formatada
                     tooltip: {
+                        backgroundColor: '#2D2319',
+                        padding: 10,
+                        cornerRadius: 12,
                         callbacks: {
                             label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.x !== null) {
-                                    label += context.parsed.x.toFixed(2) + '%';
-                                }
-                                return label;
+                                return ' Progresso: ' + (context.parsed.x !== null ? context.parsed.x.toFixed(1) + '%' : '');
                             }
                         }
                     }
@@ -8940,7 +9776,6 @@ const loadAndDisplayCollaboratorMetas = () => {
     const renderEmployeeChart = (salesData) => {
         const ctx = document.getElementById('employee-sales-chart').getContext('2d');
         
-        // 1. Criar um array de objetos com nome e vendas para cada colaborador.
         const employeePerformance = allCollaborators.filter(name => name !== 'Beatriz').map(name => {
             return {
                 name: name,
@@ -8948,10 +9783,8 @@ const loadAndDisplayCollaboratorMetas = () => {
             };
         });
 
-        // 2. Ordenar o array em ordem decrescente de vendas (do maior para o menor).
         employeePerformance.sort((a, b) => b.sales - a.sales);
 
-        // 3. Extrair os nomes (labels) e os valores (data) já ordenados.
         const sortedLabels = employeePerformance.map(item => item.name);
         const sortedData = employeePerformance.map(item => item.sales);
 
@@ -8961,23 +9794,45 @@ const loadAndDisplayCollaboratorMetas = () => {
         employeeChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: sortedLabels, // Usar os nomes ordenados
+                labels: sortedLabels,
                 datasets: [{
                     label: 'Vendas',
-                    data: sortedData, // Usar os dados de vendas ordenados
-                    backgroundColor: 'rgba(255, 107, 0, 0.6)',
-                    borderColor: '#FF6B00',
-                    borderWidth: 1
+                    data: sortedData,
+                    backgroundColor: '#ff6b00',
+                    borderRadius: 8,
+                    borderWidth: 0
                 }]
             },
             options: {
-                indexAxis: 'y', // Deixa as barras na horizontal para melhor leitura
+                indexAxis: 'y',
                 responsive: true,
                 scales: { 
-                    x: { ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                    y: { ticks: { color: 'white' }, grid: { display: false } } 
+                    x: { 
+                        ticks: { 
+                            color: '#8C7561',
+                            font: { family: 'Poppins', size: 10 },
+                            callback: function(value) { return 'R$ ' + (value >= 1000 ? (value/1000).toFixed(0) + 'k' : value); }
+                        }, 
+                        grid: { color: '#FFF0E0' } 
+                    },
+                    y: { 
+                        ticks: { color: '#2D2319', font: { family: 'Poppins', size: 11, weight: '700' } }, 
+                        grid: { display: false } 
+                    } 
                 },
-                plugins: { legend: { display: false } }
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#2D2319',
+                        padding: 10,
+                        cornerRadius: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return ' Vendas: R$ ' + context.parsed.x.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                            }
+                        }
+                    }
+                }
             }
         });
     };
@@ -10617,16 +11472,28 @@ async function calculateAndDisplayServiceRanking() {
         }
     };
 
-    async function handlePontoLogic() {
+    async function handlePontoLogic(force = false) {
         const todayString = getTodayDateString();
         const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`); // USA A NOVA VARIÁVEL
 
         try {
             const snapshot = await pontoRef.get();
-            const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
+            let dailyPontoData = snapshot.exists() ? snapshot.val() : {};
             const nextAction = await determineNextPontoAction(dailyPontoData);
 
             currentPontoAction = nextAction.action; // Armazena a ação a ser executada
+
+            if (force) {
+                if (!currentPontoAction || !currentPontoAction.startsWith('registrar_')) {
+                    if (!dailyPontoData.entrada) currentPontoAction = 'registrar_entrada';
+                    else if (!dailyPontoData.saida_almoco) currentPontoAction = 'registrar_saida_almoco';
+                    else if (!dailyPontoData.volta_almoco) currentPontoAction = 'registrar_volta_almoco';
+                    else if (!dailyPontoData.saida) currentPontoAction = 'registrar_saida';
+                    else currentPontoAction = 'registrar_entrada';
+                }
+                initPontoCamera();
+                return;
+            }
 
             // Lidar com dias não úteis ou folga primeiro
             if (nextAction.status === 'holiday' || nextAction.status === 'closed' || nextAction.status === 'day_off') {
@@ -10676,7 +11543,7 @@ async function calculateAndDisplayServiceRanking() {
 
             if (snapshot.exists()) {
                 notificationCount = snapshot.numChildren();
-                section.style.display = 'block';
+                section.style.display = 'none';
                 
                 const notifications = [];
                 snapshot.forEach(childSnapshot => {
@@ -11899,7 +12766,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                 currentPontoAction = null;
                 setTimeout(() => {
                     stopPontoCamera();
-                    showPage('collaboratorPage');
+                    showPage(lastPageBeforePonto || 'collaboratorPage');
                     checkPontoStatusAndDisplayWarnings();
                     captureButton.disabled = false;
                     captureButton.style.opacity = '1';
@@ -12808,6 +13675,7 @@ async function calculateAndDisplayStoreServiceRanking() {
     const loadAndShowCollaboratorProfile = (userName) => {
         currentUserName = userName;
         const userKey = userName.toLowerCase();
+        logUserActivity(userName);
         const displayEl = document.getElementById('collaborator-name-display');
         if (displayEl) displayEl.textContent = userName;
         
@@ -13234,6 +14102,18 @@ async function calculateAndDisplayStoreServiceRanking() {
                 };
 
                 safeAddListener('open-ranks-management-btn', 'click', openRanksManagementPage);
+                safeAddListener('open-logs-page', 'click', loadAndDisplayLogs);
+                safeAddListener('back-to-gs-from-logs', 'click', () => showPage('gsPage'));
+                safeAddListener('reset-logs-btn', 'click', resetAllLogs);
+                safeAddListener('open-hide-gs-page', 'click', loadHideGsTogglesPage);
+                safeAddListener('back-to-gs-from-hide-gs', 'click', () => showPage('gsPage'));
+                safeAddListener('open-ia-logs-page', 'click', loadAndDisplayIALogs);
+                safeAddListener('back-to-gs-from-ia-logs', 'click', () => showPage('gsPage'));
+                safeAddListener('clear-ia-logs-btn', 'click', clearAllIALogs);
+                safeAddListener('open-depuracao-ponto-btn', 'click', () => {
+                    lastPageBeforePonto = 'gsPage';
+                    handlePontoLogic(true);
+                });
                 
                 safeAddListener('open-supabase-management-btn', 'click', () => {
                     const pass = prompt("Digite a senha de acesso:");
@@ -13422,12 +14302,100 @@ async function calculateAndDisplayStoreServiceRanking() {
                 });
             };
 
+            const gsCustomHideItems = [
+                { id: 'open-settings-page', name: 'Configurar Metas' },
+                { id: 'add-manual-sale-btn', name: 'Lançar Vendas Diárias' },
+                { id: 'open-earnings-panel-btn', name: 'Ganhos & Comissões' },
+                { id: 'open-correction-page', name: 'Correção de Vendas' },
+                { id: 'open-ranks-management-btn', name: 'Gestão de Rankings' },
+                { id: 'open-ia-logs-page', name: 'Logs IA Hunter' },
+                { id: 'open-bonus-management-page', name: 'Bônus Extras' },
+                { id: 'open-daily-increase-page', name: 'Acréscimo % Meta' },
+                { id: 'open-painel-celulares-btn', name: 'Painel Celulares & Preços' },
+                { id: 'view-stock-requests-btn', name: 'Solicitações de Estoque' },
+                { id: 'open-mt-management-page', name: 'Gerenciar Mostruário' },
+                { id: 'verificar-ponto-btn', name: 'Histórico de Ponto Facial' },
+                { id: 'open-collaborator-profile-btn', name: 'Perfis dos Colaboradores' },
+                { id: 'open-overtime-management-page', name: 'Gestão de Horas Extras' },
+                { id: 'open-day-off-management-page', name: 'Escala de Folgas' },
+                { id: 'open-holidays-management-page', name: 'Gerenciar Feriados' },
+                { id: 'open-sundays-management-page', name: 'Domingos de Trabalho' },
+                { id: 'clear-ponto-status-btn', name: 'Resetar Status de Ponto' },
+                { id: 'open-tm-admin-btn', name: 'Clientes Telemarketing' },
+                { id: 'open-tm-stats-btn', name: 'Métricas de Envios TM' },
+                { id: 'open-afiliados-admin-btn', name: 'Gestão de Afiliados' },
+                { id: 'open-avisos-management-page', name: 'Avisos da Gerência' },
+                { id: 'open-quiz-management-btn', name: 'Gerenciar Perguntas Quiz' },
+                { id: 'view-quiz-submissions-btn', name: 'Respostas Recebidas Quiz' },
+                { id: 'open-depuracao-ponto-btn', name: 'Depuração (Bater Ponto)' },
+                { id: 'open-supabase-management-btn', name: 'Backup Supabase (ZIP)' },
+                { id: 'save-backup-btn', name: 'Baixar Backup Dados (.TXT)' },
+                { id: 'restore-backup-btn', name: 'Restaurar Backup Dados' }
+            ];
+
+            const applyGsVisibilityPreferences = async () => {
+                try {
+                    const snap = await database.ref('globalSettings/gsVisibilityPreferences').get();
+                    const prefs = snap.exists() ? snap.val() : {};
+
+                    gsCustomHideItems.forEach(item => {
+                        const el = document.getElementById(item.id);
+                        if (el) {
+                            const isVisible = prefs[item.id] !== false;
+                            el.style.display = isVisible ? 'flex' : 'none';
+                        }
+                    });
+                } catch (e) {
+                    console.error("Erro ao aplicar visibilidade do GS:", e);
+                }
+            };
+
+            const loadHideGsTogglesPage = async () => {
+                showPage('hideGsPage');
+                const container = document.getElementById('hide-gs-toggles-container');
+                container.innerHTML = '<p style="text-align: center; padding: 1rem;">Carregando opções...</p>';
+
+                try {
+                    const snap = await database.ref('globalSettings/gsVisibilityPreferences').get();
+                    const prefs = snap.exists() ? snap.val() : {};
+                    container.innerHTML = '';
+
+                    gsCustomHideItems.forEach(item => {
+                        const isChecked = prefs[item.id] !== false;
+                        const row = document.createElement('div');
+                        row.className = 'input-group';
+                        row.style.marginBottom = '0.4rem';
+                        row.innerHTML = `
+                            <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1);">
+                                <span style="font-size: 0.85rem; font-weight: 700; color: #fff;">${item.name}</span>
+                                <input type="checkbox" class="visibility-toggle gs-custom-vis-toggle" data-button-id="${item.id}" ${isChecked ? 'checked' : ''}>
+                            </label>
+                        `;
+                        container.appendChild(row);
+                    });
+
+                    container.querySelectorAll('.gs-custom-vis-toggle').forEach(toggle => {
+                        toggle.addEventListener('change', async (e) => {
+                            const btnId = e.target.dataset.buttonId;
+                            const checked = e.target.checked;
+                            await database.ref(`globalSettings/gsVisibilityPreferences/${btnId}`).set(checked);
+                            applyGsVisibilityPreferences();
+                        });
+                    });
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Erro ao carregar opções.</p>';
+                }
+            };
+
             document.getElementById('open-gs-from-profile-btn').addEventListener('click', async () => {
                 loadDashboardData();
                 loadManagerNotifications();
                 loadMaintenanceModeStatus();
                 markNotificationsAsRead();
                 await updateSystemStatusUI();
+                await applyGsVisibilityPreferences();
+                setupIAHunterGSListeners();
 
                 setupGSPageListeners();
                 loadVisibilitySettings();
@@ -13831,7 +14799,10 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
 
             // --- LISTENERS DA FUNÇÃO DE PONTO E GERENCIAMENTO DE DATAS ---
-            document.getElementById('bater-ponto-btn').addEventListener('click', handlePontoLogic);
+            document.getElementById('bater-ponto-btn').addEventListener('click', () => {
+                lastPageBeforePonto = 'collaboratorPage';
+                handlePontoLogic();
+            });
             document.getElementById('capture-ponto-btn').addEventListener('click', captureAndUploadPonto);
             
             // Listeners para troca de foto de perfil
@@ -13859,14 +14830,6 @@ async function calculateAndDisplayStoreServiceRanking() {
                     }
                 } catch (error) {
                     console.error("Erro ao carregar o status do perfil pessoal:", error);
-                }
-
-                if (userKey === 'gabrielly' || userKey === 'gabriely') {
-                    const tagHtml = `
-                        <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 182, 193, 0.4); padding: 6px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: #ffb6c1; margin-top: -4px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); backdrop-filter: blur(6px);">
-                            🌹🌹🌹 Buquê de Isabela • Funcionária Preferida
-                        </div>`;
-                    profileDisplayContainer.innerHTML = tagHtml + (profileDisplayContainer.innerHTML ? `<br>${profileDisplayContainer.innerHTML}` : '');
                 }
             }
 
@@ -14015,9 +14978,12 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
 
             // --- LISTENERS PARA STORIES E CHAT ---
-            document.getElementById('add-my-story-btn').addEventListener('click', () => {
-                document.getElementById('story-upload-input').click();
-            });
+            const addMyStoryBtn = document.getElementById('add-my-story-btn');
+            if (addMyStoryBtn) {
+                addMyStoryBtn.addEventListener('click', () => {
+                    document.getElementById('story-upload-input').click();
+                });
+            }
             document.getElementById('story-upload-input').addEventListener('change', (e) => {
                 handleStoryUpload(e.target.files[0]);
             });
@@ -14434,7 +15400,7 @@ async function calculateAndDisplayStoreServiceRanking() {
 
             document.getElementById('back-to-collab-from-ponto').addEventListener('click', () => {
                 stopPontoCamera();
-                showPage('collaboratorPage');
+                showPage(lastPageBeforePonto || 'collaboratorPage');
             });
             document.getElementById('back-to-gs-from-ponto-verify').addEventListener('click', () => showPage('gsPage'));
             document.getElementById('back-to-ponto-verify-from-history').addEventListener('click', () => showPage('pontoVerificationPage'));
@@ -15049,10 +16015,17 @@ async function calculateAndDisplayStoreServiceRanking() {
             const folderModal = document.getElementById('folder-modal');
 
             const openFolder = () => {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                folderModal.scrollTop = 0;
                 folderModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
                 setTimeout(() => {
                     folderModal.classList.add('visible');
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
                 }, 10);
             };
 
@@ -15076,28 +16049,36 @@ async function calculateAndDisplayStoreServiceRanking() {
                 { id: 'f-afiliados', action: () => showPage('afiliadosSelectionPage') },
                 { id: 'f-my-profile', original: 'open-my-profile-btn' },
                 { id: 'f-previsao', original: 'previsao-btn' },
-                { id: 'f-os', original: 'open-os-modal' },
-                { id: 'f-stock', original: 'open-request-stock-page' },
                 { id: 'f-quiz', original: 'open-quiz-page' },
-                { id: 'f-recibos', original: 'open-recibos-page' },
                 { id: 'f-send', original: 'open-send-device-page' },
-                { id: 'f-feedback', original: 'open-feedback-page' },
-                { id: 'f-ponto', original: 'bater-ponto-btn' },
-                { id: 'f-add-story', original: 'add-my-story-btn' },
-                { id: 'f-change-pass', original: 'change-password-btn' },
-                { id: 'f-change-photo', original: 'change-photo-btn' }
+                { id: 'f-feedback', original: 'open-feedback-page' }
             ];
 
             folderMappings.forEach(map => {
                 const el = document.getElementById(map.id);
                 if (el) {
                     el.addEventListener('click', () => {
+                        window.scrollTo(0, 0);
+                        document.documentElement.scrollTop = 0;
+                        document.body.scrollTop = 0;
                         closeFolder();
                         if (map.action) {
-                            setTimeout(map.action, 100);
+                            setTimeout(() => {
+                                map.action();
+                                window.scrollTo(0, 0);
+                                document.documentElement.scrollTop = 0;
+                                document.body.scrollTop = 0;
+                            }, 100);
                         } else if (map.original) {
                             const target = document.getElementById(map.original);
-                            if (target) setTimeout(() => { target.click(); }, 100);
+                            if (target) {
+                                setTimeout(() => {
+                                    target.click();
+                                    window.scrollTo(0, 0);
+                                    document.documentElement.scrollTop = 0;
+                                    document.body.scrollTop = 0;
+                                }, 100);
+                            }
                         }
                     });
                 }
@@ -16294,6 +17275,19 @@ window.openIAHunterPage = () => {
                 bubble.style.opacity = '0.4';
 
                 const name = currentUserName;
+                const labelMap = {
+                    'meta_vendas': 'Meta de Vendas',
+                    'vendas': 'Minhas Vendas',
+                    'servicos': 'Vendas de Serviços',
+                    'acessorios': 'Venda de Acessórios',
+                    'ranking': 'Posição no Ranking',
+                    'salario': 'Quanto seria meus ganhos?',
+                    'politica': 'Política Salarial'
+                };
+                const questionToLog = topic === 'custom' ? queryText : (labelMap[topic] || topic);
+                if (typeof logIAHunterQuery === 'function') {
+                    logIAHunterQuery(name, questionToLog);
+                }
                 if (!name) {
                     thinking.style.display = 'none';
                     setIAHunterState('idle');
@@ -16345,9 +17339,9 @@ window.openIAHunterPage = () => {
                     const posServ = getRankPos('servicos');
                     const posAces = getRankPos('acessorios');
 
-                    const prizeVendas = (posVendas === 1 ? 500 : posVendas === 2 ? 300 : posVendas === 3 ? 100 : 0);
-                    const prizeServ = (posServ === 1 ? 1000 : posServ === 2 ? 500 : posServ === 3 ? 200 : 0);
-                    const prizeAces = (posAces === 1 ? 300 : posAces === 2 ? 200 : posAces === 3 ? 100 : 0);
+                    const prizeVendas = (data.perc >= 100) ? (posVendas === 1 ? 500 : posVendas === 2 ? 300 : posVendas === 3 ? 100 : 0) : 0;
+                    const prizeServ = (data.servPerc >= 100) ? (posServ === 1 ? 1000 : posServ === 2 ? 500 : posServ === 3 ? 200 : 0) : 0;
+                    const prizeAces = (data.accPerc >= 100) ? (posAces === 1 ? 300 : posAces === 2 ? 200 : posAces === 3 ? 100 : 0) : 0;
 
                     let matchedKnowledgeAnswer = null;
                     let matchedPhoneData = null;
@@ -16355,9 +17349,14 @@ window.openIAHunterPage = () => {
                     if (topic === 'custom') {
                         const q = queryText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                         
+                        const pontoKeywords = ['bater ponto', 'bater o ponto', 'registrar ponto', 'digitar ponto', 'bater meu ponto', 'posso bater ponto', 'tirar ponto'];
+                        if (pontoKeywords.some(k => q.includes(k)) || q === 'ponto') {
+                            topic = 'bater_ponto_check';
+                        }
+
                         // 1. Verifica se é pergunta sobre aparelho celular ou modelo
                         const phoneKeywords = ['iphone', 'samsung', 'xiaomi', 'redmi', 'poco', 'realme', 'motorola', 'moto', 'itel', 'infinix', 'galaxy', 'note', 'celular', 'aparelho', 'preco do', 'quanto ta o', 'quanto e o', 'quanto custa'];
-                        const isPhoneSearch = phoneKeywords.some(k => q.includes(k));
+                        const isPhoneSearch = topic !== 'bater_ponto_check' && phoneKeywords.some(k => q.includes(k));
 
                         if (isPhoneSearch) {
                             // Limpa termos comuns para isolar o nome do modelo
@@ -16412,7 +17411,19 @@ window.openIAHunterPage = () => {
                     let responseHTML = '';
                     const faltaVenda = Math.max(0, data.goal - data.sold);
 
-                    if (topic === 'phone_result' && matchedPhoneData) {
+                    if (topic === 'bater_ponto_check') {
+                        hideIAHunterPhone();
+                        const todayString = getTodayDateString();
+                        const pontoSnap = await database.ref(`pontosDoDia/${todayString}/${name}`).get();
+                        const dailyPontoData = pontoSnap.exists() ? pontoSnap.val() : {};
+                        const nextAction = await determineNextPontoAction(dailyPontoData);
+
+                        if (nextAction.action && nextAction.action.startsWith('registrar_')) {
+                            responseHTML = `⏰ <strong>Horário de Ponto Liberado!</strong>\n\n• <strong>Status:</strong> ${nextAction.message}\n• Centralize seu rosto na câmera para registrar sua foto facial.\n\n<button class="ai-hunter-btn" style="background: linear-gradient(135deg, #ff8533, #ff6b00); color: #fff; font-weight: 800; font-size: 0.95rem; justify-content: center; padding: 14px; margin-top: 10px; border-radius: 16px; box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);" onclick="triggerPontoFromIA()"><i class="fa-solid fa-camera-retro"></i> BATER PONTO AGORA</button>`;
+                        } else {
+                            responseHTML = `⏰ <strong>Status do Ponto (${name}):</strong>\n\n• ${nextAction.message}`;
+                        }
+                    } else if (topic === 'phone_result' && matchedPhoneData) {
                     if (matchedPhoneData.isMultiple && Array.isArray(matchedPhoneData.options)) {
                         hideIAHunterPhone();
                         let optionsButtons = '';
@@ -16453,12 +17464,15 @@ window.openIAHunterPage = () => {
                     } else if (topic === 'acessorios') {
                         responseHTML = `🎧 <strong>Venda de Acessórios:</strong>\n\n• <strong>Acessórios Vendidos:</strong> ${formatBRL(data.accSold)}\n• <strong>Meta de Acessórios:</strong> ${formatBRL(data.accGoal)}\n• <strong>Atingimento:</strong> ${data.accPerc.toFixed(1)}%\n• <strong>Sua Comissão (10%):</strong> <span style="color: #2ecc71; font-weight: 700;">${formatBRL(data.accComm)}</span>`;
                     } else if (topic === 'ranking') {
-                        responseHTML = `🏆 <strong>Suas Posições nos Rankings:</strong>\n\n• 📱 <strong>Ranking de Vendas:</strong> <strong>${posVendas}º Lugar</strong> (${data.perc.toFixed(1)}%)${prizeVendas > 0 ? ' -> Prêmio atual: ' + formatBRL(prizeVendas) : ''}\n• 🛟 <strong>Ranking de Serviços:</strong> <strong>${posServ}º Lugar</strong> (${data.servPerc.toFixed(1)}%)${prizeServ > 0 ? ' -> Prêmio atual: ' + formatBRL(prizeServ) : ''}\n• 🎧 <strong>Ranking de Acessórios:</strong> <strong>${posAces}º Lugar</strong> (${data.accPerc.toFixed(1)}%)${prizeAces > 0 ? ' -> Prêmio atual: ' + formatBRL(prizeAces) : ''}\n\n${(posVendas === 1 || posServ === 1 || posAces === 1) ? '🔥 <em>Você está no topo do pódio!</em>' : '💪 <em>Bora acelerar para garantir a premiação no final do mês!</em>'}`;
+                        const obsVendas = prizeVendas > 0 ? ` -> Prêmio: ${formatBRL(prizeVendas)}` : (posVendas <= 3 ? ' (Requer 100% da meta)' : '');
+                        const obsServ = prizeServ > 0 ? ` -> Prêmio: ${formatBRL(prizeServ)}` : (posServ <= 3 ? ' (Requer 100% da meta)' : '');
+                        const obsAces = prizeAces > 0 ? ` -> Prêmio: ${formatBRL(prizeAces)}` : (posAces <= 3 ? ' (Requer 100% da meta)' : '');
+                        responseHTML = `🏆 <strong>Suas Posições nos Rankings:</strong>\n\n• 📱 <strong>Ranking de Vendas:</strong> <strong>${posVendas}º Lugar</strong> (${data.perc.toFixed(1)}%)${obsVendas}\n• 🛟 <strong>Ranking de Serviços:</strong> <strong>${posServ}º Lugar</strong> (${data.servPerc.toFixed(1)}%)${obsServ}\n• 🎧 <strong>Ranking de Acessórios:</strong> <strong>${posAces}º Lugar</strong> (${data.accPerc.toFixed(1)}%)${obsAces}\n\n${(posVendas === 1 || posServ === 1 || posAces === 1) ? '🔥 <em>Você está no topo do pódio!</em>' : '💪 <em>Bora acelerar para garantir a premiação no final do mês!</em>'}`;
                     } else if (topic === 'salario') {
                         const totalEstimatedWithTicket = data.total + 200 + (prizeVendas + prizeServ + prizeAces);
-                        responseHTML = `💰 <strong>Resumo do seu Salário Estimado (${name}):</strong>\n\n• <strong>Salário Fixo:</strong> R$ 1.621,00\n• <strong>Ticket Alimentação:</strong> R$ 200,00\n• <strong>Prêmio Vendas:</strong> ${data.perc >= 50 ? formatBRL(data.comm) + ' (1%' + (data.perc >= 120 ? ' + R$ 500 superação' : '') + ')' : 'R$ 0,00 (Abaixo de 50%)'}\n• <strong>Comissão Serviços (10%):</strong> ${formatBRL(data.servComm)}\n• <strong>Comissão Acessórios (10%):</strong> ${formatBRL(data.accComm)}\n${(prizeVendas + prizeServ + prizeAces) > 0 ? '• <strong>Prêmios de Ranking:</strong> ' + formatBRL(prizeVendas + prizeServ + prizeAces) + '\n' : ''}${data.bonus > 0 ? '• <strong>Bônus Adicional:</strong> ' + formatBRL(data.bonus) + '\n' : ''}\n👉 <strong>TOTAL ESTIMADO: <span style="color: #2ecc71; font-size: 1.15rem; font-weight: 800;">${formatBRL(totalEstimatedWithTicket)}</span></strong>`;
+                        responseHTML = `💰 <strong>Resumo dos seus Ganhos Estimados (${name}):</strong>\n\n• <strong>Salário Fixo:</strong> R$ 1.621,00\n• <strong>Ticket Alimentação:</strong> R$ 200,00\n• <strong>Prêmio Vendas:</strong> ${data.perc >= 50 ? formatBRL(data.comm) + ' (1%' + (data.perc >= 120 ? ' + R$ 500 superação' : '') + ')' : 'R$ 0,00 (Abaixo de 50%)'}\n• <strong>Comissão Serviços (10%):</strong> ${formatBRL(data.servComm)}\n• <strong>Comissão Acessórios (10%):</strong> ${formatBRL(data.accComm)}\n${(prizeVendas + prizeServ + prizeAces) > 0 ? '• <strong>Prêmios de Ranking:</strong> ' + formatBRL(prizeVendas + prizeServ + prizeAces) + '\n' : ''}${data.bonus > 0 ? '• <strong>Bônus Adicional:</strong> ' + formatBRL(data.bonus) + '\n' : ''}\n👉 <strong>TOTAL ESTIMADO: <span style="color: #2ecc71; font-size: 1.15rem; font-weight: 800;">${formatBRL(totalEstimatedWithTicket)}</span></strong>`;
                     } else if (topic === 'politica') {
-                        responseHTML = `🧡 <strong>POLÍTICA SALARIAL - LOJA DO HUNTER</strong>\n\n💰 <strong>Salário Fixo:</strong> R$ 1.621,00\n🍽️ <strong>Ticket Alimentação:</strong> R$ 200,00 / mês\n🎯 <strong>Prêmio por Meta:</strong> Ao atingir 50% = 1% sobre cada venda\n🚀 <strong>Superação de Meta:</strong> Ao atingir 120% = R$ 500,00 fixo\n🛠️ <strong>Serviços:</strong> 10% sobre Garantia Estendida e Seguro Queda\n🏆 <strong>Ranking de Serviços:</strong> 🥇 R$ 1.000 | 🥈 R$ 500 | 🥉 R$ 200\n🎧 <strong>Ranking de Acessórios:</strong> 🥇 R$ 300 | 🥈 R$ 200 | 🥉 R$ 100\n🏅 <strong>Ranking de Vendas:</strong> 🥇 R$ 500 | 🥈 R$ 300 | 🥉 R$ 100`;
+                        responseHTML = `🧡 <strong>POLÍTICA SALARIAL - LOJA DO HUNTER</strong>\n\n💰 <strong>SALÁRIO FIXO:</strong>\n• Salário fixo: R$ 1.621,00\n\n🎯 <strong>PRÊMIO POR META DE VENDAS:</strong>\n• Ao atingir 50% da meta: 1% de prêmio sobre cada venda\n\n🚀 <strong>SUPERAÇÃO DE META:</strong>\n• Ao atingir 120% da meta: R$ 500,00 de prêmio fixo\n\n🛠️ <strong>COMISSÃO POR SERVIÇOS:</strong>\n• 10% sobre Garantia Estendida\n• 10% sobre Seguro Contra Queda\n\n🎧 <strong>COMISSÃO POR ACESSÓRIOS:</strong>\n• 10% de comissão sobre vendas de acessórios\n\n🏆 <strong>RANKING DE SERVIÇOS:</strong>\n🥇 1º R$ 1.000,00 | 🥈 2º R$ 500,00 | 🥉 3º R$ 200,00\n\n🎧 <strong>RANKING DE ACESSÓRIOS:</strong>\n🥇 1º R$ 300,00 | 🥈 2º R$ 200,00 | 🥉 3º R$ 100,00\n\n🏅 <strong>RANKING DE VENDAS:</strong>\n🥇 1º R$ 500,00 | 🥈 2º R$ 300,00 | 🥉 3º R$ 100,00\n\n*(Valores de ranking variam por campanha e exigem 100% da meta)*\n\n🍽️ <strong>BENEFÍCIO:</strong>\n• Ticket Alimentação: R$ 200,00 por mês`;
                     } else if (topic === 'fallback_ai') {
                         const freeAIReply = await fetchFreeAIResponse(queryText);
                         if (freeAIReply) {
@@ -16482,6 +17496,387 @@ window.openIAHunterPage = () => {
                     bubble.style.opacity = '1';
                     bubble.innerHTML = "Ocorreu um erro ao consultar os dados. Tente novamente!";
                 }
+            };
+
+            let pendingIAAdminAction = null;
+
+            const requestIAAdminConfirmation = (questionText, executeFn) => {
+                pendingIAAdminAction = executeFn;
+                const confirmBox = document.getElementById('gs-ai-confirmation-box');
+                const confirmText = document.getElementById('gs-ai-confirmation-text');
+                if (confirmBox && confirmText) {
+                    confirmText.innerHTML = `⚠️ É isso mesmo que você quer fazer?<br><br><strong>${questionText}</strong>`;
+                    confirmBox.style.display = 'block';
+                }
+            };
+
+            window.askIAHunterGS = async (actionType, customText = '') => {
+                const bubble = document.getElementById('gs-ai-chat-bubble');
+                const confirmBox = document.getElementById('gs-ai-confirmation-box');
+                if (!bubble) return;
+
+                if (confirmBox) confirmBox.style.display = 'none';
+                pendingIAAdminAction = null;
+
+                const q = (customText || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+                if (actionType === 'status_ponto') {
+                    bubble.textContent = 'Verificando quem já bateu ponto hoje...';
+                    const todayString = getTodayDateString();
+                    try {
+                        const snap = await database.ref(`pontosDoDia/${todayString}`).get();
+                        const data = snap.exists() ? snap.val() : {};
+                        const recordedUsers = Object.keys(data);
+                        let summary = `📋 <strong>Situação do Ponto Hoje:</strong>\n\n`;
+                        if (recordedUsers.length === 0) {
+                            summary += `• Ninguém bateu ponto ainda hoje.`;
+                        } else {
+                            summary += `• <strong>${recordedUsers.length}</strong> pessoas registraram:\n`;
+                            recordedUsers.forEach(u => {
+                                const punches = Object.keys(data[u] || {}).map(p => p.replace('_', ' ')).join(', ');
+                                summary += `  👉 <strong>${u}</strong>: ${punches}\n`;
+                            });
+                        }
+                        bubble.innerHTML = summary;
+                    } catch (e) {
+                        bubble.textContent = 'Erro ao consultar os pontos.';
+                    }
+                    return;
+                }
+
+                if (actionType === 'resumo_vendas') {
+                    bubble.textContent = 'Consultando vendas de hoje...';
+                    const todayString = getTodayDateString();
+                    try {
+                        const [salesSnap, dailySnap] = await Promise.all([
+                            database.ref('salesData').get(),
+                            database.ref(`dailySales/${todayString}`).get()
+                        ]);
+                        const daily = dailySnap.exists() ? dailySnap.val() : {};
+                        let totalHoje = 0, servHoje = 0, accHoje = 0;
+                        Object.values(daily).forEach(d => {
+                            totalHoje += parseFloat(d.vendas || 0);
+                            servHoje += parseFloat(d.servico || 0);
+                            accHoje += parseFloat(d.acessorio || 0);
+                        });
+                        bubble.innerHTML = `📊 <strong>Vendas Feitas Hoje:</strong>\n\n• 📱 Celulares/Aparelhos: <strong>${formatBRL(totalHoje)}</strong>\n• 🛟 Serviços & Seguros: <strong>${formatBRL(servHoje)}</strong>\n• 🎧 Acessórios: <strong>${formatBRL(accHoje)}</strong>`;
+                    } catch (e) {
+                        bubble.textContent = 'Erro ao consultar resumo de vendas.';
+                    }
+                    return;
+                }
+
+                if (actionType === 'ajuda_comandos') {
+                    bubble.innerHTML = `💡 <strong>Você pode falar comigo de forma simples e natural!</strong>\n\nVeja exemplos do que você pode digitar:\n\n• <strong>Mudar meta:</strong> <em>"mudar meta da mainara para 50000"</em>\n• <strong>Dar bônus:</strong> <em>"dar bonus de 150 pro eliseu"</em>\n• <strong>Lançar venda hoje:</strong> <em>"lancar venda de 2000 pra aline"</em>\n• <strong>Meta de serviço:</strong> <em>"meta servico eliseu 500"</em>\n• <strong>Meta de acessório:</strong> <em>"meta acessorio pablo 800"</em>\n• <strong>Aumentar meta de hoje:</strong> <em>"aumentar meta em 25%"</em>\n• <strong>Mudar juros paymobi:</strong> <em>"juros paymobi 8.5%"</em>\n• <strong>Modo Manutenção:</strong> <em>"ligar manutencao"</em> ou <em>"desligar manutencao"</em>\n• <strong>Tema de Natal:</strong> <em>"ligar natal"</em> ou <em>"desligar natal"</em>\n• <strong>Limpar ponto:</strong> <em>"limpar ponto do demilson"</em>\n• <strong>Resetar CDC:</strong> <em>"resetar cdc do eliseu"</em>\n• <strong>Limpar avisos de ponto:</strong> <em>"limpar notificacoes"</em>\n\n🔒 <em>Fique tranquilo: eu sempre vou te perguntar se é isso mesmo antes de fazer qualquer alteração!</em>`;
+                    return;
+                }
+
+                if (actionType === 'custom') {
+                    if (!q) return;
+
+                    const parseSmartNumber = (text) => {
+                        let t = text.replace(/mil\b/g, '000').replace(/k\b/g, '000');
+                        const numbers = t.match(/\d+[\d.,]*/g) || [];
+                        if (numbers.length === 0) return 0;
+                        return parseFromBRLInput(numbers[0]);
+                    };
+
+                    const parsedNumber = parseSmartNumber(q);
+                    const matchedUser = allUsers.find(u => q.includes(u.toLowerCase()));
+                    const targetKey = matchedUser ? matchedUser.toLowerCase() : null;
+
+                    if (q.includes('manutencao')) {
+                        const enable = q.includes('ligar') || q.includes('ativar') || q.includes('sim');
+                        const disable = q.includes('desligar') || q.includes('desativar') || q.includes('tirar');
+
+                        if (q.includes('status')) {
+                            const snap = await database.ref('globalSettings/isMaintenanceMode').get();
+                            const isAtivo = snap.exists() && snap.val() === true;
+                            bubble.innerHTML = `O Modo de Manutenção está <strong>${isAtivo ? 'ATIVADO 🔴' : 'DESATIVADO 🟢'}</strong> no momento.`;
+                            return;
+                        }
+
+                        if (!enable && !disable) {
+                            bubble.innerHTML = `Você deseja <strong>ligar</strong> ou <strong>desligar</strong> o modo de manutenção? (ex: <em>"ligar manutenção"</em>).`;
+                            return;
+                        }
+
+                        const novoEstado = enable;
+                        const textoAcao = novoEstado ? 'LIGAR o Modo de Manutenção (colaboradores verão o aviso)' : 'DESLIGAR o Modo de Manutenção';
+
+                        requestIAAdminConfirmation(`${textoAcao}?`, async () => {
+                            await database.ref('globalSettings/isMaintenanceMode').set(novoEstado);
+                            loadMaintenanceModeStatus();
+                            checkAndDisplayMaintenanceNotice();
+                            bubble.innerHTML = `✅ <strong>Feito!</strong> O modo de manutenção foi <strong>${novoEstado ? 'ativado' : 'desativado'}</strong> com sucesso.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('natal')) {
+                        const enable = q.includes('ligar') || q.includes('ativar');
+                        const disable = q.includes('desligar') || q.includes('desativar');
+
+                        if (!enable && !disable) {
+                            bubble.innerHTML = `Você quer <strong>ativar</strong> ou <strong>desativar</strong> o tema de Natal?`;
+                            return;
+                        }
+
+                        const novoEstado = enable;
+                        requestIAAdminConfirmation(`${novoEstado ? 'ATIVAR' : 'DESATIVAR'} o Tema de Natal para todo o aplicativo?`, async () => {
+                            await database.ref('globalSettings/isChristmasMode').set(novoEstado);
+                            applySelectedTheme();
+                            bubble.innerHTML = `✅ <strong>Feito!</strong> Tema natalino foi <strong>${novoEstado ? 'ativado' : 'desativado'}</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('notificac') && (q.includes('limpar') || q.includes('apagar') || q.includes('zerar'))) {
+                        requestIAAdminConfirmation(`Apagar todas as notificações de ponto acumuladas no painel?`, async () => {
+                            await database.ref('managerNotifications').remove();
+                            bubble.innerHTML = `✅ <strong>Pronto!</strong> Todas as notificações de ponto foram apagadas.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('resetar cdc') || q.includes('zerar cdc') || q.includes('reiniciar cdc')) {
+                        const mgr = matchedUser || (q.includes('bacabal') ? 'Tacilio' : 'Eliseu');
+                        const mgrKey = mgr.toLowerCase();
+
+                        requestIAAdminConfirmation(`Resetar a verba de CDC de <strong>${mgr}</strong> para <strong>R$ 1.000,00</strong>?`, async () => {
+                            await database.ref(`cashManagement/${mgrKey}/currentValue`).set(CASH_BOX_INITIAL_VALUE);
+                            bubble.innerHTML = `✅ <strong>Pronto!</strong> A verba de CDC de <strong>${mgr}</strong> foi resetada para ${formatBRL(CASH_BOX_INITIAL_VALUE)}.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('lancar venda') || (q.includes('venda') && (q.includes('hoje') || q.includes('lancar')))) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `Para qual vendedor você quer lançar a venda de hoje? (ex: <em>"lancar venda de 1500 pra aline"</em>).`;
+                            return;
+                        }
+                        if (parsedNumber <= 0) {
+                            bubble.innerHTML = `Qual o valor da venda de hoje para ${matchedUser}?`;
+                            return;
+                        }
+
+                        const todayString = getTodayDateString();
+                        requestIAAdminConfirmation(`Lançar <strong>${formatBRL(parsedNumber)}</strong> de venda HOJE para <strong>${matchedUser}</strong>?`, async () => {
+                            const [salesSnap, dailySnap] = await Promise.all([
+                                database.ref(`salesData/${targetKey}`).get(),
+                                database.ref(`dailySales/${todayString}/${targetKey}`).get()
+                            ]);
+                            const curSales = salesSnap.exists() ? (parseFloat(salesSnap.val().vendas) || 0) : 0;
+                            const curDaily = dailySnap.exists() ? (parseFloat(dailySnap.val().vendas) || 0) : 0;
+
+                            const updates = {};
+                            updates[`dailySales/${todayString}/${targetKey}/vendas`] = curDaily + parsedNumber;
+                            updates[`salesData/${targetKey}/vendas`] = curSales + parsedNumber;
+                            await database.ref().update(updates);
+                            loadDashboardData();
+                            calculateAndDisplayRanking();
+                            bubble.innerHTML = `✅ <strong>Venda lançada!</strong> Adicionei <strong>${formatBRL(parsedNumber)}</strong> nas vendas de hoje de <strong>${matchedUser}</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('meta') && (q.includes('servico') || q.includes('seguro'))) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `De qual colaborador você quer alterar a meta de serviço? (ex: <em>"meta servico eliseu 500"</em>).`;
+                            return;
+                        }
+                        if (parsedNumber <= 0) {
+                            bubble.innerHTML = `Informe o valor da nova meta de serviços (ex: <em>"meta servico ${matchedUser} 600"</em>).`;
+                            return;
+                        }
+
+                        requestIAAdminConfirmation(`Definir a Meta de Serviços de <strong>${matchedUser}</strong> para <strong>${formatBRL(parsedNumber)}</strong>?`, async () => {
+                            await database.ref(`metas/${targetKey}/meta_servico`).set(parsedNumber);
+                            calculateAndDisplayServiceRanking();
+                            bubble.innerHTML = `✅ <strong>Meta atualizada!</strong> A meta de serviços de <strong>${matchedUser}</strong> agora é <strong>${formatBRL(parsedNumber)}</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('meta') && (q.includes('acessorio') || q.includes('acessorios'))) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `De qual colaborador você quer alterar a meta de acessórios? (ex: <em>"meta acessorios pablo 800"</em>).`;
+                            return;
+                        }
+                        if (parsedNumber <= 0) {
+                            bubble.innerHTML = `Informe o valor da meta de acessórios (ex: <em>"meta acessorios ${matchedUser} 800"</em>).`;
+                            return;
+                        }
+
+                        requestIAAdminConfirmation(`Definir a Meta de Acessórios de <strong>${matchedUser}</strong> para <strong>${formatBRL(parsedNumber)}</strong>?`, async () => {
+                            await database.ref(`metas/${targetKey}/meta_acessorio`).set(parsedNumber);
+                            calculateAndDisplayAccessoryRanking();
+                            bubble.innerHTML = `✅ <strong>Meta atualizada!</strong> A meta de acessórios de <strong>${matchedUser}</strong> agora é <strong>${formatBRL(parsedNumber)}</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('meta')) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `De quem é a meta que você quer alterar? (ex: <em>"mudar meta da mainara para 50000"</em>).`;
+                            return;
+                        }
+                        if (parsedNumber <= 0) {
+                            bubble.innerHTML = `Qual o novo valor da meta para <strong>${matchedUser}</strong>? (ex: <em>"meta ${matchedUser} 60000"</em>).`;
+                            return;
+                        }
+
+                        const isStoreMgr = ['eliseu', 'tacilio'].includes(targetKey);
+                        const isLojaMentioned = q.includes('loja');
+
+                        const confirmMsg = isStoreMgr && isLojaMentioned
+                            ? `Definir a Meta da Loja de <strong>${matchedUser}</strong> para <strong>${formatBRL(parsedNumber)}</strong>?`
+                            : `Definir a Meta de Vendas de <strong>${matchedUser}</strong> para <strong>${formatBRL(parsedNumber)}</strong>?`;
+
+                        requestIAAdminConfirmation(confirmMsg, async () => {
+                            if (isStoreMgr && isLojaMentioned) {
+                                await database.ref(`metas/${targetKey}/metaLoja`).set(parsedNumber);
+                            } else {
+                                await database.ref(`metas/${targetKey}/venda`).set(parsedNumber);
+                            }
+                            calculateAndDisplayRanking();
+                            calculateAndDisplayStoreRanking();
+                            bubble.innerHTML = `✅ <strong>Meta atualizada!</strong> A meta de <strong>${matchedUser}</strong> agora é <strong>${formatBRL(parsedNumber)}</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('bonus') || q.includes('bonificacao')) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `Pra quem você quer dar o bônus? (ex: <em>"dar bonus de 200 pra mainara"</em>).`;
+                            return;
+                        }
+                        if (parsedNumber <= 0) {
+                            bubble.innerHTML = `Qual o valor do bônus para <strong>${matchedUser}</strong>?`;
+                            return;
+                        }
+
+                        requestIAAdminConfirmation(`Lançar um bônus extra de <strong>${formatBRL(parsedNumber)}</strong> para <strong>${matchedUser}</strong>?`, async () => {
+                            await database.ref(`bonusData/${targetKey}`).set(parsedNumber);
+                            bubble.innerHTML = `✅ <strong>Bônus registrado!</strong> Bônus de <strong>${formatBRL(parsedNumber)}</strong> lançado para <strong>${matchedUser}</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('acrescimo') || q.includes('aumento')) {
+                        const rawNumbers = q.match(/\d+[\d.,]*/g) || [];
+                        const rawPercent = parseFloat(rawNumbers[0] || 0);
+
+                        if (rawPercent <= 0) {
+                            bubble.innerHTML = `Informe a porcentagem do aumento (ex: <em>"aumentar meta em 20%"</em>).`;
+                            return;
+                        }
+
+                        requestIAAdminConfirmation(`Definir o aumento na meta diária de hoje em <strong>${rawPercent}%</strong>?`, async () => {
+                            await database.ref('globalSettings/dailyGoalIncrease').set(rawPercent);
+                            calculateAndDisplayRanking();
+                            calculateAndDisplayStoreRanking();
+                            bubble.innerHTML = `✅ <strong>Pronto!</strong> A meta diária de hoje agora tem <strong>${rawPercent}%</strong> de acréscimo.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('juro') || q.includes('paymobi') || q.includes('taxa')) {
+                        const rawNumbers = q.match(/\d+[\d.,]*/g) || [];
+                        const rawRate = parseFloat(rawNumbers[0] || 0);
+
+                        if (rawRate <= 0) {
+                            bubble.innerHTML = `Qual o novo valor dos juros da PayMobi? (ex: <em>"juros paymobi 8.9%"</em>).`;
+                            return;
+                        }
+
+                        requestIAAdminConfirmation(`Mudar os juros mensais da PayMobi para <strong>${rawRate}%</strong>?`, async () => {
+                            await database.ref('globalSettings/payMobiInterest').set(rawRate);
+                            globalPayMobiInterest = rawRate;
+                            bubble.innerHTML = `✅ <strong>Atualizado!</strong> Os juros da PayMobi agora são de <strong>${rawRate}%</strong>.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('limpar ponto') || q.includes('zerar ponto') || q.includes('apagar ponto')) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `De quem você quer apagar o ponto de hoje? (ex: <em>"limpar ponto do demilson"</em>).`;
+                            return;
+                        }
+                        const todayString = getTodayDateString();
+
+                        requestIAAdminConfirmation(`Apagar todos os pontos batidos HOJE por <strong>${matchedUser}</strong> para ele poder bater de novo?`, async () => {
+                            await database.ref(`pontosDoDia/${todayString}/${matchedUser}`).remove();
+                            bubble.innerHTML = `✅ <strong>Ponto zerado!</strong> Os registros de hoje de <strong>${matchedUser}</strong> foram apagados.`;
+                        });
+                        return;
+                    }
+
+                    if (q.includes('status') && q.includes('sistema')) {
+                        let state = 'auto';
+                        let stateLabel = 'Automático (por data)';
+                        if (q.includes('ativo')) { state = 'active'; stateLabel = 'Sistema Ativo (Verde)'; }
+                        else if (q.includes('aguardando') || q.includes('pagamento')) { state = 'waiting'; stateLabel = 'Aguardando Pagamento (Amarelo)'; }
+                        else if (q.includes('risco') || q.includes('perigo')) { state = 'danger'; stateLabel = 'Servidor em Risco (Vermelho)'; }
+
+                        requestIAAdminConfirmation(`Mudar a cor/aviso do Status do Sistema para <strong>"${stateLabel}"</strong>?`, async () => {
+                            await database.ref('globalSettings/systemStatusOverride').set(state);
+                            await updateSystemStatusUI();
+                            bubble.innerHTML = `✅ <strong>Status alterado para "${stateLabel}"!</strong>`;
+                        });
+                        return;
+                    }
+
+                    bubble.innerHTML = `Não entendi o que você precisa fazer com "<em>${customText}</em>".\n\nToque no botão <strong>Exemplos Fáceis</strong> para ver como falar comigo de um jeito bem simples! 😊`;
+                }
+            };
+
+            const setupIAHunterGSListeners = () => {
+                const sendBtn = document.getElementById('gs-ai-send-btn');
+                const inputEl = document.getElementById('gs-ai-input');
+                const confirmBtn = document.getElementById('gs-ai-confirm-btn');
+                const cancelBtn = document.getElementById('gs-ai-cancel-btn');
+
+                const handleSend = () => {
+                    if (!inputEl) return;
+                    const txt = inputEl.value.trim();
+                    if (!txt) return;
+                    inputEl.value = '';
+                    window.askIAHunterGS('custom', txt);
+                };
+
+                if (sendBtn) sendBtn.onclick = handleSend;
+                if (inputEl) {
+                    inputEl.onkeypress = (e) => {
+                        if (e.key === 'Enter') handleSend();
+                    };
+                }
+
+                if (confirmBtn) {
+                    confirmBtn.onclick = async () => {
+                        const box = document.getElementById('gs-ai-confirmation-box');
+                        if (box) box.style.display = 'none';
+                        if (typeof pendingIAAdminAction === 'function') {
+                            await pendingIAAdminAction();
+                            pendingIAAdminAction = null;
+                        }
+                    };
+                }
+
+                if (cancelBtn) {
+                    cancelBtn.onclick = () => {
+                        const box = document.getElementById('gs-ai-confirmation-box');
+                        if (box) box.style.display = 'none';
+                        pendingIAAdminAction = null;
+                        const bubble = document.getElementById('gs-ai-chat-bubble');
+                        if (bubble) bubble.innerHTML = `Operação cancelada. Nenhuma alteração foi realizada no sistema.`;
+                    };
+                }
+            };
+
+            window.triggerPontoFromIA = () => {
+                lastPageBeforePonto = 'iaHunterPage';
+                handlePontoLogic();
             };
 
             const triggerIaBtn = document.getElementById('trigger-ia-hunter');
