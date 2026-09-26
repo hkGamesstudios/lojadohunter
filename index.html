@@ -2642,16 +2642,17 @@
         /* CARDS DE KPIS EM ESTILO MOBILE ORANGE & WHITE */
         #gs-page .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.65rem;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
             width: 100%;
+            margin-bottom: 0.75rem;
         }
 
         #gs-page .kpi-card {
             background: #FFFFFF !important;
             border: 1px solid #FFE4CC !important;
             border-radius: 20px !important;
-            padding: 1rem 0.65rem !important;
+            padding: 1.1rem 1rem !important;
             box-shadow: 0 6px 18px rgba(255, 111, 0, 0.07) !important;
             text-align: center !important;
             overflow: hidden;
@@ -2664,7 +2665,7 @@
 
         #gs-page .kpi-title {
             color: #947860 !important;
-            font-size: 0.6rem !important;
+            font-size: 0.7rem !important;
             font-weight: 800 !important;
             letter-spacing: 0.6px !important;
             margin-bottom: 5px;
@@ -2672,7 +2673,7 @@
 
         #gs-page .kpi-value {
             color: #FF6F00 !important;
-            font-size: 1.18rem !important;
+            font-size: 1.6rem !important;
             font-weight: 900 !important;
             line-height: 1.2;
         }
@@ -3535,7 +3536,7 @@
 <!-- AVISO DE ATUALIZAÇÃO -->
 <div id="update-notice-overlay">
     <div class="update-notice-content">
-        <h2>Versão 10.0.1 - B</h2>
+        <h2>Versão 10.0.2 - C</h2>
         <p>Atualização com novo Painel GS, melhorias na IA Hunter, meta de acessórios e novos recursos!</p>
         <button id="close-update-notice" class="update-notice-btn">( ok )</button>
     </div>
@@ -3545,19 +3546,20 @@
 <div id="whats-new-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 1.2rem;">
     <div style="background: linear-gradient(150deg, rgba(35, 20, 10, 0.96), rgba(18, 10, 5, 0.98)); border: 1px solid rgba(255, 107, 0, 0.4); border-radius: 22px; padding: 1.2rem; max-width: 350px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255, 107, 0, 0.2); text-align: center; color: #fff; animation: modalContentEnter 0.4s var(--ease-out-back);">
         <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 107, 0, 0.2); border: 1px solid rgba(255, 107, 0, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; color: #ff9f43; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
-            <i class="fa-solid fa-sparkles"></i> Novidades 10.0.1 - B
+            <i class="fa-solid fa-sparkles"></i> Novidades 10.0.2 - C
         </div>
         <h3 style="font-size: 1.1rem; font-weight: 800; margin: 0 0 10px 0; color: #fff;">O que mudou nesta versão</h3>
         
         <div style="text-align: left; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 10px 12px; font-size: 0.72rem; line-height: 1.45; color: #e6e6e6; margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px;">
-            <div>• <strong>Bater Ponto:</strong> em destaque no perfil e direto pela IA.</div>
-            <div>• <strong>Meta do Dia:</strong> meta diária de acessórios adicionada.</div>
-            <div>• <strong>Ranking & Salário:</strong> prêmio de ranking exige 100% da meta.</div>
-            <div>• <strong>PayMobi:</strong> valor de serviço somado na entrada sem encarecer parcelas.</div>
-            <div>• <strong>Painel GS Moderno:</strong> cards quadrados e organizados.</div>
-            <div>• <strong>Logs & Controle:</strong> ranking de uso, ocultar botões do GS e depuração.</div>
-            <div>• <strong>IA Hunter GS:</strong> comandos administrativos simplificados.</div>
-        </div>
+                <div>• <strong>Melhorias Visuais:</strong> contraste e fontes brancas nos preços dos aparelhos, novo design e leitura aprimorada.</div>
+                <div>• <strong>Bater Ponto:</strong> em destaque no perfil e direto pela IA.</div>
+                <div>• <strong>Meta do Dia:</strong> meta diária de acessórios adicionada.</div>
+                <div>• <strong>Ranking & Salário:</strong> prêmio de ranking exige 100% da meta.</div>
+                <div>• <strong>PayMobi:</strong> valor de serviço somado na entrada sem encarecer parcelas.</div>
+                <div>• <strong>Painel GS Moderno:</strong> cards quadrados e organizados.</div>
+                <div>• <strong>Logs & Controle:</strong> ranking de uso, ocultar botões do GS e depuração.</div>
+                <div>• <strong>IA Hunter GS:</strong> comandos administrativos simplificados.</div>
+            </div>
 
         <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
             <button id="close-whats-new-btn" style="width: 100%; padding: 9px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; color: #fff; font-weight: 700; font-size: 0.8rem; cursor: pointer;">Fechar</button>
@@ -4470,12 +4472,6 @@
             <p id="ponto-countdown-timer" style="text-align: center; font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin: 0; min-height: 20px;"></p>
             <p id="ponto-live-countdown" style="text-align: center; font-size: 1.1rem; font-weight: 600; color: #f1c40f; margin: 0; min-height: 25px;"></p>
 
-            <!-- Botão Bater Ponto em Destaque -->
-            <a href="#" id="bater-ponto-btn" class="action-button full-width" style="display: none; flex-direction: row; align-items: center; justify-content: center; gap: 14px; width: 100%; max-width: 380px; padding: 18px 20px; background: linear-gradient(135deg, #ff8533 0%, #ff6b00 50%, #d35400 100%); border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 22px; box-shadow: 0 8px 25px rgba(255, 107, 0, 0.5), inset 0 2px 4px rgba(255,255,255,0.4); color: #ffffff; text-decoration: none; font-size: 1.05rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 0.5rem 0 1rem 0; aspect-ratio: initial; height: auto;">
-                <i class="fa-solid fa-camera-retro" style="font-size: 1.8rem; margin: 0; color: #ffffff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));"></i>
-                <span style="font-size: 1.05rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Bater Ponto</span>
-            </a>
-
             <!-- Painel de vendas individuais -->
             <div id="individual-sales-data"></div>
 
@@ -4546,6 +4542,10 @@
                     <i class="fa-solid fa-camera-rotate"></i>
                     <span>Trocar Foto</span>
                 </a>
+                <a href="#" id="bater-ponto-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-camera-retro"></i>
+                    <span>Digitar Ponto</span>
+                </a>
                 <a href="#" id="open-entrada-nota-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span>Entrada/Nota</span>
@@ -4613,37 +4613,188 @@
                         </div>
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
                     </div>
-                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.1 - B</div>
+                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.2 - C</div>
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
                     <button id="open-whats-new-btn" onclick="event.stopPropagation(); document.getElementById('whats-new-overlay').style.display = 'flex';" style="background: linear-gradient(135deg, #ff8533, #ff6b00); color: #ffffff; border: none; padding: 6px 14px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; box-shadow: 0 3px 10px rgba(255, 107, 0, 0.3);">
                         <i class="fa-solid fa-sparkles"></i> Ver Novidades da Versão
                     </button>
                     <div class="system-details-expand">
-                        <div class="receipt-line"><span>Supabase (Servidor de Mídias)</span><span>R$ 120,00</span></div>
-                        <div class="receipt-line"><span>Banco de Dados Realtime</span><span>R$ 60,00</span></div>
-                        <div class="receipt-line"><span>Taxa de Serviço</span><span>R$ 25,00</span></div>
-                        <div class="receipt-line"><span>Atualizações e Manutenção</span><span>R$ 27,00</span></div>
-                        <div class="receipt-total"><span>VALOR TOTAL</span><span>R$ 232,00</span></div>
-                        
-                        <div class="payment-box">
-                            <p>Código PIX Copia e Cola:</p>
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px;">
-                                <div class="pix-key" style="font-size: 0.6rem; opacity: 0.7; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">00020126770014BR.GOV.BCB.PIX0129redlinedelivery1212@gmail.com0222SISTEMA LOJA DO HUNTER5204000053039865406232.005802BR5925Pedro Antonio Trinta Trin6009SAO PAULO62140510TX4XIWap3s6304D7D4</div>
-                                <button onclick="handlePixCopyAndCount()" style="background: var(--primary-color); border: none; color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; width: 100%;">
-                                    <i class="fa-solid fa-copy"></i> COPIAR CÓDIGO PIX
-                                </button>
-                            </div>
-                            <p style="margin-top: 8px; font-size: 0.65rem; color: #ccc;">Vencimento: Dia 20 (Tolerância de 5 dias)</p>
-                        </div>
-                        <div class="system-warning-text">
-                            Atenção: Caso o pagamento não seja efetuado em até 2 dias após o prazo de tolerância, o servidor, banco de dados e hospedagem serão suspensos automaticamente.
-                        </div>
+                        <div class="receipt-line"><span>Supabase (Servidor de Mídias & Storage)</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Operacional</span></div>
+                        <div class="receipt-line"><span>Banco de Dados Realtime & Sincronização</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Conectado</span></div>
+                        <div class="receipt-line"><span>IA Hunter (Processamento & Tokens)</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Online</span></div>
+                        <div class="receipt-line"><span>Servidor Cloud & CDN de Alta Performance</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Ativo</span></div>
+                        <div class="receipt-line"><span>Backup Automático Redundante & Segurança</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Protegido</span></div>
+                        <div class="receipt-line"><span>Taxa de Licença & Infraestrutura</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Regular</span></div>
+                        <div class="receipt-line"><span>Atualizações Contínuas & Suporte Técnico</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Vigente</span></div>
                         <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
                             <button id="admin-manual-status-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); font-size: 0.6rem; cursor: pointer; padding: 4px 8px; border-radius: 4px;">EDITAR STATUS [ADM]</button>
                         </div>
                     </div>
                 </div>
+
+                <button id="btn-ir-pagamento" onclick="openBoaCompraCheckout()" style="display: none; width: 100%; margin-top: 10px; padding: 13px; background: linear-gradient(135deg, #ff8533 0%, #ff6b00 100%); border: 1px solid rgba(255, 111, 0, 0.25); border-radius: 16px; color: #ffffff; font-size: 0.85rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(255, 111, 0, 0.25); text-transform: uppercase; letter-spacing: 0.5px;">
+                    <i class="fa-solid fa-credit-card"></i> Ir para Pagamento
+                </button>
             </div>
+
+            <div id="boacompra-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 4000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden; background: #f8fafc; font-family: 'Poppins', sans-serif;">
+                <div class="collaborator-header" style="background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important; border-bottom: 2px solid #ff6b00; position: sticky; top: 0; z-index: 100; padding: 1.2rem 1rem !important; display: flex; align-items: center; justify-content: space-between; min-height: 65px;">
+                    <button onclick="window.closeBoaCompraPage()" class="back-button" style="color: #ffffff !important; position: static; transform: none; background: rgba(255, 255, 255, 0.2); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="https://avatars.githubusercontent.com/u/10960497?v=4" alt="BoaCompra" style="width: 32px; height: 32px; border-radius: 50%; background: #fff; padding: 2px;">
+                        <img src="https://www.itau.com.br/media/dam/m/c657c5346c02c3/original/logo-parceiro-boa-compra-cartoes-debito.png" alt="Logo BoaCompra" style="height: 22px; object-fit: contain;">
+                    </div>
+                </div>
+
+                <div class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.5rem 1rem 3rem 1rem; align-items: stretch; gap: 1rem; flex-direction: column; color: #2D2319;">
+                    <div style="background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 1.4rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                        <span style="font-size: 0.65rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; display: block; text-align: center;">Detalhamento da Licença & Infraestrutura</span>
+                        <h3 style="font-size: 1.25rem; margin: 4px 0 14px 0; font-weight: 800; color: #1e293b; text-align: center;">LOJA DO HUNTER</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; border-bottom: 1px solid #f1f5f9; padding-bottom: 14px; font-size: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">Supabase (Storage & Mídias)</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Hospedagem em nuvem de fotos de ponto, imagens de aparelhos e stories</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 115,10</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">Banco de Dados Realtime</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Sincronização instantânea de vendas, metas e fechamentos entre lojas</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 75,00</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">IA Hunter (Processamento & Tokens)</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Inteligência artificial dedicada para tirar dúvidas de vendas, metas e modelos</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 68,00</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">Servidor Cloud & CDN Dedicada</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Distribuição de rede para velocidade sem travamentos nos celulares da equipe</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 54,07</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">Backup Automático & Segurança</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Cópias diárias e proteção contra perda de dados de vendas e histórico</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 38,00</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">Licença & Integrações de APIs</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Conexão ativa com planilhas de preços, juros PayMobi e WhatsApp</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 35,00</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                <div>
+                                    <strong style="color: #1e293b; display: block;">Suporte & Atualizações Contínuas</strong>
+                                    <span style="font-size: 0.65rem; color: #64748b; line-height: 1.2; display: block;">Correções de falhas, melhorias visuais e manutenção preventiva</span>
+                                </div>
+                                <span style="font-weight: 800; color: #1e293b; white-space: nowrap;">R$ 35,00</span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px;">
+                            <span style="font-size: 0.85rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Valor Total da Fatura</span>
+                            <span style="font-size: 1.8rem; font-weight: 900; color: #16a34a;">R$ 420,17</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 1rem; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                        <div style="font-size: 0.68rem; font-weight: 700; color: #64748b; margin-bottom: 8px; text-transform: uppercase;">Formas de Pagamento Homologadas</div>
+                        <img src="https://www.vesperados.com.br/wp-content/uploads/2021/05/logo-pagseguro.png" alt="Cartões Aceitos" style="max-width: 100%; height: 38px; object-fit: contain;">
+                    </div>
+
+                    <div style="background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; padding: 1.5rem 1.2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                        <div id="boacompra-initial-view">
+                            <button onclick="startBoaCompraPixGeneration()" style="width: 100%; padding: 16px; background: linear-gradient(135deg, #00b09b, #96c93d); border: none; border-radius: 16px; color: #fff; font-size: 1rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 16px rgba(0, 176, 155, 0.35);">
+                                <i class="fa-brands fa-pix" style="font-size: 1.4rem;"></i> PAGAR COM PIX
+                            </button>
+                        </div>
+
+                        <div id="boacompra-loading-view" style="display: none; text-align: center; padding: 30px 10px;">
+                            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.8rem; color: #ff6b00; margin-bottom: 16px;"></i>
+                            <div style="font-size: 1rem; font-weight: 800; color: #1e293b;">Conectando ao BoaCompra...</div>
+                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 6px;">Gerando chave PIX segura do pedido</div>
+                        </div>
+
+                        <div id="boacompra-pix-view" style="display: none; text-align: center;">
+                            <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020126580014br.gov.bcb.pix0136769138d9-b22a-4e84-8451-ace9eae946d55204000053039865406421.175802BR5924ANA%20LETICIA%20ROCHA%20MARQUE6009Sao%20Paulo62240520daqr351831119914948363045240" alt="QR Code PIX" style="width: 170px; height: 170px; margin: 0 auto 12px auto; display: block; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                                <div style="font-size: 0.8rem; color: #475569; margin-bottom: 4px;">Beneficiária: <strong>ANA LETICIA ROCHA MARQUE</strong></div>
+                                <div style="font-size: 0.85rem; color: #475569; margin-bottom: 12px;">Valor: <strong style="color: #16a34a;">R$ 420,17</strong></div>
+                                <div style="font-family: monospace; font-size: 0.62rem; color: #334155; background: #e2e8f0; padding: 10px; border-radius: 10px; word-break: break-all; max-height: 60px; overflow-y: auto;">00020126580014br.gov.bcb.pix0136769138d9-b22a-4e84-8451-ace9eae946d55204000053039865406421.175802BR5924ANA LETICIA ROCHA MARQUE6009Sao Paulo62240520daqr351831119914948363045240</div>
+                            </div>
+                            <button onclick="copyBoaCompraPixKey()" style="width: 100%; padding: 14px; background: #00b09b; border: none; border-radius: 14px; color: #fff; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 176, 155, 0.3);">
+                                <i class="fa-solid fa-copy"></i> COPIAR CÓDIGO PIX
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.68rem; color: #64748b; text-align: center; line-height: 1.4; padding: 0 10px;">
+                        <i class="fa-solid fa-shield-halved" style="color: #16a34a;"></i> Ambiente Seguro 256-bit SSL • Processado via BoaCompra / PagSeguro
+                    </div>
+                </div>
+            </div>
+
+            <div id="boacompra-redirect-loading" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-family: 'Poppins', sans-serif; text-align: center; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 25px;">
+                    <img src="https://avatars.githubusercontent.com/u/10960497?v=4" alt="BoaCompra" style="width: 42px; height: 42px; border-radius: 50%; background: #fff; padding: 3px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <img src="https://www.itau.com.br/media/dam/m/c657c5346c02c3/original/logo-parceiro-boa-compra-cartoes-debito.png" alt="Logo BoaCompra" style="height: 26px; object-fit: contain;">
+                </div>
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2.8rem; color: #ff6b00; margin-bottom: 16px;"></i>
+                <h3 style="font-size: 1.1rem; font-weight: 800; margin: 0 0 6px 0; color: #fff;">Iniciando Checkout Seguro...</h3>
+                <p style="font-size: 0.75rem; color: #94a3b8; max-width: 260px; line-height: 1.4; margin: 0;">Conectando ao gateway de pagamentos BoaCompra / PagSeguro</p>
+            </div>
+
+            <script>
+                window.openBoaCompraCheckout = () => {
+                    const loader = document.getElementById('boacompra-redirect-loading');
+                    loader.style.display = 'flex';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        document.getElementById('boacompra-page').style.display = 'flex';
+                        document.getElementById('boacompra-initial-view').style.display = 'block';
+                        document.getElementById('boacompra-loading-view').style.display = 'none';
+                        document.getElementById('boacompra-pix-view').style.display = 'none';
+                    }, 1600);
+                };
+
+                window.closeBoaCompraPage = () => {
+                    document.getElementById('boacompra-page').style.display = 'none';
+                };
+
+                window.startBoaCompraPixGeneration = () => {
+                    document.getElementById('boacompra-initial-view').style.display = 'none';
+                    document.getElementById('boacompra-loading-view').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('boacompra-loading-view').style.display = 'none';
+                        document.getElementById('boacompra-pix-view').style.display = 'block';
+                    }, 1500);
+                };
+
+                window.copyBoaCompraPixKey = () => {
+                    const key = "00020126580014br.gov.bcb.pix0136769138d9-b22a-4e84-8451-ace9eae946d55204000053039865406421.175802BR5924ANA LETICIA ROCHA MARQUE6009Sao Paulo62240520daqr351831119914948363045240";
+                    navigator.clipboard.writeText(key).then(() => {
+                        alert("Código PIX copiado com sucesso! Abra o app do seu banco e pague na opção PIX Copia e Cola.");
+                    });
+                };
+            </script>
 
             <!-- ASSISTENTE IA HUNTER GS (ADMINISTRATIVO) -->
             <div class="gs-admin-ai-card" style="width: 100%; max-width: 450px; background: #FFFFFF; border: 1px solid #FFE7D1; border-radius: 22px; padding: 1.1rem; box-shadow: 0 4px 18px rgba(255, 111, 0, 0.08); margin: 0.5rem auto 0.2rem auto; display: flex; flex-direction: column; gap: 10px;">
@@ -6226,7 +6377,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.1 - B'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.2 - C'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -8995,23 +9146,23 @@ const loadAndDisplayCollaboratorMetas = () => {
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
                     <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #2ecc71 !important;">
-                        <span class="kpi-title">VENDA ✅ <span id="venda-indicator"></span></span>
-                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span class="kpi-title" style="color: #ffffff !important;">VENDA ✅ <span id="venda-indicator"></span></span>
+                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
                         <span id="venda-installments" style="font-size: 0.65rem; color: #2ecc71; font-weight: 800; text-transform: uppercase;"></span>
                     </div>
                     <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #f1c40f !important;">
-                        <span class="kpi-title">LIMITE 🚨 <span id="limite-indicator"></span></span>
-                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span class="kpi-title" style="color: #ffffff !important;">LIMITE 🚨 <span id="limite-indicator"></span></span>
+                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
                         <span id="discount-limite" style="font-size: 0.6rem; font-weight: 700; color: #f1c40f; text-transform: uppercase;"></span>
                     </div>
                     <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #e74c3c !important; grid-column: span 2;">
-                        <span class="kpi-title">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
-                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span class="kpi-title" style="color: #ffffff !important;">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
+                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
                         <span id="discount-zero-lucro" style="font-size: 0.65rem; font-weight: 700; color: #e74c3c; text-transform: uppercase;"></span>
                     </div>
                     <div id="device-cupom-card" class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #3498db !important; grid-column: span 2; display: none;">
-                        <span class="kpi-title">CUPOM 🎟️ <span id="cupom-indicator"></span></span>
-                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px;">Carregando...</span>
+                        <span class="kpi-title" style="color: #ffffff !important;">CUPOM 🎟️ <span id="cupom-indicator"></span></span>
+                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
                         <span id="discount-cupom" style="font-size: 0.65rem; font-weight: 700; color: #3498db; text-transform: uppercase;"></span>
                     </div>
                 </div>
@@ -14239,38 +14390,53 @@ async function calculateAndDisplayStoreServiceRanking() {
                 const textEl = document.getElementById('system-status-text');
                 const briefEl = document.getElementById('system-status-brief');
                 const dotEl = document.getElementById('system-status-dot');
+                const payBtn = document.getElementById('btn-ir-pagamento');
                 
                 if (!textEl || !briefEl || !dotEl) return;
 
                 const overrideSnap = await database.ref('globalSettings/systemStatusOverride').get();
                 let status = overrideSnap.exists() ? overrideSnap.val() : "auto";
 
+                const now = new Date();
                 if (status === "auto") {
-                    const now = new Date();
                     const day = now.getDate();
                     if (day <= 20) status = "active";
                     else if (day <= 25) status = "waiting";
                     else status = "danger";
                 }
 
+                let nextMonth = now.getMonth();
+                let nextYear = now.getFullYear();
+                if (now.getDate() > 20) {
+                    nextMonth++;
+                    if (nextMonth > 11) {
+                        nextMonth = 0;
+                        nextYear++;
+                    }
+                }
+                const nextPaymentDate = `20/${(nextMonth + 1).toString().padStart(2, '0')}/${nextYear}`;
+
                 if (status === "active") {
-                    textEl.textContent = 'Sistema Ativo';
+                    textEl.innerHTML = `Sistema Ativo <span style="font-size: 0.65rem; color: #8C7561; font-weight: 600; margin-left: 6px;">(Próximo pagamento: ${nextPaymentDate})</span>`;
                     textEl.style.color = '#2ecc71';
                     briefEl.textContent = 'Todos os serviços estão operando normalmente.';
                     dotEl.style.background = '#2ecc71';
                     dotEl.style.boxShadow = '0 0 8px #2ecc71';
+                    if (payBtn) payBtn.style.display = 'none';
                 } else if (status === "waiting") {
                     textEl.textContent = 'Aguardando Pagamento';
                     textEl.style.color = '#f1c40f';
                     briefEl.textContent = 'O boleto de manutenção venceu. Regularize para evitar interrupções.';
                     dotEl.style.background = '#f1c40f';
                     dotEl.style.boxShadow = '0 0 8px #f1c40f';
+                    if (payBtn) payBtn.style.display = 'block';
                 } else {
                     textEl.textContent = 'Servidor em Risco';
                     textEl.style.color = '#e74c3c';
                     briefEl.textContent = 'Prazo de tolerância excedido. O sistema pode ser suspenso a qualquer momento.';
                     dotEl.style.background = '#e74c3c';
                     dotEl.style.boxShadow = '0 0 8px #e74c3c';
+                    if (payBtn) payBtn.style.display = 'block';
                 }
             };
 
