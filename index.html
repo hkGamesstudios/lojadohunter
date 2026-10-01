@@ -3536,7 +3536,7 @@
 <!-- AVISO DE ATUALIZAÇÃO -->
 <div id="update-notice-overlay">
     <div class="update-notice-content">
-        <h2>Versão 10.0.3 - D</h2>
+        <h2>Versão 10.0.4 - A</h2>
         <p>Atualização com novo Painel GS, melhorias na IA Hunter, meta de acessórios e novos recursos!</p>
         <button id="close-update-notice" class="update-notice-btn">( ok )</button>
     </div>
@@ -3889,7 +3889,7 @@
 
             <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding-bottom: 8px;">
                 <span style="font-size: 1.6rem; font-weight: 900; color: #FF6B00; letter-spacing: -0.5px;">Loja do Hunter</span>
-                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.0.3 - D</span>
+                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.0.4 - A</span>
             </div>
         </div>
 
@@ -4649,7 +4649,7 @@
                         </div>
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
                     </div>
-                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.3 - D</div>
+                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.4 - A</div>
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
                     
                     <div class="system-details-expand">
@@ -6458,7 +6458,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.3 - D'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.4 - A'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -7420,7 +7420,6 @@ document.getElementById('afiliados-admin-page').classList.add('page');
 
         try {
             await database.ref(`userSessions/${userKey}/activeSessionId`).set(sid);
-            await database.ref('globalSettings/allUsersSessionId').set(sid);
         } catch (e) {
             console.error("Erro ao registrar sessionId no login:", e);
         }
@@ -7469,23 +7468,31 @@ document.getElementById('afiliados-admin-page').classList.add('page');
         }
 
         const userKey = loggedUser.toLowerCase();
+        const localSid = localStorage.getItem('userLocalSessionId');
+        const localSidNum = parseInt(localSid) || sessionTimestamp || 0;
 
+        database.ref('globalSettings/allUsersSessionId').off();
         database.ref('globalSettings/allUsersSessionId').on('value', snap => {
             if (snap.exists()) {
                 const globalSid = String(snap.val());
-                const localSid = localStorage.getItem('userLocalSessionId');
-                if (localSid && localSid !== globalSid) {
-                    performForcedLogoutUI('Sua sessão foi encerrada pela gerência.');
+                if (globalSid.startsWith('revoked_all_')) {
+                    const revokedTime = parseInt(globalSid.replace('revoked_all_', '')) || 0;
+                    if (localSidNum <= revokedTime) {
+                        performForcedLogoutUI('Sua sessão foi encerrada pela gerência.');
+                    }
                 }
             }
         });
 
+        database.ref(`userSessions/${userKey}/activeSessionId`).off();
         database.ref(`userSessions/${userKey}/activeSessionId`).on('value', snap => {
             if (snap.exists()) {
                 const remoteSid = String(snap.val());
-                const localSid = localStorage.getItem('userLocalSessionId');
-                if (localSid && localSid !== remoteSid) {
-                    performForcedLogoutUI('Sua sessão foi encerrada pela gerência.');
+                if (remoteSid.startsWith('revoked_')) {
+                    const revokedTime = parseInt(remoteSid.replace('revoked_all_', '').replace('revoked_', '')) || 0;
+                    if (localSidNum <= revokedTime) {
+                        performForcedLogoutUI('Sua sessão foi encerrada pela gerência.');
+                    }
                 }
             }
         });
@@ -16444,20 +16451,24 @@ async function calculateAndDisplayStoreServiceRanking() {
                         if (snap.exists()) {
                             const remoteSid = String(snap.val());
                             const localSid = localStorage.getItem('userLocalSessionId');
-                            if (localSid && localSid !== remoteSid) {
-                                localStorage.removeItem('loggedInUser');
-                                localStorage.removeItem('loginSessionTimestamp');
-                                localStorage.removeItem('userLocalSessionId');
-                                currentUserName = '';
-                                document.querySelectorAll('.page, .modal-overlay').forEach(p => {
-                                    p.style.display = 'none';
-                                    p.classList.remove('visible', 'is-exiting');
-                                });
-                                const loginOverlay = document.getElementById('login-overlay');
-                                setupMagaluStyleLogin();
-                                loginOverlay.style.display = 'flex';
-                                loginOverlay.classList.add('visible');
-                                return;
+                            const localSidNum = parseInt(localSid) || sessionTimestamp || 0;
+                            if (remoteSid.startsWith('revoked_')) {
+                                const revokedTime = parseInt(remoteSid.replace('revoked_all_', '').replace('revoked_', '')) || 0;
+                                if (localSidNum <= revokedTime) {
+                                    localStorage.removeItem('loggedInUser');
+                                    localStorage.removeItem('loginSessionTimestamp');
+                                    localStorage.removeItem('userLocalSessionId');
+                                    currentUserName = '';
+                                    document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+                                        p.style.display = 'none';
+                                        p.classList.remove('visible', 'is-exiting');
+                                    });
+                                    const loginOverlay = document.getElementById('login-overlay');
+                                    setupMagaluStyleLogin();
+                                    loginOverlay.style.display = 'flex';
+                                    loginOverlay.classList.add('visible');
+                                    return;
+                                }
                             }
                         }
                     } catch (e) {
