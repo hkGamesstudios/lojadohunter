@@ -1052,7 +1052,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page, #logs-management-page, #hide-gs-page, #ia-logs-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page, #logs-management-page, #hide-gs-page, #ia-logs-page, #users-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -3536,37 +3536,13 @@
 <!-- AVISO DE ATUALIZAÇÃO -->
 <div id="update-notice-overlay">
     <div class="update-notice-content">
-        <h2>Versão 10.0.2 - C</h2>
+        <h2>Versão 10.0.3 - D</h2>
         <p>Atualização com novo Painel GS, melhorias na IA Hunter, meta de acessórios e novos recursos!</p>
         <button id="close-update-notice" class="update-notice-btn">( ok )</button>
     </div>
 </div>
 
-<!-- MODAL O QUE TEM DE NOVO -->
-<div id="whats-new-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 1.2rem;">
-    <div style="background: linear-gradient(150deg, rgba(35, 20, 10, 0.96), rgba(18, 10, 5, 0.98)); border: 1px solid rgba(255, 107, 0, 0.4); border-radius: 22px; padding: 1.2rem; max-width: 350px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(255, 107, 0, 0.2); text-align: center; color: #fff; animation: modalContentEnter 0.4s var(--ease-out-back);">
-        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 107, 0, 0.2); border: 1px solid rgba(255, 107, 0, 0.5); padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; color: #ff9f43; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
-            <i class="fa-solid fa-sparkles"></i> Novidades 10.0.2 - C
-        </div>
-        <h3 style="font-size: 1.1rem; font-weight: 800; margin: 0 0 10px 0; color: #fff;">O que mudou nesta versão</h3>
-        
-        <div style="text-align: left; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 10px 12px; font-size: 0.72rem; line-height: 1.45; color: #e6e6e6; margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px;">
-                <div>• <strong>Melhorias Visuais:</strong> contraste e fontes brancas nos preços dos aparelhos, novo design e leitura aprimorada.</div>
-                <div>• <strong>Bater Ponto:</strong> em destaque no perfil e direto pela IA.</div>
-                <div>• <strong>Meta do Dia:</strong> meta diária de acessórios adicionada.</div>
-                <div>• <strong>Ranking & Salário:</strong> prêmio de ranking exige 100% da meta.</div>
-                <div>• <strong>PayMobi:</strong> valor de serviço somado na entrada sem encarecer parcelas.</div>
-                <div>• <strong>Painel GS Moderno:</strong> cards quadrados e organizados.</div>
-                <div>• <strong>Logs & Controle:</strong> ranking de uso, ocultar botões do GS e depuração.</div>
-                <div>• <strong>IA Hunter GS:</strong> comandos administrativos simplificados.</div>
-            </div>
 
-        <div style="display: flex; flex-direction: column; gap: 6px; width: 100%;">
-            <button id="close-whats-new-btn" style="width: 100%; padding: 9px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; color: #fff; font-weight: 700; font-size: 0.8rem; cursor: pointer;">Fechar</button>
-            <button id="dont-show-whats-new-btn" style="width: 100%; padding: 9px; background: linear-gradient(135deg, #ff8c3b, #ff6b00); border: none; border-radius: 12px; color: #fff; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);">Entendido</button>
-        </div>
-    </div>
-</div>
 
     <!-- TELA DE LANÇAMENTO DE VENDA MANUAL (ESTILO CORREÇÃO) -->
     <div id="manual-sale-page" style="display: none;">
@@ -3883,27 +3859,87 @@
     </div>
 </div>
 
-    <div id="login-overlay" class="modal-overlay" style="display: none; backdrop-filter: blur(10px); background-color: rgba(0,0,0,0.8);">
-        <div id="login-form-section" class="modal-content">
-            <h3 class="modal-title" style="font-size: 1.2rem; line-height: 1.5; margin-bottom: 2rem;">Espere um pouco! Estamos mudando algumas coisas para não pedir senha todas as vezes e verificar que é realmente você. Vamos fazer um login único.</h3>
-            
-            <div class="input-group">
-                <label for="login-user-select">Selecione quem é você</label>
-                <select id="login-user-select" class="data-input">
-                    <!-- Opções serão populadas pelo JS -->
-                </select>
+    <div id="login-overlay" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 12000; align-items: center; justify-content: center; padding: 0; overflow: hidden; font-family: 'Poppins', sans-serif;">
+
+        <!-- ETAPA 1: TELA DE BEM-VINDO COM BOTAO ENTRAR -->
+        <div id="login-step-welcome" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 0 1.5rem 1.5rem 1.5rem; text-align: center; box-sizing: border-box; background: #ffffff;">
+            <div style="width: 100%; background: #FF6B00; padding: 16px 12px 14px 12px; margin-left: -1.5rem; margin-right: -1.5rem; width: calc(100% + 3rem); box-shadow: 0 2px 8px rgba(255, 107, 0, 0.25);">
+                <span style="color: #ffffff; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.3px;">App dos Hunters</span>
             </div>
-            <div class="input-group">
-                <label for="login-password-input">Sua senha</label>
-                <input type="password" id="login-password-input" class="data-input" placeholder="Digite sua senha">
-                <p id="login-password-hint" style="font-size: 0.8rem; color: #ccc; margin-top: 5px; display: none;">Você ainda não tem uma senha. Crie uma agora.</p>
+
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; max-width: 320px; margin-top: auto; margin-bottom: auto;">
+                <div style="width: 82px; height: 82px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                        <circle cx="50" cy="28" r="16" fill="none" stroke="url(#hunterWelcomeGrad)" stroke-width="5"/>
+                        <path d="M 22 84 C 22 55, 78 55, 78 84" fill="none" stroke="url(#hunterWelcomeGrad)" stroke-width="5" stroke-linecap="round"/>
+                        <polygon points="50,44 54,62 50,78 46,62" fill="url(#hunterWelcomeGrad)"/>
+                        <defs>
+                            <linearGradient id="hunterWelcomeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FF9F43"/>
+                                <stop offset="50%" stop-color="#FF6B00"/>
+                                <stop offset="100%" stop-color="#D35400"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: #2D2319; margin: 0; line-height: 1.3;">Bem-vindo ao<br>App dos Hunters!</h2>
+                <button id="login-welcome-enter-btn" style="width: 100%; padding: 13px; background: #FF6B00; color: #ffffff; border: none; border-radius: 10px; font-weight: 800; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.3); transition: transform 0.15s ease;">Entrar</button>
+                <p style="font-size: 0.72rem; color: #7a7a7a; line-height: 1.45; margin: 0; padding: 0 10px;">Você será redirecionado para a tela de identificação. Basta digitar sua filial, usuário e senha.</p>
             </div>
-            
-            <button id="login-proceed-btn" class="action-button full-width">Avançar</button>
-            <p id="login-status-message" class="status-message"></p>
+
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding-bottom: 8px;">
+                <span style="font-size: 1.6rem; font-weight: 900; color: #FF6B00; letter-spacing: -0.5px;">Loja do Hunter</span>
+                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.0.3 - D</span>
+            </div>
         </div>
 
-        <!-- A seção da câmera para o login foi removida conforme solicitado. -->
+        <!-- ETAPA 2: FORMULARIO DE IDENTIFICACAO (LOGIN ESTILO MAGALU) -->
+        <div id="login-step-form" style="display: none; width: 100%; height: 100%; flex-direction: column; justify-content: space-between; align-items: center; padding: 1.2rem 1.4rem 1.5rem 1.4rem; box-sizing: border-box; background: #ffffff; overflow-y: auto;">
+            <div style="width: 100%; display: flex; justify-content: flex-end; align-items: center; padding: 2px 0;">
+                <span style="font-size: 0.7rem; color: #666; font-weight: 600;">Português (Brasil) <i class="fa-solid fa-chevron-down" style="font-size: 0.6rem; margin-left: 3px;"></i></span>
+            </div>
+
+            <div style="width: 100%; max-width: 320px; display: flex; flex-direction: column; align-items: center; margin-top: auto; margin-bottom: auto;">
+                <h1 style="font-size: 1.9rem; font-weight: 900; color: #FF6B00; margin: 0 0 8px 0; letter-spacing: -0.5px;">Loja do Hunter</h1>
+                <p style="font-size: 0.8rem; color: #555; text-align: center; margin: 0 0 1.4rem 0; line-height: 1.35;">
+                    Acesse sua conta para prosseguir em<br><strong style="color: #FF6B00;">App dos Hunters</strong>
+                </p>
+
+                <!-- FILIAL -->
+                <div style="width: 100%; margin-bottom: 12px; position: relative;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 800; color: #444; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Filial</label>
+                    <select id="login-input-filial" style="width: 100%; padding: 12px 14px; border: 1.5px solid #d4d4d4; border-radius: 8px; font-size: 0.85rem; color: #333; background: #ffffff; outline: none; box-sizing: border-box; font-family: 'Poppins', sans-serif;">
+                        <option value="PHO">PHO - Pinheiro</option>
+                        <option value="BAC">BAC - Bacabal</option>
+                    </select>
+                </div>
+
+                <!-- USUARIO COM AUTOCOMPLETAR PARECIDO -->
+                <div style="width: 100%; margin-bottom: 12px; position: relative;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 800; color: #444; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Usuário</label>
+                    <input type="text" id="login-input-username" autocomplete="off" placeholder="Digite seu usuário" style="width: 100%; padding: 12px 14px; border: 1.5px solid #d4d4d4; border-radius: 8px; font-size: 0.85rem; color: #333; background: #ffffff; outline: none; box-sizing: border-box; font-family: 'Poppins', sans-serif;">
+                    <input type="hidden" id="login-selected-valid-username" value="">
+                    <div id="login-user-suggestions-dropdown" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 140px; overflow-y: auto; background: #ffffff; border: 1.5px solid #FF6B00; border-top: none; border-radius: 0 0 8px 8px; box-shadow: 0 6px 16px rgba(0,0,0,0.15); z-index: 100;"></div>
+                </div>
+
+                <!-- SENHA -->
+                <div style="width: 100%; margin-bottom: 6px;">
+                    <label style="display: block; font-size: 0.7rem; font-weight: 800; color: #444; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Senha</label>
+                    <input type="password" id="login-input-password" placeholder="Digite sua senha" style="width: 100%; padding: 12px 14px; border: 1.5px solid #d4d4d4; border-radius: 8px; font-size: 0.85rem; color: #333; background: #ffffff; outline: none; box-sizing: border-box; font-family: 'Poppins', sans-serif;">
+                </div>
+
+                <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                    <a href="#" id="login-forgot-password-link" style="font-size: 0.72rem; color: #FF6B00; text-decoration: none; font-weight: 700;">Esqueceu sua senha?</a>
+                </div>
+
+                <button id="login-continue-btn" style="width: 100%; padding: 13px; background: #cccccc; color: #ffffff; border: none; border-radius: 26px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: background 0.2s, box-shadow 0.2s;">Continuar</button>
+                <p id="login-feedback-status" style="font-size: 0.72rem; font-weight: 700; margin: 10px 0 0 0; min-height: 18px; text-align: center; color: #e74c3c;"></p>
+            </div>
+
+            <div style="padding-bottom: 4px;">
+                <button id="login-back-to-welcome-btn" style="background: none; border: none; font-size: 0.75rem; color: #888; font-weight: 700; cursor: pointer;">Voltar</button>
+            </div>
+        </div>
     </div>
 
     <!-- TELA DE ATIVAÇÃO INICIAL -->
@@ -4613,11 +4649,9 @@
                         </div>
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
                     </div>
-                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.2 - C</div>
+                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.3 - D</div>
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
-                    <button id="open-whats-new-btn" onclick="event.stopPropagation(); document.getElementById('whats-new-overlay').style.display = 'flex';" style="background: linear-gradient(135deg, #ff8533, #ff6b00); color: #ffffff; border: none; padding: 6px 14px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; box-shadow: 0 3px 10px rgba(255, 107, 0, 0.3);">
-                        <i class="fa-solid fa-sparkles"></i> Ver Novidades da Versão
-                    </button>
+                    
                     <div class="system-details-expand">
                         <div class="receipt-line"><span>Supabase (Servidor de Mídias & Storage)</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Operacional</span></div>
                         <div class="receipt-line"><span>Banco de Dados Realtime & Sincronização</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Conectado</span></div>
@@ -4839,6 +4873,15 @@
             <div class="gs-module-section">
                 <div class="gs-module-title"><i class="fa-solid fa-chart-line"></i> Gestão de Vendas & Metas</div>
                 <div class="gs-cards-grid">
+                    <div class="gs-panel-card" id="open-users-management-page" style="border-left-color: #0086ff;">
+                        <div class="gs-card-icon-box" style="background:#e6f3ff; color:#0086ff;"><i class="fa-solid fa-users-gear"></i></div>
+                        <div class="gs-card-info">
+                            <strong>GERENCIAR USUÁRIOS</strong>
+                            <span>Senhas, deslogar e logins</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
                     <div class="gs-panel-card" id="open-logs-page" style="border-left-color: #34495e;">
                         <div class="gs-card-icon-box" style="background:#ebedef; color:#34495e;"><i class="fa-solid fa-chart-simple"></i></div>
                         <div class="gs-card-info">
@@ -6320,6 +6363,44 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
     </div>
 
+    <!-- TELA DE GERENCIAMENTO DE USUARIOS (GS) -->
+    <div id="users-management-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden; background: #FFFDF9; color: #2D2319;">
+        <div class="collaborator-header" style="background: linear-gradient(135deg, #0086ff 0%, #00b4d8 100%) !important; width: 100%; min-height: 65px; display: flex; align-items: center; justify-content: center; position: relative; padding: 1rem; flex-shrink: 0; border-bottom: none; box-shadow: 0 4px 15px rgba(0, 134, 255, 0.25);">
+            <button id="back-to-gs-from-users-mgmt" class="back-button" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); z-index: 10; color: #fff !important; background: rgba(255,255,255,0.22); border-radius: 20px; padding: 6px 14px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; padding: 0 60px; font-size: 1.25rem; white-space: nowrap; text-align: center; color: #ffffff !important; font-weight: 800;">Gestão de Usuários</h2>
+        </div>
+
+        <div class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.2rem 1rem 3.5rem 1rem; align-items: stretch; gap: 1rem; flex-direction: column;">
+            <!-- AÇÃO GLOBAL: DESLOGAR TODO MUNDO -->
+            <div style="background: #ffffff; border: 1.5px solid #ffccd2; border-radius: 18px; padding: 14px; box-shadow: 0 4px 14px rgba(231, 76, 60, 0.08); text-align: center;">
+                <span style="font-size: 0.7rem; font-weight: 800; color: #c0392b; text-transform: uppercase; letter-spacing: 0.5px;">Sessões & Segurança Global</span>
+                <p style="font-size: 0.72rem; color: #7f8c8d; margin: 4px 0 10px 0;">Desloga automaticamente qualquer aparelho ativo de todos os usuários da loja.</p>
+                <button id="users-mgmt-logout-all-btn" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; border: none; border-radius: 12px; font-weight: 800; font-size: 0.82rem; cursor: pointer; box-shadow: 0 4px 12px rgba(192, 57, 43, 0.3);">
+                    <i class="fa-solid fa-right-from-bracket" style="margin-right: 6px;"></i> DESLOGAR TODO MUNDO
+                </button>
+            </div>
+
+            <!-- LISTA DE USUARIOS COM STATUS, DESLOGAR E ALTERAR SENHA -->
+            <div class="employee-meta-card" style="background: #ffffff; border: 1px solid #FFE7D1; border-radius: 20px; padding: 14px; max-width: none; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+                <h4 style="color: #0086ff; margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 800; text-align: left;">Colaboradores & Senhas</h4>
+                <div id="users-mgmt-list-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <p style="text-align: center; padding: 1rem; color: #888;">Carregando usuários...</p>
+                </div>
+            </div>
+
+            <!-- LOG DE LOGINS COM MODELO DO APARELHO -->
+            <div class="employee-meta-card" style="background: #ffffff; border: 1px solid #FFE7D1; border-radius: 20px; padding: 14px; max-width: none; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #2D2319; margin: 0; font-size: 0.95rem; font-weight: 800;">Log de Logins & Aparelhos</h4>
+                    <button id="users-mgmt-clear-login-logs-btn" style="background: none; border: none; font-size: 0.65rem; color: #c0392b; font-weight: 800; cursor: pointer;">Limpar</button>
+                </div>
+                <div id="users-mgmt-device-logs-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
+                    <p style="text-align: center; padding: 1rem; color: #888;">Carregando histórico de aparelhos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- TELA DE CHATS -->
     <div id="chat-page" style="display: none;">
         <div class="collaborator-header">
@@ -6377,7 +6458,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.2 - C'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.3 - D'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6450,6 +6531,7 @@ Transporte - R$ 5,00"></textarea></div>
     const allPages = document.querySelectorAll('.page, .modal-overlay'); // Pega todas as "telas"
 
     // Adiciona a classe 'page' onde for necessário
+    document.getElementById('users-management-page').classList.add('page');
     document.getElementById('entrada-nota-page').classList.add('page');
     document.getElementById('ponto-page').classList.add('page');
     document.getElementById('ponto-verification-page').classList.add('page');
@@ -6572,6 +6654,7 @@ document.getElementById('afiliados-admin-page').classList.add('page');
     afiliadosStoresPage: document.getElementById('afiliados-stores-page'),
     afiliadosAdminPage: document.getElementById('afiliados-admin-page'),
         dailyIncreaseManagementPage: document.getElementById('daily-increase-management-page'),
+        usersManagementPage: document.getElementById('users-management-page'),
         logsManagementPage: document.getElementById('logs-management-page'),
         hideGsPage: document.getElementById('hide-gs-page'),
         iaLogsPage: document.getElementById('ia-logs-page'),
@@ -6937,61 +7020,227 @@ document.getElementById('afiliados-admin-page').classList.add('page');
         }
     };
 
-        // --- LÓGICA DO NOVO LOGIN ÚNICO ---
-    const populateLoginUserSelect = () => {
-        const select = document.getElementById('login-user-select');
-        select.innerHTML = '<option value="" disabled selected>Selecione um usuário...</option>';
-        // Usa a nova lista 'allUsers' que inclui colaboradores e admins
-        allUsers.forEach(name => {
-            select.innerHTML += `<option value="${name}">${name}</option>`;
+        const detectDeviceModel = () => {
+        const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+        let model = 'Dispositivo Web / Navegador';
+
+        if (/iPhone/i.test(ua)) {
+            model = 'Apple iPhone';
+        } else if (/iPad/i.test(ua)) {
+            model = 'Apple iPad';
+        } else if (/Android/i.test(ua)) {
+            const match = ua.match(/Android[^;]+;\s*([^;)]+)\s*Build/i) || ua.match(/Android[^;]+;\s*([^;)]+)\)/i);
+            if (match && match[1]) {
+                model = match[1].trim();
+            } else {
+                model = 'Dispositivo Android';
+            }
+        } else if (/Windows NT/i.test(ua)) {
+            model = 'Computador Windows PC';
+        } else if (/Macintosh|Mac OS X/i.test(ua)) {
+            model = 'Apple Mac PC';
+        }
+        return model;
+    };
+
+    const recordDeviceLoginLog = (userName, filial) => {
+        if (!userName) return;
+        const key = userName.toLowerCase();
+        const model = detectDeviceModel();
+        database.ref('userDeviceLoginLogs').push({
+            userName: userName,
+            userKey: key,
+            filial: filial || 'PHO',
+            deviceModel: model,
+            userAgent: navigator.userAgent || 'Desconhecido',
+            timestamp: new Date().toISOString()
         });
     };
 
-        const handleLoginAttempt = async () => {
-        const userSelect = document.getElementById('login-user-select');
-        const passwordInput = document.getElementById('login-password-input');
-        const statusEl = document.getElementById('login-status-message');
-        
-        const selectedUser = userSelect.value;
-        const enteredPassword = passwordInput.value;
+    const setupMagaluStyleLogin = () => {
+        const welcomeStep = document.getElementById('login-step-welcome');
+        const formStep = document.getElementById('login-step-form');
+        const enterBtn = document.getElementById('login-welcome-enter-btn');
+        const backBtn = document.getElementById('login-back-to-welcome-btn');
+        const continueBtn = document.getElementById('login-continue-btn');
+        const userInput = document.getElementById('login-input-username');
+        const passInput = document.getElementById('login-input-password');
+        const filialSelect = document.getElementById('login-input-filial');
+        const validUserHolder = document.getElementById('login-selected-valid-username');
+        const dropdown = document.getElementById('login-user-suggestions-dropdown');
+        const statusEl = document.getElementById('login-feedback-status');
+        const forgotLink = document.getElementById('login-forgot-password-link');
+
+        if (!welcomeStep || !formStep) return;
+
+        welcomeStep.style.display = 'flex';
+        formStep.style.display = 'none';
+
+        if (enterBtn) {
+            enterBtn.onclick = () => {
+                welcomeStep.style.display = 'none';
+                formStep.style.display = 'flex';
+                statusEl.textContent = '';
+                userInput.value = '';
+                passInput.value = '';
+                validUserHolder.value = '';
+                dropdown.style.display = 'none';
+                updateContinueButtonState();
+            };
+        }
+
+        if (backBtn) {
+            backBtn.onclick = () => {
+                formStep.style.display = 'none';
+                welcomeStep.style.display = 'flex';
+            };
+        }
+
+        const updateContinueButtonState = () => {
+            const hasValidUser = Boolean(validUserHolder.value);
+            const hasPass = Boolean(passInput.value && passInput.value.length > 0);
+            if (hasValidUser && hasPass) {
+                continueBtn.style.background = '#FF6B00';
+                continueBtn.style.boxShadow = '0 4px 14px rgba(255, 107, 0, 0.35)';
+                continueBtn.style.cursor = 'pointer';
+            } else {
+                continueBtn.style.background = '#cccccc';
+                continueBtn.style.boxShadow = 'none';
+                continueBtn.style.cursor = 'not-allowed';
+            }
+        };
+
+        if (userInput) {
+            userInput.oninput = () => {
+                statusEl.textContent = '';
+                const typed = userInput.value.trim().toLowerCase();
+                validUserHolder.value = '';
+
+                if (!typed) {
+                    dropdown.innerHTML = '';
+                    dropdown.style.display = 'none';
+                    updateContinueButtonState();
+                    return;
+                }
+
+                const matches = allUsers.filter(u => u.toLowerCase().includes(typed));
+
+                if (matches.length > 0) {
+                    dropdown.innerHTML = '';
+                    matches.forEach(m => {
+                        const opt = document.createElement('div');
+                        opt.style.cssText = 'padding: 10px 14px; font-size: 0.85rem; font-weight: 700; color: #2D2319; cursor: pointer; border-bottom: 1px solid #f0f0f0; transition: background 0.15s;';
+                        opt.textContent = m;
+                        opt.onmouseenter = () => { opt.style.background = '#fff3e6'; };
+                        opt.onmouseleave = () => { opt.style.background = '#ffffff'; };
+                        opt.onclick = () => {
+                            userInput.value = m;
+                            validUserHolder.value = m;
+                            dropdown.innerHTML = '';
+                            dropdown.style.display = 'none';
+                            passInput.focus();
+                            updateContinueButtonState();
+                        };
+                        dropdown.appendChild(opt);
+                    });
+                    dropdown.style.display = 'block';
+
+                    const exact = allUsers.find(u => u.toLowerCase() === typed);
+                    if (exact) {
+                        validUserHolder.value = exact;
+                    }
+                } else {
+                    dropdown.innerHTML = '<div style="padding: 10px 14px; font-size: 0.75rem; color: #999;">Nenhum usuário encontrado</div>';
+                    dropdown.style.display = 'block';
+                }
+                updateContinueButtonState();
+            };
+        }
+
+        if (passInput) {
+            passInput.oninput = updateContinueButtonState;
+            passInput.onkeypress = (e) => {
+                if (e.key === 'Enter') handleLoginAttempt();
+            };
+        }
+
+        if (continueBtn) {
+            continueBtn.onclick = handleLoginAttempt;
+        }
+
+        if (forgotLink) {
+            forgotLink.onclick = (e) => {
+                e.preventDefault();
+                const userName = validUserHolder.value || userInput.value.trim() || 'Colaborador';
+                const filial = filialSelect ? filialSelect.value : 'PHO';
+                const msg = encodeURIComponent(`Olá, sou ${userName} da filial ${filial} da Loja do Hunter e esqueci minha senha de acesso. Poderia me ajudar a redefinir?`);
+                window.open(`https://wa.me/559891163598?text=${msg}`, '_blank');
+            };
+        }
+    };
+
+    const handleLoginAttempt = async () => {
+        const userInput = document.getElementById('login-input-username');
+        const validUserHolder = document.getElementById('login-selected-valid-username');
+        const passInput = document.getElementById('login-input-password');
+        const filialSelect = document.getElementById('login-input-filial');
+        const statusEl = document.getElementById('login-feedback-status');
+
+        let selectedUser = validUserHolder.value;
+        const typed = userInput ? userInput.value.trim() : '';
+
+        if (!selectedUser && typed) {
+            const found = allUsers.find(u => u.toLowerCase() === typed.toLowerCase());
+            if (found) {
+                selectedUser = found;
+                validUserHolder.value = found;
+            }
+        }
+
+        const enteredPassword = passInput ? passInput.value : '';
+        const filial = filialSelect ? filialSelect.value : 'PHO';
 
         if (!selectedUser) {
-            statusEl.textContent = 'Por favor, selecione um usuário.';
+            statusEl.textContent = 'Selecione um usuário válido na lista.';
             return;
         }
         if (!enteredPassword) {
-            statusEl.textContent = 'Por favor, digite sua senha.';
+            statusEl.textContent = 'Digite sua senha.';
             return;
         }
-        
+
         const userKey = selectedUser.toLowerCase();
-        
+
         try {
-            // VERIFICAÇÃO DE SENHA MESTRA
+            statusEl.style.color = '#FF6B00';
+            statusEl.textContent = 'Verificando...';
+
             if (enteredPassword === '123789') {
                 statusEl.textContent = 'Acessando...';
+                recordDeviceLoginLog(selectedUser, filial);
                 completeLogin(selectedUser);
                 return;
             }
 
-            // LÓGICA UNIFICADA PARA TODOS OS USUÁRIOS
             const passwordSnap = await database.ref(`userPasswords/${userKey}`).get();
 
             if (passwordSnap.exists()) {
-                // Usuário existente: verifica a senha do banco de dados
-                if (enteredPassword === passwordSnap.val()) {
+                if (enteredPassword === String(passwordSnap.val())) {
                     statusEl.textContent = 'Acessando...';
+                    recordDeviceLoginLog(selectedUser, filial);
                     completeLogin(selectedUser);
                 } else {
+                    statusEl.style.color = '#e74c3c';
                     statusEl.textContent = 'Senha incorreta!';
                 }
             } else {
-                // Novo usuário: define a senha no banco de dados
                 await database.ref(`userPasswords/${userKey}`).set(enteredPassword);
-                statusEl.textContent = 'Senha definida! Acessando...';
+                statusEl.textContent = 'Senha cadastrada! Acessando...';
+                recordDeviceLoginLog(selectedUser, filial);
                 completeLogin(selectedUser);
             }
         } catch (error) {
+            statusEl.style.color = '#e74c3c';
             statusEl.textContent = 'Erro de conexão. Tente novamente.';
             console.error("Erro no login:", error);
         }
@@ -7159,28 +7408,241 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                 }
             };
 
-            const completeLogin = (userName) => {
+            const completeLogin = async (userName) => {
+        const sid = String(Date.now());
+        const userKey = userName.toLowerCase();
+
         localStorage.setItem('loggedInUser', userName);
-        currentUserName = userName; // Define o usuário global
+        localStorage.setItem('loginSessionTimestamp', String(Date.now()));
+        localStorage.setItem('userLocalSessionId', sid);
+        currentUserName = userName;
         logUserActivity(userName);
-        
+
+        try {
+            await database.ref(`userSessions/${userKey}/activeSessionId`).set(sid);
+            await database.ref('globalSettings/allUsersSessionId').set(sid);
+        } catch (e) {
+            console.error("Erro ao registrar sessionId no login:", e);
+        }
+
         const loginOverlay = document.getElementById('login-overlay');
         loginOverlay.classList.add('is-exiting');
         loginOverlay.addEventListener('animationend', () => {
             loginOverlay.style.display = 'none';
             loginOverlay.classList.remove('visible', 'is-exiting');
-            
-            // Carrega os dados da tela principal para o usuário logado
             showMainPage();
-            initializeApp(true); // Chama novamente para carregar dados
-            
+            initializeApp(true);
+            verifyWeeklySessionAndRemoteRevocation();
         }, { once: true });
+    };
+
+    const performForcedLogoutUI = (message) => {
+        localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('loginSessionTimestamp');
+        localStorage.removeItem('userLocalSessionId');
+        currentUserName = '';
+
+        if (message) alert(message);
+
+        document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+            p.style.display = 'none';
+            p.classList.remove('visible', 'is-exiting');
+        });
+
+        const loginOverlay = document.getElementById('login-overlay');
+        setupMagaluStyleLogin();
+        loginOverlay.style.display = 'flex';
+        loginOverlay.classList.add('visible');
+    };
+
+    const verifyWeeklySessionAndRemoteRevocation = () => {
+        const loggedUser = localStorage.getItem('loggedInUser');
+        if (!loggedUser) return;
+
+        const sessionTimestamp = parseInt(localStorage.getItem('loginSessionTimestamp') || '0', 10);
+        const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+        const now = Date.now();
+
+        if (sessionTimestamp && (now - sessionTimestamp > ONE_WEEK_MS)) {
+            performForcedLogoutUI('Sua sessão expirou pelo limite semanal (7 dias). Por favor, identifique-se novamente.');
+            return;
+        }
+
+        const userKey = loggedUser.toLowerCase();
+
+        database.ref('globalSettings/allUsersSessionId').on('value', snap => {
+            if (snap.exists()) {
+                const globalSid = String(snap.val());
+                const localSid = localStorage.getItem('userLocalSessionId');
+                if (localSid && localSid !== globalSid) {
+                    performForcedLogoutUI('Sua sessão foi encerrada pela gerência.');
+                }
+            }
+        });
+
+        database.ref(`userSessions/${userKey}/activeSessionId`).on('value', snap => {
+            if (snap.exists()) {
+                const remoteSid = String(snap.val());
+                const localSid = localStorage.getItem('userLocalSessionId');
+                if (localSid && localSid !== remoteSid) {
+                    performForcedLogoutUI('Sua sessão foi encerrada pela gerência.');
+                }
+            }
+        });
+    };
+
+    const loadUsersManagementPage = async () => {
+        showPage('usersManagementPage');
+        const container = document.getElementById('users-mgmt-list-container');
+        const logsContainer = document.getElementById('users-mgmt-device-logs-container');
+        container.innerHTML = '<p style="text-align:center; padding: 1rem; color: #888;">Carregando usuários...</p>';
+        logsContainer.innerHTML = '<p style="text-align:center; padding: 1rem; color: #888;">Carregando logs de aparelhos...</p>';
+
+        try {
+            const [passSnap, profilesSnap, logsSnap, accessLogsSnap, sessionsSnap] = await Promise.all([
+                database.ref('userPasswords').get(),
+                database.ref('userProfiles').get(),
+                database.ref('userDeviceLoginLogs').limitToLast(40).get(),
+                database.ref('userAccessLogs').get(),
+                database.ref('userSessions').get()
+            ]);
+
+            const passwords = passSnap.exists() ? passSnap.val() : {};
+            const profiles = profilesSnap.exists() ? profilesSnap.val() : {};
+            const accessLogs = accessLogsSnap.exists() ? accessLogsSnap.val() : {};
+            const sessions = sessionsSnap.exists() ? sessionsSnap.val() : {};
+
+            container.innerHTML = '';
+
+            allUsers.forEach(userName => {
+                const userKey = userName.toLowerCase();
+                const userPass = passwords[userKey] || 'Sem senha';
+                const userPhoto = profiles[userKey]?.photoURL || DEFAULT_PROFILE_PHOTO;
+                const lastAccess = accessLogs[userKey]?.lastAccess;
+                const lastSeenText = lastAccess ? new Date(lastAccess).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
+
+                const activeSession = sessions[userKey]?.activeSessionId;
+                const isLogged = activeSession && !String(activeSession).startsWith('revoked_');
+                const connectionBadge = isLogged
+                    ? '<span style="font-size: 0.6rem; font-weight: 800; color: #27ae60; background: #eafaf1; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71;"></span>Conectado</span>'
+                    : '<span style="font-size: 0.6rem; font-weight: 800; color: #7f8c8d; background: #f2f4f4; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span style="width: 6px; height: 6px; background: #95a5a6; border-radius: 50%;"></span>Desconectado</span>';
+
+                const row = document.createElement('div');
+                row.className = 'rank-item';
+                row.style.cssText = 'padding: 0.85rem; border-left: none !important; border: 1px solid #eee; background: #ffffff !important; box-shadow: 0 3px 10px rgba(0,0,0,0.04); margin-bottom: 0;';
+                row.innerHTML = `
+                    <img src="${userPhoto}" class="rank-photo" style="width: 40px; height: 40px; border-radius: 50%;">
+                    <div class="rank-details" style="overflow: hidden;">
+                        <div class="rank-name" style="justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; flex-wrap: wrap;">
+                                <span style="color: #2D2319; font-weight: 800; font-size: 0.9rem; white-space: nowrap;">${userName}</span>
+                                ${connectionBadge}
+                                <span style="font-size: 0.62rem; color: #8C7561; font-weight: 600; white-space: nowrap;">Visto: ${lastSeenText}</span>
+                            </div>
+                            <span style="font-family: monospace; font-size: 0.85rem; color: #0086ff; font-weight: 800; background: #e6f3ff; padding: 2px 8px; border-radius: 8px;">🔑 ${userPass}</span>
+                        </div>
+                        <div style="display: flex; gap: 6px; margin-top: 8px;">
+                            <button class="users-mgmt-edit-pass-btn" data-user="${userName}" style="flex: 1; padding: 6px 10px; background: #FFF9F2; border: 1px solid #FFE7D1; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #FF6F00; cursor: pointer;">
+                                <i class="fa-solid fa-key"></i> Alterar Senha
+                            </button>
+                            <button class="users-mgmt-kick-user-btn" data-user="${userName}" style="flex: 1; padding: 6px 10px; background: #FFF0F0; border: 1px solid #FFCCD2; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #c0392b; cursor: pointer;">
+                                <i class="fa-solid fa-right-from-bracket"></i> Deslogar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            container.querySelectorAll('.users-mgmt-edit-pass-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const uName = btn.dataset.user;
+                    const uKey = uName.toLowerCase();
+                    const newPass = prompt(`Digite a nova senha para ${uName}:`);
+                    if (newPass === null) return;
+                    if (!newPass.trim()) return alert('Senha não pode ser vazia.');
+                    database.ref(`userPasswords/${uKey}`).set(newPass.trim()).then(() => {
+                        alert(`Senha de ${uName} atualizada com sucesso!`);
+                        loadUsersManagementPage();
+                    });
+                };
+            });
+
+            container.querySelectorAll('.users-mgmt-kick-user-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const uName = btn.dataset.user;
+                    const uKey = uName.toLowerCase();
+                    if (!confirm(`Deseja deslogar ${uName} de qualquer aparelho conectado?`)) return;
+                    const newSid = 'revoked_' + String(Date.now());
+                    database.ref(`userSessions/${uKey}/activeSessionId`).set(newSid).then(() => {
+                        alert(`${uName} foi deslogado(a) com sucesso!`);
+                    });
+                };
+            });
+
+            logsContainer.innerHTML = '';
+            if (logsSnap.exists()) {
+                const logsList = [];
+                logsSnap.forEach(ch => {
+                    logsList.push({ id: ch.key, ...ch.val() });
+                });
+                logsList.reverse();
+
+                logsList.forEach(log => {
+                    const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString('pt-BR') : '';
+                    const logRow = document.createElement('div');
+                    logRow.style.cssText = 'background: #fbfbfb; border: 1px solid #eee; border-radius: 12px; padding: 8px 12px; font-size: 0.72rem; line-height: 1.35;';
+                    logRow.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                            <strong style="color: #0086ff; font-size: 0.8rem;">${log.userName || 'Usuário'} <span style="font-size: 0.65rem; color: #888; font-weight: 700;">[${log.filial || 'PHO'}]</span></strong>
+                            <span style="font-size: 0.65rem; color: #aaa;">${dateStr}</span>
+                        </div>
+                        <div style="color: #333; font-weight: 600;">📱 Modelo: <span style="color: #2D2319;">${log.deviceModel || 'Navegador Web'}</span></div>
+                    `;
+                    logsContainer.appendChild(logRow);
+                });
+            } else {
+                logsContainer.innerHTML = '<p style="text-align:center; padding:1rem; color:#aaa; font-size: 0.75rem;">Nenhum registro de aparelho ainda.</p>';
+            }
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align:center; color:#e74c3c;">Erro ao carregar dados.</p>';
+            logsContainer.innerHTML = '';
+        }
+    };
+
+    const logoutAllUsersGlobally = async () => {
+        if (!confirm('ATENÇÃO: Deseja realmente deslogar TODOS os usuários conectados em qualquer aparelho? Todos terão que fazer login novamente.')) return;
+        const newGlobalSid = 'revoked_all_' + String(Date.now());
+        const updates = {};
+        updates['globalSettings/allUsersSessionId'] = newGlobalSid;
+        allUsers.forEach(u => {
+            updates[`userSessions/${u.toLowerCase()}/activeSessionId`] = newGlobalSid;
+        });
+        await database.ref().update(updates);
+        alert('Todos os usuários foram deslogados com sucesso!');
+        performForcedLogoutUI();
     };
     
     const logout = () => {
         if (confirm('Deseja realmente sair e voltar para a tela de login?')) {
+            if (currentUserName) {
+                const uKey = currentUserName.toLowerCase();
+                database.ref(`userSessions/${uKey}/activeSessionId`).set('revoked_' + String(Date.now()));
+            }
             localStorage.removeItem('loggedInUser');
-            window.location.reload();
+            localStorage.removeItem('loginSessionTimestamp');
+            localStorage.removeItem('userLocalSessionId');
+            currentUserName = '';
+            document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('visible', 'is-exiting');
+            });
+            const loginOverlay = document.getElementById('login-overlay');
+            setupMagaluStyleLogin();
+            loginOverlay.style.display = 'flex';
+            loginOverlay.classList.add('visible');
         }
     };
 
@@ -13537,18 +13999,8 @@ async function calculateAndDisplayStoreServiceRanking() {
             
             
             // --- LISTENERS DA TELA DE LOGIN ---
-            document.getElementById('login-proceed-btn').addEventListener('click', handleLoginAttempt);
             document.getElementById('logout-btn').addEventListener('click', logout);
-            document.getElementById('login-user-select').addEventListener('change', async (e) => {
-                const userKey = e.target.value.toLowerCase();
-                const hint = document.getElementById('login-password-hint');
-                if (userKey) {
-                    const passSnap = await database.ref(`userPasswords/${userKey}`).get();
-                    hint.style.display = passSnap.exists() ? 'none' : 'block';
-                } else {
-                    hint.style.display = 'none';
-                }
-            });
+            setupMagaluStyleLogin();
 
             document.getElementById('header-profile-pic').addEventListener('click', () => {
                 if (currentUserName) {
@@ -14253,6 +14705,15 @@ async function calculateAndDisplayStoreServiceRanking() {
                 };
 
                 safeAddListener('open-ranks-management-btn', 'click', openRanksManagementPage);
+                safeAddListener('open-users-management-page', 'click', loadUsersManagementPage);
+                safeAddListener('back-to-gs-from-users-mgmt', 'click', () => showPage('gsPage'));
+                safeAddListener('users-mgmt-logout-all-btn', 'click', logoutAllUsersGlobally);
+                safeAddListener('users-mgmt-clear-login-logs-btn', 'click', async () => {
+                    if (confirm('Deseja limpar todos os registros de aparelhos logados?')) {
+                        await database.ref('userDeviceLoginLogs').remove();
+                        loadUsersManagementPage();
+                    }
+                });
                 safeAddListener('open-logs-page', 'click', loadAndDisplayLogs);
                 safeAddListener('back-to-gs-from-logs', 'click', () => showPage('gsPage'));
                 safeAddListener('reset-logs-btn', 'click', resetAllLogs);
@@ -14469,6 +14930,7 @@ async function calculateAndDisplayStoreServiceRanking() {
             };
 
             const gsCustomHideItems = [
+                { id: 'open-users-management-page', name: 'Gerenciar Usuários (Login/Senhas)' },
                 { id: 'open-settings-page', name: 'Configurar Metas' },
                 { id: 'add-manual-sale-btn', name: 'Lançar Vendas Diárias' },
                 { id: 'open-earnings-panel-btn', name: 'Ganhos & Comissões' },
@@ -15952,18 +16414,74 @@ async function calculateAndDisplayStoreServiceRanking() {
                 if (appMode !== 'employee') {
                     document.getElementById('activation-overlay').style.display = 'flex';
                     document.getElementById('activation-overlay').classList.add('visible');
-                } else if (loggedInUser) {
+                    return;
+                }
+
+                if (loggedInUser) {
+                    const sessionTimestamp = parseInt(localStorage.getItem('loginSessionTimestamp') || '0', 10);
+                    const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+                    const now = Date.now();
+
+                    if (!sessionTimestamp || (now - sessionTimestamp > ONE_WEEK_MS)) {
+                        localStorage.removeItem('loggedInUser');
+                        localStorage.removeItem('loginSessionTimestamp');
+                        localStorage.removeItem('userLocalSessionId');
+                        currentUserName = '';
+                        document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+                            p.style.display = 'none';
+                            p.classList.remove('visible', 'is-exiting');
+                        });
+                        const loginOverlay = document.getElementById('login-overlay');
+                        setupMagaluStyleLogin();
+                        loginOverlay.style.display = 'flex';
+                        loginOverlay.classList.add('visible');
+                        return;
+                    }
+
+                    const uKey = loggedInUser.toLowerCase();
+                    try {
+                        const snap = await database.ref(`userSessions/${uKey}/activeSessionId`).get();
+                        if (snap.exists()) {
+                            const remoteSid = String(snap.val());
+                            const localSid = localStorage.getItem('userLocalSessionId');
+                            if (localSid && localSid !== remoteSid) {
+                                localStorage.removeItem('loggedInUser');
+                                localStorage.removeItem('loginSessionTimestamp');
+                                localStorage.removeItem('userLocalSessionId');
+                                currentUserName = '';
+                                document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+                                    p.style.display = 'none';
+                                    p.classList.remove('visible', 'is-exiting');
+                                });
+                                const loginOverlay = document.getElementById('login-overlay');
+                                setupMagaluStyleLogin();
+                                loginOverlay.style.display = 'flex';
+                                loginOverlay.classList.add('visible');
+                                return;
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Erro ao checar sessao inicial:", e);
+                    }
+
                     currentUserName = loggedInUser;
                     showMainPage();
-                    initializeApp(true); // Chama a si mesma para carregar os dados
+                    initializeApp(true);
                 } else {
-                    // Se não está ativado e não tem login, mostra a tela de login
+                    currentUserName = '';
+                    document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+                        p.style.display = 'none';
+                        p.classList.remove('visible', 'is-exiting');
+                    });
                     const loginOverlay = document.getElementById('login-overlay');
-                    populateLoginUserSelect();
+                    setupMagaluStyleLogin();
                     loginOverlay.style.display = 'flex';
                     loginOverlay.classList.add('visible');
                 }
             };
+
+                        verifyWeeklySessionAndRemoteRevocation();
+            setInterval(verifyWeeklySessionAndRemoteRevocation, 60000);
 
                         // Roda a função de inicialização principal
             initializeApp();
@@ -16251,19 +16769,19 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
 
             document.getElementById('direct-brasilcard').addEventListener('click', () => {
-                openExternalLinkAndExit('https://www.brasilcard.net/bca/lojista/login');
+                window.open('https://www.brasilcard.net/bca/lojista/login', '_blank');
             });
 
             document.getElementById('direct-payjoy').addEventListener('click', () => {
-                openExternalLinkAndExit('https://app.payjoy.com/store/merchant-login');
+                window.open('https://app.payjoy.com/store/merchant-login', '_blank');
             });
 
             document.getElementById('direct-odrescred').addEventListener('click', () => {
-                openExternalLinkAndExit('https://vendas.odrescred.com.br/login');
+                window.open('https://vendas.odrescred.com.br/login', '_blank');
             });
 
             document.getElementById('direct-wiwap').addEventListener('click', () => {
-                openExternalLinkAndExit('https://wipcred.com.br');
+                window.open('https://wipcred.com.br', '_blank');
             });
 
             // --- LÓGICA DO SEGUNDO CARROSSEL (RANKING) ---
@@ -16323,40 +16841,7 @@ async function calculateAndDisplayStoreServiceRanking() {
             updateOverlay.style.display = 'none';
         });
 
-        // --- LÓGICA DO MODAL O QUE TEM DE NOVO (IA HUNTER) ---
-        const checkAndShowWhatsNew = () => {
-            const loggedUser = currentUserName || localStorage.getItem('loggedInUser');
-            if (!loggedUser) return;
-            const userKey = loggedUser.toLowerCase();
-            const storageKey = `seen_whats_new_ia_${userKey}`;
-            if (!localStorage.getItem(storageKey)) {
-                const overlay = document.getElementById('whats-new-overlay');
-                if (overlay) overlay.style.display = 'flex';
-            }
-        };
-
-        setTimeout(checkAndShowWhatsNew, 1200);
-
-        const closeWhatsNewBtn = document.getElementById('close-whats-new-btn');
-        if (closeWhatsNewBtn) {
-            closeWhatsNewBtn.addEventListener('click', () => {
-                const overlay = document.getElementById('whats-new-overlay');
-                if (overlay) overlay.style.display = 'none';
-            });
-        }
-
-        const dontShowWhatsNewBtn = document.getElementById('dont-show-whats-new-btn');
-        if (dontShowWhatsNewBtn) {
-            dontShowWhatsNewBtn.addEventListener('click', () => {
-                const loggedUser = currentUserName || localStorage.getItem('loggedInUser');
-                if (loggedUser) {
-                    const userKey = loggedUser.toLowerCase();
-                    localStorage.setItem(`seen_whats_new_ia_${userKey}`, 'true');
-                }
-                const overlay = document.getElementById('whats-new-overlay');
-                if (overlay) overlay.style.display = 'none';
-            });
-        }
+        
 
             const setupTopBanners = () => {
                 const bannerImg = document.getElementById('main-banner-img');
