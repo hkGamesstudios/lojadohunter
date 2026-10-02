@@ -3536,7 +3536,7 @@
 <!-- AVISO DE ATUALIZAÇÃO -->
 <div id="update-notice-overlay">
     <div class="update-notice-content">
-        <h2>Versão 10.0.4 - A</h2>
+        <h2>Versão 10.0.5 - B</h2>
         <p>Atualização com novo Painel GS, melhorias na IA Hunter, meta de acessórios e novos recursos!</p>
         <button id="close-update-notice" class="update-notice-btn">( ok )</button>
     </div>
@@ -3889,7 +3889,7 @@
 
             <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding-bottom: 8px;">
                 <span style="font-size: 1.6rem; font-weight: 900; color: #FF6B00; letter-spacing: -0.5px;">Loja do Hunter</span>
-                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.0.4 - A</span>
+                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.0.5 - B</span>
             </div>
         </div>
 
@@ -4649,7 +4649,7 @@
                         </div>
                         <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
                     </div>
-                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.4 - A</div>
+                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.5 - B</div>
                     <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
                     
                     <div class="system-details-expand">
@@ -6380,6 +6380,43 @@ Transporte - R$ 5,00"></textarea></div>
                 </button>
             </div>
 
+            <!-- CADASTRO DE NOVO USUÁRIO / FUNCIONÁRIO -->
+            <div class="employee-meta-card" style="background: #ffffff; border: 1.5px solid #bfe3ff; border-radius: 20px; padding: 16px; max-width: none; box-shadow: 0 4px 16px rgba(0, 134, 255, 0.08);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <h4 style="color: #0086ff; margin: 0; font-size: 0.95rem; font-weight: 800; text-align: left;">
+                        <i class="fa-solid fa-user-plus" style="margin-right: 6px;"></i>Cadastrar Novo Colaborador
+                    </h4>
+                </div>
+                <div class="input-group" style="margin-bottom: 10px;">
+                    <label style="color: #333; font-size: 0.72rem; font-weight: 800;">Nome Completo / Como será chamado</label>
+                    <input type="text" id="new-user-name-input" class="data-input" placeholder="Ex: Carlos" style="background: #f8fafc; color: #333; border: 1px solid #cbd5e1;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label style="color: #333; font-size: 0.72rem; font-weight: 800;">Loja / Unidade</label>
+                        <select id="new-user-store-select" class="data-input" style="background: #f8fafc; color: #333; border: 1px solid #cbd5e1;">
+                            <option value="pinheiro">Pinheiro (PHO)</option>
+                            <option value="bacabal">Bacabal (BAC)</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label style="color: #333; font-size: 0.72rem; font-weight: 800;">Função / Cargo</label>
+                        <select id="new-user-role-select" class="data-input" style="background: #f8fafc; color: #333; border: 1px solid #cbd5e1;">
+                            <option value="vendedor">Vendedor(a)</option>
+                            <option value="admin">Administrador(a)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label style="color: #333; font-size: 0.72rem; font-weight: 800;">Senha Inicial de Acesso</label>
+                    <input type="text" id="new-user-password-input" class="data-input" placeholder="Ex: 123456" style="background: #f8fafc; color: #333; border: 1px solid #cbd5e1;">
+                </div>
+                <button id="create-new-user-btn" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #0086ff, #00b4d8); color: #ffffff; border: none; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 134, 255, 0.3);">
+                    <i class="fa-solid fa-plus" style="margin-right: 6px;"></i> ADICIONAR FUNCIONÁRIO
+                </button>
+                <p id="create-user-status" class="status-message" style="margin-top: 8px; font-size: 0.75rem; min-height: 18px;"></p>
+            </div>
+
             <!-- LISTA DE USUARIOS COM STATUS, DESLOGAR E ALTERAR SENHA -->
             <div class="employee-meta-card" style="background: #ffffff; border: 1px solid #FFE7D1; border-radius: 20px; padding: 14px; max-width: none; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
                 <h4 style="color: #0086ff; margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 800; text-align: left;">Colaboradores & Senhas</h4>
@@ -6458,7 +6495,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.4 - A'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.5 - B'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6501,15 +6538,76 @@ Transporte - R$ 5,00"></textarea></div>
 
                                 // --- ESTADO DA APLICAÇÃO ---
     let isEntradaNotaView = false;
-    const allCollaborators = ['Mainara', 'Eliseu', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma', 'Gabrielly', 'Pablo'];
-    const newAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
+    const baseCollaborators = ['Mainara', 'Eliseu', 'Hananda', 'Aline', 'Tacilio', 'Keliane', 'Demilson', 'Leonardo', 'Jose', 'Ducielma', 'Gabrielly', 'Pablo'];
+    const baseAdmins = ['Paulo', 'Keliane', 'Ducielma', 'Isabela'];
     const storeManagers = ['Eliseu', 'Tacilio']; // NOVA LISTA: Apenas gerentes de loja
-    const allUsers = [...allCollaborators, ...newAdmins]; // Lista unificada para funções genéricas
-    const managers = [...storeManagers, ...newAdmins]; // Lista de todos com acesso GS
-    const storeMapping = {
+    const baseStoreMapping = {
         pinheiro: ['Mainara', 'Eliseu', 'Hananda', 'Keliane', 'Gabrielly', 'Pablo'],
         bacabal: ['Aline', 'Tacilio', 'Demilson', 'Leonardo', 'Jose', 'Ducielma']
     };
+
+    let allCollaborators = [...baseCollaborators];
+    let newAdmins = [...baseAdmins];
+    let allUsers = Array.from(new Set([...allCollaborators, ...newAdmins]));
+    let managers = Array.from(new Set([...storeManagers, ...newAdmins]));
+    let storeMapping = {
+        pinheiro: [...baseStoreMapping.pinheiro],
+        bacabal: [...baseStoreMapping.bacabal]
+    };
+    let customUsersCache = {};
+
+    const syncDynamicUsers = (customUsersData) => {
+        customUsersCache = customUsersData || {};
+        try {
+            localStorage.setItem('cachedCustomUsers', JSON.stringify(customUsersCache));
+        } catch(e) {}
+
+        const newCollabs = [...baseCollaborators];
+        const newAdm = [...baseAdmins];
+        const pinheiroList = [...baseStoreMapping.pinheiro];
+        const bacabalList = [...baseStoreMapping.bacabal];
+
+        if (customUsersData && typeof customUsersData === 'object') {
+            Object.keys(customUsersData).forEach(key => {
+                const u = customUsersData[key];
+                if (!u || !u.name) return;
+                const name = u.name.trim();
+                const store = (u.store || 'pinheiro').toLowerCase();
+                const role = u.role || 'vendedor';
+
+                if (role === 'admin') {
+                    if (!newAdm.includes(name)) newAdm.push(name);
+                } else {
+                    if (!newCollabs.includes(name)) newCollabs.push(name);
+                }
+
+                if (store === 'bacabal') {
+                    if (!bacabalList.includes(name)) bacabalList.push(name);
+                } else {
+                    if (!pinheiroList.includes(name)) pinheiroList.push(name);
+                }
+            });
+        }
+
+        allCollaborators = newCollabs;
+        newAdmins = newAdm;
+        allUsers = Array.from(new Set([...allCollaborators, ...newAdmins]));
+        managers = Array.from(new Set([...storeManagers, ...newAdmins]));
+        storeMapping.pinheiro = pinheiroList;
+        storeMapping.bacabal = bacabalList;
+    };
+
+    try {
+        const localCache = JSON.parse(localStorage.getItem('cachedCustomUsers') || '{}');
+        if (localCache && Object.keys(localCache).length > 0) {
+            syncDynamicUsers(localCache);
+        }
+    } catch(e) {}
+
+    database.ref('customUsers').on('value', snapshot => {
+        syncDynamicUsers(snapshot.exists() ? snapshot.val() : {});
+    });
+
     let currntUserName = ''; // Variável unificada para o usuário logado
     let currentBrand = '';
     let isNavigating = false; // Flag para prevenir cliques duplos durante animações
@@ -7505,19 +7603,102 @@ document.getElementById('afiliados-admin-page').classList.add('page');
         container.innerHTML = '<p style="text-align:center; padding: 1rem; color: #888;">Carregando usuários...</p>';
         logsContainer.innerHTML = '<p style="text-align:center; padding: 1rem; color: #888;">Carregando logs de aparelhos...</p>';
 
+        const createUserBtn = document.getElementById('create-new-user-btn');
+        if (createUserBtn) {
+            createUserBtn.onclick = async () => {
+                const nameInput = document.getElementById('new-user-name-input');
+                const storeSelect = document.getElementById('new-user-store-select');
+                const roleSelect = document.getElementById('new-user-role-select');
+                const passInput = document.getElementById('new-user-password-input');
+                const statusEl = document.getElementById('create-user-status');
+
+                const rawName = (nameInput.value || '').trim();
+                const store = storeSelect.value;
+                const role = roleSelect.value;
+                const pass = (passInput.value || '').trim();
+
+                if (!rawName) {
+                    statusEl.style.color = '#e74c3c';
+                    statusEl.textContent = 'Digite o nome do funcionário!';
+                    return;
+                }
+
+                if (!pass) {
+                    statusEl.style.color = '#e74c3c';
+                    statusEl.textContent = 'Digite a senha inicial de acesso!';
+                    return;
+                }
+
+                const formattedName = rawName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                const userKey = formattedName.toLowerCase();
+
+                if (allUsers.map(u => u.toLowerCase()).includes(userKey)) {
+                    statusEl.style.color = '#e74c3c';
+                    statusEl.textContent = `O colaborador "${formattedName}" já existe!`;
+                    return;
+                }
+
+                statusEl.style.color = '#0086ff';
+                statusEl.textContent = 'Cadastrando novo colaborador...';
+
+                const updates = {};
+                updates[`customUsers/${userKey}`] = {
+                    name: formattedName,
+                    store: store,
+                    role: role,
+                    createdAt: new Date().toISOString()
+                };
+                updates[`userPasswords/${userKey}`] = pass;
+                updates[`userProfiles/${userKey}`] = {
+                    photoURL: DEFAULT_PROFILE_PHOTO,
+                    overtimeMinutes: 0
+                };
+                updates[`salesData/${userKey}`] = {
+                    vendas: 0,
+                    servico: 0,
+                    acessorio: 0
+                };
+                updates[`metas/${userKey}`] = {
+                    venda: 40000,
+                    meta_servico: 2000,
+                    meta_acessorio: 2000
+                };
+
+                try {
+                    await database.ref().update(updates);
+                    statusEl.style.color = '#27ae60';
+                    statusEl.textContent = `Funcionário "${formattedName}" cadastrado com sucesso!`;
+                    nameInput.value = '';
+                    passInput.value = '';
+                    setTimeout(() => {
+                        statusEl.textContent = '';
+                        loadUsersManagementPage();
+                    }, 1200);
+                } catch (err) {
+                    console.error(err);
+                    statusEl.style.color = '#e74c3c';
+                    statusEl.textContent = 'Erro ao cadastrar funcionário.';
+                }
+            };
+        }
+
         try {
-            const [passSnap, profilesSnap, logsSnap, accessLogsSnap, sessionsSnap] = await Promise.all([
+            const [passSnap, profilesSnap, logsSnap, accessLogsSnap, sessionsSnap, customUsersSnap] = await Promise.all([
                 database.ref('userPasswords').get(),
                 database.ref('userProfiles').get(),
                 database.ref('userDeviceLoginLogs').limitToLast(40).get(),
                 database.ref('userAccessLogs').get(),
-                database.ref('userSessions').get()
+                database.ref('userSessions').get(),
+                database.ref('customUsers').get()
             ]);
 
             const passwords = passSnap.exists() ? passSnap.val() : {};
             const profiles = profilesSnap.exists() ? profilesSnap.val() : {};
             const accessLogs = accessLogsSnap.exists() ? accessLogsSnap.val() : {};
             const sessions = sessionsSnap.exists() ? sessionsSnap.val() : {};
+            const customUsers = customUsersSnap.exists() ? customUsersSnap.val() : {};
+
+            syncDynamicUsers(customUsers);
 
             container.innerHTML = '';
 
@@ -7528,11 +7709,21 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                 const lastAccess = accessLogs[userKey]?.lastAccess;
                 const lastSeenText = lastAccess ? new Date(lastAccess).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
 
+                const isCustomUser = Boolean(customUsers[userKey]);
+                const userStore = storeMapping.pinheiro.includes(userName) ? 'Pinheiro (PHO)' : (storeMapping.bacabal.includes(userName) ? 'Bacabal (BAC)' : 'Geral');
+                const userRole = newAdmins.includes(userName) ? 'Admin' : 'Vendedor';
+
                 const activeSession = sessions[userKey]?.activeSessionId;
                 const isLogged = activeSession && !String(activeSession).startsWith('revoked_');
                 const connectionBadge = isLogged
                     ? '<span style="font-size: 0.6rem; font-weight: 800; color: #27ae60; background: #eafaf1; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71;"></span>Conectado</span>'
                     : '<span style="font-size: 0.6rem; font-weight: 800; color: #7f8c8d; background: #f2f4f4; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span style="width: 6px; height: 6px; background: #95a5a6; border-radius: 50%;"></span>Desconectado</span>';
+
+                const deleteButtonHtml = isCustomUser ? `
+                    <button class="users-mgmt-delete-user-btn" data-user="${userName}" style="flex: 1; padding: 6px 10px; background: #fff0f0; border: 1px solid #ffccd2; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #c0392b; cursor: pointer;">
+                        <i class="fa-solid fa-trash-can"></i> Excluir
+                    </button>
+                ` : '';
 
                 const row = document.createElement('div');
                 row.className = 'rank-item';
@@ -7543,18 +7734,21 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                         <div class="rank-name" style="justify-content: space-between; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; flex-wrap: wrap;">
                                 <span style="color: #2D2319; font-weight: 800; font-size: 0.9rem; white-space: nowrap;">${userName}</span>
+                                <span style="font-size: 0.6rem; font-weight: 800; color: #0086ff; background: #e6f3ff; padding: 2px 6px; border-radius: 6px;">${userStore}</span>
+                                <span style="font-size: 0.6rem; font-weight: 800; color: #ff6b00; background: #fff3e6; padding: 2px 6px; border-radius: 6px;">${userRole}</span>
                                 ${connectionBadge}
                                 <span style="font-size: 0.62rem; color: #8C7561; font-weight: 600; white-space: nowrap;">Visto: ${lastSeenText}</span>
                             </div>
                             <span style="font-family: monospace; font-size: 0.85rem; color: #0086ff; font-weight: 800; background: #e6f3ff; padding: 2px 8px; border-radius: 8px;">🔑 ${userPass}</span>
                         </div>
-                        <div style="display: flex; gap: 6px; margin-top: 8px;">
-                            <button class="users-mgmt-edit-pass-btn" data-user="${userName}" style="flex: 1; padding: 6px 10px; background: #FFF9F2; border: 1px solid #FFE7D1; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #FF6F00; cursor: pointer;">
+                        <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                            <button class="users-mgmt-edit-pass-btn" data-user="${userName}" style="flex: 1; min-width: 90px; padding: 6px 10px; background: #FFF9F2; border: 1px solid #FFE7D1; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #FF6F00; cursor: pointer;">
                                 <i class="fa-solid fa-key"></i> Alterar Senha
                             </button>
-                            <button class="users-mgmt-kick-user-btn" data-user="${userName}" style="flex: 1; padding: 6px 10px; background: #FFF0F0; border: 1px solid #FFCCD2; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #c0392b; cursor: pointer;">
+                            <button class="users-mgmt-kick-user-btn" data-user="${userName}" style="flex: 1; min-width: 90px; padding: 6px 10px; background: #FFF0F0; border: 1px solid #FFCCD2; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #c0392b; cursor: pointer;">
                                 <i class="fa-solid fa-right-from-bracket"></i> Deslogar
                             </button>
+                            ${deleteButtonHtml}
                         </div>
                     </div>
                 `;
@@ -7584,6 +7778,32 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                     database.ref(`userSessions/${uKey}/activeSessionId`).set(newSid).then(() => {
                         alert(`${uName} foi deslogado(a) com sucesso!`);
                     });
+                };
+            });
+
+            container.querySelectorAll('.users-mgmt-delete-user-btn').forEach(btn => {
+                btn.onclick = async () => {
+                    const uName = btn.dataset.user;
+                    const uKey = uName.toLowerCase();
+                    if (!confirm(`ATENÇÃO: Deseja realmente excluir o funcionário "${uName}" do sistema?\n\nEle será removido das listas, rankings, metas e de sua respectiva loja.`)) return;
+
+                    try {
+                        const updates = {};
+                        updates[`customUsers/${uKey}`] = null;
+                        updates[`userPasswords/${uKey}`] = null;
+                        updates[`userSessions/${uKey}`] = null;
+                        updates[`metas/${uKey}`] = null;
+                        updates[`salesData/${uKey}`] = null;
+                        updates[`userProfiles/${uKey}`] = null;
+                        updates[`userStatuses/${uKey}`] = null;
+
+                        await database.ref().update(updates);
+                        alert(`Funcionário "${uName}" foi excluído com sucesso!`);
+                        loadUsersManagementPage();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Erro ao excluir funcionário.');
+                    }
                 };
             });
 
@@ -9446,13 +9666,23 @@ const loadAndDisplayCollaboratorMetas = () => {
 
         const checkSeguro = document.getElementById('check-seguro-queda')?.checked || false;
         const checkGarantia = document.getElementById('check-garantia-estendida')?.checked || false;
+        const checkCombo = document.getElementById('check-super-combo')?.checked || false;
 
         const valSeguro = parseVal(data.seguroQueda);
         const valGarantia = parseVal(data.garantiaEstendida);
+        const somaServicos = valSeguro + valGarantia;
+        const valCombo = somaServicos * 0.8;
+
+        const elComboText = document.getElementById('device-super-combo');
+        if (elComboText) elComboText.textContent = fmt(valCombo);
 
         let adicional = 0;
-        if (checkSeguro) adicional += valSeguro;
-        if (checkGarantia) adicional += valGarantia;
+        if (checkCombo) {
+            adicional = valCombo;
+        } else {
+            if (checkSeguro) adicional += valSeguro;
+            if (checkGarantia) adicional += valGarantia;
+        }
 
         const baseVenda = parseVal(data.precoVenda) + adicional;
         const baseLimite = parseVal(data.precoLimite) + adicional;
@@ -9657,6 +9887,15 @@ const loadAndDisplayCollaboratorMetas = () => {
                     </div>
                 </div>
 
+                <div style="background: rgba(255,255,255,0.08); padding: 16px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(5px); text-align: center; width: 100%; margin-top: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px;">
+                        <input type="checkbox" id="check-super-combo" style="width: 18px; height: 18px; cursor: pointer;">
+                        <span style="font-size: 0.95rem; font-weight: 800; color: #fff;">Super Combo</span>
+                    </div>
+                    <strong id="device-super-combo" style="font-size: 1.45rem; display: block; color: #fff; margin: 2px 0;">...</strong>
+                    <span style="font-size: 0.68rem; font-weight: 900; color: #ff3b30; text-transform: uppercase; letter-spacing: 0.5px;">DESCONTO DE 20%</span>
+                </div>
+
                 ${payMobiHTML}
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 25px; padding-bottom: 30px;">
@@ -9669,8 +9908,28 @@ const loadAndDisplayCollaboratorMetas = () => {
             setTimeout(() => {
                 const cS = document.getElementById('check-seguro-queda');
                 const cG = document.getElementById('check-garantia-estendida');
-                if (cS) cS.onchange = () => window.updateMathPrices(device.name);
-                if (cG) cG.onchange = () => window.updateMathPrices(device.name);
+                const cC = document.getElementById('check-super-combo');
+                if (cS) {
+                    cS.onchange = () => {
+                        if (cS.checked && cC) cC.checked = false;
+                        window.updateMathPrices(device.name);
+                    };
+                }
+                if (cG) {
+                    cG.onchange = () => {
+                        if (cG.checked && cC) cC.checked = false;
+                        window.updateMathPrices(device.name);
+                    };
+                }
+                if (cC) {
+                    cC.onchange = () => {
+                        if (cC.checked) {
+                            if (cS) cS.checked = false;
+                            if (cG) cG.checked = false;
+                        }
+                        window.updateMathPrices(device.name);
+                    };
+                }
             }, 50);
         }
 
