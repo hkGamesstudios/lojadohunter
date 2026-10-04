@@ -5184,6 +5184,20 @@
                 <div class="kpi-card"><span class="kpi-title">VENDAS BACABAL</span><span id="bacabal-vendas-kpi" class="kpi-value">---</span></div>
             </div>
 
+            <!-- KPIs Serviços -->
+            <div class="dashboard-grid">
+                <div class="kpi-card"><span class="kpi-title">SERVIÇOS TOTAIS</span><span id="total-servicos-kpi" class="kpi-value">---</span></div>
+                <div class="kpi-card"><span class="kpi-title">SERVIÇOS PINHEIRO</span><span id="pinheiro-servicos-kpi" class="kpi-value">---</span></div>
+                <div class="kpi-card"><span class="kpi-title">SERVIÇOS BACABAL</span><span id="bacabal-servicos-kpi" class="kpi-value">---</span></div>
+            </div>
+
+            <!-- KPIs Acessórios -->
+            <div class="dashboard-grid">
+                <div class="kpi-card"><span class="kpi-title">ACESSÓRIOS TOTAIS</span><span id="total-acessorios-kpi" class="kpi-value">---</span></div>
+                <div class="kpi-card"><span class="kpi-title">ACESSÓRIOS PINHEIRO</span><span id="pinheiro-acessorios-kpi" class="kpi-value">---</span></div>
+                <div class="kpi-card"><span class="kpi-title">ACESSÓRIOS BACABAL</span><span id="bacabal-acessorios-kpi" class="kpi-value">---</span></div>
+            </div>
+
             <!-- Rankings de Performance -->
             <div class="dashboard-grid">
                  <div class="performance-card"><span class="kpi-title">MELHOR LOJA (Vendas)</span><span id="melhor-loja-kpi" class="kpi-value" style="font-size: 1.5rem;">---</span></div>
@@ -6495,7 +6509,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.5 - B'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.6 - C'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10315,17 +10329,28 @@ const loadAndDisplayCollaboratorMetas = () => {
 
             // --- Cálculos de Vendas Gerais e por Loja ---
             let totalVendas = 0, vendasPinheiro = 0, vendasBacabal = 0;
+            let totalServicos = 0, servicosPinheiro = 0, servicosBacabal = 0;
+            let totalAcessorios = 0, acessoriosPinheiro = 0, acessoriosBacabal = 0;
 
             // Itera sobre TODOS os colaboradores para obter os totais corretos.
             allCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const venda = parseFloat(salesData[key]?.vendas || 0);
-                totalVendas += venda; // Soma para o total geral
+                const servico = parseFloat(salesData[key]?.servico || 0);
+                const acessorio = parseFloat(salesData[key]?.acessorio || 0);
+
+                totalVendas += venda;
+                totalServicos += servico;
+                totalAcessorios += acessorio;
 
                 if (storeMapping.pinheiro.includes(name)) {
                     vendasPinheiro += venda;
+                    servicosPinheiro += servico;
+                    acessoriosPinheiro += acessorio;
                 } else if (storeMapping.bacabal.includes(name)) {
                     vendasBacabal += venda;
+                    servicosBacabal += servico;
+                    acessoriosBacabal += acessorio;
                 }
             });
 
@@ -10347,6 +10372,21 @@ const loadAndDisplayCollaboratorMetas = () => {
             document.getElementById('total-vendas-kpi').textContent = formatCurrency(totalVendas);
             document.getElementById('pinheiro-vendas-kpi').textContent = formatCurrency(vendasPinheiro);
             document.getElementById('bacabal-vendas-kpi').textContent = formatCurrency(vendasBacabal);
+
+            const elTotalServicos = document.getElementById('total-servicos-kpi');
+            if (elTotalServicos) elTotalServicos.textContent = formatCurrency(totalServicos);
+            const elPinheiroServicos = document.getElementById('pinheiro-servicos-kpi');
+            if (elPinheiroServicos) elPinheiroServicos.textContent = formatCurrency(servicosPinheiro);
+            const elBacabalServicos = document.getElementById('bacabal-servicos-kpi');
+            if (elBacabalServicos) elBacabalServicos.textContent = formatCurrency(servicosBacabal);
+
+            const elTotalAcessorios = document.getElementById('total-acessorios-kpi');
+            if (elTotalAcessorios) elTotalAcessorios.textContent = formatCurrency(totalAcessorios);
+            const elPinheiroAcessorios = document.getElementById('pinheiro-acessorios-kpi');
+            if (elPinheiroAcessorios) elPinheiroAcessorios.textContent = formatCurrency(acessoriosPinheiro);
+            const elBacabalAcessorios = document.getElementById('bacabal-acessorios-kpi');
+            if (elBacabalAcessorios) elBacabalAcessorios.textContent = formatCurrency(acessoriosBacabal);
+
             document.getElementById('melhor-loja-kpi').textContent = melhorLoja;
             document.getElementById('melhor-vendedor-kpi').textContent = melhorVendedor.nome;
 
