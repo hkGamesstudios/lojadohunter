@@ -5177,25 +5177,67 @@
                 </div>
             </div>
 
-            <!-- KPIs principais -->
-            <div class="dashboard-grid">
-                <div class="kpi-card"><span class="kpi-title">VENDAS TOTAIS</span><span id="total-vendas-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">VENDAS PINHEIRO</span><span id="pinheiro-vendas-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">VENDAS BACABAL</span><span id="bacabal-vendas-kpi" class="kpi-value">---</span></div>
+            <!-- SEÇÃO DE VENDAS (LARANJA) -->
+            <div style="width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;">
+                <div style="font-size: 0.72rem; font-weight: 900; color: #ff6b00; text-transform: uppercase; letter-spacing: 0.8px; background: #fff1e2; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #ffd4aa; box-shadow: 0 2px 6px rgba(255, 107, 0, 0.1); margin-bottom: 8px;">
+                    <i class="fa-solid fa-mobile-screen"></i> VENDAS DE APARELHOS
+                </div>
+                <div class="dashboard-grid">
+                    <div class="kpi-card" style="border: 1.5px solid #ffd4aa !important; border-left: 6px solid #ff6b00 !important; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.08) !important;">
+                        <span class="kpi-title" style="color: #d35400 !important;">VENDAS TOTAIS</span>
+                        <span id="total-vendas-kpi" class="kpi-value" style="color: #ff6b00 !important;">---</span>
+                    </div>
+                    <div class="kpi-card" style="border: 1.5px solid #ffd4aa !important; border-left: 6px solid #ff6b00 !important; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.08) !important;">
+                        <span class="kpi-title" style="color: #d35400 !important;">VENDAS PINHEIRO</span>
+                        <span id="pinheiro-vendas-kpi" class="kpi-value" style="color: #ff6b00 !important;">---</span>
+                    </div>
+                    <div class="kpi-card" style="border: 1.5px solid #ffd4aa !important; border-left: 6px solid #ff6b00 !important; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.08) !important;">
+                        <span class="kpi-title" style="color: #d35400 !important;">VENDAS BACABAL</span>
+                        <span id="bacabal-vendas-kpi" class="kpi-value" style="color: #ff6b00 !important;">---</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- KPIs Serviços -->
-            <div class="dashboard-grid">
-                <div class="kpi-card"><span class="kpi-title">SERVIÇOS TOTAIS</span><span id="total-servicos-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">SERVIÇOS PINHEIRO</span><span id="pinheiro-servicos-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">SERVIÇOS BACABAL</span><span id="bacabal-servicos-kpi" class="kpi-value">---</span></div>
+            <!-- SEÇÃO DE SERVIÇOS (ROXO) -->
+            <div style="width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;">
+                <div style="font-size: 0.72rem; font-weight: 900; color: #8e44ad; text-transform: uppercase; letter-spacing: 0.8px; background: #fbf0fd; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #e8cbf5; box-shadow: 0 2px 6px rgba(142, 68, 173, 0.1); margin-bottom: 8px;">
+                    <i class="fa-solid fa-shield-halved"></i> SERVIÇOS & SEGUROS
+                </div>
+                <div class="dashboard-grid">
+                    <div class="kpi-card" style="border: 1.5px solid #e8cbf5 !important; border-left: 6px solid #8e44ad !important; box-shadow: 0 4px 14px rgba(142, 68, 173, 0.08) !important;">
+                        <span class="kpi-title" style="color: #7d3c98 !important;">SERVIÇOS TOTAIS</span>
+                        <span id="total-servicos-kpi" class="kpi-value" style="color: #8e44ad !important;">---</span>
+                    </div>
+                    <div class="kpi-card" style="border: 1.5px solid #e8cbf5 !important; border-left: 6px solid #8e44ad !important; box-shadow: 0 4px 14px rgba(142, 68, 173, 0.08) !important;">
+                        <span class="kpi-title" style="color: #7d3c98 !important;">SERVIÇOS PINHEIRO</span>
+                        <span id="pinheiro-servicos-kpi" class="kpi-value" style="color: #8e44ad !important;">---</span>
+                    </div>
+                    <div class="kpi-card" style="border: 1.5px solid #e8cbf5 !important; border-left: 6px solid #8e44ad !important; box-shadow: 0 4px 14px rgba(142, 68, 173, 0.08) !important;">
+                        <span class="kpi-title" style="color: #7d3c98 !important;">SERVIÇOS BACABAL</span>
+                        <span id="bacabal-servicos-kpi" class="kpi-value" style="color: #8e44ad !important;">---</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- KPIs Acessórios -->
-            <div class="dashboard-grid">
-                <div class="kpi-card"><span class="kpi-title">ACESSÓRIOS TOTAIS</span><span id="total-acessorios-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">ACESSÓRIOS PINHEIRO</span><span id="pinheiro-acessorios-kpi" class="kpi-value">---</span></div>
-                <div class="kpi-card"><span class="kpi-title">ACESSÓRIOS BACABAL</span><span id="bacabal-acessorios-kpi" class="kpi-value">---</span></div>
+            <!-- SEÇÃO DE ACESSÓRIOS (VERDE) -->
+            <div style="width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;">
+                <div style="font-size: 0.72rem; font-weight: 900; color: #27ae60; text-transform: uppercase; letter-spacing: 0.8px; background: #eafaf1; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #b7eed0; box-shadow: 0 2px 6px rgba(39, 174, 96, 0.1); margin-bottom: 8px;">
+                    <i class="fa-solid fa-headphones"></i> ACESSÓRIOS
+                </div>
+                <div class="dashboard-grid">
+                    <div class="kpi-card" style="border: 1.5px solid #b7eed0 !important; border-left: 6px solid #27ae60 !important; box-shadow: 0 4px 14px rgba(39, 174, 96, 0.08) !important;">
+                        <span class="kpi-title" style="color: #1e8449 !important;">ACESSÓRIOS TOTAIS</span>
+                        <span id="total-acessorios-kpi" class="kpi-value" style="color: #27ae60 !important;">---</span>
+                    </div>
+                    <div class="kpi-card" style="border: 1.5px solid #b7eed0 !important; border-left: 6px solid #27ae60 !important; box-shadow: 0 4px 14px rgba(39, 174, 96, 0.08) !important;">
+                        <span class="kpi-title" style="color: #1e8449 !important;">ACESSÓRIOS PINHEIRO</span>
+                        <span id="pinheiro-acessorios-kpi" class="kpi-value" style="color: #27ae60 !important;">---</span>
+                    </div>
+                    <div class="kpi-card" style="border: 1.5px solid #b7eed0 !important; border-left: 6px solid #27ae60 !important; box-shadow: 0 4px 14px rgba(39, 174, 96, 0.08) !important;">
+                        <span class="kpi-title" style="color: #1e8449 !important;">ACESSÓRIOS BACABAL</span>
+                        <span id="bacabal-acessorios-kpi" class="kpi-value" style="color: #27ae60 !important;">---</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Rankings de Performance -->
@@ -6509,7 +6551,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.6 - C'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.7 - D'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
