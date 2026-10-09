@@ -6536,7 +6536,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.1.0 - A'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.1.1 - A'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10889,12 +10889,12 @@ const loadAndDisplayCollaboratorMetas = () => {
                 if (!subEl) {
                     subEl = document.createElement('div');
                     subEl.className = 'gasto-sub-details';
-                    subEl.style.cssText = 'font-size: 0.68rem; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3; font-weight: 700; border-top: 1px dashed #f5b7b1; padding-top: 4px; width: 100%;';
+                    subEl.style.cssText = 'font-size: 0.72rem; margin-top: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2px; line-height: 1.3; font-weight: 700; border-top: 1px dashed #f5b7b1; padding-top: 5px; width: 100%;';
                     kpiEl.parentElement.appendChild(subEl);
                 }
                 subEl.innerHTML = `
-                    <span class="btn-edit-gasto-planilha" data-target="${kpiId}" style="color: #7A6652; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">Planilha: <strong style="color: #2D2319;">${formatCurrency(planilhaVal)}</strong> <i class="fa-solid fa-pen" style="font-size: 0.55rem; color: #ff6b00;"></i></span>
-                    <span style="color: #7A6652;">Salários: <strong style="color: #2D2319;">${formatCurrency(salarioVal)}</strong></span>
+                    <span class="btn-edit-gasto-planilha" data-target="${kpiId}" style="color: #7A6652; cursor: pointer; text-align: center; width: 100%;">Planilha: <strong style="color: #2D2319;">${formatCurrency(planilhaVal)}</strong></span>
+                    <span style="color: #7A6652; text-align: center; width: 100%;">Salários: <strong style="color: #2D2319;">${formatCurrency(salarioVal)}</strong></span>
                 `;
                 const btn = subEl.querySelector('.btn-edit-gasto-planilha');
                 if (btn) {
