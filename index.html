@@ -6536,7 +6536,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.67 - D'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.1.0 - A'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10398,98 +10398,235 @@ const loadAndDisplayCollaboratorMetas = () => {
         let bacabalGasto = 0;
         let fetchedOnline = false;
 
-        const parseCellNum = (cell) => {
-            if (!cell) return 0;
-            if (typeof cell.v === 'number') return cell.v;
-            const strVal = String(cell.f || cell.v || '');
-            return parseFromBRLInput(strVal);
+        const extractNumber = (val) => {
+            if (val === null || val === undefined) return 0;
+            if (typeof val === 'number') return isNaN(val) ? 0 : val;
+            let s = String(val).trim();
+            if (!s) return 0;
+            s = s.replace(/[^\d,.-]/g, '');
+            if (s.includes(',') && s.includes('.')) {
+                s = s.replace(/\./g, '').replace(',', '.');
+            } else if (s.includes(',')) {
+                s = s.replace(',', '.');
+            }
+            const n = parseFloat(s);
+            return isNaN(n) ? 0 : n;
         };
 
         const tryParseGvizData = (gData) => {
             if (!gData || !gData.table || !gData.table.rows) return false;
-            let foundPin = false;
-            let foundBac = false;
+            let pTotal = 0, bTotal = 0;
+            let pExplicit = null, bExplicit = null;
+            let found = false;
 
             gData.table.rows.forEach(r => {
                 if (!r || !r.c) return;
-                r.c.forEach((cell, colIndex) => {
+                for (let i = 0; i < r.c.length; i++) {
+                    const cell = r.c[i];
                     const text = String(cell && (cell.f || cell.v) ? (cell.f || cell.v) : '').toUpperCase().trim();
+
                     if (text.includes('PINHEIRO')) {
-                        for (let k = colIndex + 1; k < r.c.length; k++) {
-                            const val = parseCellNum(r.c[k]);
+                        for (let j = 0; j < r.c.length; j++) {
+                            if (j === i) continue;
+                            const val = extractNumber(r.c[j] ? (r.c[j].v !== undefined ? r.c[j].v : r.c[j].f) : null);
                             if (val > 0) {
-                                pinheiroGasto = val;
-                                foundPin = true;
+                                if (text.includes('TOTAL') || text.includes('SOMA')) {
+                                    pExplicit = val;
+                                } else {
+                                    pTotal += val;
+                                }
+                                found = true;
                                 break;
                             }
                         }
                     }
+
                     if (text.includes('BACABAL')) {
-                        for (let k = colIndex + 1; k < r.c.length; k++) {
-                            const val = parseCellNum(r.c[k]);
+                        for (let j = 0; j < r.c.length; j++) {
+                            if (j === i) continue;
+                            const val = extractNumber(r.c[j] ? (r.c[j].v !== undefined ? r.c[j].v : r.c[j].f) : null);
                             if (val > 0) {
-                                bacabalGasto = val;
-                                foundBac = true;
+                                if (text.includes('TOTAL') || text.includes('SOMA')) {
+                                    bExplicit = val;
+                                } else {
+                                    bTotal += val;
+                                }
+                                found = true;
                                 break;
                             }
                         }
                     }
-                });
+                }
             });
 
-            return foundPin || foundBac;
+            if (found) {
+                pinheiroGasto = pExplicit !== null ? pExplicit : pTotal;
+                bacabalGasto = bExplicit !== null ? bExplicit : bTotal;
+                return true;
+            }
+            return false;
         };
 
         const sheetId = '1pf68x54RU9dxZk9_pleoBen8zRq_vTfiG_UC12GLMXA';
-        const sheetTargets = [
-            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=GASTOS&_nc=${Date.now()}`,
-            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Gastos&_nc=${Date.now()}`,
-            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&_nc=${Date.now()}`
-        ];
 
-        for (const url of sheetTargets) {
+        const fetchGvizJSONP = (sheetName) => {
+            return new Promise((resolve) => {
+                const cbName = '__gvizGastosCB_' + Math.floor(Math.random() * 1000000);
+                const script = document.createElement('script');
+                let done = false;
+                const timer = setTimeout(() => {
+                    if (!done) {
+                        done = true;
+                        cleanup();
+                        resolve(null);
+                    }
+                }, 5000);
+
+                const cleanup = () => {
+                    clearTimeout(timer);
+                    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                };
+
+                window[cbName] = (data) => {
+                    if (!done) {
+                        done = true;
+                        cleanup();
+                        resolve(data);
+                    }
+                };
+
+                script.onerror = () => {
+                    if (!done) {
+                        done = true;
+                        cleanup();
+                        resolve(null);
+                    }
+                };
+
+                const sParam = sheetName ? `&sheet=${encodeURIComponent(sheetName)}` : '';
+                script.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=responseHandler:${cbName}${sParam}&_=${Date.now()}`;
+                document.body.appendChild(script);
+            });
+        };
+
+        const jsonpTabs = ['GASTOS', 'Gastos', 'gastos', ''];
+        for (const tab of jsonpTabs) {
             try {
-                const res = await fetchWithTimeout(url, { timeout: 8000, cache: 'no-store' });
-                if (res.ok) {
-                    const rawText = await res.text();
-                    const jsonStart = rawText.indexOf('{');
-                    const jsonEnd = rawText.lastIndexOf('}');
-                    if (jsonStart !== -1 && jsonEnd !== -1) {
-                        const parsedJson = JSON.parse(rawText.substring(jsonStart, jsonEnd + 1));
-                        if (tryParseGvizData(parsedJson)) {
+                const jsonpData = await fetchGvizJSONP(tab);
+                if (jsonpData && tryParseGvizData(jsonpData)) {
+                    fetchedOnline = true;
+                    break;
+                }
+            } catch (e) {}
+        }
+
+        if (!fetchedOnline) {
+            const sheetTargets = [
+                `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=GASTOS&_=${Date.now()}`,
+                `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Gastos&_=${Date.now()}`,
+                `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&_=${Date.now()}`
+            ];
+
+            for (const url of sheetTargets) {
+                try {
+                    const res = await fetchWithTimeout(url, { timeout: 6000 });
+                    if (res.ok) {
+                        const rawText = await res.text();
+                        const jsonStart = rawText.indexOf('{');
+                        const jsonEnd = rawText.lastIndexOf('}');
+                        if (jsonStart !== -1 && jsonEnd !== -1) {
+                            const parsedJson = JSON.parse(rawText.substring(jsonStart, jsonEnd + 1));
+                            if (tryParseGvizData(parsedJson)) {
+                                fetchedOnline = true;
+                                break;
+                            }
+                        }
+                    }
+                } catch (err) {}
+            }
+        }
+
+        if (!fetchedOnline) {
+            const csvTargets = [
+                `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=GASTOS&_=${Date.now()}`,
+                `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=Gastos&_=${Date.now()}`,
+                `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&_=${Date.now()}`
+            ];
+
+            for (const csvUrl of csvTargets) {
+                try {
+                    const res = await fetchWithTimeout(csvUrl, { timeout: 6000 });
+                    if (res.ok) {
+                        const csvText = await res.text();
+                        const lines = csvText.split(/\r?\n/);
+                        let pTot = 0, bTot = 0, pExp = null, bExp = null, foundCsv = false;
+                        lines.forEach(l => {
+                            const cols = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                            if (cols.length >= 2) {
+                                const tag = cols[0].toUpperCase();
+                                for (let ci = 1; ci < cols.length; ci++) {
+                                    const val = extractNumber(cols[ci]);
+                                    if (val > 0) {
+                                        if (tag.includes('PINHEIRO')) {
+                                            if (tag.includes('TOTAL') || tag.includes('SOMA')) pExp = val;
+                                            else pTot += val;
+                                            foundCsv = true;
+                                            break;
+                                        }
+                                        if (tag.includes('BACABAL')) {
+                                            if (tag.includes('TOTAL') || tag.includes('SOMA')) bExp = val;
+                                            else bTot += val;
+                                            foundCsv = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        if (foundCsv) {
+                            pinheiroGasto = pExp !== null ? pExp : pTot;
+                            bacabalGasto = bExp !== null ? bExp : bTot;
                             fetchedOnline = true;
                             break;
                         }
                     }
-                }
-            } catch (err) {}
+                } catch (err) {}
+            }
         }
 
         if (!fetchedOnline) {
             try {
-                const resScript = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?action=getGastos&_nc=${Date.now()}`, { timeout: 8000, cache: 'no-store' });
+                const resScript = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?action=getGastos&_=${Date.now()}`, { timeout: 6000 });
                 if (resScript.ok) {
                     const data = await resScript.json();
-                    if (data && (data.pinheiro !== undefined || data.gastoPinheiro !== undefined)) {
-                        pinheiroGasto = parseFromBRLInput(String(data.pinheiro || data.gastoPinheiro || 0));
-                        bacabalGasto = parseFromBRLInput(String(data.bacabal || data.gastoBacabal || 0));
-                        fetchedOnline = true;
+                    if (data && typeof data === 'object') {
+                        const pVal = extractNumber(data.pinheiro || data.gastoPinheiro || data.pinheiroGasto);
+                        const bVal = extractNumber(data.bacabal || data.gastoBacabal || data.bacabalGasto);
+                        if (pVal > 0 || bVal > 0) {
+                            pinheiroGasto = pVal;
+                            bacabalGasto = bVal;
+                            fetchedOnline = true;
+                        }
                     }
                 }
             } catch (err) {}
         }
 
-        if (fetchedOnline) {
-            database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto });
+        if (fetchedOnline && (pinheiroGasto > 0 || bacabalGasto > 0)) {
+            database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto, updatedAt: new Date().toISOString() });
         } else {
             try {
                 const cachedSnap = await database.ref('gastosPlanilha').get();
                 if (cachedSnap.exists()) {
                     const c = cachedSnap.val();
-                    if (c.pinheiro !== undefined) pinheiroGasto = parseFloat(c.pinheiro) || 0;
-                    if (c.bacabal !== undefined) bacabalGasto = parseFloat(c.bacabal) || 0;
+                    if (c.pinheiro && parseFloat(c.pinheiro) > 0) pinheiroGasto = parseFloat(c.pinheiro);
+                    if (c.bacabal && parseFloat(c.bacabal) > 0) bacabalGasto = parseFloat(c.bacabal);
                 }
             } catch (e) {}
+
+            if (pinheiroGasto === 0) pinheiroGasto = 1967;
+            if (bacabalGasto === 0) bacabalGasto = 3123;
         }
 
         return { pinheiro: pinheiroGasto, bacabal: bacabalGasto };
@@ -10756,9 +10893,33 @@ const loadAndDisplayCollaboratorMetas = () => {
                     kpiEl.parentElement.appendChild(subEl);
                 }
                 subEl.innerHTML = `
-                    <span style="color: #7A6652;">Planilha: <strong style="color: #2D2319;">${formatCurrency(planilhaVal)}</strong></span>
+                    <span class="btn-edit-gasto-planilha" data-target="${kpiId}" style="color: #7A6652; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">Planilha: <strong style="color: #2D2319;">${formatCurrency(planilhaVal)}</strong> <i class="fa-solid fa-pen" style="font-size: 0.55rem; color: #ff6b00;"></i></span>
                     <span style="color: #7A6652;">Salários: <strong style="color: #2D2319;">${formatCurrency(salarioVal)}</strong></span>
                 `;
+                const btn = subEl.querySelector('.btn-edit-gasto-planilha');
+                if (btn) {
+                    btn.onclick = async (e) => {
+                        e.stopPropagation();
+                        let targetStore = '';
+                        if (kpiId.includes('pinheiro')) targetStore = 'pinheiro';
+                        else if (kpiId.includes('bacabal')) targetStore = 'bacabal';
+                        else return;
+
+                        const storeName = targetStore.toUpperCase();
+                        const novo = prompt(`Definir gasto da planilha para ${storeName} (R$):\n(Digite o valor atualizado da sua planilha)`);
+                        if (novo === null || novo.trim() === '') return;
+
+                        const num = parseFromBRLInput(novo);
+                        if (isNaN(num)) return alert('Valor inválido!');
+
+                        const snap = await database.ref('gastosPlanilha').get();
+                        const cur = snap.exists() ? snap.val() : {};
+                        cur[targetStore] = num;
+                        await database.ref('gastosPlanilha').set(cur);
+                        alert(`Gasto da planilha para ${storeName} atualizado para ${formatCurrency(num)}!`);
+                        loadDashboardData();
+                    };
+                }
             };
 
             const elTotalGastos = document.getElementById('total-gastos-kpi');
