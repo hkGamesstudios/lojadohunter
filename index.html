@@ -5246,27 +5246,11 @@
                  <div class="performance-card"><span class="kpi-title">MELHOR VENDEDOR</span><span id="melhor-vendedor-kpi" class="kpi-value" style="font-size: 1.5rem;">---</span></div>
             </div>
 
-            <!-- Seção de Vendas Mensais -->
-            <div class="charts-section">
-                <div class="chart-container">
-                    <h4><i class="fa-solid fa-chart-area" style="color: #ff6b00;"></i> Vendas Mensais (Histórico)</h4>
-                    <canvas id="monthly-sales-chart"></canvas>
-                </div>
-            </div>
-
             <!-- Seção de Gráficos de Vendas Atuais -->
             <div class="charts-section">
                 <div class="chart-container">
                     <h4><i class="fa-solid fa-chart-pie" style="color: #ff6b00;"></i> Vendas Atuais por Loja</h4>
                     <canvas id="store-sales-chart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h4><i class="fa-solid fa-bars-progress" style="color: #ff6b00;"></i> Progresso da Meta Individual (%)</h4>
-                    <canvas id="employee-goal-progress-chart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h4><i class="fa-solid fa-ranking-star" style="color: #ff6b00;"></i> Vendas Atuais por Funcionário</h4>
-                    <canvas id="employee-sales-chart"></canvas>
                 </div>
             </div>
             
@@ -6551,7 +6535,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.10 - C'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.11 - D'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10669,17 +10653,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                 gastosSection.after(liquidezSection);
             }
 
-            const lucroPinheiro = parseFloat(storeProfitsData.pinheiro || 0);
-            const lucroBacabal = parseFloat(storeProfitsData.bacabal || 0);
-            const lucroTotal = lucroPinheiro + lucroBacabal;
-
-            const elTotalLucro = document.getElementById('total-lucro-kpi');
-            if (elTotalLucro) elTotalLucro.textContent = formatCurrency(lucroTotal);
-            const elPinheiroLucro = document.getElementById('pinheiro-lucro-kpi');
-            if (elPinheiroLucro) elPinheiroLucro.textContent = formatCurrency(lucroPinheiro);
-            const elBacabalLucro = document.getElementById('bacabal-lucro-kpi');
-            if (elBacabalLucro) elBacabalLucro.textContent = formatCurrency(lucroBacabal);
-
             const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
             let sumSalarioPinheiro = 0;
             let sumSalarioBacabal = 0;
@@ -10695,6 +10668,29 @@ const loadAndDisplayCollaboratorMetas = () => {
             const gastoPinheiroFinal = gastosPlanilha.pinheiro + sumSalarioPinheiro;
             const gastoBacabalFinal = gastosPlanilha.bacabal + sumSalarioBacabal;
             const gastoTotaisFinal = gastoPinheiroFinal + gastoBacabalFinal;
+
+            const lucroPinheiroBruto = parseFloat(storeProfitsData.pinheiro || 0);
+            const lucroBacabalBruto = parseFloat(storeProfitsData.bacabal || 0);
+
+            const lucroPinheiro = lucroPinheiroBruto - gastoPinheiroFinal;
+            const lucroBacabal = lucroBacabalBruto - gastoBacabalFinal;
+            const lucroTotal = lucroPinheiro + lucroBacabal;
+
+            const elTotalLucro = document.getElementById('total-lucro-kpi');
+            if (elTotalLucro) {
+                elTotalLucro.textContent = formatCurrency(lucroTotal);
+                elTotalLucro.style.setProperty('color', lucroTotal >= 0 ? '#16a085' : '#e74c3c', 'important');
+            }
+            const elPinheiroLucro = document.getElementById('pinheiro-lucro-kpi');
+            if (elPinheiroLucro) {
+                elPinheiroLucro.textContent = formatCurrency(lucroPinheiro);
+                elPinheiroLucro.style.setProperty('color', lucroPinheiro >= 0 ? '#16a085' : '#e74c3c', 'important');
+            }
+            const elBacabalLucro = document.getElementById('bacabal-lucro-kpi');
+            if (elBacabalLucro) {
+                elBacabalLucro.textContent = formatCurrency(lucroBacabal);
+                elBacabalLucro.style.setProperty('color', lucroBacabal >= 0 ? '#16a085' : '#e74c3c', 'important');
+            }
 
             const setGastoSubDetails = (kpiId, planilhaVal, salarioVal) => {
                 const kpiEl = document.getElementById(kpiId);
@@ -10724,9 +10720,6 @@ const loadAndDisplayCollaboratorMetas = () => {
             setGastoSubDetails('bacabal-gastos-kpi', gastosPlanilha.bacabal, sumSalarioBacabal);
 
             renderStoreChart(vendasPinheiro, vendasBacabal);
-            renderEmployeeGoalProgressChart(salesData, metasData);
-            renderEmployeeChart(salesData);
-            renderMonthlySalesChart(monthlyData);
         });
     };
 
