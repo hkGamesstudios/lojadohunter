@@ -6551,7 +6551,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.7 - D'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.8 - A'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -9826,6 +9826,52 @@ const loadAndDisplayCollaboratorMetas = () => {
 
         titleEl.textContent = isEntradaNotaView ? "Ficha de Entrada" : device.name;
 
+        if (!window.borderLeftGlobalRemoved) {
+            window.borderLeftGlobalRemoved = true;
+            const globalBorderCleanStyle = document.createElement('style');
+            globalBorderCleanStyle.id = 'remove-all-border-left-style';
+            globalBorderCleanStyle.innerHTML = `
+                .rank-item,
+                .sales-data-card,
+                .kpi-card,
+                .os-warning,
+                .mt-item-card,
+                .aviso-card,
+                .ai-device-card,
+                .ai-hunter-bubble,
+                .tm-contact-card,
+                .tm-admin-card,
+                .tm-agent-card,
+                .employee-meta-card,
+                .chat-list-item.reply,
+                .story-reply-context,
+                .ponto-history-card,
+                .ponto-history-card.absence-record,
+                .ponto-history-justification,
+                .promo-slide,
+                .action-button,
+                [style*="border-left"],
+                [style*="borderLeft"] {
+                    border-left: none !important;
+                    border-left-width: 0 !important;
+                }
+            `;
+            document.head.appendChild(globalBorderCleanStyle);
+
+            const stripInlineBorders = () => {
+                document.querySelectorAll('.kpi-card, .rank-item, .sales-data-card, .employee-meta-card, .promo-slide, .os-warning, .mt-item-card, .aviso-card, .ai-device-card, .ai-hunter-bubble, .tm-contact-card, .tm-admin-card, .tm-agent-card').forEach(el => {
+                    if (el.style && (el.style.borderLeft || el.style.borderLeftColor || el.style.borderLeftWidth)) {
+                        el.style.removeProperty('border-left');
+                        el.style.removeProperty('border-left-color');
+                        el.style.removeProperty('border-left-width');
+                    }
+                });
+            };
+
+            stripInlineBorders();
+            new MutationObserver(stripInlineBorders).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+        }
+
         if (isEntradaNotaView) {
             contentContainer.innerHTML = `
                 <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
@@ -9844,18 +9890,20 @@ const loadAndDisplayCollaboratorMetas = () => {
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; padding-bottom: 30px;">
-                    <div class="kpi-card" style="padding: 15px !important; align-items: flex-start !important; text-align: left !important; background: #fff !important; border-left: 5px solid #000 !important;">
+                    <div class="kpi-card" style="padding: 15px !important; align-items: flex-start !important; text-align: left !important; background: #fff !important;">
                         <span class="kpi-title" style="color: #000 !important; font-weight: 900 !important;">PREÇO DE CUSTO 💸 <span id="custo-indicator"></span></span>
                         <span id="device-price-custo" class="kpi-value" style="font-size: 1.6rem !important; color: #000 !important;">Carregando...</span>
                     </div>
 
-                    <div class="kpi-card" style="padding: 15px !important; align-items: flex-start !important; text-align: left !important; border-left: 5px solid #2ecc71 !important;">
+                    <div class="kpi-card" style="padding: 15px !important; align-items: flex-start !important; text-align: left !important;">
                         <span class="kpi-title">PREÇO VENDA ✅ <span id="venda-indicator"></span></span>
                         <span id="device-price-venda" class="kpi-value" style="font-size: 1.6rem !important;">Carregando...</span>
                     </div>
                 </div>
             `;
         } else {
+            const isAcessorio = (brand && brand.toLowerCase() === 'acessorios') || (device.name && device.name.toLowerCase().startsWith('acessorio'));
+
             let payMobiInstallmentsHTML = '';
             for (let n = 5; n <= 10; n++) {
                 payMobiInstallmentsHTML += `
@@ -9867,7 +9915,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 `;
             }
 
-            const payMobiHTML = brand !== 'apple' ? `
+            const payMobiHTML = (brand !== 'apple' && !isAcessorio) ? `
                 <div style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%); border-radius: 20px; padding: 15px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.2); width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(10px);">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
                         <div style="width: 35px; height: 35px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; font-size: 1.1rem;">P</div>
@@ -9883,45 +9931,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 </div>
             ` : '';
 
-            contentContainer.innerHTML = `
-                <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
-                    <div style="flex-shrink: 0; width: 140px; height: 160px; background: #fff; border-radius: 24px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
-                        <div style="position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; background: var(--primary-color); filter: blur(30px); opacity: 0.2;"></div>
-                        <img src="${device.imageUrl}" alt="${device.name}" style="max-width: 100%; max-height: 100%; object-fit: contain; position: relative; z-index: 2;">
-                    </div>
-                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.25); border-radius: 24px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
-                        <span style="font-size: 0.7rem; text-transform: uppercase; color: var(--primary-color); font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px;">${brand}</span>
-                        <h2 style="font-size: 1.2rem; color: #fff; margin: 0; line-height: 1.2; font-weight: 700;">${device.name}</h2>
-                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 10px; background: rgba(46, 204, 113, 0.15); padding: 4px 10px; border-radius: 20px; align-self: flex-start;">
-                            <div style="width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 8px #2ecc71;"></div>
-                            <span style="font-size: 0.6rem; font-weight: 600; color: #2ecc71; text-transform: uppercase;">Atualizado</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
-                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #2ecc71 !important;">
-                        <span class="kpi-title" style="color: #ffffff !important;">VENDA ✅ <span id="venda-indicator"></span></span>
-                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
-                        <span id="venda-installments" style="font-size: 0.65rem; color: #2ecc71; font-weight: 800; text-transform: uppercase;"></span>
-                    </div>
-                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #f1c40f !important;">
-                        <span class="kpi-title" style="color: #ffffff !important;">LIMITE 🚨 <span id="limite-indicator"></span></span>
-                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
-                        <span id="discount-limite" style="font-size: 0.6rem; font-weight: 700; color: #f1c40f; text-transform: uppercase;"></span>
-                    </div>
-                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #e74c3c !important; grid-column: span 2;">
-                        <span class="kpi-title" style="color: #ffffff !important;">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
-                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
-                        <span id="discount-zero-lucro" style="font-size: 0.65rem; font-weight: 700; color: #e74c3c; text-transform: uppercase;"></span>
-                    </div>
-                    <div id="device-cupom-card" class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; border-left: 4px solid #3498db !important; grid-column: span 2; display: none;">
-                        <span class="kpi-title" style="color: #ffffff !important;">CUPOM 🎟️ <span id="cupom-indicator"></span></span>
-                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
-                        <span id="discount-cupom" style="font-size: 0.65rem; font-weight: 700; color: #3498db; text-transform: uppercase;"></span>
-                    </div>
-                </div>
-
+            const servicosECombosHTML = !isAcessorio ? `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 15px;">
                     <div style="background: rgba(255,255,255,0.08); padding: 18px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(5px); text-align: center; position: relative;">
                         <input type="checkbox" id="check-seguro-queda" style="position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; cursor: pointer;">
@@ -9951,6 +9961,48 @@ const loadAndDisplayCollaboratorMetas = () => {
                     <strong id="device-super-combo" style="font-size: 1.45rem; display: block; color: #fff; margin: 2px 0;">...</strong>
                     <span style="font-size: 0.68rem; font-weight: 900; color: #ff3b30; text-transform: uppercase; letter-spacing: 0.5px;">DESCONTO DE 20%</span>
                 </div>
+            ` : '';
+
+            contentContainer.innerHTML = `
+                <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
+                    <div style="flex-shrink: 0; width: 140px; height: 160px; background: #fff; border-radius: 24px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; background: var(--primary-color); filter: blur(30px); opacity: 0.2;"></div>
+                        <img src="${device.imageUrl}" alt="${device.name}" style="max-width: 100%; max-height: 100%; object-fit: contain; position: relative; z-index: 2;">
+                    </div>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; background: rgba(0,0,0,0.25); border-radius: 24px; padding: 18px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                        <span style="font-size: 0.7rem; text-transform: uppercase; color: var(--primary-color); font-weight: 800; letter-spacing: 1.5px; margin-bottom: 4px;">${brand}</span>
+                        <h2 style="font-size: 1.2rem; color: #fff; margin: 0; line-height: 1.2; font-weight: 700;">${device.name}</h2>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-top: 10px; background: rgba(46, 204, 113, 0.15); padding: 4px 10px; border-radius: 20px; align-self: flex-start;">
+                            <div style="width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 8px #2ecc71;"></div>
+                            <span style="font-size: 0.6rem; font-weight: 600; color: #2ecc71; text-transform: uppercase;">Atualizado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
+                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important;">
+                        <span class="kpi-title" style="color: #ffffff !important;">VENDA ✅ <span id="venda-indicator"></span></span>
+                        <span id="device-price-venda" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
+                        <span id="venda-installments" style="font-size: 0.65rem; color: #2ecc71; font-weight: 800; text-transform: uppercase;"></span>
+                    </div>
+                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important;">
+                        <span class="kpi-title" style="color: #ffffff !important;">LIMITE 🚨 <span id="limite-indicator"></span></span>
+                        <span id="device-price-limite" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
+                        <span id="discount-limite" style="font-size: 0.6rem; font-weight: 700; color: #f1c40f; text-transform: uppercase;"></span>
+                    </div>
+                    <div class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; grid-column: span 2;">
+                        <span class="kpi-title" style="color: #ffffff !important;">LUCRO ZERO 🔒 <span id="zero-lucro-indicator"></span></span>
+                        <span id="device-price-zero-lucro" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
+                        <span id="discount-zero-lucro" style="font-size: 0.65rem; font-weight: 700; color: #e74c3c; text-transform: uppercase;"></span>
+                    </div>
+                    <div id="device-cupom-card" class="kpi-card" style="padding: 12px !important; align-items: flex-start !important; text-align: left !important; grid-column: span 2; display: none;">
+                        <span class="kpi-title" style="color: #ffffff !important;">CUPOM 🎟️ <span id="cupom-indicator"></span></span>
+                        <span id="device-price-cupom" class="kpi-value" style="font-size: 1.2rem !important; margin-bottom: 2px; color: #ffffff !important;">Carregando...</span>
+                        <span id="discount-cupom" style="font-size: 0.65rem; font-weight: 700; color: #3498db; text-transform: uppercase;"></span>
+                    </div>
+                </div>
+
+                ${servicosECombosHTML}
 
                 ${payMobiHTML}
 
@@ -10294,16 +10346,16 @@ const loadAndDisplayCollaboratorMetas = () => {
             if (isAdminMulti) {
                 const pinMeta = parseFloat(allMetas['eliseu']?.metaLoja || 0);
                 const pinSold = getStoreSoldData('pinheiro');
-                section.innerHTML += createPanelHTML("META DO DIA - LOJA PINHEIRO", pinMeta, pinSold);
+                section.innerHTML += createPanelHTML("PMT DIARIA - LOJA PINHEIRO", pinMeta, pinSold);
                 
                 const bacMeta = parseFloat(allMetas['tacilio']?.metaLoja || 0);
                 const bacSold = getStoreSoldData('bacabal');
-                section.innerHTML += createPanelHTML("META DO DIA - LOJA BACABAL", bacMeta, bacSold);
+                section.innerHTML += createPanelHTML("PMT DIARIA - LOJA BACABAL", bacMeta, bacSold);
             } else if (storeManagers.includes(currentUserName)) {
                 const store = storeMapping.pinheiro.includes(currentUserName) ? 'pinheiro' : 'bacabal';
                 const meta = parseFloat(allMetas[userKey]?.metaLoja || 0);
                 const sold = getStoreSoldData(store);
-                section.innerHTML = createPanelHTML(`META DO DIA - LOJA ${store.toUpperCase()}`, meta, sold);
+                section.innerHTML = createPanelHTML(`PMT DIARIA - LOJA ${store.toUpperCase()}`, meta, sold);
             } else {
                 const meta = parseFloat(allMetas[userKey]?.venda || 0);
                 const metaAcc = parseFloat(allMetas[userKey]?.meta_acessorio || 0);
@@ -10312,7 +10364,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 const soldTodayServ = parseFloat(allDaily[userKey]?.servico || 0);
                 const soldTotalAcc = parseFloat(allSales[userKey]?.acessorio || 0);
                 const soldTodayAcc = parseFloat(allDaily[userKey]?.acessorio || 0);
-                section.innerHTML = createPanelHTML(`META DO DIA - ${currentUserName.toUpperCase()}`, meta, { 
+                section.innerHTML = createPanelHTML(`PMT DIARIA - ${currentUserName.toUpperCase()}`, meta, { 
                     total: soldTotal, 
                     today: soldToday, 
                     todayServ: soldTodayServ,
@@ -10356,6 +10408,56 @@ const loadAndDisplayCollaboratorMetas = () => {
         });
     };
 
+    const fetchGastosFromSheet = async () => {
+        let pinheiroGasto = 1967;
+        let bacabalGasto = 3123;
+
+        try {
+            const cachedSnap = await database.ref('gastosPlanilha').get();
+            if (cachedSnap.exists()) {
+                const c = cachedSnap.val();
+                if (c.pinheiro !== undefined) pinheiroGasto = parseFloat(c.pinheiro) || pinheiroGasto;
+                if (c.bacabal !== undefined) bacabalGasto = parseFloat(c.bacabal) || bacabalGasto;
+            }
+        } catch (e) {}
+
+        try {
+            const res = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?action=getGastos`, { timeout: 6000 });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && (data.pinheiro !== undefined || data.gastoPinheiro !== undefined)) {
+                    pinheiroGasto = parseFromBRLInput(String(data.pinheiro || data.gastoPinheiro || pinheiroGasto));
+                    bacabalGasto = parseFromBRLInput(String(data.bacabal || data.gastoBacabal || bacabalGasto));
+                    database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto });
+                    return { pinheiro: pinheiroGasto, bacabal: bacabalGasto };
+                }
+            }
+        } catch (e) {}
+
+        const sheetId = '1pf68x54RU9dxZk9_pleoBen8zRq_vTfiG_UC12GLMXA';
+        try {
+            const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=GASTOS`;
+            const gvizRes = await fetchWithTimeout(gvizUrl, { timeout: 6000 });
+            if (gvizRes.ok) {
+                const gText = await gvizRes.text();
+                const jsonStr = gText.substring(gText.indexOf('{'), gText.lastIndexOf('}') + 1);
+                const gData = JSON.parse(jsonStr);
+                if (gData && gData.table && gData.table.rows) {
+                    gData.table.rows.forEach(r => {
+                        const label = String(r.c && r.c[0] ? (r.c[0].v || '') : '').toUpperCase();
+                        const val = r.c && r.c[1] ? (r.c[1].v !== undefined ? r.c[1].v : r.c[1].f) : 0;
+                        const num = typeof val === 'number' ? val : parseFromBRLInput(String(val));
+                        if (label.includes('PINHEIRO')) pinheiroGasto = num;
+                        if (label.includes('BACABAL')) bacabalGasto = num;
+                    });
+                    database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto });
+                }
+            }
+        } catch (e) {}
+
+        return { pinheiro: pinheiroGasto, bacabal: bacabalGasto };
+    };
+
     const loadDashboardData = () => {
         if (currentUserName) {
             updateDailyGoalPanel(currentUserName.toLowerCase());
@@ -10363,18 +10465,20 @@ const loadAndDisplayCollaboratorMetas = () => {
         Promise.all([
             database.ref('salesData').get(),
             database.ref('monthlySales').get(),
-            database.ref('metas').get() // CORREÇÃO: Adiciona a busca pelos dados de metas.
-        ]).then(([salesSnapshot, monthlySnapshot, metasSnapshot]) => { // CORREÇÃO: Adiciona o snapshot de metas.
+            database.ref('metas').get(),
+            database.ref('storeProfits').get(),
+            database.ref('bonusData').get()
+        ]).then(async ([salesSnapshot, monthlySnapshot, metasSnapshot, storeProfitsSnapshot, bonusSnapshot]) => {
             const salesData = salesSnapshot.exists() ? salesSnapshot.val() : {};
             const monthlyData = monthlySnapshot.exists() ? monthlySnapshot.val() : {};
-            const metasData = metasSnapshot.exists() ? metasSnapshot.val() : {}; // CORREÇÃO: Define a variável metasData.
+            const metasData = metasSnapshot.exists() ? metasSnapshot.val() : {};
+            const storeProfitsData = storeProfitsSnapshot.exists() ? storeProfitsSnapshot.val() : {};
+            const bonusesData = bonusSnapshot.exists() ? bonusSnapshot.val() : {};
 
-            // --- Cálculos de Vendas Gerais e por Loja ---
             let totalVendas = 0, vendasPinheiro = 0, vendasBacabal = 0;
             let totalServicos = 0, servicosPinheiro = 0, servicosBacabal = 0;
             let totalAcessorios = 0, acessoriosPinheiro = 0, acessoriosBacabal = 0;
 
-            // Itera sobre TODOS os colaboradores para obter os totais corretos.
             allCollaborators.forEach(name => {
                 const key = name.toLowerCase();
                 const venda = parseFloat(salesData[key]?.vendas || 0);
@@ -10396,7 +10500,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                 }
             });
 
-            // --- Cálculo do Melhor VENDEDOR (apenas entre não-gerentes) ---
             const nonManagerCollaborators = allCollaborators.filter(name => !managers.includes(name));
             let melhorVendedor = { nome: 'N/A', vendas: 0 };
             nonManagerCollaborators.forEach(name => {
@@ -10409,7 +10512,6 @@ const loadAndDisplayCollaboratorMetas = () => {
 
             const melhorLoja = vendasPinheiro > vendasBacabal ? 'Pinheiro' : 'Bacabal';
 
-            // --- Atualização do DOM (KPIs) ---
             const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('total-vendas-kpi').textContent = formatCurrency(totalVendas);
             document.getElementById('pinheiro-vendas-kpi').textContent = formatCurrency(vendasPinheiro);
@@ -10432,9 +10534,195 @@ const loadAndDisplayCollaboratorMetas = () => {
             document.getElementById('melhor-loja-kpi').textContent = melhorLoja;
             document.getElementById('melhor-vendedor-kpi').textContent = melhorVendedor.nome;
 
-            // --- Renderização dos Gráficos e Listas ---
+            const now = new Date();
+            const currentDay = now.getDate();
+            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+            const metaVendasPinheiro = parseFloat(metasData['eliseu']?.metaLoja || 0);
+            const metaVendasBacabal = parseFloat(metasData['tacilio']?.metaLoja || 0);
+            const metaVendasTotal = metaVendasPinheiro + metaVendasBacabal;
+
+            const expVendasPinheiro = (metaVendasPinheiro / lastDayOfMonth) * currentDay;
+            const expVendasBacabal = (metaVendasBacabal / lastDayOfMonth) * currentDay;
+            const expVendasTotal = (metaVendasTotal / lastDayOfMonth) * currentDay;
+
+            const diffVendasPinheiro = vendasPinheiro - expVendasPinheiro;
+            const diffVendasBacabal = vendasBacabal - expVendasBacabal;
+            const diffVendasTotal = totalVendas - expVendasTotal;
+
+            const expServPinheiro = expVendasPinheiro * 0.10;
+            const expServBacabal = expVendasBacabal * 0.10;
+            const expServTotal = expVendasTotal * 0.10;
+
+            const diffServPinheiro = servicosPinheiro - expServPinheiro;
+            const diffServBacabal = servicosBacabal - expServBacabal;
+            const diffServTotal = totalServicos - expServTotal;
+
+            let metaAccPinheiro = 0;
+            let metaAccBacabal = 0;
+            (storeMapping.pinheiro || []).forEach(n => {
+                metaAccPinheiro += parseFloat(metasData[n.toLowerCase()]?.meta_acessorio || 0);
+            });
+            (storeMapping.bacabal || []).forEach(n => {
+                metaAccBacabal += parseFloat(metasData[n.toLowerCase()]?.meta_acessorio || 0);
+            });
+            const metaAccTotal = metaAccPinheiro + metaAccBacabal;
+
+            const expAccPinheiro = (metaAccPinheiro / lastDayOfMonth) * currentDay;
+            const expAccBacabal = (metaAccBacabal / lastDayOfMonth) * currentDay;
+            const expAccTotal = (metaAccTotal / lastDayOfMonth) * currentDay;
+
+            const diffAccPinheiro = acessoriosPinheiro - expAccPinheiro;
+            const diffAccBacabal = acessoriosBacabal - expAccBacabal;
+            const diffAccTotal = totalAcessorios - expAccTotal;
+
+            const setKpiSubDetails = (kpiId, expected, diff) => {
+                const kpiEl = document.getElementById(kpiId);
+                if (!kpiEl || !kpiEl.parentElement) return;
+                let subEl = kpiEl.parentElement.querySelector('.kpi-sub-details');
+                if (!subEl) {
+                    subEl = document.createElement('div');
+                    subEl.className = 'kpi-sub-details';
+                    subEl.style.cssText = 'font-size: 0.72rem; margin-top: 6px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3; font-weight: 700; border-top: 1px dashed #FFE4CC; padding-top: 5px; width: 100%;';
+                    kpiEl.parentElement.appendChild(subEl);
+                }
+                const diffSign = diff >= 0 ? '+' : '';
+                const diffColor = diff >= 0 ? '#27ae60' : '#e74c3c';
+                subEl.innerHTML = `
+                    <span style="color: #7A6652;">ESPERADO: <strong style="color: #2D2319;">${formatCurrency(expected)}</strong></span>
+                    <span style="color: ${diffColor};">DIFERENÇA: <strong>${diffSign}${formatCurrency(diff)}</strong></span>
+                `;
+            };
+
+            setKpiSubDetails('total-vendas-kpi', expVendasTotal, diffVendasTotal);
+            setKpiSubDetails('pinheiro-vendas-kpi', expVendasPinheiro, diffVendasPinheiro);
+            setKpiSubDetails('bacabal-vendas-kpi', expVendasBacabal, diffVendasBacabal);
+
+            setKpiSubDetails('total-servicos-kpi', expServTotal, diffServTotal);
+            setKpiSubDetails('pinheiro-servicos-kpi', expServPinheiro, diffServPinheiro);
+            setKpiSubDetails('bacabal-servicos-kpi', expServBacabal, diffServBacabal);
+
+            setKpiSubDetails('total-acessorios-kpi', expAccTotal, diffAccTotal);
+            setKpiSubDetails('pinheiro-acessorios-kpi', expAccPinheiro, diffAccPinheiro);
+            setKpiSubDetails('bacabal-acessorios-kpi', expAccBacabal, diffAccBacabal);
+
+            // --- SEÇÃO LIQUIDEZ LOJA (LUCRO) ---
+            const acessoriosKpiEl = document.getElementById('total-acessorios-kpi');
+            const acessoriosBox = acessoriosKpiEl ? acessoriosKpiEl.closest('div[style*="margin-bottom: 0.8rem"]') : null;
+            let liquidezSection = document.getElementById('liquidez-loja-section');
+            if (!liquidezSection && acessoriosBox) {
+                liquidezSection = document.createElement('div');
+                liquidezSection.id = 'liquidez-loja-section';
+                liquidezSection.style.cssText = 'width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;';
+                liquidezSection.innerHTML = `
+                    <div style="font-size: 0.72rem; font-weight: 900; color: #117a65; text-transform: uppercase; letter-spacing: 0.8px; background: #e8f8f5; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #a3e4d7; box-shadow: 0 2px 6px rgba(22, 160, 133, 0.1); margin-bottom: 8px;">
+                        <i class="fa-solid fa-coins"></i> LIQUIDEZ LOJA
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; border-left: 6px solid #16a085 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
+                            <span class="kpi-title" style="color: #117a65 !important;">LUCRO TOTAL</span>
+                            <span id="total-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                        </div>
+                        <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; border-left: 6px solid #16a085 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
+                            <span class="kpi-title" style="color: #117a65 !important;">LUCRO PINHEIRO</span>
+                            <span id="pinheiro-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                        </div>
+                        <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; border-left: 6px solid #16a085 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
+                            <span class="kpi-title" style="color: #117a65 !important;">LUCRO BACABAL</span>
+                            <span id="bacabal-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                        </div>
+                    </div>
+                `;
+                acessoriosBox.after(liquidezSection);
+            }
+
+            const lucroPinheiro = parseFloat(storeProfitsData.pinheiro || 0);
+            const lucroBacabal = parseFloat(storeProfitsData.bacabal || 0);
+            const lucroTotal = lucroPinheiro + lucroBacabal;
+
+            const elTotalLucro = document.getElementById('total-lucro-kpi');
+            if (elTotalLucro) elTotalLucro.textContent = formatCurrency(lucroTotal);
+            const elPinheiroLucro = document.getElementById('pinheiro-lucro-kpi');
+            if (elPinheiroLucro) elPinheiroLucro.textContent = formatCurrency(lucroPinheiro);
+            const elBacabalLucro = document.getElementById('bacabal-lucro-kpi');
+            if (elBacabalLucro) elBacabalLucro.textContent = formatCurrency(lucroBacabal);
+
+            // --- SEÇÃO GASTOS DAS LOJAS (PLANILHA + SALÁRIOS) ---
+            let gastosSection = document.getElementById('gastos-loja-section');
+            if (!gastosSection) {
+                const targetBox = liquidezSection || acessoriosBox;
+                if (targetBox) {
+                    gastosSection = document.createElement('div');
+                    gastosSection.id = 'gastos-loja-section';
+                    gastosSection.style.cssText = 'width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;';
+                    gastosSection.innerHTML = `
+                        <div style="font-size: 0.72rem; font-weight: 900; color: #c0392b; text-transform: uppercase; letter-spacing: 0.8px; background: #fdedec; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #f5b7b1; box-shadow: 0 2px 6px rgba(192, 57, 43, 0.1); margin-bottom: 8px;">
+                            <i class="fa-solid fa-receipt"></i> GASTOS DAS LOJAS
+                        </div>
+                        <div class="dashboard-grid">
+                            <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; border-left: 6px solid #c0392b !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
+                                <span class="kpi-title" style="color: #c0392b !important;">GASTO TOTAIS</span>
+                                <span id="total-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
+                            </div>
+                            <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; border-left: 6px solid #c0392b !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
+                                <span class="kpi-title" style="color: #c0392b !important;">GASTO PINHEIRO</span>
+                                <span id="pinheiro-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
+                            </div>
+                            <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; border-left: 6px solid #c0392b !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
+                                <span class="kpi-title" style="color: #c0392b !important;">GASTO BACABAL</span>
+                                <span id="bacabal-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
+                            </div>
+                        </div>
+                    `;
+                    targetBox.after(gastosSection);
+                }
+            }
+
+            const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
+            let sumSalarioPinheiro = 0;
+            let sumSalarioBacabal = 0;
+
+            sellers.forEach(name => {
+                const eData = getEarningsData(name, salesData, metasData, bonusesData);
+                if (eData.goal <= 0) return;
+                if (storeMapping.pinheiro.includes(name)) sumSalarioPinheiro += eData.total;
+                else if (storeMapping.bacabal.includes(name)) sumSalarioBacabal += eData.total;
+            });
+
+            const gastosPlanilha = await fetchGastosFromSheet();
+            const gastoPinheiroFinal = gastosPlanilha.pinheiro + sumSalarioPinheiro;
+            const gastoBacabalFinal = gastosPlanilha.bacabal + sumSalarioBacabal;
+            const gastoTotaisFinal = gastoPinheiroFinal + gastoBacabalFinal;
+
+            const setGastoSubDetails = (kpiId, planilhaVal, salarioVal) => {
+                const kpiEl = document.getElementById(kpiId);
+                if (!kpiEl || !kpiEl.parentElement) return;
+                let subEl = kpiEl.parentElement.querySelector('.gasto-sub-details');
+                if (!subEl) {
+                    subEl = document.createElement('div');
+                    subEl.className = 'gasto-sub-details';
+                    subEl.style.cssText = 'font-size: 0.68rem; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3; font-weight: 700; border-top: 1px dashed #f5b7b1; padding-top: 4px; width: 100%;';
+                    kpiEl.parentElement.appendChild(subEl);
+                }
+                subEl.innerHTML = `
+                    <span style="color: #7A6652;">Planilha: <strong style="color: #2D2319;">${formatCurrency(planilhaVal)}</strong></span>
+                    <span style="color: #7A6652;">Salários: <strong style="color: #2D2319;">${formatCurrency(salarioVal)}</strong></span>
+                `;
+            };
+
+            const elTotalGastos = document.getElementById('total-gastos-kpi');
+            if (elTotalGastos) elTotalGastos.textContent = formatCurrency(gastoTotaisFinal);
+            const elPinheiroGastos = document.getElementById('pinheiro-gastos-kpi');
+            if (elPinheiroGastos) elPinheiroGastos.textContent = formatCurrency(gastoPinheiroFinal);
+            const elBacabalGastos = document.getElementById('bacabal-gastos-kpi');
+            if (elBacabalGastos) elBacabalGastos.textContent = formatCurrency(gastoBacabalFinal);
+
+            setGastoSubDetails('total-gastos-kpi', gastosPlanilha.pinheiro + gastosPlanilha.bacabal, sumSalarioPinheiro + sumSalarioBacabal);
+            setGastoSubDetails('pinheiro-gastos-kpi', gastosPlanilha.pinheiro, sumSalarioPinheiro);
+            setGastoSubDetails('bacabal-gastos-kpi', gastosPlanilha.bacabal, sumSalarioBacabal);
+
             renderStoreChart(vendasPinheiro, vendasBacabal);
-            renderEmployeeGoalProgressChart(salesData, metasData); // Agora esta chamada funciona corretamente.
+            renderEmployeeGoalProgressChart(salesData, metasData);
             renderEmployeeChart(salesData);
             renderMonthlySalesChart(monthlyData);
         });
@@ -10800,7 +11088,7 @@ const loadAndDisplayCollaboratorMetas = () => {
 
     const loadAndDisplayIndividualSalesData = async () => {
         const container = document.getElementById('individual-sales-data');
-        container.innerHTML = `<div class="sales-data-card"><p>Carregando resultados...</p></div>`;
+        container.innerHTML = `<div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #ffffff;"><p>Carregando resultados...</p></div>`;
         const userKey = currentUserName.toLowerCase();
         
         try {
@@ -10826,36 +11114,46 @@ const loadAndDisplayCollaboratorMetas = () => {
             const remainingToSell = Math.max(0, data.goal - data.sold);
             const neededPerDay = remainingToSell / daysRemaining;
 
+            const expectedServToday = expectedToday * 0.10;
+            const diffExpectedServ = data.servSold - expectedServToday;
+
+            const expectedAccToday = (data.accGoal / lastDayOfMonth) * currentDay;
+            const diffExpectedAcc = data.accSold - expectedAccToday;
+
             if (isManager) {
                 container.innerHTML = `
-                    <div class="sales-data-card">
-                        <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">Resultados da Loja (Gerência)</h4>
+                    <div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2) !important; border-left: 6px solid var(--primary-color) !important; border-radius: 20px !important; padding: 1.2rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); color: #ffffff !important;">
+                        <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:8px; color: #ffffff !important; font-size: 1.15rem; font-weight: 800; text-transform: uppercase;">Resultados da Loja (Gerência)</h4>
                         <div style="display:flex; flex-direction:column; gap:12px;">
                             <div>
-                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DA LOJA:</p>
-                                <p style="font-size:1.1rem; margin:0; font-weight:700; color:var(--primary-color)">${formatBRL(data.goal)}</p>
-                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
-                                <p style="font-size:0.85rem; margin:0; font-weight:600;">ESPERADO ATÉ HOJE: ${formatBRL(expectedToday)}</p>
-                                <p style="font-size:0.85rem; margin:0; color:${diffExpected >= 0 ? '#2ecc71' : '#e74c3c'};">DIFERENÇA: ${diffExpected >= 0 ? '+' : ''}${formatBRL(diffExpected)}</p>
-                                <p style="font-size:0.85rem; margin:0; color:#f1c40f;">FALTA VENDER: ${formatBRL(remainingToSell)}</p>
-                                <p style="font-size:0.85rem; margin:0; font-weight:700;">NECESSÁRIO POR DIA: ${formatBRL(neededPerDay)}</p>
+                                <p style="font-size:0.75rem; color:#ddd; margin:0; font-weight:700;">META DA LOJA:</p>
+                                <p style="font-size:1.25rem; margin:2px 0 6px 0; font-weight:800; color:#ff8533;">${formatBRL(data.goal)}</p>
+                                <p style="font-size:0.9rem; margin:0; color:#fff; font-weight:600;">VENDIDO: <strong>${formatBRL(data.sold)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#f1c40f;">ESPERADO ATÉ HOJE: ${formatBRL(expectedToday)}</p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:800; color:${diffExpected >= 0 ? '#2ecc71' : '#ff4d4d'};">DIFERENÇA: ${diffExpected >= 0 ? '+' : ''}${formatBRL(diffExpected)}</p>
+                                <p style="font-size:0.9rem; margin:0; color:#ffa85c; font-weight:600;">FALTA VENDER: <strong>${formatBRL(remainingToSell)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#fff;">NECESSÁRIO POR DIA: ${formatBRL(neededPerDay)}</p>
                                 
                                 <div class="progress-bar-container" style="height: 16px; margin-top: 10px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
                                     <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
                                 </div>
                             </div>
-                            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO SERVIÇO / SEGURO DA LOJA:</p>
-                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.servSold)} / META: ${formatBRL(data.servGoal)}</p>
+                            <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
+                                <p style="font-size:0.75rem; color:#d2b4de; margin:0; font-weight:700;">PROGRESSO SERVIÇO / SEGURO DA LOJA:</p>
+                                <p style="font-size:0.9rem; margin:2px 0 0 0; color:#fff; font-weight:600;">VENDIDO: <strong>${formatBRL(data.servSold)}</strong> / META: <strong>${formatBRL(data.servGoal)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#f1c40f;">ESPERADO ATÉ HOJE: ${formatBRL(expectedServToday)}</p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:800; color:${diffExpectedServ >= 0 ? '#2ecc71' : '#ff4d4d'};">DIFERENÇA: ${diffExpectedServ >= 0 ? '+' : ''}${formatBRL(diffExpectedServ)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.servPerc / 125) * 100)}%; background-color: #9b59b6;"></div>
                                     <span class="progress-percentage">${data.servPerc.toFixed(1)}%</span>
                                 </div>
                             </div>
-                            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top: 10px;">
-                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO ACESSÓRIOS DA LOJA:</p>
-                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.accSold)} / META: ${formatBRL(data.accGoal)}</p>
+                            <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px; margin-top: 10px;">
+                                <p style="font-size:0.75rem; color:#a9dfbf; margin:0; font-weight:700;">PROGRESSO ACESSÓRIOS DA LOJA:</p>
+                                <p style="font-size:0.9rem; margin:2px 0 0 0; color:#fff; font-weight:600;">VENDIDO: <strong>${formatBRL(data.accSold)}</strong> / META: <strong>${formatBRL(data.accGoal)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#f1c40f;">ESPERADO ATÉ HOJE: ${formatBRL(expectedAccToday)}</p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:800; color:${diffExpectedAcc >= 0 ? '#2ecc71' : '#ff4d4d'};">DIFERENÇA: ${diffExpectedAcc >= 0 ? '+' : ''}${formatBRL(diffExpectedAcc)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.accPerc / 125) * 100)}%; background-color: #2ecc71;"></div>
                                     <span class="progress-percentage">${data.accPerc.toFixed(1)}%</span>
@@ -10866,30 +11164,35 @@ const loadAndDisplayCollaboratorMetas = () => {
                 `;
             } else {
                 container.innerHTML = `
-                    <div class="sales-data-card">
-                        <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">Resultados Individuais</h4>
+                    <div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2) !important; border-left: 6px solid var(--primary-color) !important; border-radius: 20px !important; padding: 1.2rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); color: #ffffff !important;">
+                        <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:8px; color: #ffffff !important; font-size: 1.15rem; font-weight: 800; text-transform: uppercase;">Resultados Individuais</h4>
                         <div style="display:flex; flex-direction:column; gap:12px;">
                             <div>
-                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">META DE VENDAS:</p>
-                                <p style="font-size:1.1rem; margin:0; font-weight:700;">${formatBRL(data.goal)}</p>
-                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.sold)}</p>
-                                <p style="font-size:0.85rem; margin:0; font-weight:600;">ESPERADO ATÉ HOJE: ${formatBRL(expectedToday)}</p>
+                                <p style="font-size:0.75rem; color:#ddd; margin:0; font-weight:700;">META DE VENDAS:</p>
+                                <p style="font-size:1.25rem; margin:2px 0 6px 0; font-weight:800; color:#ff8533;">${formatBRL(data.goal)}</p>
+                                <p style="font-size:0.9rem; margin:0; color:#fff; font-weight:600;">VENDIDO: <strong>${formatBRL(data.sold)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#f1c40f;">ESPERADO ATÉ HOJE: ${formatBRL(expectedToday)}</p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:800; color:${diffExpected >= 0 ? '#2ecc71' : '#ff4d4d'};">DIFERENÇA: ${diffExpected >= 0 ? '+' : ''}${formatBRL(diffExpected)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px; margin-bottom: 10px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.perc / 125) * 100)}%; background-color: ${data.tierColor};"></div>
                                     <span class="progress-percentage">${data.perc.toFixed(1)}%</span>
                                 </div>
                             </div>
-                            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO SERVIÇO / SEGURO:</p>
-                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.servSold)} / META: ${formatBRL(data.servGoal)}</p>
+                            <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
+                                <p style="font-size:0.75rem; color:#d2b4de; margin:0; font-weight:700;">PROGRESSO SERVIÇO / SEGURO:</p>
+                                <p style="font-size:0.9rem; margin:2px 0 0 0; color:#fff; font-weight:600;">VENDIDO: <strong>${formatBRL(data.servSold)}</strong> / META: <strong>${formatBRL(data.servGoal)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#f1c40f;">ESPERADO ATÉ HOJE: ${formatBRL(expectedServToday)}</p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:800; color:${diffExpectedServ >= 0 ? '#2ecc71' : '#ff4d4d'};">DIFERENÇA: ${diffExpectedServ >= 0 ? '+' : ''}${formatBRL(diffExpectedServ)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.servPerc / 125) * 100)}%; background-color: #9b59b6;"></div>
                                     <span class="progress-percentage">${data.servPerc.toFixed(1)}%</span>
                                 </div>
                             </div>
-                            <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top: 10px;">
-                                <p style="font-size:0.75rem; opacity:0.7; margin:0;">PROGRESSO ACESSÓRIOS:</p>
-                                <p style="font-size:0.85rem; margin:0;">VENDIDO: ${formatBRL(data.accSold)} / META: ${formatBRL(data.accGoal)}</p>
+                            <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px; margin-top: 10px;">
+                                <p style="font-size:0.75rem; color:#a9dfbf; margin:0; font-weight:700;">PROGRESSO ACESSÓRIOS:</p>
+                                <p style="font-size:0.9rem; margin:2px 0 0 0; color:#fff; font-weight:600;">VENDIDO: <strong>${formatBRL(data.accSold)}</strong> / META: <strong>${formatBRL(data.accGoal)}</strong></p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:700; color:#f1c40f;">ESPERADO ATÉ HOJE: ${formatBRL(expectedAccToday)}</p>
+                                <p style="font-size:0.9rem; margin:0; font-weight:800; color:${diffExpectedAcc >= 0 ? '#2ecc71' : '#ff4d4d'};">DIFERENÇA: ${diffExpectedAcc >= 0 ? '+' : ''}${formatBRL(diffExpectedAcc)}</p>
                                 <div class="progress-bar-container" style="height: 14px; margin-top: 6px;">
                                     <div class="progress-bar" style="width: ${Math.min(100, (data.accPerc / 125) * 100)}%; background-color: #2ecc71;"></div>
                                     <span class="progress-percentage">${data.accPerc.toFixed(1)}%</span>
@@ -10905,17 +11208,23 @@ const loadAndDisplayCollaboratorMetas = () => {
             earningsCard.style.marginTop = '15px';
             earningsCard.style.width = '100%';
             earningsCard.style.maxWidth = '380px';
-            earningsCard.style.borderLeft = `6px solid ${data.tierColor}`;
+            earningsCard.style.background = 'rgba(0, 0, 0, 0.65) !important';
+            earningsCard.style.backdropFilter = 'blur(12px)';
+            earningsCard.style.webkitBackdropFilter = 'blur(12px)';
+            earningsCard.style.border = '1px solid rgba(255, 255, 255, 0.2) !important';
+            earningsCard.style.borderLeft = `6px solid ${data.tierColor} !important`;
+            earningsCard.style.boxShadow = '0 10px 28px rgba(0,0,0,0.4)';
+            earningsCard.style.color = '#ffffff';
             
             const labelVenda = data.isManager ? "Loja" : "Venda";
 
             earningsCard.innerHTML = `
                 <div class="rank-details">
                     <div class="rank-name" style="justify-content: space-between;">
-                        <span style="font-weight:700;">Ganhos Estimados</span>
+                        <span style="font-weight:700; color:#fff;">Ganhos Estimados</span>
                         <span style="color: ${data.tierColor}; font-weight:800; font-size:1.2rem;">${formatBRL(data.total)}</span>
                     </div>
-                    <div style="font-size: 0.65rem; opacity: 0.8; margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                    <div style="font-size: 0.65rem; opacity: 0.9; margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; color:#ddd;">
                         <span>Salário Fixo: ${formatBRL(data.base)}</span>
                         <span style="text-align:right;">Comm. ${labelVenda}: ${formatBRL(data.comm)}</span>
                         <span style="font-weight:700; color:${data.tierColor}">${data.tierText}</span>
@@ -10929,7 +11238,7 @@ const loadAndDisplayCollaboratorMetas = () => {
 
         } catch (error) {
             console.error(error);
-            container.innerHTML = `<div class="sales-data-card"><p>Erro ao carregar dados.</p></div>`;
+            container.innerHTML = `<div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color:#fff;"><p>Erro ao carregar dados.</p></div>`;
         }
     };
 
@@ -14441,12 +14750,21 @@ async function calculateAndDisplayStoreServiceRanking() {
         }
     };
 
+    let currentSaleSelectedProduct = null;
+    let currentSaleSelectedPrice = null;
+    let currentSaleActiveEmployee = null;
+
     const openManualSalePage = () => {
         const container = document.getElementById('manual-sale-content-container');
+        container.style.width = '100%';
+        container.style.maxWidth = '450px';
+        container.style.margin = '0 auto';
+        container.style.alignItems = 'stretch';
+        container.style.boxSizing = 'border-box';
         showPage('manualSalePage');
         
         container.innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; width: 100%;">
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; width: 100%; max-width: 450px; margin: 0 auto;">
                 <p style="text-align: center; color: #ccc; font-size: 0.9rem;">Selecione a Unidade</p>
                 <button class="action-button full-width" onclick="renderManualSaleForm('pinheiro')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
                     <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
@@ -14460,67 +14778,477 @@ async function calculateAndDisplayStoreServiceRanking() {
         `;
     };
 
-    window.renderManualSaleForm = async (store) => {
+    window.renderManualSaleForm = async (store, preselectedEmployee = null) => {
         const container = document.getElementById('manual-sale-content-container');
-        container.innerHTML = `<p style="text-align: center; padding: 2rem;">Carregando equipe de ${store}...</p>`;
-        
+        container.style.width = '100%';
+        container.style.maxWidth = '450px';
+        container.style.margin = '0 auto';
+        container.style.alignItems = 'stretch';
+        container.style.boxSizing = 'border-box';
+        container.innerHTML = `<p style="text-align: center; padding: 2rem;">Carregando sistema de vendas...</p>`;
+
         const todayString = getTodayDateString();
         const employees = storeMapping[store];
         const nonSales = ['Beatriz', 'Keliane', 'Ducielma', 'Leonardo', 'Jose'];
+        const activeEmployees = employees.filter(name => !nonSales.includes(name));
         const isAdmin = newAdmins.includes(currentUserName);
 
+        currentSaleActiveEmployee = preselectedEmployee || (activeEmployees.length > 0 ? activeEmployees[0] : null);
+        currentSaleSelectedProduct = null;
+        currentSaleSelectedPrice = null;
+
         try {
-            const snapshot = await database.ref(`dailySales/${todayString}`).get();
-            const dailyData = snapshot.exists() ? snapshot.val() : {};
-            
-            if (isAdmin) {
-                container.innerHTML = `<button onclick="openManualSalePage()" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Alterar Loja</button>`;
-            } else {
-                container.innerHTML = `<button onclick="showPage('collaboratorPage')" class="back-button" style="position: static; transform: none; margin-bottom: 1rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>`;
+            const [dailySnap, salesSnap, systemPricesSnap, devicesSnap] = await Promise.all([
+                database.ref(`dailySales/${todayString}`).get(),
+                database.ref('salesData').get(),
+                database.ref('systemDevicePrices').get(),
+                database.ref('devices').get()
+            ]);
+
+            const dailyData = dailySnap.exists() ? dailySnap.val() : {};
+            const salesData = salesSnap.exists() ? salesSnap.val() : {};
+
+            const productCatalog = [];
+            if (systemPricesSnap.exists()) {
+                const sysList = Object.values(systemPricesSnap.val());
+                sysList.forEach(item => {
+                    if (item && item.produto) {
+                        productCatalog.push({
+                            name: String(item.produto).trim(),
+                            brand: 'SISTEMA',
+                            precoCusto: item.precoDeCusto || '0,00',
+                            precoVenda: item.precoDeVenda || '0,00',
+                            precoLimite: item.precoLimite || '0,00',
+                            zeroLucro: item.zeroLucro || '0,00',
+                            cupom: item.cupom || '0,00',
+                            seguroQueda: item.seguroQueda || '0,00',
+                            garantiaEstendida: item.garantiaEstendida || '0,00'
+                        });
+                    }
+                });
             }
-            
-            employees.filter(name => !nonSales.includes(name)).forEach(name => {
-                const key = name.toLowerCase();
-                const userDaily = dailyData[key] || { vendas: 0, servico: 0, acessorio: 0 };
-                container.innerHTML += `
-                    <div class="employee-meta-card">
-                        <h4 style="color: #fff; margin-bottom: 10px;">${name}</h4>
-                        <div class="input-group">
-                            <label>📱 Vendas Hoje (R$)</label>
-                            <input type="text" id="manual-venda-${key}" class="data-input" value="${formatToBRLInput(userDaily.vendas)}">
-                        </div>
-                        <div class="input-group">
-                            <label>🛟 Serviço Hoje (R$)</label>
-                            <input type="text" id="manual-servico-${key}" class="data-input" value="${formatToBRLInput(userDaily.servico)}">
-                        </div>
-                        <div class="input-group" style="margin-bottom: 0;">
-                            <label>🛍️ Acessórios Hoje (R$)</label>
-                            <input type="text" id="manual-acessorio-${key}" class="data-input" value="${formatToBRLInput(userDaily.acessorio)}">
-                        </div>
-                    </div>
+
+            if (devicesSnap.exists()) {
+                const brands = devicesSnap.val();
+                Object.keys(brands).forEach(brand => {
+                    Object.values(brands[brand]).forEach(dev => {
+                        if (dev && dev.name) {
+                            const trimmedName = String(dev.name).trim();
+                            if (!productCatalog.some(p => p.name.toLowerCase() === trimmedName.toLowerCase())) {
+                                productCatalog.push({
+                                    name: trimmedName,
+                                    brand: brand.toUpperCase(),
+                                    precoCusto: '0,00',
+                                    precoVenda: '0,00',
+                                    precoLimite: '0,00',
+                                    zeroLucro: '0,00',
+                                    cupom: '0,00',
+                                    seguroQueda: '0,00',
+                                    garantiaEstendida: '0,00'
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+
+            let backButtonHtml = '';
+            if (isAdmin) {
+                backButtonHtml = `<button onclick="openManualSalePage()" class="back-button" style="position: static; transform: none; margin-bottom: 0.8rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Alterar Loja</button>`;
+            } else {
+                backButtonHtml = `<button onclick="showPage('collaboratorPage')" class="back-button" style="position: static; transform: none; margin-bottom: 0.8rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>`;
+            }
+
+            let employeePillsHtml = `<div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; width: 100%; scrollbar-width: none;">`;
+            activeEmployees.forEach(name => {
+                const isActive = name.toLowerCase() === (currentSaleActiveEmployee || '').toLowerCase();
+                employeePillsHtml += `
+                    <button class="action-button" onclick="renderManualSaleForm('${store}', '${name}')" style="height: auto; aspect-ratio: initial; padding: 7px 14px; font-size: 0.75rem; border-radius: 20px; white-space: nowrap; flex-shrink: 0; background: ${isActive ? 'var(--primary-color)' : 'rgba(255,255,255,0.1)'}; border: 1px solid ${isActive ? '#fff' : 'rgba(255,255,255,0.2)'}; font-weight: 800;">
+                        ${name}
+                    </button>
                 `;
             });
+            employeePillsHtml += `</div>`;
 
-            container.innerHTML += `
-                <button id="save-manual-sales-btn" class="action-button full-width" style="margin-top: 1rem; background: #27ae60; height: auto; padding: 15px;">
-                    <i class="fa-solid fa-check-double"></i> Salvar Vendas ${store.toUpperCase()}
-                </button>
-                <p id="manual-sale-status" class="status-message"></p>
-                <div style="height: 50px;"></div>
+            const currentKey = (currentSaleActiveEmployee || '').toLowerCase();
+            const currentEmployeeDaily = dailyData[currentKey] || { vendas: 0, servico: 0, acessorio: 0, lucro: 0 };
+
+            container.innerHTML = `
+                ${backButtonHtml}
+                <div style="font-size: 0.75rem; color: #ff8533; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">UNIDADE ${store.toUpperCase()}</div>
+                ${employeePillsHtml}
+
+                <div class="employee-meta-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid rgba(255,255,255,0.18); border-radius: 20px; padding: 1.2rem; margin-bottom: 1rem; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
+                    <h3 style="margin: 0 0 4px 0; color: #fff; font-size: 1.4rem; font-weight: 900; text-align: center; text-transform: uppercase;">${currentSaleActiveEmployee}</h3>
+                    <div style="font-size: 0.75rem; color: #aaa; text-align: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        Vendas Hoje: <strong style="color: #2ecc71;">${formatBRL(currentEmployeeDaily.vendas || 0)}</strong> | Serviços: <strong style="color: #9b59b6;">${formatBRL(currentEmployeeDaily.servico || 0)}</strong> | Lucro Hoje: <strong style="color: #16a085;">${formatBRL(currentEmployeeDaily.lucro || 0)}</strong>
+                    </div>
+
+                    <div class="input-group" style="position: relative; margin-bottom: 12px; width: 100%;">
+                        <label style="font-size: 0.85rem; font-weight: 800; color: #fff; margin-bottom: 5px; display: block;">Produto: Filtrar a lista de produto</label>
+                        <input type="text" id="manual-sale-product-search" class="data-input" placeholder="🔍 Digite para pesquisar aparelho..." autocomplete="off" style="background: rgba(0, 0, 0, 0.45); color: #fff; border: 1.5px solid #ff6b00; border-radius: 12px;">
+                        <div id="manual-sale-product-dropdown" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 220px; overflow-y: auto; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid #ff6b00; border-top: none; border-radius: 0 0 12px 12px; z-index: 2000; box-shadow: 0 8px 25px rgba(0,0,0,0.8);"></div>
+                    </div>
+
+                    <div id="manual-sale-selected-product-area" style="display: none;">
+                        <div style="background: rgba(255, 107, 0, 0.15); border: 1px solid #ff6b00; border-radius: 14px; padding: 10px; margin-bottom: 12px; text-align: center;">
+                            <span id="manual-sale-brand-tag" style="font-size: 0.65rem; color: #ff8533; font-weight: 800; text-transform: uppercase;">APARELHO SELECIONADO</span>
+                            <h4 id="manual-sale-name-title" style="margin: 2px 0 0 0; color: #fff; font-size: 1rem; font-weight: 800;">-</h4>
+                            <span id="manual-sale-custo-display" style="font-size: 0.7rem; color: #bbb; display: block; margin-top: 3px;">Custo: R$ 0,00</span>
+                        </div>
+
+                        <p style="font-size: 0.72rem; color: #bbb; margin: 0 0 6px 0; font-weight: 800; text-transform: uppercase;">Selecionar o preço que foi vendido:</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="manual-price-card" id="card-price-box-venda" data-type="venda" style="background: rgba(46, 204, 113, 0.15); border: 2px solid #2ecc71; border-radius: 14px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.62rem; font-weight: 800; color: #2ecc71; display: block;">VENDA (SISTEMA)</span>
+                                <strong id="manual-price-val-venda" style="font-size: 0.95rem; color: #fff; display: block; margin-top: 2px;">R$ 0,00</strong>
+                            </div>
+                            <div class="manual-price-card" id="card-price-box-limite" data-type="limite" style="background: rgba(241, 196, 15, 0.15); border: 2px solid #f1c40f; border-radius: 14px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.62rem; font-weight: 800; color: #f1c40f; display: block;">LIMITE (SISTEMA)</span>
+                                <strong id="manual-price-val-limite" style="font-size: 0.95rem; color: #fff; display: block; margin-top: 2px;">R$ 0,00</strong>
+                            </div>
+                            <div class="manual-price-card" id="card-price-box-zero" data-type="zero" style="background: rgba(231, 76, 60, 0.15); border: 2px solid #e74c3c; border-radius: 14px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.62rem; font-weight: 800; color: #e74c3c; display: block;">LUCRO ZERO (SISTEMA)</span>
+                                <strong id="manual-price-val-zero" style="font-size: 0.95rem; color: #fff; display: block; margin-top: 2px;">R$ 0,00</strong>
+                            </div>
+                            <div class="manual-price-card" id="card-price-box-cupom" data-type="cupom" style="background: rgba(52, 152, 219, 0.15); border: 2px solid #3498db; border-radius: 14px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                                <span style="font-size: 0.62rem; font-weight: 800; color: #3498db; display: block;">CUPOM (SISTEMA)</span>
+                                <strong id="manual-price-val-cupom" style="font-size: 0.95rem; color: #fff; display: block; margin-top: 2px;">R$ 0,00</strong>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 0.75rem; font-weight: 800; color: #f1c40f;">PREÇO EXTRAORDINÁRIO :</label>
+                            <input type="text" id="manual-extra-device-input" class="data-input" placeholder="0,00" style="background: rgba(0, 0, 0, 0.45); color: #fff; border: 1.5px solid #f1c40f;">
+                            <span style="font-size: 0.65rem; color: #aaa;">* Preço digitando pra preços que são fora da tabela</span>
+                        </div>
+
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 14px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                            <p style="font-size: 0.72rem; color: #9b59b6; margin: 0 0 8px 0; font-weight: 800; text-transform: uppercase;">Serviços marcar o que foi vendido:</p>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; cursor: pointer; background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 10px;">
+                                    <span style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="manual-check-seguro" style="width: 18px; height: 18px;"> Seguro Queda</span>
+                                    <strong id="manual-label-seguro" style="color: #3498db;">R$ 0,00</strong>
+                                </label>
+                                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; cursor: pointer; background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 10px;">
+                                    <span style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="manual-check-garantia" style="width: 18px; height: 18px;"> Garantia +1A</span>
+                                    <strong id="manual-label-garantia" style="color: #9b59b6;">R$ 0,00</strong>
+                                </label>
+                                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; cursor: pointer; background: rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 10px;">
+                                    <span style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="manual-check-combo" style="width: 18px; height: 18px;"> Super Combo (20% OFF)</span>
+                                    <strong id="manual-label-combo" style="color: #2ecc71;">R$ 0,00</strong>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="margin-bottom: 14px;">
+                            <label style="font-size: 0.75rem; font-weight: 800; color: #9b59b6;">PREÇO EXTRAORDINÁRIO :</label>
+                            <input type="text" id="manual-extra-service-input" class="data-input" placeholder="0,00" style="background: rgba(0, 0, 0, 0.45); color: #fff; border: 1.5px solid #9b59b6;">
+                            <span style="font-size: 0.65rem; color: #aaa;">* Preço digitando serviços pra preços que são fora da tabela</span>
+                        </div>
+
+                        <div id="manual-sale-live-calc" style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1.5px solid #2ecc71; border-radius: 14px; padding: 12px; margin-bottom: 14px; font-size: 0.8rem; line-height: 1.5;">
+                        </div>
+
+                        <button id="btn-submit-single-sale" class="action-button full-width" style="height: auto; aspect-ratio: initial; background: linear-gradient(135deg, #27ae60, #2ecc71); font-weight: 900; font-size: 1.15rem; padding: 16px; border-radius: 16px; box-shadow: 0 4px 18px rgba(46, 204, 113, 0.4);">
+                            <i class="fa-solid fa-check"></i> REGISTRAR
+                        </button>
+                    </div>
+                </div>
+
+                <details style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 12px; margin-bottom: 1rem;">
+                    <summary style="font-size: 0.78rem; font-weight: 800; color: #ff8533; cursor: pointer; text-transform: uppercase;">⚙️ Ajuste Manual Direto / Acessórios (${store.toUpperCase()})</summary>
+                    <div style="margin-top: 12px;">
+                        ${activeEmployees.map(name => {
+                            const k = name.toLowerCase();
+                            const uDaily = dailyData[k] || { vendas: 0, servico: 0, acessorio: 0 };
+                            return `
+                                <div class="employee-meta-card" style="margin-bottom: 10px; background: rgba(255,255,255,0.03);">
+                                    <h4 style="color: #fff; margin-bottom: 8px;">${name}</h4>
+                                    <div class="input-group"><label>📱 Vendas Hoje (R$)</label><input type="text" id="manual-venda-${k}" class="data-input" value="${formatToBRLInput(uDaily.vendas)}"></div>
+                                    <div class="input-group"><label>🛟 Serviço Hoje (R$)</label><input type="text" id="manual-servico-${k}" class="data-input" value="${formatToBRLInput(uDaily.servico)}"></div>
+                                    <div class="input-group"><label>🛍️ Acessórios Hoje (R$)</label><input type="text" id="manual-acessorio-${k}" class="data-input" value="${formatToBRLInput(uDaily.acessorio)}"></div>
+                                </div>
+                            `;
+                        }).join('')}
+                        <button id="save-manual-sales-btn" class="action-button full-width" style="margin-top: 0.5rem; background: #27ae60; height: auto; padding: 14px;">
+                            <i class="fa-solid fa-save"></i> Salvar Ajustes Manuais
+                        </button>
+                    </div>
+                </details>
+                <div style="height: 40px;"></div>
             `;
-            document.getElementById('save-manual-sales-btn').onclick = () => saveTodayManualSalesByStore(store);
-        } catch (e) { console.error(e); }
+
+            const searchInput = document.getElementById('manual-sale-product-search');
+            const dropdown = document.getElementById('manual-sale-product-dropdown');
+
+            const parseMoney = (v) => {
+                if (typeof v === 'number') return v;
+                return parseFromBRLInput(String(v || '0'));
+            };
+
+            const updateSaleLiveCalculation = () => {
+                if (!currentSaleSelectedProduct) return;
+                const calcBox = document.getElementById('manual-sale-live-calc');
+                if (!calcBox) return;
+
+                const extraDevVal = parseFromBRLInput(document.getElementById('manual-extra-device-input')?.value);
+                const extraServVal = parseFromBRLInput(document.getElementById('manual-extra-service-input')?.value);
+
+                let vendaAparelho = extraDevVal > 0 ? extraDevVal : (currentSaleSelectedPrice || 0);
+                const custoAparelho = parseMoney(currentSaleSelectedProduct.precoCusto);
+
+                const chkSeguro = document.getElementById('manual-check-seguro')?.checked || false;
+                const chkGarantia = document.getElementById('manual-check-garantia')?.checked || false;
+                const chkCombo = document.getElementById('manual-check-combo')?.checked || false;
+
+                const valSeguro = parseMoney(currentSaleSelectedProduct.seguroQueda);
+                const valGarantia = parseMoney(currentSaleSelectedProduct.garantiaEstendida);
+                const valCombo = (valSeguro + valGarantia) * 0.8;
+
+                let servicosTotal = 0;
+                if (chkCombo) {
+                    servicosTotal = valCombo;
+                } else {
+                    if (chkSeguro) servicosTotal += valSeguro;
+                    if (chkGarantia) servicosTotal += valGarantia;
+                }
+                servicosTotal += extraServVal;
+
+                const lucroAparelho = Math.max(0, vendaAparelho - custoAparelho);
+                const lucroServicos = servicosTotal;
+                const lucroTotalFinal = lucroAparelho + lucroServicos;
+
+                calcBox.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                        <span>Venda do Aparelho:</span><strong>${formatBRL(vendaAparelho)}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                        <span>Custo do Aparelho:</span><strong style="color: #e74c3c;">- ${formatBRL(custoAparelho)}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 3px;">
+                        <span>Lucro Aparelho:</span><strong style="color: #2ecc71;">${formatBRL(lucroAparelho)}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span>Serviços (100% Lucro):</span><strong style="color: #9b59b6;">+ ${formatBRL(lucroServicos)}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.92rem; font-weight: 900; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 5px; color: #16a085;">
+                        <span>LUCRO TOTAL DA VENDA:</span><span>${formatBRL(lucroTotalFinal)}</span>
+                    </div>
+                `;
+            };
+
+            const selectProductForSale = (prod) => {
+                currentSaleSelectedProduct = prod;
+                dropdown.style.display = 'none';
+                searchInput.value = prod.name;
+
+                document.getElementById('manual-sale-selected-product-area').style.display = 'block';
+                document.getElementById('manual-sale-brand-tag').textContent = prod.brand || 'SISTEMA';
+                document.getElementById('manual-sale-name-title').textContent = prod.name;
+                document.getElementById('manual-sale-custo-display').textContent = `Custo do Aparelho: ${formatBRL(parseMoney(prod.precoCusto))}`;
+
+                document.getElementById('manual-price-val-venda').textContent = formatBRL(parseMoney(prod.precoVenda));
+                document.getElementById('manual-price-val-limite').textContent = formatBRL(parseMoney(prod.precoLimite));
+                document.getElementById('manual-price-val-zero').textContent = formatBRL(parseMoney(prod.zeroLucro));
+                document.getElementById('manual-price-val-cupom').textContent = formatBRL(parseMoney(prod.cupom));
+
+                const valSeg = parseMoney(prod.seguroQueda);
+                const valGar = parseMoney(prod.garantiaEstendida);
+                const valComb = (valSeg + valGar) * 0.8;
+
+                document.getElementById('manual-label-seguro').textContent = formatBRL(valSeg);
+                document.getElementById('manual-label-garantia').textContent = formatBRL(valGar);
+                document.getElementById('manual-label-combo').textContent = formatBRL(valComb);
+
+                document.querySelectorAll('.manual-price-card').forEach(c => c.style.outline = 'none');
+                const defaultCard = document.getElementById('card-price-box-venda');
+                if (defaultCard) {
+                    defaultCard.style.outline = '3px solid #fff';
+                }
+                currentSaleSelectedPrice = parseMoney(prod.precoVenda);
+
+                document.getElementById('manual-extra-device-input').value = '';
+                document.getElementById('manual-extra-service-input').value = '';
+                document.getElementById('manual-check-seguro').checked = false;
+                document.getElementById('manual-check-garantia').checked = false;
+                document.getElementById('manual-check-combo').checked = false;
+
+                updateSaleLiveCalculation();
+            };
+
+            searchInput.addEventListener('input', () => {
+                const term = searchInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                dropdown.innerHTML = '';
+                if (!term) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                const matches = productCatalog.filter(p => {
+                    const pNorm = p.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    return pNorm.includes(term);
+                }).slice(0, 15);
+
+                if (matches.length === 0) {
+                    dropdown.innerHTML = `<div style="padding: 10px; font-size: 0.75rem; color: #888;">Nenhum aparelho encontrado.</div>`;
+                    dropdown.style.display = 'block';
+                    return;
+                }
+
+                matches.forEach(item => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 0.8rem; color: #fff; font-weight: 700; transition: background 0.15s;';
+                    row.innerHTML = `<span style="font-size: 0.65rem; color: #ff8533; display: block;">${item.brand}</span>${item.name}`;
+                    row.onmouseenter = () => row.style.background = '#333';
+                    row.onmouseleave = () => row.style.background = 'transparent';
+                    row.onclick = () => selectProductForSale(item);
+                    dropdown.appendChild(row);
+                });
+                dropdown.style.display = 'block';
+            });
+
+            document.querySelectorAll('.manual-price-card').forEach(card => {
+                card.onclick = () => {
+                    if (!currentSaleSelectedProduct) return;
+                    document.querySelectorAll('.manual-price-card').forEach(c => c.style.outline = 'none');
+                    card.style.outline = '3px solid #fff';
+                    const type = card.dataset.type;
+
+                    if (type === 'venda') currentSaleSelectedPrice = parseMoney(currentSaleSelectedProduct.precoVenda);
+                    else if (type === 'limite') currentSaleSelectedPrice = parseMoney(currentSaleSelectedProduct.precoLimite);
+                    else if (type === 'zero') currentSaleSelectedPrice = parseMoney(currentSaleSelectedProduct.zeroLucro);
+                    else if (type === 'cupom') currentSaleSelectedPrice = parseMoney(currentSaleSelectedProduct.cupom);
+
+                    const extraDev = document.getElementById('manual-extra-device-input');
+                    if (extraDev) extraDev.value = '';
+                    updateSaleLiveCalculation();
+                };
+            });
+
+            const extraDevInput = document.getElementById('manual-extra-device-input');
+            if (extraDevInput) {
+                extraDevInput.addEventListener('input', () => {
+                    document.querySelectorAll('.manual-price-card').forEach(c => c.style.outline = 'none');
+                    updateSaleLiveCalculation();
+                });
+            }
+
+            const extraServInput = document.getElementById('manual-extra-service-input');
+            if (extraServInput) extraServInput.addEventListener('input', updateSaleLiveCalculation);
+
+            const chkSeg = document.getElementById('manual-check-seguro');
+            const chkGar = document.getElementById('manual-check-garantia');
+            const chkCom = document.getElementById('manual-check-combo');
+
+            if (chkSeg) chkSeg.onchange = () => { if (chkSeg.checked && chkCom) chkCom.checked = false; updateSaleLiveCalculation(); };
+            if (chkGar) chkGar.onchange = () => { if (chkGar.checked && chkCom) chkCom.checked = false; updateSaleLiveCalculation(); };
+            if (chkCom) chkCom.onchange = () => { if (chkCom.checked) { if (chkSeg) chkSeg.checked = false; if (chkGar) chkGar.checked = false; } updateSaleLiveCalculation(); };
+
+            const btnSubmitSingle = document.getElementById('btn-submit-single-sale');
+            if (btnSubmitSingle) {
+                btnSubmitSingle.onclick = async () => {
+                    if (!currentSaleSelectedProduct || !currentSaleActiveEmployee) {
+                        alert('Selecione um produto primeiro!');
+                        return;
+                    }
+
+                    const extraDevVal = parseFromBRLInput(document.getElementById('manual-extra-device-input')?.value);
+                    const extraServVal = parseFromBRLInput(document.getElementById('manual-extra-service-input')?.value);
+
+                    let vendaAparelho = extraDevVal > 0 ? extraDevVal : (currentSaleSelectedPrice || 0);
+                    const custoAparelho = parseMoney(currentSaleSelectedProduct.precoCusto);
+
+                    const isSeg = document.getElementById('manual-check-seguro')?.checked || false;
+                    const isGar = document.getElementById('manual-check-garantia')?.checked || false;
+                    const isCom = document.getElementById('manual-check-combo')?.checked || false;
+
+                    const valSeg = parseMoney(currentSaleSelectedProduct.seguroQueda);
+                    const valGar = parseMoney(currentSaleSelectedProduct.garantiaEstendida);
+                    const valComb = (valSeg + valGar) * 0.8;
+
+                    let servicosTotal = 0;
+                    if (isCom) servicosTotal = valComb;
+                    else {
+                        if (isSeg) servicosTotal += valSeg;
+                        if (isGar) servicosTotal += valGar;
+                    }
+                    servicosTotal += extraServVal;
+
+                    if (vendaAparelho <= 0 && servicosTotal <= 0) {
+                        alert('O valor da venda não pode ser zero!');
+                        return;
+                    }
+
+                    const lucroAparelho = Math.max(0, vendaAparelho - custoAparelho);
+                    const lucroServicos = servicosTotal;
+                    const lucroTotalVenda = lucroAparelho + lucroServicos;
+
+                    if (!confirm(`Confirmar registro de venda para ${currentSaleActiveEmployee}?\n\n• Produto: ${currentSaleSelectedProduct.name}\n• Venda: ${formatBRL(vendaAparelho)}\n• Custo: ${formatBRL(custoAparelho)}\n• Lucro Aparelho: ${formatBRL(lucroAparelho)}\n• Serviços (100% Lucro): ${formatBRL(servicosTotal)}\n• LUCRO TOTAL: ${formatBRL(lucroTotalVenda)}`)) {
+                        return;
+                    }
+
+                    btnSubmitSingle.disabled = true;
+                    btnSubmitSingle.textContent = 'Registrando...';
+
+                    try {
+                        const targetKey = currentSaleActiveEmployee.toLowerCase();
+                        const now = new Date();
+                        const currentMonthKey = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+
+                        const [empDailySnap, empSalesSnap, storeProfitsSnap, monthlySalesSnap] = await Promise.all([
+                            database.ref(`dailySales/${todayString}/${targetKey}`).get(),
+                            database.ref(`salesData/${targetKey}`).get(),
+                            database.ref(`storeProfits/${store}`).get(),
+                            database.ref(`monthlySales/${currentMonthKey}/totalVendas`).get()
+                        ]);
+
+                        const curDaily = empDailySnap.exists() ? empDailySnap.val() : {};
+                        const curSales = empSalesSnap.exists() ? empSalesSnap.val() : {};
+                        const curStoreProfit = storeProfitsSnap.exists() ? parseFloat(storeProfitsSnap.val() || 0) : 0;
+                        const curMonthlyTotal = monthlySalesSnap.exists() ? parseFloat(monthlySalesSnap.val() || 0) : 0;
+
+                        const updates = {};
+                        updates[`/dailySales/${todayString}/${targetKey}/vendas`] = (parseFloat(curDaily.vendas) || 0) + vendaAparelho;
+                        updates[`/dailySales/${todayString}/${targetKey}/servico`] = (parseFloat(curDaily.servico) || 0) + servicosTotal;
+                        updates[`/dailySales/${todayString}/${targetKey}/lucro`] = (parseFloat(curDaily.lucro) || 0) + lucroTotalVenda;
+
+                        updates[`/salesData/${targetKey}/vendas`] = (parseFloat(curSales.vendas) || 0) + vendaAparelho;
+                        updates[`/salesData/${targetKey}/servico`] = (parseFloat(curSales.servico) || 0) + servicosTotal;
+                        updates[`/salesData/${targetKey}/lucro`] = (parseFloat(curSales.lucro) || 0) + lucroTotalVenda;
+
+                        updates[`/storeProfits/${store}`] = curStoreProfit + lucroTotalVenda;
+                        updates[`/monthlySales/${currentMonthKey}/totalVendas`] = curMonthlyTotal + vendaAparelho;
+
+                        await database.ref().update(updates);
+                        alert(`Venda registrada com sucesso para ${currentSaleActiveEmployee}!\nLucro gerado: ${formatBRL(lucroTotalVenda)}`);
+                        renderManualSaleForm(store, currentSaleActiveEmployee);
+                    } catch (err) {
+                        console.error(err);
+                        alert('Erro ao registrar a venda.');
+                        btnSubmitSingle.disabled = false;
+                        btnSubmitSingle.textContent = 'REGISTRAR';
+                    }
+                };
+            }
+
+            const saveManualBtn = document.getElementById('save-manual-sales-btn');
+            if (saveManualBtn) {
+                saveManualBtn.onclick = () => saveTodayManualSalesByStore(store);
+            }
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align:center; color:#e74c3c;">Erro ao carregar dados.</p>';
+        }
     };
 
     const saveTodayManualSalesByStore = async (store) => {
-        const statusEl = document.getElementById('manual-sale-status');
         const employees = storeMapping[store];
         const nonSales = ['Beatriz', 'Keliane', 'Ducielma', 'Leonardo', 'Jose'];
-        if (!confirm(`Confirmar atualização de hoje para a loja ${store.toUpperCase()}?`)) return;
+        if (!confirm(`Confirmar atualização manual para a loja ${store.toUpperCase()}?`)) return;
         
-        statusEl.textContent = 'Salvando...';
         const todayString = getTodayDateString();
-        
         try {
             const [salesSnap, dailySnap] = await Promise.all([
                 database.ref('salesData').get(),
@@ -14533,14 +15261,14 @@ async function calculateAndDisplayStoreServiceRanking() {
 
             employees.filter(name => !nonSales.includes(name)).forEach(name => {
                 const key = name.toLowerCase();
-                const newVendaHoje = parseFromBRLInput(document.getElementById(`manual-venda-${key}`).value);
-                const newServicoHoje = parseFromBRLInput(document.getElementById(`manual-servico-${key}`).value);
-                const newAcessorioHoje = parseFromBRLInput(document.getElementById(`manual-acessorio-${key}`).value);
-                
+                const newVendaHoje = parseFromBRLInput(document.getElementById(`manual-venda-${key}`)?.value);
+                const newServicoHoje = parseFromBRLInput(document.getElementById(`manual-servico-${key}`)?.value);
+                const newAcessorioHoje = parseFromBRLInput(document.getElementById(`manual-acessorio-${key}`)?.value);
+
                 const oldVendaHoje = currentDailyData[key]?.vendas || 0;
                 const oldServicoHoje = currentDailyData[key]?.servico || 0;
                 const oldAcessorioHoje = currentDailyData[key]?.acessorio || 0;
-                
+
                 const totalVendaAcumulada = currentSalesData[key]?.vendas || 0;
                 const totalServicoAcumulado = currentSalesData[key]?.servico || 0;
                 const totalAcessorioAcumulado = currentSalesData[key]?.acessorio || 0;
@@ -14548,16 +15276,19 @@ async function calculateAndDisplayStoreServiceRanking() {
                 updates[`/dailySales/${todayString}/${key}/vendas`] = newVendaHoje;
                 updates[`/dailySales/${todayString}/${key}/servico`] = newServicoHoje;
                 updates[`/dailySales/${todayString}/${key}/acessorio`] = newAcessorioHoje;
-                
+
                 updates[`/salesData/${key}/vendas`] = totalVendaAcumulada + (newVendaHoje - oldVendaHoje);
                 updates[`/salesData/${key}/servico`] = totalServicoAcumulado + (newServicoHoje - oldServicoHoje);
                 updates[`/salesData/${key}/acessorio`] = totalAcessorioAcumulado + (newAcessorioHoje - oldAcessorioHoje);
             });
 
             await database.ref().update(updates);
-            statusEl.textContent = 'Atualizado com sucesso!';
-            setTimeout(() => { statusEl.textContent = ''; }, 3000);
-        } catch (e) { console.error(e); statusEl.textContent = 'Erro ao salvar.'; }
+            alert('Ajustes manuais atualizados com sucesso!');
+            renderManualSaleForm(store, currentSaleActiveEmployee);
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao salvar ajustes.');
+        }
     };
 
     const saveTodayManualSales = async () => {
