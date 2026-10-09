@@ -6535,7 +6535,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.12 - A'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.13 - B'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -15402,7 +15402,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                     const lucroServicos = servicosTotal;
                     const lucroTotalVenda = lucroAparelho + lucroServicos;
 
-                    if (!confirm(`Confirmar registro de venda para ${currentSaleActiveEmployee}?\n\n• Produto: ${currentSaleSelectedProduct.name}\n• Venda: ${formatBRL(vendaAparelho)}\n• Custo: ${formatBRL(custoAparelho)}\n• Lucro Aparelho: ${formatBRL(lucroAparelho)}\n• Serviços (100% Lucro): ${formatBRL(servicosTotal)}\n• LUCRO TOTAL: ${formatBRL(lucroTotalVenda)}`)) {
+                    if (!confirm(`Confirmar registro de venda para ${currentSaleActiveEmployee}?\n\n• Produto: ${currentSaleSelectedProduct.name}\n• Venda: ${formatBRL(vendaAparelho)}\n• Serviços: ${formatBRL(servicosTotal)}`)) {
                         return;
                     }
 
@@ -15426,7 +15426,6 @@ async function calculateAndDisplayStoreServiceRanking() {
                         const curStoreProfit = storeProfitsSnap.exists() ? parseFloat(storeProfitsSnap.val() || 0) : 0;
                         const curMonthlyTotal = monthlySalesSnap.exists() ? parseFloat(monthlySalesSnap.val() || 0) : 0;
 
-                        const updates = {};
                         const newLogKey = database.ref('registeredSalesLogs').push().key;
 
                         updates[`/dailySales/${todayString}/${targetKey}/vendas`] = (parseFloat(curDaily.vendas) || 0) + vendaAparelho;
@@ -15455,7 +15454,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                         };
 
                         await database.ref().update(updates);
-                        alert(`Venda registrada com sucesso para ${currentSaleActiveEmployee}!\nLucro gerado: ${formatBRL(lucroTotalVenda)}`);
+                        alert(`Sua venda foi registrada com sucesso!`);
                         renderManualSaleForm(store, currentSaleActiveEmployee);
                     } catch (err) {
                         console.error(err);
