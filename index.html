@@ -6535,7 +6535,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.13 - B'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.22 - C'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -15427,6 +15427,7 @@ async function calculateAndDisplayStoreServiceRanking() {
                         const curMonthlyTotal = monthlySalesSnap.exists() ? parseFloat(monthlySalesSnap.val() || 0) : 0;
 
                         const newLogKey = database.ref('registeredSalesLogs').push().key;
+                        const updates = {};
 
                         updates[`/dailySales/${todayString}/${targetKey}/vendas`] = (parseFloat(curDaily.vendas) || 0) + vendaAparelho;
                         updates[`/dailySales/${todayString}/${targetKey}/servico`] = (parseFloat(curDaily.servico) || 0) + servicosTotal;
