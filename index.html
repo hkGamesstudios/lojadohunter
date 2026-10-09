@@ -3545,7 +3545,7 @@
 
 
     <!-- TELA DE LANÇAMENTO DE VENDA MANUAL (ESTILO CORREÇÃO) -->
-    <div id="manual-sale-page" style="display: none;">
+    <div id="manual-sale-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden; background: linear-gradient(160deg, #612f00 0%, #a15000 30%, #e67e22 100%);">
         <div class="collaborator-header">
             <button id="back-to-gs-from-manual-sale" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
             <h2>Lançar Vendas do Dia</h2>
@@ -6535,7 +6535,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.11 - D'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.12 - A'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10669,8 +10669,8 @@ const loadAndDisplayCollaboratorMetas = () => {
             const gastoBacabalFinal = gastosPlanilha.bacabal + sumSalarioBacabal;
             const gastoTotaisFinal = gastoPinheiroFinal + gastoBacabalFinal;
 
-            const lucroPinheiroBruto = parseFloat(storeProfitsData.pinheiro || 0);
-            const lucroBacabalBruto = parseFloat(storeProfitsData.bacabal || 0);
+            const lucroPinheiroBruto = parseFloat(storeProfitsData.pinheiro || 0) + servicosPinheiro;
+        const lucroBacabalBruto = parseFloat(storeProfitsData.bacabal || 0) + servicosBacabal;
 
             const lucroPinheiro = lucroPinheiroBruto - gastoPinheiroFinal;
             const lucroBacabal = lucroBacabalBruto - gastoBacabalFinal;
@@ -15427,6 +15427,8 @@ async function calculateAndDisplayStoreServiceRanking() {
                         const curMonthlyTotal = monthlySalesSnap.exists() ? parseFloat(monthlySalesSnap.val() || 0) : 0;
 
                         const updates = {};
+                        const newLogKey = database.ref('registeredSalesLogs').push().key;
+
                         updates[`/dailySales/${todayString}/${targetKey}/vendas`] = (parseFloat(curDaily.vendas) || 0) + vendaAparelho;
                         updates[`/dailySales/${todayString}/${targetKey}/servico`] = (parseFloat(curDaily.servico) || 0) + servicosTotal;
                         updates[`/dailySales/${todayString}/${targetKey}/lucro`] = (parseFloat(curDaily.lucro) || 0) + lucroTotalVenda;
@@ -15437,6 +15439,20 @@ async function calculateAndDisplayStoreServiceRanking() {
 
                         updates[`/storeProfits/${store}`] = curStoreProfit + lucroTotalVenda;
                         updates[`/monthlySales/${currentMonthKey}/totalVendas`] = curMonthlyTotal + vendaAparelho;
+
+                        updates[`/registeredSalesLogs/${newLogKey}`] = {
+                            employee: currentSaleActiveEmployee,
+                            employeeKey: targetKey,
+                            store: store,
+                            productName: currentSaleSelectedProduct.name,
+                            venda: vendaAparelho,
+                            servicos: servicosTotal,
+                            custo: custoAparelho,
+                            lucro: lucroTotalVenda,
+                            date: todayString,
+                            monthKey: currentMonthKey,
+                            timestamp: new Date().toISOString()
+                        };
 
                         await database.ref().update(updates);
                         alert(`Venda registrada com sucesso para ${currentSaleActiveEmployee}!\nLucro gerado: ${formatBRL(lucroTotalVenda)}`);
@@ -15956,7 +15972,12 @@ async function calculateAndDisplayStoreServiceRanking() {
                     if (el) el.addEventListener(event, callback);
                 };
 
-                safeAddListener('open-settings-page', 'click', () => {
+                safeAddListener('open-correction-page', 'click', () => {
+                showPage('correctionPage');
+                buildAndLoadCorrectionPage();
+            });
+
+            safeAddListener('open-settings-page', 'click', () => {
                     buildAndLoadMetasPage(); 
                     showPage('metasConfigPage');
                 });
