@@ -6551,7 +6551,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.9 - B'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.10 - C'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -13149,6 +13149,7 @@ async function calculateAndDisplayServiceRanking() {
 
     async function loadAndDisplayOvertime() {
         const container = document.getElementById('overtime-list-container');
+        if (!container) return;
         container.innerHTML = '<p style="text-align: center;">Carregando...</p>';
 
         const profilesSnap = await database.ref('userProfiles').get();
@@ -15239,23 +15240,42 @@ async function calculateAndDisplayStoreServiceRanking() {
                 dropdown.style.display = 'none';
                 searchInput.value = prod.name;
 
-                document.getElementById('manual-sale-selected-product-area').style.display = 'block';
-                document.getElementById('manual-sale-brand-tag').textContent = prod.brand || 'SISTEMA';
-                document.getElementById('manual-sale-name-title').textContent = prod.name;
-                document.getElementById('manual-sale-custo-display').textContent = `Custo do Aparelho: ${formatBRL(parseMoney(prod.precoCusto))}`;
+                const selectedArea = document.getElementById('manual-sale-selected-product-area');
+                if (selectedArea) selectedArea.style.display = 'block';
 
-                document.getElementById('manual-price-val-venda').textContent = formatBRL(parseMoney(prod.precoVenda));
-                document.getElementById('manual-price-val-limite').textContent = formatBRL(parseMoney(prod.precoLimite));
-                document.getElementById('manual-price-val-zero').textContent = formatBRL(parseMoney(prod.zeroLucro));
-                document.getElementById('manual-price-val-cupom').textContent = formatBRL(parseMoney(prod.cupom));
+                const brandTag = document.getElementById('manual-sale-brand-tag');
+                if (brandTag) brandTag.textContent = prod.brand || 'SISTEMA';
+
+                const nameTitle = document.getElementById('manual-sale-name-title');
+                if (nameTitle) nameTitle.textContent = prod.name;
+
+                const custoDisplay = document.getElementById('manual-sale-custo-display');
+                if (custoDisplay) custoDisplay.textContent = `Custo do Aparelho: ${formatBRL(parseMoney(prod.precoCusto))}`;
+
+                const priceVenda = document.getElementById('manual-price-val-venda');
+                if (priceVenda) priceVenda.textContent = formatBRL(parseMoney(prod.precoVenda));
+
+                const priceLimite = document.getElementById('manual-price-val-limite');
+                if (priceLimite) priceLimite.textContent = formatBRL(parseMoney(prod.precoLimite));
+
+                const priceZero = document.getElementById('manual-price-val-zero');
+                if (priceZero) priceZero.textContent = formatBRL(parseMoney(prod.zeroLucro));
+
+                const priceCupom = document.getElementById('manual-price-val-cupom');
+                if (priceCupom) priceCupom.textContent = formatBRL(parseMoney(prod.cupom));
 
                 const valSeg = parseMoney(prod.seguroQueda);
                 const valGar = parseMoney(prod.garantiaEstendida);
                 const valComb = (valSeg + valGar) * 0.8;
 
-                document.getElementById('manual-label-seguro').textContent = formatBRL(valSeg);
-                document.getElementById('manual-label-garantia').textContent = formatBRL(valGar);
-                document.getElementById('manual-label-combo').textContent = formatBRL(valComb);
+                const labelSeg = document.getElementById('manual-label-seguro');
+                if (labelSeg) labelSeg.textContent = formatBRL(valSeg);
+
+                const labelGar = document.getElementById('manual-label-garantia');
+                if (labelGar) labelGar.textContent = formatBRL(valGar);
+
+                const labelComb = document.getElementById('manual-label-combo');
+                if (labelComb) labelComb.textContent = formatBRL(valComb);
 
                 document.querySelectorAll('.manual-price-card').forEach(c => c.style.outline = 'none');
                 const defaultCard = document.getElementById('card-price-box-venda');
@@ -15264,11 +15284,20 @@ async function calculateAndDisplayStoreServiceRanking() {
                 }
                 currentSaleSelectedPrice = parseMoney(prod.precoVenda);
 
-                document.getElementById('manual-extra-device-input').value = '';
-                document.getElementById('manual-extra-service-input').value = '';
-                document.getElementById('manual-check-seguro').checked = false;
-                document.getElementById('manual-check-garantia').checked = false;
-                document.getElementById('manual-check-combo').checked = false;
+                const extraDevInput = document.getElementById('manual-extra-device-input');
+                if (extraDevInput) extraDevInput.value = '';
+
+                const extraServInput = document.getElementById('manual-extra-service-input');
+                if (extraServInput) extraServInput.value = '';
+
+                const checkSeg = document.getElementById('manual-check-seguro');
+                if (checkSeg) checkSeg.checked = false;
+
+                const checkGar = document.getElementById('manual-check-garantia');
+                if (checkGar) checkGar.checked = false;
+
+                const checkComb = document.getElementById('manual-check-combo');
+                if (checkComb) checkComb.checked = false;
 
                 updateSaleLiveCalculation();
             };
