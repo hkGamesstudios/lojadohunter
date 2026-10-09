@@ -3970,8 +3970,9 @@
     <div class="mobile-container page">
 
                 <header>
-            <div class="logo">
+            <div class="logo" style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15;">
                 LOJA DO HUNTER
+                <span id="top-version-display" style="font-size: 0.55rem; font-weight: 600; opacity: 0.7; letter-spacing: 0.5px; text-transform: uppercase;"></span>
             </div>
             <nav class="header-icons">
                 <a href="#" id="theme-toggle"><i class="fa-solid fa-palette"></i></a>
@@ -6535,7 +6536,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.22 - C'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.67 - D'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10393,51 +10394,103 @@ const loadAndDisplayCollaboratorMetas = () => {
     };
 
     const fetchGastosFromSheet = async () => {
-        let pinheiroGasto = 1967;
-        let bacabalGasto = 3123;
+        let pinheiroGasto = 0;
+        let bacabalGasto = 0;
+        let fetchedOnline = false;
 
-        try {
-            const cachedSnap = await database.ref('gastosPlanilha').get();
-            if (cachedSnap.exists()) {
-                const c = cachedSnap.val();
-                if (c.pinheiro !== undefined) pinheiroGasto = parseFloat(c.pinheiro) || pinheiroGasto;
-                if (c.bacabal !== undefined) bacabalGasto = parseFloat(c.bacabal) || bacabalGasto;
-            }
-        } catch (e) {}
+        const parseCellNum = (cell) => {
+            if (!cell) return 0;
+            if (typeof cell.v === 'number') return cell.v;
+            const strVal = String(cell.f || cell.v || '');
+            return parseFromBRLInput(strVal);
+        };
 
-        try {
-            const res = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?action=getGastos`, { timeout: 6000 });
-            if (res.ok) {
-                const data = await res.json();
-                if (data && (data.pinheiro !== undefined || data.gastoPinheiro !== undefined)) {
-                    pinheiroGasto = parseFromBRLInput(String(data.pinheiro || data.gastoPinheiro || pinheiroGasto));
-                    bacabalGasto = parseFromBRLInput(String(data.bacabal || data.gastoBacabal || bacabalGasto));
-                    database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto });
-                    return { pinheiro: pinheiroGasto, bacabal: bacabalGasto };
-                }
-            }
-        } catch (e) {}
+        const tryParseGvizData = (gData) => {
+            if (!gData || !gData.table || !gData.table.rows) return false;
+            let foundPin = false;
+            let foundBac = false;
+
+            gData.table.rows.forEach(r => {
+                if (!r || !r.c) return;
+                r.c.forEach((cell, colIndex) => {
+                    const text = String(cell && (cell.f || cell.v) ? (cell.f || cell.v) : '').toUpperCase().trim();
+                    if (text.includes('PINHEIRO')) {
+                        for (let k = colIndex + 1; k < r.c.length; k++) {
+                            const val = parseCellNum(r.c[k]);
+                            if (val > 0) {
+                                pinheiroGasto = val;
+                                foundPin = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (text.includes('BACABAL')) {
+                        for (let k = colIndex + 1; k < r.c.length; k++) {
+                            const val = parseCellNum(r.c[k]);
+                            if (val > 0) {
+                                bacabalGasto = val;
+                                foundBac = true;
+                                break;
+                            }
+                        }
+                    }
+                });
+            });
+
+            return foundPin || foundBac;
+        };
 
         const sheetId = '1pf68x54RU9dxZk9_pleoBen8zRq_vTfiG_UC12GLMXA';
-        try {
-            const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=GASTOS`;
-            const gvizRes = await fetchWithTimeout(gvizUrl, { timeout: 6000 });
-            if (gvizRes.ok) {
-                const gText = await gvizRes.text();
-                const jsonStr = gText.substring(gText.indexOf('{'), gText.lastIndexOf('}') + 1);
-                const gData = JSON.parse(jsonStr);
-                if (gData && gData.table && gData.table.rows) {
-                    gData.table.rows.forEach(r => {
-                        const label = String(r.c && r.c[0] ? (r.c[0].v || '') : '').toUpperCase();
-                        const val = r.c && r.c[1] ? (r.c[1].v !== undefined ? r.c[1].v : r.c[1].f) : 0;
-                        const num = typeof val === 'number' ? val : parseFromBRLInput(String(val));
-                        if (label.includes('PINHEIRO')) pinheiroGasto = num;
-                        if (label.includes('BACABAL')) bacabalGasto = num;
-                    });
-                    database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto });
+        const sheetTargets = [
+            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=GASTOS&_nc=${Date.now()}`,
+            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=Gastos&_nc=${Date.now()}`,
+            `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&_nc=${Date.now()}`
+        ];
+
+        for (const url of sheetTargets) {
+            try {
+                const res = await fetchWithTimeout(url, { timeout: 8000, cache: 'no-store' });
+                if (res.ok) {
+                    const rawText = await res.text();
+                    const jsonStart = rawText.indexOf('{');
+                    const jsonEnd = rawText.lastIndexOf('}');
+                    if (jsonStart !== -1 && jsonEnd !== -1) {
+                        const parsedJson = JSON.parse(rawText.substring(jsonStart, jsonEnd + 1));
+                        if (tryParseGvizData(parsedJson)) {
+                            fetchedOnline = true;
+                            break;
+                        }
+                    }
                 }
-            }
-        } catch (e) {}
+            } catch (err) {}
+        }
+
+        if (!fetchedOnline) {
+            try {
+                const resScript = await fetchWithTimeout(`${GOOGLE_SHEET_API_URL}?action=getGastos&_nc=${Date.now()}`, { timeout: 8000, cache: 'no-store' });
+                if (resScript.ok) {
+                    const data = await resScript.json();
+                    if (data && (data.pinheiro !== undefined || data.gastoPinheiro !== undefined)) {
+                        pinheiroGasto = parseFromBRLInput(String(data.pinheiro || data.gastoPinheiro || 0));
+                        bacabalGasto = parseFromBRLInput(String(data.bacabal || data.gastoBacabal || 0));
+                        fetchedOnline = true;
+                    }
+                }
+            } catch (err) {}
+        }
+
+        if (fetchedOnline) {
+            database.ref('gastosPlanilha').set({ pinheiro: pinheiroGasto, bacabal: bacabalGasto });
+        } else {
+            try {
+                const cachedSnap = await database.ref('gastosPlanilha').get();
+                if (cachedSnap.exists()) {
+                    const c = cachedSnap.val();
+                    if (c.pinheiro !== undefined) pinheiroGasto = parseFloat(c.pinheiro) || 0;
+                    if (c.bacabal !== undefined) bacabalGasto = parseFloat(c.bacabal) || 0;
+                }
+            } catch (e) {}
+        }
 
         return { pinheiro: pinheiroGasto, bacabal: bacabalGasto };
     };
@@ -17718,6 +17771,8 @@ async function calculateAndDisplayStoreServiceRanking() {
                 
                 // Lógica que roda apenas na primeira vez que a página carrega
                 document.getElementById('app-version-display').textContent = `Versão ${APP_VERSION}`;
+                const topVersionEl = document.getElementById('top-version-display');
+                if (topVersionEl) topVersionEl.textContent = `v${APP_VERSION}`;
                 database.ref('statistics/appOpens').transaction(count => (count || 0) + 1);
                  setInterval(() => {
                     if (!document.hidden) {
