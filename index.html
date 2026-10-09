@@ -6551,7 +6551,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.0.8 - A'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.0.9 - B'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10606,34 +10606,67 @@ const loadAndDisplayCollaboratorMetas = () => {
             setKpiSubDetails('pinheiro-acessorios-kpi', expAccPinheiro, diffAccPinheiro);
             setKpiSubDetails('bacabal-acessorios-kpi', expAccBacabal, diffAccBacabal);
 
-            // --- SEÇÃO LIQUIDEZ LOJA (LUCRO) ---
+            // --- SEÇÃO GASTOS DAS LOJAS (PLANILHA + SALÁRIOS) ---
             const acessoriosKpiEl = document.getElementById('total-acessorios-kpi');
             const acessoriosBox = acessoriosKpiEl ? acessoriosKpiEl.closest('div[style*="margin-bottom: 0.8rem"]') : null;
-            let liquidezSection = document.getElementById('liquidez-loja-section');
-            if (!liquidezSection && acessoriosBox) {
-                liquidezSection = document.createElement('div');
-                liquidezSection.id = 'liquidez-loja-section';
-                liquidezSection.style.cssText = 'width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;';
-                liquidezSection.innerHTML = `
-                    <div style="font-size: 0.72rem; font-weight: 900; color: #117a65; text-transform: uppercase; letter-spacing: 0.8px; background: #e8f8f5; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #a3e4d7; box-shadow: 0 2px 6px rgba(22, 160, 133, 0.1); margin-bottom: 8px;">
-                        <i class="fa-solid fa-coins"></i> LIQUIDEZ LOJA
+            let gastosSection = document.getElementById('gastos-loja-section');
+            if (!gastosSection && acessoriosBox) {
+                gastosSection = document.createElement('div');
+                gastosSection.id = 'gastos-loja-section';
+                gastosSection.style.cssText = 'width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;';
+                gastosSection.innerHTML = `
+                    <div style="font-size: 0.72rem; font-weight: 900; color: #c0392b; text-transform: uppercase; letter-spacing: 0.8px; background: #fdedec; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #f5b7b1; box-shadow: 0 2px 6px rgba(192, 57, 43, 0.1); margin-bottom: 8px;">
+                        <i class="fa-solid fa-receipt"></i> GASTOS DAS LOJAS
                     </div>
                     <div class="dashboard-grid">
-                        <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; border-left: 6px solid #16a085 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
-                            <span class="kpi-title" style="color: #117a65 !important;">LUCRO TOTAL</span>
-                            <span id="total-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                        <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
+                            <span class="kpi-title" style="color: #c0392b !important;">GASTO TOTAIS</span>
+                            <span id="total-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
                         </div>
-                        <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; border-left: 6px solid #16a085 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
-                            <span class="kpi-title" style="color: #117a65 !important;">LUCRO PINHEIRO</span>
-                            <span id="pinheiro-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                        <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
+                            <span class="kpi-title" style="color: #c0392b !important;">GASTO PINHEIRO</span>
+                            <span id="pinheiro-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
                         </div>
-                        <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; border-left: 6px solid #16a085 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
-                            <span class="kpi-title" style="color: #117a65 !important;">LUCRO BACABAL</span>
-                            <span id="bacabal-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                        <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
+                            <span class="kpi-title" style="color: #c0392b !important;">GASTO BACABAL</span>
+                            <span id="bacabal-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
                         </div>
                     </div>
                 `;
-                acessoriosBox.after(liquidezSection);
+                acessoriosBox.after(gastosSection);
+            }
+
+            // --- SEÇÃO LIQUIDEZ LOJA (LUCRO - POR ÚLTIMO) ---
+            let liquidezSection = document.getElementById('liquidez-loja-section');
+            if (!liquidezSection) {
+                const targetBox = gastosSection || acessoriosBox;
+                if (targetBox) {
+                    liquidezSection = document.createElement('div');
+                    liquidezSection.id = 'liquidez-loja-section';
+                    liquidezSection.style.cssText = 'width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;';
+                    liquidezSection.innerHTML = `
+                        <div style="font-size: 0.72rem; font-weight: 900; color: #117a65; text-transform: uppercase; letter-spacing: 0.8px; background: #e8f8f5; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #a3e4d7; box-shadow: 0 2px 6px rgba(22, 160, 133, 0.1); margin-bottom: 8px;">
+                            <i class="fa-solid fa-coins"></i> LIQUIDEZ LOJA
+                        </div>
+                        <div class="dashboard-grid">
+                            <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
+                                <span class="kpi-title" style="color: #117a65 !important;">LUCRO TOTAL</span>
+                                <span id="total-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                            </div>
+                            <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
+                                <span class="kpi-title" style="color: #117a65 !important;">LUCRO PINHEIRO</span>
+                                <span id="pinheiro-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                            </div>
+                            <div class="kpi-card" style="border: 1.5px solid #a3e4d7 !important; box-shadow: 0 4px 14px rgba(22, 160, 133, 0.08) !important;">
+                                <span class="kpi-title" style="color: #117a65 !important;">LUCRO BACABAL</span>
+                                <span id="bacabal-lucro-kpi" class="kpi-value" style="color: #16a085 !important;">---</span>
+                            </div>
+                        </div>
+                    `;
+                    targetBox.after(liquidezSection);
+                }
+            } else if (gastosSection && liquidezSection) {
+                gastosSection.after(liquidezSection);
             }
 
             const lucroPinheiro = parseFloat(storeProfitsData.pinheiro || 0);
@@ -10646,37 +10679,6 @@ const loadAndDisplayCollaboratorMetas = () => {
             if (elPinheiroLucro) elPinheiroLucro.textContent = formatCurrency(lucroPinheiro);
             const elBacabalLucro = document.getElementById('bacabal-lucro-kpi');
             if (elBacabalLucro) elBacabalLucro.textContent = formatCurrency(lucroBacabal);
-
-            // --- SEÇÃO GASTOS DAS LOJAS (PLANILHA + SALÁRIOS) ---
-            let gastosSection = document.getElementById('gastos-loja-section');
-            if (!gastosSection) {
-                const targetBox = liquidezSection || acessoriosBox;
-                if (targetBox) {
-                    gastosSection = document.createElement('div');
-                    gastosSection.id = 'gastos-loja-section';
-                    gastosSection.style.cssText = 'width: 100%; display: flex; flex-direction: column; margin-bottom: 0.8rem;';
-                    gastosSection.innerHTML = `
-                        <div style="font-size: 0.72rem; font-weight: 900; color: #c0392b; text-transform: uppercase; letter-spacing: 0.8px; background: #fdedec; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; gap: 7px; width: fit-content; border: 1.5px solid #f5b7b1; box-shadow: 0 2px 6px rgba(192, 57, 43, 0.1); margin-bottom: 8px;">
-                            <i class="fa-solid fa-receipt"></i> GASTOS DAS LOJAS
-                        </div>
-                        <div class="dashboard-grid">
-                            <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; border-left: 6px solid #c0392b !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
-                                <span class="kpi-title" style="color: #c0392b !important;">GASTO TOTAIS</span>
-                                <span id="total-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
-                            </div>
-                            <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; border-left: 6px solid #c0392b !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
-                                <span class="kpi-title" style="color: #c0392b !important;">GASTO PINHEIRO</span>
-                                <span id="pinheiro-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
-                            </div>
-                            <div class="kpi-card" style="border: 1.5px solid #f5b7b1 !important; border-left: 6px solid #c0392b !important; box-shadow: 0 4px 14px rgba(192, 57, 43, 0.08) !important;">
-                                <span class="kpi-title" style="color: #c0392b !important;">GASTO BACABAL</span>
-                                <span id="bacabal-gastos-kpi" class="kpi-value" style="color: #c0392b !important;">---</span>
-                            </div>
-                        </div>
-                    `;
-                    targetBox.after(gastosSection);
-                }
-            }
 
             const sellers = allCollaborators.filter(name => !['Paulo', 'Ducielma', 'Keliane', 'Isabela'].includes(name));
             let sumSalarioPinheiro = 0;
@@ -14754,6 +14756,216 @@ async function calculateAndDisplayStoreServiceRanking() {
     let currentSaleSelectedPrice = null;
     let currentSaleActiveEmployee = null;
 
+    window.openLiquidezCorrectionPage = async () => {
+        let page = document.getElementById('liquidez-correction-page');
+        if (!page) {
+            page = document.createElement('div');
+            page.id = 'liquidez-correction-page';
+            page.className = 'page';
+            page.style.cssText = 'display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(160deg, #1c1007 0%, #2e1704 40%, #111111 100%); z-index: 3000; flex-direction: column; overflow-y: auto; overflow-x: hidden;';
+            page.innerHTML = `
+                <div class="collaborator-header" style="background: #111; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <button id="back-to-gs-from-liquidez-corr" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+                    <h2>Corrigir Registros & Líquido</h2>
+                </div>
+                <div id="liquidez-correction-content-container" class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.2rem 1rem 3rem 1rem; align-items: stretch; gap: 1rem; flex-direction: column;">
+                </div>
+            `;
+            document.body.appendChild(page);
+            elements.liquidezCorrectionPage = page;
+            document.getElementById('back-to-gs-from-liquidez-corr').onclick = () => showPage('gsPage');
+        }
+
+        showPage('liquidezCorrectionPage');
+        const container = document.getElementById('liquidez-correction-content-container');
+        container.innerHTML = '<p style="text-align: center; color: #fff; padding: 2rem;">Carregando dados de registros e líquidos...</p>';
+
+        try {
+            const [storeProfitsSnap, logsSnap] = await Promise.all([
+                database.ref('storeProfits').get(),
+                database.ref('registeredSalesLogs').limitToLast(50).get()
+            ]);
+
+            const storeProfits = storeProfitsSnap.exists() ? storeProfitsSnap.val() : {};
+            const curPinheiroProfit = parseFloat(storeProfits.pinheiro || 0);
+            const curBacabalProfit = parseFloat(storeProfits.bacabal || 0);
+
+            let logsList = [];
+            if (logsSnap.exists()) {
+                logsSnap.forEach(child => {
+                    logsList.push({ id: child.key, ...child.val() });
+                });
+                logsList.reverse();
+            }
+
+            container.innerHTML = `
+                <!-- PAINEL 1: AJUSTE MANUAL DE LÍQUIDO -->
+                <div class="employee-meta-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid #16a085; border-radius: 20px; padding: 1.2rem; width: 100%;">
+                    <div style="font-size: 0.72rem; font-weight: 900; color: #16a085; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-coins"></i> AJUSTAR LÍQUIDO MANUAL
+                    </div>
+
+                    <!-- PINHEIRO -->
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 14px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <strong style="color: #fff; font-size: 0.85rem;">PINHEIRO (PHO)</strong>
+                            <span style="color: #2ecc71; font-weight: 900; font-size: 0.95rem;" id="display-liquido-pho">${formatBRL(curPinheiroProfit)}</span>
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="input-liquido-pinheiro" class="data-input" placeholder="Valor (Ex: 500,00 ou -200,00)" style="margin-bottom: 0; font-size: 0.8rem; padding: 8px;">
+                            <button id="btn-add-liquido-pinheiro" class="action-button" style="height: auto; aspect-ratio: initial; padding: 8px 12px; background: #27ae60; font-weight: 800; font-size: 0.75rem; white-space: nowrap; margin: 0;">+ Somar</button>
+                            <button id="btn-set-liquido-pinheiro" class="action-button" style="height: auto; aspect-ratio: initial; padding: 8px 12px; background: #2980b9; font-weight: 800; font-size: 0.75rem; white-space: nowrap; margin: 0;">= Definir</button>
+                        </div>
+                    </div>
+
+                    <!-- BACABAL -->
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <strong style="color: #fff; font-size: 0.85rem;">BACABAL (BAC)</strong>
+                            <span style="color: #2ecc71; font-weight: 900; font-size: 0.95rem;" id="display-liquido-bac">${formatBRL(curBacabalProfit)}</span>
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="input-liquido-bacabal" class="data-input" placeholder="Valor (Ex: 500,00 ou -200,00)" style="margin-bottom: 0; font-size: 0.8rem; padding: 8px;">
+                            <button id="btn-add-liquido-bacabal" class="action-button" style="height: auto; aspect-ratio: initial; padding: 8px 12px; background: #27ae60; font-weight: 800; font-size: 0.75rem; white-space: nowrap; margin: 0;">+ Somar</button>
+                            <button id="btn-set-liquido-bacabal" class="action-button" style="height: auto; aspect-ratio: initial; padding: 8px 12px; background: #2980b9; font-weight: 800; font-size: 0.75rem; white-space: nowrap; margin: 0;">= Definir</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAINEL 2: CORREÇÃO E ESTORNO DE REGISTROS -->
+                <div class="employee-meta-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid #e74c3c; border-radius: 20px; padding: 1.2rem; width: 100%;">
+                    <div style="font-size: 0.72rem; font-weight: 900; color: #e74c3c; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-eraser"></i> CORRIGIR ERROS DE REGISTRO
+                    </div>
+                    <p style="font-size: 0.7rem; color: #aaa; margin: 0 0 12px 0;">Ao estornar uma venda, o valor do aparelho, serviços e lucro gerado são subtraídos automaticamente dos totais e da liquidez.</p>
+
+                    <div id="liquidez-sales-logs-container" style="display: flex; flex-direction: column; gap: 8px;">
+                        ${logsList.length === 0 ? '<p style="text-align: center; color: #888; font-size: 0.75rem; padding: 1rem;">Nenhum registro de venda recente encontrado.</p>' : ''}
+                    </div>
+                </div>
+            `;
+
+            // Lógica de Soma / Definição de Líquido Pinheiro
+            document.getElementById('btn-add-liquido-pinheiro').onclick = async () => {
+                const val = parseFromBRLInput(document.getElementById('input-liquido-pinheiro').value);
+                if (val === 0) return alert('Digite um valor válido.');
+                const novoVal = curPinheiroProfit + val;
+                await database.ref('storeProfits/pinheiro').set(novoVal);
+                alert(`Líquido de Pinheiro atualizado para ${formatBRL(novoVal)}!`);
+                openLiquidezCorrectionPage();
+            };
+
+            document.getElementById('btn-set-liquido-pinheiro').onclick = async () => {
+                const val = parseFromBRLInput(document.getElementById('input-liquido-pinheiro').value);
+                if (!confirm(`Definir o líquido exato de Pinheiro em ${formatBRL(val)}?`)) return;
+                await database.ref('storeProfits/pinheiro').set(val);
+                alert(`Líquido de Pinheiro definido em ${formatBRL(val)}!`);
+                openLiquidezCorrectionPage();
+            };
+
+            // Lógica de Soma / Definição de Líquido Bacabal
+            document.getElementById('btn-add-liquido-bacabal').onclick = async () => {
+                const val = parseFromBRLInput(document.getElementById('input-liquido-bacabal').value);
+                if (val === 0) return alert('Digite um valor válido.');
+                const novoVal = curBacabalProfit + val;
+                await database.ref('storeProfits/bacabal').set(novoVal);
+                alert(`Líquido de Bacabal atualizado para ${formatBRL(novoVal)}!`);
+                openLiquidezCorrectionPage();
+            };
+
+            document.getElementById('btn-set-liquido-bacabal').onclick = async () => {
+                const val = parseFromBRLInput(document.getElementById('input-liquido-bacabal').value);
+                if (!confirm(`Definir o líquido exato de Bacabal em ${formatBRL(val)}?`)) return;
+                await database.ref('storeProfits/bacabal').set(val);
+                alert(`Líquido de Bacabal definido em ${formatBRL(val)}!`);
+                openLiquidezCorrectionPage();
+            };
+
+            // Renderizar Lista de Vendas para Estorno
+            const logsContainer = document.getElementById('liquidez-sales-logs-container');
+            logsList.forEach(log => {
+                const row = document.createElement('div');
+                row.style.cssText = 'background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 4px;';
+                const timeStr = log.timestamp ? new Date(log.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+                row.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <strong style="color: #fff; font-size: 0.82rem;">${log.employee || 'Vendedor'} <span style="font-size: 0.65rem; color: #ff8533;">[${(log.store || 'PHO').toUpperCase()}]</span></strong>
+                        <span style="font-size: 0.65rem; color: #888;">${log.date || ''} ${timeStr}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #ccc;">📦 ${log.productName || 'Aparelho'}</div>
+                    <div style="font-size: 0.72rem; color: #aaa; display: flex; justify-content: space-between; margin-top: 2px;">
+                        <span>Venda: <strong style="color: #fff;">${formatBRL(log.venda || 0)}</strong></span>
+                        <span>Serviço: <strong style="color: #9b59b6;">${formatBRL(log.servicos || 0)}</strong></span>
+                        <span>Lucro: <strong style="color: #2ecc71;">${formatBRL(log.lucro || 0)}</strong></span>
+                    </div>
+                    <button class="btn-estornar-venda-log" data-log-id="${log.id}" style="margin-top: 6px; padding: 6px; background: rgba(231, 76, 60, 0.2); border: 1px solid rgba(231, 76, 60, 0.5); color: #ff6b6b; font-weight: 800; font-size: 0.7rem; border-radius: 8px; cursor: pointer;">
+                        <i class="fa-solid fa-trash-can"></i> Estornar / Apagar Venda
+                    </button>
+                `;
+                logsContainer.appendChild(row);
+            });
+
+            logsContainer.querySelectorAll('.btn-estornar-venda-log').forEach(btn => {
+                btn.onclick = async () => {
+                    const logId = btn.dataset.logId;
+                    const item = logsList.find(l => l.id === logId);
+                    if (!item) return;
+
+                    if (!confirm(`Deseja realmente ESTORNAR este registro?\n\n• Vendedor: ${item.employee}\n• Produto: ${item.productName}\n• Venda: ${formatBRL(item.venda)}\n• Lucro: ${formatBRL(item.lucro)}\n\nOs valores serão removidos dos totais diários e da liquidez da loja.`)) {
+                        return;
+                    }
+
+                    btn.disabled = true;
+                    btn.textContent = 'Estornando...';
+
+                    try {
+                        const targetKey = (item.employeeKey || item.employee || '').toLowerCase();
+                        const store = (item.store || 'pinheiro').toLowerCase();
+                        const date = item.date || getTodayDateString();
+                        const monthKey = item.monthKey || `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`;
+
+                        const [empDailySnap, empSalesSnap, storeProfitsSnap, monthlySnap] = await Promise.all([
+                            database.ref(`dailySales/${date}/${targetKey}`).get(),
+                            database.ref(`salesData/${targetKey}`).get(),
+                            database.ref(`storeProfits/${store}`).get(),
+                            database.ref(`monthlySales/${monthKey}/totalVendas`).get()
+                        ]);
+
+                        const dData = empDailySnap.exists() ? empDailySnap.val() : {};
+                        const sData = empSalesSnap.exists() ? empSalesSnap.val() : {};
+                        const curProfit = storeProfitsSnap.exists() ? parseFloat(storeProfitsSnap.val() || 0) : 0;
+                        const curMonthly = monthlySnap.exists() ? parseFloat(monthlySnap.val() || 0) : 0;
+
+                        const updates = {};
+                        updates[`/dailySales/${date}/${targetKey}/vendas`] = Math.max(0, (parseFloat(dData.vendas) || 0) - (item.venda || 0));
+                        updates[`/dailySales/${date}/${targetKey}/servico`] = Math.max(0, (parseFloat(dData.servico) || 0) - (item.servicos || 0));
+                        updates[`/dailySales/${date}/${targetKey}/lucro`] = Math.max(0, (parseFloat(dData.lucro) || 0) - (item.lucro || 0));
+
+                        updates[`/salesData/${targetKey}/vendas`] = Math.max(0, (parseFloat(sData.vendas) || 0) - (item.venda || 0));
+                        updates[`/salesData/${targetKey}/servico`] = Math.max(0, (parseFloat(sData.servico) || 0) - (item.servicos || 0));
+                        updates[`/salesData/${targetKey}/lucro`] = Math.max(0, (parseFloat(sData.lucro) || 0) - (item.lucro || 0));
+
+                        updates[`/storeProfits/${store}`] = Math.max(0, curProfit - (item.lucro || 0));
+                        updates[`/monthlySales/${monthKey}/totalVendas`] = Math.max(0, curMonthly - (item.venda || 0));
+                        updates[`/registeredSalesLogs/${logId}`] = null;
+
+                        await database.ref().update(updates);
+                        alert('Venda estornada com sucesso! Todos os registros e o líquido foram corrigidos.');
+                        openLiquidezCorrectionPage();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Erro ao estornar registro.');
+                        btn.disabled = false;
+                    }
+                };
+            });
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Erro ao carregar dados.</p>';
+        }
+    };
+
     const openManualSalePage = () => {
         const container = document.getElementById('manual-sale-content-container');
         container.style.width = '100%';
@@ -14773,6 +14985,15 @@ async function calculateAndDisplayStoreServiceRanking() {
                 <button class="action-button full-width" onclick="renderManualSaleForm('bacabal')" style="aspect-ratio: auto; padding: 1.5rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border-left: 5px solid #ff6b00;">
                     <div class="tool-icon-wrapper" style="background: #ff6b00;"><i class="fa-solid fa-location-dot"></i></div>
                     <strong style="font-size: 1.1rem;">BACABAL</strong>
+                </button>
+
+                <!-- BOTÃO CORREÇÃO DE REGISTROS E LÍQUIDO MANUAL -->
+                <button class="action-button full-width" onclick="openLiquidezCorrectionPage()" style="aspect-ratio: auto; padding: 1.3rem; flex-direction: row; justify-content: flex-start; gap: 1rem; border: 1.5px solid #16a085; background: rgba(22, 160, 133, 0.2); margin-top: 0.5rem; border-radius: 18px;">
+                    <div class="tool-icon-wrapper" style="background: #16a085;"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <div style="text-align: left;">
+                        <strong style="font-size: 1rem; display: block; color: #fff;">CORRIGIR REGISTROS & LÍQUIDO</strong>
+                        <span style="font-size: 0.68rem; color: #a3e4d7;">Estorno de vendas e ajuste de líquido manual</span>
+                    </div>
                 </button>
             </div>
         `;
@@ -14859,11 +15080,11 @@ async function calculateAndDisplayStoreServiceRanking() {
                 backButtonHtml = `<button onclick="showPage('collaboratorPage')" class="back-button" style="position: static; transform: none; margin-bottom: 0.8rem; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; width: fit-content;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>`;
             }
 
-            let employeePillsHtml = `<div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; width: 100%; scrollbar-width: none;">`;
+            let employeePillsHtml = `<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 12px;">`;
             activeEmployees.forEach(name => {
                 const isActive = name.toLowerCase() === (currentSaleActiveEmployee || '').toLowerCase();
                 employeePillsHtml += `
-                    <button class="action-button" onclick="renderManualSaleForm('${store}', '${name}')" style="height: auto; aspect-ratio: initial; padding: 7px 14px; font-size: 0.75rem; border-radius: 20px; white-space: nowrap; flex-shrink: 0; background: ${isActive ? 'var(--primary-color)' : 'rgba(255,255,255,0.1)'}; border: 1px solid ${isActive ? '#fff' : 'rgba(255,255,255,0.2)'}; font-weight: 800;">
+                    <button type="button" onclick="renderManualSaleForm('${store}', '${name}')" style="cursor: pointer; padding: 8px 16px; font-size: 0.8rem; border-radius: 20px; background: ${isActive ? '#ff6b00' : 'rgba(0,0,0,0.4)'}; color: #fff; border: 1.5px solid ${isActive ? '#fff' : 'rgba(255,255,255,0.2)'}; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
                         ${name}
                     </button>
                 `;
@@ -14875,13 +15096,13 @@ async function calculateAndDisplayStoreServiceRanking() {
 
             container.innerHTML = `
                 ${backButtonHtml}
-                <div style="font-size: 0.75rem; color: #ff8533; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;">UNIDADE ${store.toUpperCase()}</div>
+                <div style="font-size: 0.75rem; color: #ff8533; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; text-align: center;">UNIDADE ${store.toUpperCase()}</div>
                 ${employeePillsHtml}
 
                 <div class="employee-meta-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid rgba(255,255,255,0.18); border-radius: 20px; padding: 1.2rem; margin-bottom: 1rem; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
                     <h3 style="margin: 0 0 4px 0; color: #fff; font-size: 1.4rem; font-weight: 900; text-align: center; text-transform: uppercase;">${currentSaleActiveEmployee}</h3>
-                    <div style="font-size: 0.75rem; color: #aaa; text-align: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        Vendas Hoje: <strong style="color: #2ecc71;">${formatBRL(currentEmployeeDaily.vendas || 0)}</strong> | Serviços: <strong style="color: #9b59b6;">${formatBRL(currentEmployeeDaily.servico || 0)}</strong> | Lucro Hoje: <strong style="color: #16a085;">${formatBRL(currentEmployeeDaily.lucro || 0)}</strong>
+                    <div style="font-size: 0.78rem; color: #aaa; text-align: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        Vendas Hoje: <strong style="color: #2ecc71;">${formatBRL(currentEmployeeDaily.vendas || 0)}</strong> | Serviços: <strong style="color: #9b59b6;">${formatBRL(currentEmployeeDaily.servico || 0)}</strong>
                     </div>
 
                     <div class="input-group" style="position: relative; margin-bottom: 12px; width: 100%;">
@@ -14894,7 +15115,6 @@ async function calculateAndDisplayStoreServiceRanking() {
                         <div style="background: rgba(255, 107, 0, 0.15); border: 1px solid #ff6b00; border-radius: 14px; padding: 10px; margin-bottom: 12px; text-align: center;">
                             <span id="manual-sale-brand-tag" style="font-size: 0.65rem; color: #ff8533; font-weight: 800; text-transform: uppercase;">APARELHO SELECIONADO</span>
                             <h4 id="manual-sale-name-title" style="margin: 2px 0 0 0; color: #fff; font-size: 1rem; font-weight: 800;">-</h4>
-                            <span id="manual-sale-custo-display" style="font-size: 0.7rem; color: #bbb; display: block; margin-top: 3px;">Custo: R$ 0,00</span>
                         </div>
 
                         <p style="font-size: 0.72rem; color: #bbb; margin: 0 0 6px 0; font-weight: 800; text-transform: uppercase;">Selecionar o preço que foi vendido:</p>
@@ -14947,35 +15167,11 @@ async function calculateAndDisplayStoreServiceRanking() {
                             <span style="font-size: 0.65rem; color: #aaa;">* Preço digitando serviços pra preços que são fora da tabela</span>
                         </div>
 
-                        <div id="manual-sale-live-calc" style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1.5px solid #2ecc71; border-radius: 14px; padding: 12px; margin-bottom: 14px; font-size: 0.8rem; line-height: 1.5;">
-                        </div>
-
                         <button id="btn-submit-single-sale" class="action-button full-width" style="height: auto; aspect-ratio: initial; background: linear-gradient(135deg, #27ae60, #2ecc71); font-weight: 900; font-size: 1.15rem; padding: 16px; border-radius: 16px; box-shadow: 0 4px 18px rgba(46, 204, 113, 0.4);">
                             <i class="fa-solid fa-check"></i> REGISTRAR
                         </button>
                     </div>
                 </div>
-
-                <details style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 12px; margin-bottom: 1rem;">
-                    <summary style="font-size: 0.78rem; font-weight: 800; color: #ff8533; cursor: pointer; text-transform: uppercase;">⚙️ Ajuste Manual Direto / Acessórios (${store.toUpperCase()})</summary>
-                    <div style="margin-top: 12px;">
-                        ${activeEmployees.map(name => {
-                            const k = name.toLowerCase();
-                            const uDaily = dailyData[k] || { vendas: 0, servico: 0, acessorio: 0 };
-                            return `
-                                <div class="employee-meta-card" style="margin-bottom: 10px; background: rgba(255,255,255,0.03);">
-                                    <h4 style="color: #fff; margin-bottom: 8px;">${name}</h4>
-                                    <div class="input-group"><label>📱 Vendas Hoje (R$)</label><input type="text" id="manual-venda-${k}" class="data-input" value="${formatToBRLInput(uDaily.vendas)}"></div>
-                                    <div class="input-group"><label>🛟 Serviço Hoje (R$)</label><input type="text" id="manual-servico-${k}" class="data-input" value="${formatToBRLInput(uDaily.servico)}"></div>
-                                    <div class="input-group"><label>🛍️ Acessórios Hoje (R$)</label><input type="text" id="manual-acessorio-${k}" class="data-input" value="${formatToBRLInput(uDaily.acessorio)}"></div>
-                                </div>
-                            `;
-                        }).join('')}
-                        <button id="save-manual-sales-btn" class="action-button full-width" style="margin-top: 0.5rem; background: #27ae60; height: auto; padding: 14px;">
-                            <i class="fa-solid fa-save"></i> Salvar Ajustes Manuais
-                        </button>
-                    </div>
-                </details>
                 <div style="height: 40px;"></div>
             `;
 
