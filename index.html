@@ -6536,7 +6536,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.1.4 - A'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.1.5 - B'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10718,13 +10718,26 @@ const loadAndDisplayCollaboratorMetas = () => {
             const currentDay = now.getDate();
             const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
+            let totalWorkingDays = 0;
+            let workingDaysElapsed = 0;
+            for (let d = 1; d <= lastDayOfMonth; d++) {
+                const date = new Date(now.getFullYear(), now.getMonth(), d);
+                if (date.getDay() !== 0) {
+                    totalWorkingDays++;
+                    if (d <= currentDay) {
+                        workingDaysElapsed++;
+                    }
+                }
+            }
+            if (totalWorkingDays === 0) totalWorkingDays = 1;
+
             const metaVendasPinheiro = parseFloat(metasData['eliseu']?.metaLoja || 0);
             const metaVendasBacabal = parseFloat(metasData['tacilio']?.metaLoja || 0);
             const metaVendasTotal = metaVendasPinheiro + metaVendasBacabal;
 
-            const expVendasPinheiro = (metaVendasPinheiro / lastDayOfMonth) * currentDay;
-            const expVendasBacabal = (metaVendasBacabal / lastDayOfMonth) * currentDay;
-            const expVendasTotal = (metaVendasTotal / lastDayOfMonth) * currentDay;
+            const expVendasPinheiro = (metaVendasPinheiro / totalWorkingDays) * workingDaysElapsed;
+            const expVendasBacabal = (metaVendasBacabal / totalWorkingDays) * workingDaysElapsed;
+            const expVendasTotal = (metaVendasTotal / totalWorkingDays) * workingDaysElapsed;
 
             const diffVendasPinheiro = vendasPinheiro - expVendasPinheiro;
             const diffVendasBacabal = vendasBacabal - expVendasBacabal;
@@ -10748,9 +10761,9 @@ const loadAndDisplayCollaboratorMetas = () => {
             });
             const metaAccTotal = metaAccPinheiro + metaAccBacabal;
 
-            const expAccPinheiro = (metaAccPinheiro / lastDayOfMonth) * currentDay;
-            const expAccBacabal = (metaAccBacabal / lastDayOfMonth) * currentDay;
-            const expAccTotal = (metaAccTotal / lastDayOfMonth) * currentDay;
+            const expAccPinheiro = (metaAccPinheiro / totalWorkingDays) * workingDaysElapsed;
+            const expAccBacabal = (metaAccBacabal / totalWorkingDays) * workingDaysElapsed;
+            const expAccTotal = (metaAccTotal / totalWorkingDays) * workingDaysElapsed;
 
             const diffAccPinheiro = acessoriosPinheiro - expAccPinheiro;
             const diffAccBacabal = acessoriosBacabal - expAccBacabal;
@@ -10806,9 +10819,6 @@ const loadAndDisplayCollaboratorMetas = () => {
                             <div style="position: absolute; left: 10px; top: 10px; display: flex; gap: 6px; z-index: 10;">
                                 <button id="btn-atualizar-gastos-sheet" onclick="window.syncGastosPlanilha()" style="background: #fdedec; border: 1.5px solid #f5b7b1; color: #c0392b; border-radius: 12px; padding: 4px 10px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(192, 57, 43, 0.15);">
                                     <i class="fa-solid fa-arrows-rotate"></i> Atualizar
-                                </button>
-                                <button id="btn-config-gastos-sheet" onclick="window.configurarPlanilhaGastos()" style="background: #fdedec; border: 1.5px solid #f5b7b1; color: #c0392b; border-radius: 12px; padding: 4px 9px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(192, 57, 43, 0.15);">
-                                    <i class="fa-solid fa-link"></i> Link
                                 </button>
                             </div>
                             <span class="kpi-title" style="color: #c0392b !important;">GASTO TOTAIS</span>
@@ -11308,17 +11318,34 @@ const loadAndDisplayCollaboratorMetas = () => {
             const now = new Date();
             const currentDay = now.getDate();
             const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-            const daysRemaining = (lastDayOfMonth - currentDay) + 1;
 
-            const expectedToday = (data.goal / lastDayOfMonth) * currentDay;
+            let totalWorkingDays = 0;
+            let workingDaysElapsed = 0;
+            let workingDaysRemaining = 0;
+            for (let d = 1; d <= lastDayOfMonth; d++) {
+                const date = new Date(now.getFullYear(), now.getMonth(), d);
+                if (date.getDay() !== 0) {
+                    totalWorkingDays++;
+                    if (d <= currentDay) {
+                        workingDaysElapsed++;
+                    }
+                    if (d >= currentDay) {
+                        workingDaysRemaining++;
+                    }
+                }
+            }
+            if (totalWorkingDays === 0) totalWorkingDays = 1;
+            if (workingDaysRemaining === 0) workingDaysRemaining = 1;
+
+            const expectedToday = (data.goal / totalWorkingDays) * workingDaysElapsed;
             const diffExpected = data.sold - expectedToday;
             const remainingToSell = Math.max(0, data.goal - data.sold);
-            const neededPerDay = remainingToSell / daysRemaining;
+            const neededPerDay = remainingToSell / workingDaysRemaining;
 
             const expectedServToday = expectedToday * 0.10;
             const diffExpectedServ = data.servSold - expectedServToday;
 
-            const expectedAccToday = (data.accGoal / lastDayOfMonth) * currentDay;
+            const expectedAccToday = (data.accGoal / totalWorkingDays) * workingDaysElapsed;
             const diffExpectedAcc = data.accSold - expectedAccToday;
 
             if (isManager) {
