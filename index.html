@@ -6589,7 +6589,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.1.6 - C'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.1.7 - C'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -10375,11 +10375,7 @@ const loadAndDisplayCollaboratorMetas = () => {
             }
             const accLeft = isTodaySunday ? 0 : Math.max(0, accGoal - (sold.todayAcc || 0));
 
-            const sundayNotice = isTodaySunday ? `
-                <div style="background: rgba(255, 255, 255, 0.15); border: 1px dashed rgba(255,255,255,0.4); border-radius: 12px; padding: 6px 12px; margin-bottom: 12px; font-size: 0.72rem; font-weight: 800; color: #ffe600; text-transform: uppercase; letter-spacing: 0.5px;">
-                    ☀️ Domingo: Meta Diária R$ 0,00
-                </div>
-            ` : '';
+            const sundayNotice = '';
 
             return `
                 <div class="sales-data-card" style="width: 100%; max-width: 420px; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.2); text-align: center;">
