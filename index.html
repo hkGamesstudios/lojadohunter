@@ -3569,7 +3569,7 @@
 <!-- AVISO DE ATUALIZAÇÃO -->
 <div id="update-notice-overlay">
     <div class="update-notice-content">
-        <h2>Versão 10.0.5 - B</h2>
+        <h2>Versão 10.1.9 - D</h2>
         <p>Atualização com novo Painel GS, melhorias na IA Hunter, meta de acessórios e novos recursos!</p>
         <button id="close-update-notice" class="update-notice-btn">( ok )</button>
     </div>
@@ -3922,7 +3922,7 @@
 
             <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding-bottom: 8px;">
                 <span style="font-size: 1.6rem; font-weight: 900; color: #FF6B00; letter-spacing: -0.5px;">Loja do Hunter</span>
-                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.0.5 - B</span>
+                <span style="font-size: 0.65rem; color: #a0a0a0; font-weight: 600;">Versão 10.1.9 - D</span>
             </div>
         </div>
 
@@ -4104,7 +4104,6 @@
                     <div class="folder-category-title">Aplicativos</div>
                     <div class="folder-apps-grid">
                         <div class="folder-app-item" id="f-my-profile"><div class="folder-app-icon"><i class="fa-solid fa-user-astronaut"></i></div><span>Meu Perfil</span></div>
-                        <div class="folder-app-item" id="f-previsao"><div class="folder-app-icon"><i class="fa-solid fa-truck-fast"></i></div><span>Previsão</span></div>
                         <div class="folder-app-item" id="f-quiz"><div class="folder-app-icon"><i class="fa-solid fa-comment-dots"></i></div><span>Quiz</span></div>
                         <div class="folder-app-item" id="f-send"><div class="folder-app-icon"><i class="fa-solid fa-paper-plane"></i></div><span>Enviar Disp.</span></div>
                         <div class="folder-app-item" id="f-feedback"><div class="folder-app-icon"><i class="fa-solid fa-lightbulb"></i></div><span>Sugestão</span></div>
@@ -4677,14 +4676,14 @@
             <div class="system-status-wrapper">
                 <div class="system-status-card" onclick="const d = this.querySelector('.system-details-expand'); d.style.display = d.style.display === 'block' ? 'none' : 'block';">
                     <div class="system-status-header">
-                        <div class="status-indicator" id="system-status-container">
-                            <div class="status-dot" id="system-status-dot"></div>
-                            <span id="system-status-text">Calculando status...</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
+                    <div class="status-indicator" id="system-status-container">
+                        <div class="status-dot" id="system-status-dot"></div>
+                        <span id="system-status-text">Calculando status...</span>
                     </div>
-                    <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.0.5 - B</div>
-                    <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.4);"></i>
+                </div>
+                <div style="font-size: 0.68rem; color: #ff6b00; font-weight: 800; margin-top: 3px;">Versão 10.1.9 - D</div>
+                <div class="system-info-brief" id="system-status-brief">Carregando informações...</div>
                     
                     <div class="system-details-expand">
                         <div class="receipt-line"><span>Supabase (Servidor de Mídias & Storage)</span><span style="color:#2ecc71; font-weight:700;"><i class="fa-solid fa-check"></i> Operacional</span></div>
@@ -6598,7 +6597,7 @@ Transporte - R$ 5,00"></textarea></div>
             <script>
     // --- VERSÃO DO APLICATIVO ---
                 //2805
-    const APP_VERSION = '10.1.8 - D'; // Altere este número para atualizar a versão
+    const APP_VERSION = '10.1.9 - D'; // Altere este número para atualizar a versão
     const GOOGLE_SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwrtULaONXOEjigQ5i9Tqnh1_Bnd0VIJJxBUy9qZgknwtm6FcGB0Dx2Ip-dMl_PyJ3Itg/exec';
 
     const CASH_BOX_INITIAL_VALUE = 1000;
@@ -6659,19 +6658,24 @@ Transporte - R$ 5,00"></textarea></div>
     };
     let customUsersCache = {};
 
-    const syncDynamicUsers = (customUsersData) => {
+    let deletedBaseUsers = [];
+
+    const syncDynamicUsers = (customUsersData, deletedUsersData = {}) => {
         customUsersCache = customUsersData || {};
+        deletedBaseUsers = Object.keys(deletedUsersData || {});
         try {
             localStorage.setItem('cachedCustomUsers', JSON.stringify(customUsersCache));
+            localStorage.setItem('cachedDeletedBaseUsers', JSON.stringify(deletedBaseUsers));
         } catch(e) {}
 
-        const newCollabs = [...baseCollaborators];
-        const newAdm = [...baseAdmins];
-        const pinheiroList = [...baseStoreMapping.pinheiro];
-        const bacabalList = [...baseStoreMapping.bacabal];
+        const newCollabs = baseCollaborators.filter(n => !deletedBaseUsers.includes(n.toLowerCase()));
+        const newAdm = baseAdmins.filter(n => !deletedBaseUsers.includes(n.toLowerCase()));
+        const pinheiroList = baseStoreMapping.pinheiro.filter(n => !deletedBaseUsers.includes(n.toLowerCase()));
+        const bacabalList = baseStoreMapping.bacabal.filter(n => !deletedBaseUsers.includes(n.toLowerCase()));
 
         if (customUsersData && typeof customUsersData === 'object') {
             Object.keys(customUsersData).forEach(key => {
+                if (deletedBaseUsers.includes(key)) return;
                 const u = customUsersData[key];
                 if (!u || !u.name) return;
                 const name = u.name.trim();
@@ -6695,20 +6699,29 @@ Transporte - R$ 5,00"></textarea></div>
         allCollaborators = newCollabs;
         newAdmins = newAdm;
         allUsers = Array.from(new Set([...allCollaborators, ...newAdmins]));
-        managers = Array.from(new Set([...storeManagers, ...newAdmins]));
+        managers = Array.from(new Set([...storeManagers.filter(n => !deletedBaseUsers.includes(n.toLowerCase())), ...newAdmins]));
         storeMapping.pinheiro = pinheiroList;
         storeMapping.bacabal = bacabalList;
     };
 
     try {
         const localCache = JSON.parse(localStorage.getItem('cachedCustomUsers') || '{}');
-        if (localCache && Object.keys(localCache).length > 0) {
-            syncDynamicUsers(localCache);
-        }
+        const localDeleted = JSON.parse(localStorage.getItem('cachedDeletedBaseUsers') || '[]');
+        const deletedObj = {};
+        localDeleted.forEach(k => { deletedObj[k] = true; });
+        syncDynamicUsers(localCache, deletedObj);
     } catch(e) {}
 
     database.ref('customUsers').on('value', snapshot => {
-        syncDynamicUsers(snapshot.exists() ? snapshot.val() : {});
+        database.ref('deletedUsers').get().then(delSnap => {
+            syncDynamicUsers(snapshot.exists() ? snapshot.val() : {}, delSnap.exists() ? delSnap.val() : {});
+        });
+    });
+
+    database.ref('deletedUsers').on('value', snapshot => {
+        database.ref('customUsers').get().then(customSnap => {
+            syncDynamicUsers(customSnap.exists() ? customSnap.val() : {}, snapshot.exists() ? snapshot.val() : {});
+        });
     });
 
     let currntUserName = ''; // Variável unificada para o usuário logado
@@ -7787,13 +7800,14 @@ document.getElementById('afiliados-admin-page').classList.add('page');
         }
 
         try {
-            const [passSnap, profilesSnap, logsSnap, accessLogsSnap, sessionsSnap, customUsersSnap] = await Promise.all([
+            const [passSnap, profilesSnap, logsSnap, accessLogsSnap, sessionsSnap, customUsersSnap, deletedUsersSnap] = await Promise.all([
                 database.ref('userPasswords').get(),
                 database.ref('userProfiles').get(),
                 database.ref('userDeviceLoginLogs').limitToLast(40).get(),
                 database.ref('userAccessLogs').get(),
                 database.ref('userSessions').get(),
-                database.ref('customUsers').get()
+                database.ref('customUsers').get(),
+                database.ref('deletedUsers').get()
             ]);
 
             const passwords = passSnap.exists() ? passSnap.val() : {};
@@ -7801,8 +7815,9 @@ document.getElementById('afiliados-admin-page').classList.add('page');
             const accessLogs = accessLogsSnap.exists() ? accessLogsSnap.val() : {};
             const sessions = sessionsSnap.exists() ? sessionsSnap.val() : {};
             const customUsers = customUsersSnap.exists() ? customUsersSnap.val() : {};
+            const deletedUsers = deletedUsersSnap.exists() ? deletedUsersSnap.val() : {};
 
-            syncDynamicUsers(customUsers);
+            syncDynamicUsers(customUsers, deletedUsers);
 
             container.innerHTML = '';
 
@@ -7813,7 +7828,6 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                 const lastAccess = accessLogs[userKey]?.lastAccess;
                 const lastSeenText = lastAccess ? new Date(lastAccess).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Nunca';
 
-                const isCustomUser = Boolean(customUsers[userKey]);
                 const userStore = storeMapping.pinheiro.includes(userName) ? 'Pinheiro (PHO)' : (storeMapping.bacabal.includes(userName) ? 'Bacabal (BAC)' : 'Geral');
                 const userRole = newAdmins.includes(userName) ? 'Admin' : 'Vendedor';
 
@@ -7823,11 +7837,11 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                     ? '<span style="font-size: 0.6rem; font-weight: 800; color: #27ae60; background: #eafaf1; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71;"></span>Conectado</span>'
                     : '<span style="font-size: 0.6rem; font-weight: 800; color: #7f8c8d; background: #f2f4f4; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;"><span style="width: 6px; height: 6px; background: #95a5a6; border-radius: 50%;"></span>Desconectado</span>';
 
-                const deleteButtonHtml = isCustomUser ? `
-                    <button class="users-mgmt-delete-user-btn" data-user="${userName}" style="flex: 1; padding: 6px 10px; background: #fff0f0; border: 1px solid #ffccd2; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #c0392b; cursor: pointer;">
+                const deleteButtonHtml = `
+                    <button class="users-mgmt-delete-user-btn" data-user="${userName}" style="flex: 1; min-width: 90px; padding: 6px 10px; background: #fff0f0; border: 1px solid #ffccd2; border-radius: 8px; font-size: 0.68rem; font-weight: 800; color: #c0392b; cursor: pointer;">
                         <i class="fa-solid fa-trash-can"></i> Excluir
                     </button>
-                ` : '';
+                `;
 
                 const row = document.createElement('div');
                 row.className = 'rank-item';
@@ -7859,6 +7873,44 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                 container.appendChild(row);
             });
 
+            const delUsersList = Object.keys(deletedUsers || {});
+            if (delUsersList.length > 0) {
+                const hiddenBox = document.createElement('div');
+                hiddenBox.style.cssText = 'background: #fff8f8; border: 1px dashed #e74c3c; border-radius: 14px; padding: 12px; margin-top: 10px;';
+                hiddenBox.innerHTML = `
+                    <div style="font-size: 0.72rem; font-weight: 900; color: #c0392b; margin-bottom: 8px; text-transform: uppercase;">
+                        <i class="fa-solid fa-user-slash" style="margin-right: 5px;"></i> Colaboradores Ocultados / Excluídos (${delUsersList.length})
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;" id="users-mgmt-deleted-list"></div>
+                `;
+                container.appendChild(hiddenBox);
+
+                const delListContainer = hiddenBox.querySelector('#users-mgmt-deleted-list');
+                delUsersList.forEach(k => {
+                    const formatted = k.charAt(0).toUpperCase() + k.slice(1);
+                    const delRow = document.createElement('div');
+                    delRow.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #ffffff; border-radius: 8px; border: 1px solid #ffd2d2; font-size: 0.75rem;';
+                    delRow.innerHTML = `
+                        <strong style="color: #555;">${formatted}</strong>
+                        <button class="users-mgmt-restore-user-btn" data-user="${k}" style="padding: 4px 10px; background: #eafaf1; color: #27ae60; border: 1px solid #a9dfbf; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 0.65rem;">
+                            <i class="fa-solid fa-rotate-left"></i> Restaurar
+                        </button>
+                    `;
+                    delListContainer.appendChild(delRow);
+                });
+
+                delListContainer.querySelectorAll('.users-mgmt-restore-user-btn').forEach(btn => {
+                    btn.onclick = async () => {
+                        const k = btn.dataset.user;
+                        const formatted = k.charAt(0).toUpperCase() + k.slice(1);
+                        if (!confirm(`Deseja restaurar o colaborador "${formatted}" para o aplicativo?`)) return;
+                        await database.ref(`deletedUsers/${k}`).remove();
+                        alert(`Colaborador "${formatted}" restaurado com sucesso!`);
+                        loadUsersManagementPage();
+                    };
+                });
+            }
+
             container.querySelectorAll('.users-mgmt-edit-pass-btn').forEach(btn => {
                 btn.onclick = () => {
                     const uName = btn.dataset.user;
@@ -7889,10 +7941,11 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                 btn.onclick = async () => {
                     const uName = btn.dataset.user;
                     const uKey = uName.toLowerCase();
-                    if (!confirm(`ATENÇÃO: Deseja realmente excluir o funcionário "${uName}" do sistema?\n\nEle será removido das listas, rankings, metas e de sua respectiva loja.`)) return;
+                    if (!confirm(`ATENÇÃO: Deseja realmente excluir/ocultar o colaborador "${uName}" do sistema?\n\nEle será removido das listas, rankings, metas e de sua respectiva loja.`)) return;
 
                     try {
                         const updates = {};
+                        updates[`deletedUsers/${uKey}`] = true;
                         updates[`customUsers/${uKey}`] = null;
                         updates[`userPasswords/${uKey}`] = null;
                         updates[`userSessions/${uKey}`] = null;
@@ -7902,11 +7955,11 @@ document.getElementById('afiliados-admin-page').classList.add('page');
                         updates[`userStatuses/${uKey}`] = null;
 
                         await database.ref().update(updates);
-                        alert(`Funcionário "${uName}" foi excluído com sucesso!`);
+                        alert(`Colaborador "${uName}" foi excluído/ocultado com sucesso!`);
                         loadUsersManagementPage();
                     } catch (err) {
                         console.error(err);
-                        alert('Erro ao excluir funcionário.');
+                        alert('Erro ao excluir/ocultar funcionário.');
                     }
                 };
             });
@@ -9956,7 +10009,24 @@ const loadAndDisplayCollaboratorMetas = () => {
         }
 
         if (isEntradaNotaView) {
+            const deliveryCalcDate = new Date();
+            deliveryCalcDate.setDate(deliveryCalcDate.getDate() + 5);
+            const deliveryFormattedRealtime = deliveryCalcDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+
             contentContainer.innerHTML = `
+                <div style="width: 100%; background: rgba(0, 0, 0, 0.45); border: 1.5px solid rgba(255, 255, 255, 0.18); border-radius: 18px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 38px; height: 38px; border-radius: 12px; background: rgba(255, 107, 0, 0.22); border: 1px solid rgba(255, 107, 0, 0.45); display: flex; align-items: center; justify-content: center; color: #ff8533; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div style="text-align: left; line-height: 1.25;">
+                            <span style="font-size: 0.65rem; color: #ff8533; font-weight: 900; text-transform: uppercase; letter-spacing: 0.6px; display: block;">Previsão de Entrega</span>
+                            <span style="font-size: 0.72rem; color: #ddd; font-weight: 600;">Chegará no máximo em:</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 0.95rem; font-weight: 900; color: #2ecc71; white-space: nowrap; text-shadow: 0 2px 6px rgba(0,0,0,0.5);">${deliveryFormattedRealtime}</span>
+                </div>
+
                 <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
                     <div style="flex-shrink: 0; width: 140px; height: 160px; background: #fff; border-radius: 24px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
                         <div style="position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; background: var(--primary-color); filter: blur(30px); opacity: 0.2;"></div>
@@ -9986,6 +10056,25 @@ const loadAndDisplayCollaboratorMetas = () => {
             `;
         } else {
             const isAcessorio = (brand && brand.toLowerCase() === 'acessorios') || (device.name && device.name.toLowerCase().startsWith('acessorio'));
+
+            const deliveryCalcDate = new Date();
+            deliveryCalcDate.setDate(deliveryCalcDate.getDate() + 5);
+            const deliveryFormattedRealtime = deliveryCalcDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
+
+            const rastreioHTML = !isAcessorio ? `
+                <div style="width: 100%; background: rgba(0, 0, 0, 0.45); border: 1.5px solid rgba(255, 255, 255, 0.18); border-radius: 18px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 38px; height: 38px; border-radius: 12px; background: rgba(255, 107, 0, 0.22); border: 1px solid rgba(255, 107, 0, 0.45); display: flex; align-items: center; justify-content: center; color: #ff8533; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        <div style="text-align: left; line-height: 1.25;">
+                            <span style="font-size: 0.65rem; color: #ff8533; font-weight: 900; text-transform: uppercase; letter-spacing: 0.6px; display: block;">Previsão de Entrega</span>
+                            <span style="font-size: 0.72rem; color: #ddd; font-weight: 600;">Chegará no máximo em:</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 0.95rem; font-weight: 900; color: #2ecc71; white-space: nowrap; text-shadow: 0 2px 6px rgba(0,0,0,0.5);">${deliveryFormattedRealtime}</span>
+                </div>
+            ` : '';
 
             let payMobiInstallmentsHTML = '';
             for (let n = 5; n <= 10; n++) {
@@ -10047,6 +10136,7 @@ const loadAndDisplayCollaboratorMetas = () => {
             ` : '';
 
             contentContainer.innerHTML = `
+                ${rastreioHTML}
                 <div style="display: flex; gap: 15px; width: 100%; margin-bottom: 25px; align-items: stretch; justify-content: center;">
                     <div style="flex-shrink: 0; width: 140px; height: 160px; background: #fff; border-radius: 24px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
                         <div style="position: absolute; bottom: -20px; right: -20px; width: 60px; height: 60px; background: var(--primary-color); filter: blur(30px); opacity: 0.2;"></div>
@@ -18744,7 +18834,6 @@ async function calculateAndDisplayStoreServiceRanking() {
                 { id: 'f-telemarketing', action: () => showPage('telemarketingSelectionPage') },
                 { id: 'f-afiliados', action: () => showPage('afiliadosSelectionPage') },
                 { id: 'f-my-profile', original: 'open-my-profile-btn' },
-                { id: 'f-previsao', original: 'previsao-btn' },
                 { id: 'f-quiz', original: 'open-quiz-page' },
                 { id: 'f-send', original: 'open-send-device-page' },
                 { id: 'f-feedback', original: 'open-feedback-page' }
