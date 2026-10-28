@@ -15053,8 +15053,8 @@ async function calculateAndDisplayStoreServiceRanking() {
 
 
             // --- LÓGICA DE ATIVAÇÃO (A SER USADA PELA NOVA FUNÇÃO DE INICIALIZAÇÃO) ---
-            const EMPLOYEE_ACTIVATION_CODE = '91734';
-            const APP_MODE_KEY = 'appMode_v2';
+            const EMPLOYEE_ACTIVATION_CODE = '84291';
+            const APP_MODE_KEY = 'appMode_v3';
             
             document.getElementById('submit-activation-code').addEventListener('click', () => {
                 const input = document.getElementById('activation-code-input');
@@ -18334,10 +18334,29 @@ async function calculateAndDisplayStoreServiceRanking() {
                     }
                 }, 15000);
 
+                // Deslogar todos os usuários locais e exigir ativação com novo código
+                const RESET_TOKEN_KEY = 'global_auth_reset_v3';
+                if (!localStorage.getItem(RESET_TOKEN_KEY)) {
+                    localStorage.removeItem('loggedInUser');
+                    localStorage.removeItem('loginSessionTimestamp');
+                    localStorage.removeItem('userLocalSessionId');
+                    localStorage.removeItem('appMode_v2');
+                    localStorage.removeItem(APP_MODE_KEY);
+                    localStorage.setItem(RESET_TOKEN_KEY, 'true');
+                    try {
+                        const forcedRevokeSid = 'revoked_all_' + String(Date.now());
+                        database.ref('globalSettings/allUsersSessionId').set(forcedRevokeSid);
+                    } catch (err) {}
+                }
+
                 const loggedInUser = localStorage.getItem('loggedInUser');
                 const appMode = localStorage.getItem(APP_MODE_KEY);
                 
                 if (appMode !== 'employee') {
+                    document.querySelectorAll('.page, .modal-overlay').forEach(p => {
+                        p.style.display = 'none';
+                        p.classList.remove('visible', 'is-exiting');
+                    });
                     document.getElementById('activation-overlay').style.display = 'flex';
                     document.getElementById('activation-overlay').classList.add('visible');
                     return;
