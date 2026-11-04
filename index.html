@@ -1635,12 +1635,12 @@
         .sales-data-card, .os-warning {
              background: rgba(0, 0, 0, 0.2) !important;
              border: 1px solid rgba(255, 255, 255, 0.1) !important;
-             border-left: 3px solid var(--primary-color) !important;
+             border-left: none !important;
              border-radius: 12px !important;
              padding: 1rem !important;
         }
         .os-warning { /* Específico para avisos */
-             border-left-color: #f1c40f !important;
+             border-left: none !important;
              color: #f1c40f !important;
         }
 
@@ -4532,14 +4532,155 @@
                 Estamos passando por manutenção, desconsidere erros até este aviso sumir.
             </div>
 
-            <!-- Área de Notificação do Ponto -->
-            <div id="ponto-notification-area">
-                <!-- O JS vai popular esta área -->
+            <!-- CARD DE PONTO MINIMALISTA & RESPONSIVO (ORIGINAL CLEAN) -->
+            <div id="collaborator-ponto-card" style="width: 100%; max-width: 380px; display: none; flex-direction: column; gap: 10px; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">
+                <div style="background: rgba(15, 15, 18, 0.78); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 14px 16px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 8px 24px rgba(0,0,0,0.35);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <span id="ponto-live-clock" style="font-size: 1.55rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; line-height: 1; display: block;">--:--:--</span>
+                            <span id="ponto-live-date" style="font-size: 0.62rem; color: #999; font-weight: 600;">--/--/----</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px; background: rgba(255, 107, 0, 0.12); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255, 107, 0, 0.25);">
+                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 6px #2ecc71;"></span>
+                            <span id="ponto-role-badge" style="font-size: 0.6rem; color: #ff944d; font-weight: 700; text-transform: uppercase;">Colaborador</span>
+                        </div>
+                    </div>
+
+                    <button id="ponto-main-action-btn" style="width: 100%; padding: 11px 14px; background: linear-gradient(135deg, #ff8533 0%, #ff6b00 100%); border: none; border-radius: 13px; color: #fff; font-size: 0.85rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35); transition: transform 0.15s ease;">
+                        <i class="fa-solid fa-fingerprint" style="font-size: 1.15rem;"></i>
+                        <span id="ponto-main-btn-text">Registrar Ponto</span>
+                    </button>
+
+                    <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 0.62rem; color: #888;">
+                        <div style="display: flex; align-items: center; gap: 4px; overflow: hidden; max-width: 85%;">
+                            <i class="fa-solid fa-location-dot" style="color: #ff6b00; font-size: 0.7rem;"></i>
+                            <span id="ponto-location-display" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Localização: Carregando...</span>
+                        </div>
+                        <i class="fa-solid fa-circle-check" id="ponto-location-status-icon" style="color: #2ecc71; font-size: 0.75rem;"></i>
+                    </div>
+
+                    <div id="ponto-warning-box" style="display: none; margin-top: 8px; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.35); border-radius: 10px; padding: 6px 10px; font-size: 0.68rem; color: #ff7675; font-weight: 700; justify-content: space-between; align-items: center;">
+                        <span id="ponto-warning-text" style="flex: 1;">Ocorrência detectada</span>
+                        <button id="ponto-open-justification-btn" style="background: #e74c3c; color: #fff; border: none; border-radius: 6px; padding: 3px 8px; font-size: 0.62rem; font-weight: 800; cursor: pointer; margin-left: 6px;">Justificar</button>
+                    </div>
+                </div>
+
+                <!-- 4 BATIDAS DIÁRIAS EM GRID CLEAN -->
+                <div style="background: rgba(15, 15, 18, 0.78); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 12px 14px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 8px 24px rgba(0,0,0,0.35);">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center;">
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 8px 4px;">
+                            <div id="step-node-entrada" style="width: 18px; height: 18px; border-radius: 50%; background: #222; border: 1.5px solid #444; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #888;">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <span style="font-size: 0.55rem; color: #777; text-transform: uppercase; font-weight: 700; display: block;">Entrada</span>
+                            <strong id="step-time-entrada" style="font-size: 0.72rem; color: #eee; display: block; margin-top: 1px;">--:--</strong>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 8px 4px;">
+                            <div id="step-node-almoco" style="width: 18px; height: 18px; border-radius: 50%; background: #222; border: 1.5px solid #444; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #888;">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <span style="font-size: 0.55rem; color: #777; text-transform: uppercase; font-weight: 700; display: block;">Almoço</span>
+                            <strong id="step-time-almoco" style="font-size: 0.72rem; color: #eee; display: block; margin-top: 1px;">--:--</strong>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 8px 4px;">
+                            <div id="step-node-retorno" style="width: 18px; height: 18px; border-radius: 50%; background: #222; border: 1.5px solid #444; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #888;">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <span style="font-size: 0.55rem; color: #777; text-transform: uppercase; font-weight: 700; display: block;">Retorno</span>
+                            <strong id="step-time-retorno" style="font-size: 0.72rem; color: #eee; display: block; margin-top: 1px;">--:--</strong>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 8px 4px;">
+                            <div id="step-node-saida" style="width: 18px; height: 18px; border-radius: 50%; background: #222; border: 1.5px solid #444; margin: 0 auto 4px auto; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #888;">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <span style="font-size: 0.55rem; color: #777; text-transform: uppercase; font-weight: 700; display: block;">Saída</span>
+                            <strong id="step-time-saida" style="font-size: 0.72rem; color: #eee; display: block; margin-top: 1px;">--:--</strong>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem;">
+                        <span style="color: #777;">Intervalo: <strong id="ponto-summary-almoco" style="color: #ddd;">1h 30min</strong></span>
+                        <span style="color: #777;">Trabalhado: <strong id="ponto-summary-jornada" style="color: #ddd;">0h 00min</strong></span>
+                        <span id="ponto-summary-status-badge" style="color: #2ecc71; font-weight: 800; background: rgba(46, 204, 113, 0.1); padding: 2px 7px; border-radius: 8px;">Normal</span>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Informação do próximo ponto -->
-            <p id="ponto-countdown-timer" style="text-align: center; font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); margin: 0; min-height: 20px;"></p>
-            <p id="ponto-live-countdown" style="text-align: center; font-size: 1.1rem; font-weight: 600; color: #f1c40f; margin: 0; min-height: 25px;"></p>
+
+            <!-- MODAL DE JUSTIFICATIVA COM COMPROVANTE (FOTO/ANEXO) -->
+            <div id="ponto-justification-modal" class="modal-overlay" style="display: none; z-index: 99999;">
+                <div class="modal-content" style="max-width: 350px; background: #161618; border: 1px solid rgba(255,255,255,0.12); padding: 1.4rem; border-radius: 20px;">
+                    <h3 style="color: #fff; font-size: 1rem; margin-bottom: 4px; font-weight: 800; text-align: left;">Justificar Ocorrência</h3>
+                    <p style="font-size: 0.7rem; color: #aaa; margin-bottom: 12px; line-height: 1.35; text-align: left;">Preencha o motivo, detalhes e envie a foto do comprovante (ex: atestado médico).</p>
+
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 0.68rem; color: #ddd; font-weight: 700;">Motivo da Justificativa</label>
+                        <select id="ponto-justification-type" class="data-input" style="font-size: 0.78rem; padding: 9px; background: #202024; color: #fff; border-color: rgba(255,255,255,0.18);">
+                            <option value="atestado">Atestado médico</option>
+                            <option value="esquecimento">Esquecimento de batida</option>
+                            <option value="atraso">Atraso justificável</option>
+                            <option value="falta">Falta justificada</option>
+                            <option value="outro">Outro motivo</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 0.68rem; color: #ddd; font-weight: 700;">Descrição / Explicação</label>
+                        <textarea id="ponto-justification-desc" class="data-input" rows="3" placeholder="Descreva brevemente o ocorrido..." style="font-size: 0.78rem; background: #202024; color: #fff; border-color: rgba(255,255,255,0.18);"></textarea>
+                    </div>
+
+                    <div class="input-group" style="margin-bottom: 14px;">
+                        <label style="font-size: 0.68rem; color: #ddd; font-weight: 700;">Foto do Comprovante / Atestado</label>
+                        <button type="button" id="ponto-proof-upload-btn" class="action-button full-width" style="height: auto; padding: 10px; background: rgba(255,255,255,0.08); font-size: 0.75rem; border-color: rgba(255,255,255,0.2); margin: 0;">
+                            <i class="fa-solid fa-paperclip" style="font-size: 1rem; margin-right: 6px;"></i> Anexar Foto do Comprovante
+                        </button>
+                        <input type="file" id="ponto-proof-file-input" accept="image/*" style="display: none;">
+                        <span id="ponto-proof-file-name" style="font-size: 0.65rem; color: #2ecc71; margin-top: 5px; display: block; word-break: break-all;"></span>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button id="ponto-submit-justification-btn" class="action-button" style="flex: 1; height: auto; padding: 11px; font-size: 0.8rem; background: #27ae60; margin: 0; font-weight: 800;">Enviar</button>
+                        <button id="ponto-cancel-justification-btn" class="action-button" style="flex: 1; height: auto; padding: 11px; font-size: 0.8rem; background: #2a2a2e; margin: 0; font-weight: 800;">Fechar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL DE DEPURAR JUSTIFICATIVA (DEFINIR FUNCIONÁRIO ATRASADO) -->
+            <div id="depurar-justificar-modal" class="modal-overlay" style="display: none; z-index: 99999;">
+                <div class="modal-content" style="max-width: 360px; background: #161618; border: 1.5px solid #ff6b00; padding: 1.4rem; border-radius: 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                        <h3 style="color: #fff; font-size: 1rem; margin: 0; font-weight: 800; text-align: left;">
+                            <i class="fa-solid fa-bug" style="color: #ff6b00; margin-right: 6px;"></i>Depurar Justificativa
+                        </h3>
+                        <button id="depurar-justificar-close-x" class="modal-close-btn" style="position: static; font-size: 1.5rem; line-height: 1;">×</button>
+                    </div>
+                    <p style="font-size: 0.72rem; color: #aaa; margin-bottom: 14px; line-height: 1.4; text-align: left;">
+                        Selecione um funcionário para simular status de atraso. O painel dele ficará bloqueado e exibirá o botão <strong>"Justificar"</strong> para ele solicitar justificativa.
+                    </p>
+
+                    <div class="input-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 0.7rem; color: #ddd; font-weight: 700;">Selecione o Colaborador</label>
+                        <select id="depurar-justificar-user-select" class="data-input" style="font-size: 0.8rem; padding: 10px; background: #202024; color: #fff; border-color: rgba(255,255,255,0.2);">
+                            <!-- Gerado via JS -->
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                        <button type="button" id="depurar-justificar-set-late-btn" class="action-button full-width" style="height: auto; padding: 11px; background: #e74c3c; font-size: 0.78rem; font-weight: 800; margin: 0;">
+                            <i class="fa-solid fa-user-clock" style="margin-right: 6px;"></i> Deixar Funcionário Atrasado
+                        </button>
+                        <button type="button" id="depurar-justificar-open-form-btn" class="action-button full-width" style="height: auto; padding: 11px; background: #2980b9; font-size: 0.78rem; font-weight: 800; margin: 0;">
+                            <i class="fa-solid fa-file-pen" style="margin-right: 6px;"></i> Abrir Formulário de Justificativa
+                        </button>
+                        <button type="button" id="depurar-justificar-reset-btn" class="action-button full-width" style="height: auto; padding: 11px; background: #27ae60; font-size: 0.78rem; font-weight: 800; margin: 0;">
+                            <i class="fa-solid fa-rotate-left" style="margin-right: 6px;"></i> Remover Atraso / Resetar
+                        </button>
+                    </div>
+                    <p id="depurar-justificar-status" class="status-message" style="margin-top: 10px; font-size: 0.72rem; min-height: 18px;"></p>
+                </div>
+            </div>
 
             <!-- Painel de vendas individuais -->
             <div id="individual-sales-data"></div>
@@ -4615,11 +4756,16 @@
                     <i class="fa-solid fa-camera-retro"></i>
                     <span>Digitar Ponto</span>
                 </a>
+                <!-- APP EXCLUSIVO DOS GERENTES: APROVAR JUSTIFICATIVAS COM ESTILO IDÊNTICO AOS DEMAIS -->
+                <a href="#" id="open-manager-justifications-app-btn" class="action-button" style="display: none;">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                    <span>Aprovar Justificativas</span>
+                </a>
                 <a href="#" id="open-entrada-nota-btn" class="action-button" style="display: none;">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span>Entrada/Nota</span>
                 </a>
-                                 <a href="#" id="delete-my-story-btn" class="action-button" style="display: none; background-color: rgba(231, 76, 60, 0.7);">
+                <a href="#" id="delete-my-story-btn" class="action-button" style="display: none; background-color: rgba(231, 76, 60, 0.7);">
                     <i class="fa-solid fa-trash-can"></i>
                     <span>Apagar Story</span>
                 </a>
@@ -4654,6 +4800,9 @@
         </div>
 
         <div class="collaborator-content">
+            <!-- AVISO EM VERMELHO NO TOPO DO GS: DECISÃO DE JUSTIFICATIVA DO PONTO -->
+            <div id="gs-justifications-alert-container" style="width: 100%; max-width: 450px; display: none; flex-direction: column; gap: 8px; margin-bottom: 4px;">
+            </div>
             
             <!-- SEÇÃO DE STATUS DO SISTEMA -->
             <style>
@@ -4893,6 +5042,7 @@
                             <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('ajuda_comandos')"><i class="fa-solid fa-circle-question"></i> Exemplos Fáceis</button>
                             <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('status_ponto')"><i class="fa-solid fa-user-clock"></i> Quem Bateu Ponto?</button>
                             <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('resumo_vendas')"><i class="fa-solid fa-chart-pie"></i> Vendas de Hoje</button>
+                            <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('simular_atraso_menu')"><i class="fa-solid fa-user-xmark"></i> Simular Atraso</button>
                             <button class="ai-hunter-btn" style="width: auto; white-space: nowrap; padding: 6px 12px; font-size: 0.68rem; border-radius: 20px; flex-shrink: 0; background: #FFF1E2; color: #FF6F00; border-color: rgba(255,111,0,0.2); font-weight: 700;" onclick="askIAHunterGS('custom', 'manutencao status')"><i class="fa-solid fa-screwdriver-wrench"></i> Manutenção</button>
                         </div>
 
@@ -5070,6 +5220,24 @@
                         <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
                     </div>
 
+                    <div class="gs-panel-card" id="open-justifications-approval-btn" style="border-left-color: #e67e22;">
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Aprovar Justificativas</strong>
+                            <span>Fluxo de 2 etapas: Gerente e Supervisor</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-schedules-management-btn" style="border-left-color: #9b59b6;">
+                        <div class="gs-card-icon-box" style="background:#f5eef8; color:#9b59b6;"><i class="fa-solid fa-calendar-days"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Configurar Jornadas & Folgas</strong>
+                            <span>Horários, almoço e folga fixa individual</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
                     <div class="gs-panel-card" id="open-collaborator-profile-btn" style="border-left-color: #ff6b00;">
                         <div class="gs-card-icon-box"><i class="fa-solid fa-id-badge"></i></div>
                         <div class="gs-card-info">
@@ -5190,10 +5358,19 @@
                 <div class="gs-module-title"><i class="fa-solid fa-server"></i> Sistema & Segurança</div>
                 <div class="gs-cards-grid">
                     <div class="gs-panel-card" id="open-depuracao-ponto-btn">
-                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-bug"></i></div>
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-camera"></i></div>
                         <div class="gs-card-info">
-                            <strong>Depuração</strong>
-                            <span>Abrir bater ponto</span>
+                            <strong>Depurar Ponto</strong>
+                            <span>Testar bater ponto</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
+                    </div>
+
+                    <div class="gs-panel-card" id="open-depuracao-justificar-btn">
+                        <div class="gs-card-icon-box" style="background:#fef5e7; color:#e67e22;"><i class="fa-solid fa-clipboard-question"></i></div>
+                        <div class="gs-card-info">
+                            <strong>Depurar Justificar</strong>
+                            <span>Testar tela justificativa</span>
                         </div>
                         <i class="fa-solid fa-chevron-right gs-card-arrow"></i>
                     </div>
@@ -5875,6 +6052,32 @@ Transporte - R$ 5,00"></textarea></div>
         </div>
         <div id="ponto-history-container" class="collaborator-content" style="align-items: stretch; gap: 1rem;">
             <!-- JS vai popular o histórico aqui -->
+        </div>
+    </div>
+
+    <!-- TELA DE APROVAÇÃO DE JUSTIFICATIVAS DO GERENTE & GS -->
+    <div id="justifications-approval-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-justifications" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Aprovar Justificativas</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch; gap: 10px; padding: 1.2rem 1rem 3rem 1rem; width: 100%; max-width: 450px; margin: 0 auto;">
+            <div id="justifications-pending-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <p style="text-align: center; color: #888;">Carregando justificativas...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE CONFIGURAÇÃO DE JORNADAS, INTERVALOS E FOLGAS (GS) -->
+    <div id="schedules-management-page" style="display: none;">
+        <div class="collaborator-header">
+            <button id="back-to-gs-from-schedules" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2>Jornadas & Folgas</h2>
+        </div>
+        <div class="collaborator-content" style="align-items: stretch; gap: 12px; padding: 1.2rem 1rem 3rem 1rem;">
+            <div id="schedules-collab-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <p style="text-align: center; color: #888;">Carregando colaboradores...</p>
+            </div>
         </div>
     </div>
 
@@ -6750,6 +6953,8 @@ Transporte - R$ 5,00"></textarea></div>
     document.getElementById('ponto-page').classList.add('page');
     document.getElementById('ponto-verification-page').classList.add('page');
     document.getElementById('ponto-history-page').classList.add('page');
+    document.getElementById('justifications-approval-page').classList.add('page');
+    document.getElementById('schedules-management-page').classList.add('page');
     document.getElementById('supabase-management-page').classList.add('page');
     document.getElementById('daily-increase-management-page').classList.add('page');
     document.getElementById('logs-management-page').classList.add('page');
@@ -6846,6 +7051,8 @@ document.getElementById('afiliados-admin-page').classList.add('page');
         pontoPage: document.getElementById('ponto-page'),
         pontoVerificationPage: document.getElementById('ponto-verification-page'),
         pontoHistoryPage: document.getElementById('ponto-history-page'),
+        justificationsApprovalPage: document.getElementById('justifications-approval-page'),
+        schedulesManagementPage: document.getElementById('schedules-management-page'),
         searchOverlay: document.getElementById('search-overlay'),
         themeModal: document.getElementById('theme-modal'),
         deviceSearchOverlay: document.getElementById('device-search-overlay'),
@@ -11547,7 +11754,7 @@ const loadAndDisplayCollaboratorMetas = () => {
 
             if (isManager) {
                 container.innerHTML = `
-                    <div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2) !important; border-left: 6px solid var(--primary-color) !important; border-radius: 20px !important; padding: 1.2rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); color: #ffffff !important;">
+                    <div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2) !important; border-left: none !important; border-radius: 20px !important; padding: 1.2rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); color: #ffffff !important;">
                         <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:8px; color: #ffffff !important; font-size: 1.15rem; font-weight: 800; text-transform: uppercase;">Resultados da Loja (Gerência)</h4>
                         <div style="display:flex; flex-direction:column; gap:12px;">
                             <div>
@@ -11589,7 +11796,7 @@ const loadAndDisplayCollaboratorMetas = () => {
                 `;
             } else {
                 container.innerHTML = `
-                    <div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2) !important; border-left: 6px solid var(--primary-color) !important; border-radius: 20px !important; padding: 1.2rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); color: #ffffff !important;">
+                    <div class="sales-data-card" style="background: rgba(0, 0, 0, 0.65) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2) !important; border-left: none !important; border-radius: 20px !important; padding: 1.2rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.4); color: #ffffff !important;">
                         <h4 style="margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.15); padding-bottom:8px; color: #ffffff !important; font-size: 1.15rem; font-weight: 800; text-transform: uppercase;">Resultados Individuais</h4>
                         <div style="display:flex; flex-direction:column; gap:12px;">
                             <div>
@@ -11637,7 +11844,7 @@ const loadAndDisplayCollaboratorMetas = () => {
             earningsCard.style.backdropFilter = 'blur(12px)';
             earningsCard.style.webkitBackdropFilter = 'blur(12px)';
             earningsCard.style.border = '1px solid rgba(255, 255, 255, 0.2) !important';
-            earningsCard.style.borderLeft = `6px solid ${data.tierColor} !important`;
+            earningsCard.style.borderLeft = 'none !important';
             earningsCard.style.boxShadow = '0 10px 28px rgba(0,0,0,0.4)';
             earningsCard.style.color = '#ffffff';
             
@@ -12929,256 +13136,395 @@ async function calculateAndDisplayServiceRanking() {
         });
     };
 
-            async function determineNextPontoAction(dailyPontoData) {
-            const now = new Date();
-            const dayOfWeek = now.getDay();
-            const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
-            const todayString = getTodayDateString();
+    // --- CONFIGURAÇÃO PADRÃO DE JORNADAS, INTERVALOS E FOLGAS ---
+    const defaultSchedules = {
+        vendedor: {
+            roleName: 'Vendedor(a) / Revendedor(a)',
+            weekday: { start: 8 * 60, end: 18 * 60 }, // 08:00 às 18:00
+            saturday: { start: 8 * 60, end: 14 * 60 }, // 08:00 às 14:00
+            lunchMinutes: 90, // 1h30 de almoço
+            fixedDayOff: null // Domingo é geral, folgas fixas abaixo
+        },
+        seguranca: {
+            roleName: 'Segurança',
+            weekday: { start: 8 * 60, end: 18 * 60 },
+            saturday: { start: 8 * 60, end: 18 * 60 },
+            lunchMinutes: 120, // 2h de almoço
+            fixedDayOff: null // Escala própria sem folga fixa cadastrada
+        },
+        gerente: {
+            roleName: 'Gerente',
+            weekday: { start: 8 * 60, end: 18 * 60 },
+            saturday: { start: 8 * 60, end: 18 * 60 },
+            lunchMinutes: 75, // 1h15 de almoço
+            fixedDayOff: null // Segunda a sábado sem folga fixa
+        }
+    };
 
-            const [holidaySnap, sundaySnap, dayOffSnap, justificationSnap] = await Promise.all([
-                database.ref('holidays').get(),
-                database.ref('workingSundays').get(),
-                database.ref(`scheduledDaysOff/${todayString}/${currentUserName.toLowerCase()}`).get(),
-                database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`).get()
-            ]);
+    // Folgas fixas semanais por colaborador (0=Domingo, 1=Segunda, 2=Terça, 3=Quarta, 4=Quinta, 5=Sexta, 6=Sábado)
+    const predefinedFixedDaysOff = {
+        'mainara': 2, // Terça-feira
+        'pablo': 3,   // Quarta-feira
+        'mikael': 4   // Quinta-feira
+    };
 
-            if (dayOffSnap.exists()) {
-                return { action: null, status: 'day_off', message: 'Hoje é sua folga. Ponto desativado.', nextActionTime: null };
+    let currentUserLocationCoords = null;
+    let currentUserLocationText = 'Localização: Carregando...';
+
+    // Captura discreta de geolocalização do usuário
+    const fetchUserGeoLocation = () => {
+        const displayEl = document.getElementById('ponto-location-display');
+        const iconEl = document.getElementById('ponto-location-status-icon');
+        if (!navigator.geolocation) {
+            currentUserLocationText = 'Loja do Hunter';
+            if (displayEl) displayEl.textContent = currentUserLocationText;
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude.toFixed(4);
+                const lon = pos.coords.longitude.toFixed(4);
+                currentUserLocationCoords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+                const storeCity = storeMapping.pinheiro.includes(currentUserName) ? 'Pinheiro/MA' : 'Bacabal/MA';
+                currentUserLocationText = `Loja do Hunter - ${storeCity} (${lat}, ${lon})`;
+                if (displayEl) displayEl.textContent = currentUserLocationText;
+                if (iconEl) iconEl.style.color = '#2ecc71';
+            },
+            (err) => {
+                const storeCity = storeMapping.pinheiro.includes(currentUserName) ? 'Pinheiro/MA' : 'Bacabal/MA';
+                currentUserLocationText = `Loja do Hunter - ${storeCity}`;
+                if (displayEl) displayEl.textContent = currentUserLocationText;
+                if (iconEl) iconEl.style.color = '#e67e22';
+            },
+            { enableHighAccuracy: true, timeout: 6000 }
+        );
+    };
+
+    // Obter perfil e configuração de jornada de um colaborador
+    const getEmployeeScheduleConfig = async (userName) => {
+        const userKey = userName.toLowerCase();
+        let role = 'vendedor';
+
+        if (['jose', 'leonardo'].includes(userKey)) {
+            role = 'seguranca';
+        } else if (storeManagers.map(m => m.toLowerCase()).includes(userKey)) {
+            role = 'gerente';
+        }
+
+        const base = JSON.parse(JSON.stringify(defaultSchedules[role] || defaultSchedules.vendedor));
+        base.roleKey = role;
+
+        if (predefinedFixedDaysOff[userKey] !== undefined) {
+            base.fixedDayOff = predefinedFixedDaysOff[userKey];
+        }
+
+        try {
+            const snap = await database.ref(`employeeSchedules/${userKey}`).get();
+            if (snap.exists()) {
+                const custom = snap.val();
+                if (custom.lunchMinutes !== undefined) base.lunchMinutes = parseInt(custom.lunchMinutes, 10);
+                if (custom.fixedDayOff !== undefined) base.fixedDayOff = custom.fixedDayOff;
+                if (custom.roleName) base.roleName = custom.roleName;
             }
+        } catch (e) {}
 
-            if (holidaySnap.hasChild(todayString)) {
-                return { action: null, status: 'holiday', message: 'Hoje é um feriado. Ponto desativado.', nextActionTime: null };
+        return base;
+    };
+
+    // Determina a próxima ação do ponto com base nas 4 batidas diárias
+    async function determineNextPontoAction(dailyPontoData) {
+        const now = new Date();
+        const dayOfWeek = now.getDay(); // 0 = Domingo
+        const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
+        const todayString = getTodayDateString();
+        const userKey = currentUserName.toLowerCase();
+
+        const [holidaySnap, sundaySnap, dayOffSnap, justificationSnap, simLateSnap, schedule] = await Promise.all([
+            database.ref('holidays').get(),
+            database.ref('workingSundays').get(),
+            database.ref(`scheduledDaysOff/${todayString}/${userKey}`).get(),
+            database.ref(`justifications/${todayString}/${userKey}`).get(),
+            database.ref(`simulatedLateUsers/${todayString}/${userKey}`).get(),
+            getEmployeeScheduleConfig(currentUserName)
+        ]);
+
+        // Simulação de atraso ativada via depuração para forçar pedido de justificativa
+        const isSimulatedLate = simLateSnap.exists() && simLateSnap.val().forcedLate === true;
+        if (isSimulatedLate && (!justificationSnap.exists() || justificationSnap.val().status !== 'approved')) {
+            return { action: 'missed_entrada', punchName: 'Entrada', status: 'late', message: 'Horário limite de ENTRADA excedido (Atraso detectado).', nextActionTime: null, schedule };
+        }
+
+        // 1. Folga fixa por perfil (ex: Mainara=Terça, Pablo=Quarta, Mikael=Quinta)
+        if (schedule.fixedDayOff !== null && schedule.fixedDayOff !== undefined && schedule.fixedDayOff !== 'none') {
+            if (dayOfWeek === parseInt(schedule.fixedDayOff, 10)) {
+                return { action: null, status: 'day_off', message: 'Hoje é sua folga semanal programada.', nextActionTime: null, schedule };
             }
+        }
 
-            const isWorkingSunday = sundaySnap.hasChild(todayString);
-            if (dayOfWeek === 0 && !isWorkingSunday) {
-                return { action: null, status: 'closed', message: 'Loja fechada aos domingos. Ponto desativado.', nextActionTime: null };
-            }
+        // 2. Folga avulsa agendada
+        if (dayOffSnap.exists()) {
+            return { action: null, status: 'day_off', message: 'Hoje é sua folga cadastrada.', nextActionTime: null, schedule };
+        }
 
-            const isWeekendShift = (dayOfWeek === 6) || (dayOfWeek === 0 && isWorkingSunday);
-            // Horário padrão com almoço para funcionários
-            const scheduleWithLunch = { entrada: { start: 7 * 60 + 40, end: 8 * 60 + 30 }, saidaAlmoco: { start: 11 * 60, end: 15 * 60 }, saida: { start: 17 * 60 + 40 } };
-            // Horário dos funcionários no fim de semana (sem almoço)
-            const scheduleWithoutLunch = { entrada: { start: 6 * 60 + 40, end: 7 * 60 + 30 }, saida: { start: 18 * 60 + 40 } };
-            
-            const windows = isWeekendShift ? scheduleWithoutLunch : scheduleWithLunch;
-        
-        // --- VERIFICAÇÃO DE DADOS ANTIGOS (FAILSAFE) ---
-        // Se o registro de entrada não for de hoje, ignora-o completamente.
+        // 3. Feriado geral
+        if (holidaySnap.hasChild(todayString)) {
+            return { action: null, status: 'holiday', message: 'Hoje é feriado. Ponto desativado.', nextActionTime: null, schedule };
+        }
+
+        // 4. Domingo
+        const isWorkingSunday = sundaySnap.hasChild(todayString);
+        if (dayOfWeek === 0 && !isWorkingSunday) {
+            return { action: null, status: 'closed', message: 'Domingo - Loja fechada.', nextActionTime: null, schedule };
+        }
+
+        // Failsafe de data do registro
         if (dailyPontoData.entrada) {
             const entradaDate = new Date(dailyPontoData.entrada.timestamp);
             if (entradaDate.getDate() !== now.getDate() || entradaDate.getMonth() !== now.getMonth() || entradaDate.getFullYear() !== now.getFullYear()) {
-                // Limpa os dados para que a lógica de hoje comece do zero.
                 dailyPontoData = {};
             }
         }
 
-        // LÓGICA UNIFICADA A PARTIR DAQUI
+        // Justificativa aprovada libera batidas
+        const hasApprovedJustification = justificationSnap.exists() && justificationSnap.val().status === 'approved';
 
-        if (justificationSnap.exists()) {
-            if (!dailyPontoData.entrada) return { action: 'registrar_entrada', status: 'justified', message: 'Justificativa aceita. Registre sua ENTRADA.', nextActionTime: null };
-            // A verificação `windows.saidaAlmoco` determina se o almoço é aplicável hoje.
-            if (windows.saidaAlmoco && !dailyPontoData.saida_almoco) return { action: 'registrar_saida_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA DE ALMOÇO.', nextActionTime: null };
-            if (windows.saidaAlmoco && !dailyPontoData.volta_almoco) return { action: 'registrar_volta_almoco', status: 'justified', message: 'Justificativa aceita. Registre sua VOLTA DO ALMOÇO.', nextActionTime: null };
-            if (!dailyPontoData.saida) return { action: 'registrar_saida', status: 'justified', message: 'Justificativa aceita. Registre sua SAÍDA.', nextActionTime: null };
-            return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.', nextActionTime: null };
-        }
+        const isSaturday = (dayOfWeek === 6);
+        const isVendedor = schedule.roleKey === 'vendedor';
 
+        // Sábado de vendedor: 8h às 14h direto (sem almoço obrigatório)
+        const hasLunchToday = !(isSaturday && isVendedor);
+        const lunchDurationMs = (schedule.lunchMinutes || 90) * 60 * 1000;
+
+        // Tolerâncias: entrada das 07:40 até 08:30 (ou livre se justificado)
+        const entradaStart = 7 * 60 + 40;
+        const entradaEnd = 8 * 60 + 30;
+
+        // 1. ENTRADA
         if (!dailyPontoData.entrada) {
-            if (currentTimeInMinutes >= windows.entrada.start && currentTimeInMinutes <= windows.entrada.end) {
-                return { action: 'registrar_entrada', status: 'pending', message: 'Você deve bater o ponto de ENTRADA.', nextActionTime: windows.entrada.start, nextActionEndTime: windows.entrada.end };
+            if (hasApprovedJustification || (currentTimeInMinutes >= entradaStart && currentTimeInMinutes <= entradaEnd)) {
+                return { action: 'registrar_entrada', punchName: 'Entrada', status: 'pending', message: 'Bata o ponto de ENTRADA', nextActionTime: entradaStart, schedule };
             }
-            if (currentTimeInMinutes > windows.entrada.end) {
-                return { action: 'missed_entrada', status: 'late', message: 'Você se atrasou para a ENTRADA.', nextActionTime: null };
+            if (currentTimeInMinutes > entradaEnd) {
+                return { action: 'missed_entrada', punchName: 'Entrada', status: 'late', message: 'Horário limite de ENTRADA excedido.', nextActionTime: null, schedule };
             }
-            return { action: null, status: 'waiting', message: 'Aguardando horário de entrada.', nextActionTime: windows.entrada.start, nextActionEndTime: windows.entrada.end };
+            return { action: null, status: 'waiting', message: 'Aguardando abertura de ENTRADA (07:40).', nextActionTime: entradaStart, schedule };
         }
 
-        // Se o horário de hoje TEM almoço, verifica os pontos de almoço.
-        if (windows.saidaAlmoco) {
-            if (!dailyPontoData.saida_almoco) {
-                if (currentTimeInMinutes >= windows.saidaAlmoco.start && currentTimeInMinutes <= windows.saidaAlmoco.end) {
-                    return { action: 'registrar_saida_almoco', status: 'pending', message: 'Você pode bater o ponto para SAÍDA DE ALMOÇO.', nextActionTime: windows.saidaAlmoco.start };
-                }
-            } else if (!dailyPontoData.volta_almoco) {
-                const saidaAlmocoTime = new Date(dailyPontoData.saida_almoco.timestamp);
-                const expectedReturnTime = new Date(saidaAlmocoTime.getTime() + (2 * 60 * 60 * 1000));
-                // ALTERADO: A tolerância para a volta do almoço agora é de 30 minutos (30 * 60 * 1000)
-                const returnToleranceEnd = new Date(expectedReturnTime.getTime() + (30 * 60 * 1000));
-                const expectedReturnInMinutes = expectedReturnTime.getHours() * 60 + expectedReturnTime.getMinutes();
-                if (now <= returnToleranceEnd) {
-                    return { action: 'registrar_volta_almoco', status: 'pending', message: 'Você deve bater o ponto de VOLTA DO ALMOÇO.', nextActionTime: expectedReturnInMinutes };
-                } else {
-                    return { action: 'missed_volta_almoco', status: 'late', message: 'Você se atrasou na VOLTA DO ALMOÇO.', nextActionTime: null };
-                }
+        // 2. SAÍDA PARA ALMOÇO
+        if (hasLunchToday && !dailyPontoData.saida_almoco) {
+            const minLunchStart = 11 * 60; // a partir das 11h
+            if (currentTimeInMinutes >= minLunchStart || hasApprovedJustification) {
+                return { action: 'registrar_saida_almoco', punchName: 'Saída Almoço', status: 'pending', message: 'Disponível: SAÍDA PARA ALMOÇO', nextActionTime: minLunchStart, schedule };
+            }
+            return { action: null, status: 'working', message: 'Em jornada de trabalho matutina.', nextActionTime: minLunchStart, schedule };
+        }
+
+        // 3. RETORNO DO ALMOÇO
+        if (hasLunchToday && dailyPontoData.saida_almoco && !dailyPontoData.volta_almoco) {
+            const saidaTime = new Date(dailyPontoData.saida_almoco.timestamp).getTime();
+            const expectedReturn = saidaTime + lunchDurationMs;
+            const toleranceReturn = expectedReturn + (20 * 60 * 1000); // 20 min tolerância
+
+            if (now.getTime() < expectedReturn) {
+                const diffMin = Math.ceil((expectedReturn - now.getTime()) / 60000);
+                return { action: 'registrar_volta_almoco', punchName: 'Retorno Almoço', status: 'pending', message: `Em almoço (restam ${diffMin} min)`, nextActionTime: null, schedule };
+            }
+
+            if (now.getTime() <= toleranceReturn || hasApprovedJustification) {
+                return { action: 'registrar_volta_almoco', punchName: 'Retorno Almoço', status: 'pending', message: 'Bata o ponto de RETORNO DO ALMOÇO', nextActionTime: null, schedule };
+            } else {
+                return { action: 'missed_volta_almoco', punchName: 'Retorno Almoço', status: 'late', message: 'Tempo limite de almoço excedido.', nextActionTime: null, schedule };
             }
         }
-        
+
+        // 4. SAÍDA FINAL
         if (!dailyPontoData.saida) {
-            const lastPunchTimestamp = dailyPontoData.volta_almoco?.timestamp || dailyPontoData.entrada.timestamp;
-            if (lastPunchTimestamp) {
-                const lastPunchDate = new Date(lastPunchTimestamp);
-                if (now.getDate() > lastPunchDate.getDate() || now.getMonth() > lastPunchDate.getMonth() || now.getFullYear() > lastPunchDate.getFullYear()) {
-                    return { action: 'missed_saida', status: 'late', message: 'Você esqueceu de bater o ponto de SAÍDA ontem.', nextActionTime: null };
-                }
+            const shiftEndMinutes = (isSaturday && isVendedor) ? (14 * 60) : (18 * 60);
+            const allowSaidaFrom = shiftEndMinutes - 20; // 20 min antes liberado
+
+            if (currentTimeInMinutes >= allowSaidaFrom || hasApprovedJustification) {
+                return { action: 'registrar_saida', punchName: 'Saída Final', status: 'pending', message: 'Disponível: SAÍDA FINAL', nextActionTime: allowSaidaFrom, schedule };
             }
-            if (currentTimeInMinutes >= windows.saida.start) {
-                return { action: 'registrar_saida', status: 'pending', message: 'Você pode bater o ponto de SAÍDA.', nextActionTime: windows.saida.start };
-            }
-            return { action: null, status: 'working', message: 'Em horário de trabalho.', nextActionTime: windows.saida.start };
+            return { action: null, status: 'working', message: 'Em jornada de trabalho.', nextActionTime: allowSaidaFrom, schedule };
         }
 
-        return { action: null, status: 'complete', message: 'Jornada de trabalho finalizada por hoje.', nextActionTime: null };
-    };
+        return { action: null, status: 'complete', message: 'Jornada de hoje concluída!', nextActionTime: null, schedule };
+    }
 
-    const stopCountdownTimer = () => {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-        }
-    };
+    let pontoLiveClockTimer = null;
 
-    const startLiveCountdown = (targetTimeInMinutes, displayElement) => {
-        stopCountdownTimer(); // Garante que nenhum outro timer esteja rodando
+    // Atualiza relógio ao vivo e card moderno no perfil
+    const startPontoLiveClock = () => {
+        if (pontoLiveClockTimer) clearInterval(pontoLiveClockTimer);
+        const clockEl = document.getElementById('ponto-live-clock');
+        const dateEl = document.getElementById('ponto-live-date');
 
-        const targetDate = new Date();
-        targetDate.setHours(Math.floor(targetTimeInMinutes / 60), targetTimeInMinutes % 60, 0, 0);
+        const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
-        const updateCountdown = () => {
+        const tick = () => {
             const now = new Date();
-            const difference = targetDate.getTime() - now.getTime();
-
-            if (difference <= 0) {
-                displayElement.textContent = 'Horário de ponto iniciado!';
-                stopCountdownTimer();
-                // Re-verifica o status, pois o tempo chegou
-                checkPontoStatusAndDisplayWarnings();
-                return;
+            if (clockEl) {
+                clockEl.textContent = now.toLocaleTimeString('pt-BR');
             }
-
-            const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((difference / 1000 / 60) % 60);
-            const seconds = Math.floor((difference / 1000) % 60);
-
-            displayElement.textContent = `(Faltam ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
+            if (dateEl) {
+                const dayStr = now.toLocaleDateString('pt-BR');
+                const weekDay = days[now.getDay()];
+                dateEl.textContent = `${dayStr} • ${weekDay}`;
+            }
         };
 
-        updateCountdown(); // Chamada inicial para mostrar o tempo imediatamente
-        countdownInterval = setInterval(updateCountdown, 1000);
+        tick();
+        pontoLiveClockTimer = setInterval(tick, 1000);
     };
 
+    // Renderiza a timeline limpa das 4 batidas e o card de jornada no perfil
     async function checkPontoStatusAndDisplayWarnings() {
-        
-        const notificationArea = document.getElementById('ponto-notification-area');
-        const countdownTimerEl = document.getElementById('ponto-countdown-timer');
-        const liveCountdownEl = document.getElementById('ponto-live-countdown');
+        if (!currentUserName) return;
+        const card = document.getElementById('collaborator-ponto-card');
+        if (!card) return;
 
-        if (!notificationArea || !countdownTimerEl || !liveCountdownEl || !currentUserName) return;
-
-        stopCountdownTimer();
-        notificationArea.innerHTML = '';
-        countdownTimerEl.innerHTML = '';
-        liveCountdownEl.innerHTML = '';
+        startPontoLiveClock();
+        fetchUserGeoLocation();
 
         const todayString = getTodayDateString();
-        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`);
-        
+        const userKey = currentUserName.toLowerCase();
+
         try {
-            const snapshot = await pontoRef.get();
-            const dailyPontoData = snapshot.exists() ? snapshot.val() : {};
-            const nextAction = await determineNextPontoAction(dailyPontoData);
-            const justificationRef = database.ref(`justifications/${todayString}/${currentUserName.toLowerCase()}`);
-            const justificationSnapshot = await justificationRef.get();
+            const [pontoSnap, schedule] = await Promise.all([
+                database.ref(`pontosDoDia/${todayString}/${currentUserName}`).get(),
+                getEmployeeScheduleConfig(currentUserName)
+            ]);
 
-            let nextCheckInMilliseconds = null;
-            const now = new Date();
-            const currentMinutes = now.getHours() * 60 + now.getMinutes();
-            const nowInMilliseconds = now.getTime();
+            const daily = pontoSnap.exists() ? pontoSnap.val() : {};
+            const nextAction = await determineNextPontoAction(daily);
 
-            if (nextAction.nextActionTime !== null) {
-                const targetTime = new Date();
-                targetTime.setHours(Math.floor(nextAction.nextActionTime / 60), nextAction.nextActionTime % 60, 1, 0);
-                nextCheckInMilliseconds = targetTime.getTime() - nowInMilliseconds;
+            card.style.display = 'flex';
 
-                const formattedStartTime = targetTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                
-                let displayText = `Próximo ponto a partir das ${formattedStartTime}`;
-                
-                if (nextAction.nextActionEndTime && currentMinutes < nextAction.nextActionEndTime) {
-                    const endTime = new Date();
-                    endTime.setHours(Math.floor(nextAction.nextActionEndTime / 60), nextAction.nextActionEndTime % 60, 0, 0);
-                    displayText = `Próximo ponto das ${formattedStartTime} até às ${endTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-                    
-                    const endCheckInMilliseconds = endTime.getTime() - nowInMilliseconds;
-                    if (nextCheckInMilliseconds < 0) {
-                         nextCheckInMilliseconds = endCheckInMilliseconds;
+            // Elementos de UI
+            const btn = document.getElementById('ponto-main-action-btn');
+            const btnText = document.getElementById('ponto-main-btn-text');
+            const warningBox = document.getElementById('ponto-warning-box');
+            const warningText = document.getElementById('ponto-warning-text');
+            const progressLine = document.getElementById('ponto-timeline-progress-line');
+
+            // Timeline nodes
+            const steps = [
+                { key: 'entrada', node: document.getElementById('step-node-entrada'), time: document.getElementById('step-time-entrada') },
+                { key: 'saida_almoco', node: document.getElementById('step-node-almoco'), time: document.getElementById('step-time-almoco') },
+                { key: 'volta_almoco', node: document.getElementById('step-node-retorno'), time: document.getElementById('step-time-retorno') },
+                { key: 'saida', node: document.getElementById('step-node-saida'), time: document.getElementById('step-time-saida') }
+            ];
+
+            let completedCount = 0;
+            steps.forEach(s => {
+                const punch = daily[s.key];
+                if (punch && punch.timestamp) {
+                    completedCount++;
+                    const d = new Date(punch.timestamp);
+                    const timeStr = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    if (s.time) s.time.textContent = timeStr;
+                    if (s.node) {
+                        s.node.style.background = '#2ecc71';
+                        s.node.style.borderColor = '#2ecc71';
+                        s.node.style.color = '#fff';
+                    }
+                } else {
+                    if (s.time) s.time.textContent = '--:--';
+                    if (s.node) {
+                        s.node.style.background = '#222';
+                        s.node.style.borderColor = '#555';
+                        s.node.style.color = '#888';
                     }
                 }
-                countdownTimerEl.textContent = displayText;
+            });
 
-                // Inicia o timer de contagem regressiva se o horário do ponto ainda não chegou
-                if (targetTime.getTime() > now.getTime()) {
-                    startLiveCountdown(nextAction.nextActionTime, liveCountdownEl);
-                }
-            }
+            // Linha de progresso
+            const linePct = completedCount === 0 ? 0 : (completedCount === 1 ? 33 : (completedCount === 2 ? 66 : 100));
+            if (progressLine) progressLine.style.width = `${linePct}%`;
 
-            if (nextAction.status === 'pending' || nextAction.status === 'justified') {
-                notificationArea.innerHTML = `<div class="os-warning" style="border-color: #f1c40f; color: #f1c40f; margin-bottom: 0;">${nextAction.message}</div>`;
-                 if (justificationSnapshot.exists()) {
-                    notificationArea.innerHTML += `<p style="font-size: 0.8rem; color: #f1c40f; margin-top: 0.5rem;">Sua justificativa para hoje foi registrada.</p>`;
-                }
+            // Botão principal
+            currentPontoAction = nextAction.action;
+            if (nextAction.status === 'pending') {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+                btnText.textContent = nextAction.punchName ? `Bater ${nextAction.punchName}` : 'Registrar Ponto';
+                warningBox.style.display = 'none';
             } else if (nextAction.status === 'late') {
-                notificationArea.innerHTML = `<div class="os-warning" style="margin-bottom: 0;">${nextAction.message}</div>
-                                              <button id="justify-btn" class="action-button" style="margin-top: 1rem; padding: 0.75rem; font-size: 0.9rem; background-color: #f39c12;"><i class="fa-solid fa-comment-medical"></i> Justificar Ocorrência</button>`;
-
-                setTimeout(() => {
-                    const justifyBtn = document.getElementById('justify-btn');
-                    if(justifyBtn) justifyBtn.addEventListener('click', justifyOccurrence);
-                }, 0);
-
-                const absenceLogRef = database.ref(`absencesLogged/${todayString}/${currentUserName}/${nextAction.action}`);
-                const absenceLogSnapshot = await absenceLogRef.get();
-
-                if (!absenceLogSnapshot.exists()) {
-                    const absenceData = { collaborator: currentUserName, timestamp: new Date().toISOString(), type: 'falta', reason: nextAction.message, photoURL: null };
-                    const newPontoKey = database.ref().child(`pontos/${currentUserName}`).push().key;
-                    const updates = {};
-                    updates[`pontos/${currentUserName}/${newPontoKey}`] = absenceData;
-                    updates[`absencesLogged/${todayString}/${currentUserName}/${nextAction.action}`] = true;
-                    await database.ref().update(updates);
-                }
-                
-                const notificationCheckRef = database.ref(`managerNotifications/${todayString}-${currentUserName}-${nextAction.action}`);
-                const checkSnapshot = await notificationCheckRef.get();
-                if (!checkSnapshot.exists()) {
-                    createManagerNotification(`${currentUserName}: ${nextAction.message}`);
-                }
-                        } else {
-                notificationArea.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.9); font-weight: 600;">${nextAction.message}</p>`;
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+                btnText.textContent = 'Ponto Bloqueado (Atraso)';
+                warningBox.style.display = 'flex';
+                warningText.textContent = nextAction.message;
+            } else if (nextAction.status === 'complete') {
+                btn.style.opacity = '0.6';
+                btn.style.pointerEvents = 'none';
+                btnText.textContent = 'Jornada Concluída';
+                warningBox.style.display = 'none';
+            } else {
+                btn.style.opacity = '0.7';
+                btn.style.pointerEvents = 'none';
+                btnText.textContent = nextAction.message || 'Ponto Fechado';
+                warningBox.style.display = 'none';
             }
 
-            // Agenda a próxima verificação, se aplicável
-            if (nextCheckInMilliseconds > 0 && nextCheckInMilliseconds < 86400000) { // Não agenda se for para mais de 24h
-                clearTimeout(pontoCheckTimeout); // Limpa o timer antigo antes de criar um novo
-                pontoCheckTimeout = setTimeout(checkPontoStatusAndDisplayWarnings, nextCheckInMilliseconds);
+            // Resumo inferior limpo
+            const summaryAlmoco = document.getElementById('ponto-summary-almoco');
+            const summaryStatus = document.getElementById('ponto-summary-status-badge');
+            const summaryJornada = document.getElementById('ponto-summary-jornada');
+
+            if (summaryAlmoco) {
+                const lm = schedule.lunchMinutes || 90;
+                const h = Math.floor(lm / 60);
+                const m = lm % 60;
+                summaryAlmoco.textContent = m > 0 ? `${h}h ${m}min` : `${h}h 00min`;
             }
 
-        } catch (error) {
-            console.error("Erro ao verificar status do ponto:", error);
-            notificationArea.innerHTML = `<div class="os-warning">Erro ao carregar status do ponto.</div>`;
+            if (summaryStatus) {
+                if (nextAction.status === 'complete') {
+                    summaryStatus.textContent = 'Concluído';
+                    summaryStatus.style.color = '#2ecc71';
+                } else if (nextAction.status === 'late') {
+                    summaryStatus.textContent = 'Pendente';
+                    summaryStatus.style.color = '#e74c3c';
+                } else if (nextAction.status === 'day_off' || nextAction.status === 'closed') {
+                    summaryStatus.textContent = 'Folga';
+                    summaryStatus.style.color = '#ff8533';
+                } else {
+                    summaryStatus.textContent = 'Em Andamento';
+                    summaryStatus.style.color = '#f1c40f';
+                }
+            }
+
+            if (summaryJornada && daily.entrada) {
+                const nowMs = Date.now();
+                const startMs = new Date(daily.entrada.timestamp).getTime();
+                let workedMs = nowMs - startMs;
+                if (daily.saida_almoco && daily.volta_almoco) {
+                    const lStart = new Date(daily.saida_almoco.timestamp).getTime();
+                    const lEnd = new Date(daily.volta_almoco.timestamp).getTime();
+                    workedMs -= (lEnd - lStart);
+                }
+                const wh = Math.floor(workedMs / (1000 * 60 * 60));
+                const wm = Math.floor((workedMs / (1000 * 60)) % 60);
+                summaryJornada.textContent = `${Math.max(0, wh)}h ${Math.max(0, wm).toString().padStart(2, '0')}min`;
+            }
+
+        } catch (err) {
+            console.error("Erro ao carregar card de ponto:", err);
         }
-    };
+    }
 
     async function handlePontoLogic(force = false) {
         const todayString = getTodayDateString();
-        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`); // USA A NOVA VARIÁVEL
+        const pontoRef = database.ref(`pontosDoDia/${todayString}/${currentUserName}`);
 
         try {
             const snapshot = await pontoRef.get();
             let dailyPontoData = snapshot.exists() ? snapshot.val() : {};
             const nextAction = await determineNextPontoAction(dailyPontoData);
 
-            currentPontoAction = nextAction.action; // Armazena a ação a ser executada
+            currentPontoAction = nextAction.action;
 
             if (force) {
                 if (!currentPontoAction || !currentPontoAction.startsWith('registrar_')) {
@@ -13192,24 +13538,747 @@ async function calculateAndDisplayServiceRanking() {
                 return;
             }
 
-            // Lidar com dias não úteis ou folga primeiro
-            if (nextAction.status === 'holiday' || nextAction.status === 'closed' || nextAction.status === 'day_off') {
+            if (nextAction.status === 'day_off' || nextAction.status === 'holiday' || nextAction.status === 'closed') {
                 alert(nextAction.message);
                 return;
             }
 
             if (currentPontoAction && currentPontoAction.startsWith('registrar_')) {
                 initPontoCamera();
+            } else if (nextAction.status === 'late') {
+                document.getElementById('ponto-justification-modal').style.display = 'flex';
             } else if (nextAction.status === 'complete') {
-                alert(nextAction.message);
+                alert('Sua jornada de hoje já foi totalmente concluída!');
             } else {
-                alert('Fora do horário de digitar o ponto.');
+                alert(nextAction.message || 'Fora do horário de registrar o ponto.');
             }
         } catch (error) {
-            console.error("Erro ao processar lógica do ponto:", error);
-            alert("Ocorreu um erro. Verifique sua conexão e tente novamente.");
+            console.error("Erro no ponto:", error);
+            alert("Ocorreu um erro ao verificar o ponto.");
+        }
+    }
+
+    let previousJustificationPage = 'collaboratorPage';
+
+    // Modal de Justificativa com envio de comprovante (atestado/foto)
+    const openPontoJustificationModal = () => {
+        const modal = document.getElementById('ponto-justification-modal');
+        if (modal) {
+            modal.style.setProperty('display', 'flex', 'important');
+            modal.style.setProperty('opacity', '1', 'important');
+            modal.style.setProperty('pointer-events', 'auto', 'important');
+            modal.style.setProperty('z-index', '99999', 'important');
+            modal.classList.remove('is-exiting');
+            modal.classList.add('visible');
         }
     };
+
+    const openDepurarJustificarModal = () => {
+        const modal = document.getElementById('depurar-justificar-modal');
+        const select = document.getElementById('depurar-justificar-user-select');
+        const statusEl = document.getElementById('depurar-justificar-status');
+
+        if (!modal) return;
+        if (statusEl) statusEl.textContent = '';
+
+        if (select) {
+            select.innerHTML = '';
+            allCollaborators.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                if (currentUserName && name.toLowerCase() === currentUserName.toLowerCase()) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+        }
+
+        modal.style.setProperty('display', 'flex', 'important');
+        modal.style.setProperty('opacity', '1', 'important');
+        modal.style.setProperty('pointer-events', 'auto', 'important');
+        modal.style.setProperty('z-index', '99999', 'important');
+        modal.classList.remove('is-exiting');
+        modal.classList.add('visible');
+    };
+
+    const closeDepurarJustificarModal = () => {
+        const modal = document.getElementById('depurar-justificar-modal');
+        if (modal) {
+            modal.style.setProperty('display', 'none', 'important');
+            modal.classList.remove('visible');
+        }
+    };
+
+    const setEmployeeLateDebug = async (clear = false) => {
+        const select = document.getElementById('depurar-justificar-user-select');
+        const statusEl = document.getElementById('depurar-justificar-status');
+        const userName = select ? select.value : currentUserName;
+        if (!userName) return;
+
+        const userKey = userName.toLowerCase();
+        const todayString = getTodayDateString();
+
+        if (statusEl) {
+            statusEl.style.color = '#ff6b00';
+            statusEl.textContent = clear ? 'Removendo atraso simulado...' : 'Aplicando atraso simulado...';
+        }
+
+        try {
+            if (clear) {
+                await database.ref(`simulatedLateUsers/${todayString}/${userKey}`).remove();
+                if (statusEl) {
+                    statusEl.style.color = '#27ae60';
+                    statusEl.textContent = `Atraso de ${userName} removido!`;
+                }
+                alert(`Status normal restaurado para ${userName}!`);
+            } else {
+                await database.ref(`simulatedLateUsers/${todayString}/${userKey}`).set({
+                    forcedLate: true,
+                    appliedBy: currentUserName || 'Admin',
+                    appliedAt: new Date().toISOString()
+                });
+                // Remove qualquer justificativa aprovada anterior do dia para o bloqueio aparecer
+                await database.ref(`justifications/${todayString}/${userKey}`).remove();
+
+                if (statusEl) {
+                    statusEl.style.color = '#e74c3c';
+                    statusEl.textContent = `${userName} agora está com atraso simulado!`;
+                }
+                alert(`Sucesso! ${userName} agora está com ocorrência de atraso ativa.\n\nQuando ele abrir o perfil dele, o ponto estará bloqueado com o aviso e o botão "Justificar" para ele solicitar.`);
+            }
+
+            if (currentUserName && currentUserName.toLowerCase() === userKey) {
+                checkPontoStatusAndDisplayWarnings();
+            }
+        } catch (err) {
+            console.error(err);
+            if (statusEl) {
+                statusEl.style.color = '#e74c3c';
+                statusEl.textContent = 'Erro ao atualizar dados.';
+            }
+        }
+    };
+
+    const submitPontoJustification = async () => {
+        const type = document.getElementById('ponto-justification-type').value;
+        const desc = document.getElementById('ponto-justification-desc').value.trim();
+        const fileInput = document.getElementById('ponto-proof-file-input');
+        const submitBtn = document.getElementById('ponto-submit-justification-btn');
+        const todayString = getTodayDateString();
+        const userKey = currentUserName.toLowerCase();
+
+        if (!desc) {
+            alert('Por favor, informe a descrição da justificativa.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+
+        let proofUrl = null;
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            try {
+                const file = fileInput.files[0];
+                const filePath = `justificativas/${userKey}/${Date.now()}_${file.name}`;
+                const { error: uploadError } = await supabaseClient.storage.from('ponto-pictures').upload(filePath, file);
+                if (uploadError) throw uploadError;
+                const { data: urlData } = supabaseClient.storage.from('ponto-pictures').getPublicUrl(filePath);
+                proofUrl = urlData.publicUrl;
+            } catch (err) {
+                console.error("Erro no upload do comprovante:", err);
+                alert("Erro ao enviar foto do comprovante. A justificativa será enviada sem anexo.");
+            }
+        }
+
+        const storeName = storeMapping.pinheiro.includes(currentUserName) ? 'pinheiro' : 'bacabal';
+
+        const payload = {
+            collaborator: currentUserName,
+            userKey: userKey,
+            store: storeName,
+            date: todayString,
+            type: type,
+            description: desc,
+            proofUrl: proofUrl,
+            timestamp: new Date().toISOString(),
+            status: 'pending_manager',
+            decision: null,
+            alertDismissed: false
+        };
+
+        try {
+            await database.ref('justificationRequests').push(payload);
+            alert('Sua justificativa e comprovante foram enviados ao Gerente da sua unidade com sucesso!');
+            document.getElementById('ponto-justification-modal').style.display = 'none';
+            document.getElementById('ponto-justification-desc').value = '';
+            if (fileInput) fileInput.value = '';
+            const fileNameEl = document.getElementById('ponto-proof-file-name');
+            if (fileNameEl) fileNameEl.textContent = '';
+            checkPontoStatusAndDisplayWarnings();
+        } catch (e) {
+            alert('Erro ao enviar justificativa.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar';
+        }
+    };
+
+    // Gestão de Aprovação de Justificativas com Foto/Comprovante
+    const loadPendingJustifications = async () => {
+        showPage('justificationsApprovalPage');
+        const list = document.getElementById('justifications-pending-list');
+        list.innerHTML = '<p style="text-align: center; color: #888;">Carregando justificativas...</p>';
+
+        try {
+            const snap = await database.ref('justificationRequests').get();
+            list.innerHTML = '';
+
+            if (!snap.exists()) {
+                list.innerHTML = '<p style="text-align: center; color: #888; font-size: 0.8rem; padding: 2rem;">Nenhuma solicitação de justificativa encontrada.</p>';
+                return;
+            }
+
+            const items = [];
+            snap.forEach(c => {
+                items.push({ id: c.key, ...c.val() });
+            });
+            items.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+            const isSupervisor = ['Paulo', 'Keliane', 'Ducielma'].includes(currentUserName);
+            const isManagerUser = storeManagers.includes(currentUserName) || isSupervisor;
+            const currentManagerStore = storeMapping.pinheiro.map(n => n.toLowerCase()).includes(currentUserName.toLowerCase()) ? 'pinheiro' : 'bacabal';
+
+            let countRendered = 0;
+
+            items.forEach(req => {
+                // Determina a loja real do funcionário que solicitou a justificativa
+                const requesterKey = (req.userKey || req.collaborator || '').toLowerCase();
+                const reqStore = (storeMapping.pinheiro.map(n => n.toLowerCase()).includes(requesterKey)) 
+                    ? 'pinheiro' 
+                    : ((storeMapping.bacabal.map(n => n.toLowerCase()).includes(requesterKey)) ? 'bacabal' : (req.store || 'pinheiro'));
+
+                // O Gerente vê estritamente os colaboradores da sua unidade; Supervisor geral vê todas
+                if (!isSupervisor && reqStore !== currentManagerStore) {
+                    return;
+                }
+                countRendered++;
+
+                const card = document.createElement('div');
+                const isApproved = req.decision === 'approved' || req.status === 'approved';
+                const isRejected = req.decision === 'rejected' || req.status === 'rejected';
+                const isDecided = isApproved || isRejected;
+
+                if (isDecided) {
+                    card.style.cssText = 'background: #f1f2f6; border: 1px solid #dcdde1; border-radius: 12px; padding: 8px 12px; font-size: 0.67rem; box-shadow: none; opacity: 0.85; margin-bottom: 4px;';
+                    let statusBadge = isApproved
+                        ? '<span style="background: #e2e8f0; color: #27ae60; padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.6rem;">✅ Aceita</span>'
+                        : '<span style="background: #e2e8f0; color: #c0392b; padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.6rem;">❌ Recusada</span>';
+
+                    const thumbHtml = req.proofUrl
+                        ? `<img src="${req.proofUrl}" alt="Comprovante" onclick="window.open('${req.proofUrl}', '_blank')" style="width: 34px; height: 34px; object-fit: cover; border-radius: 6px; border: 1px solid #bbb; cursor: pointer; flex-shrink: 0;" title="Ver comprovante">`
+                        : '';
+
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                                ${thumbHtml}
+                                <div style="overflow: hidden;">
+                                    <strong style="font-size: 0.78rem; color: #4b6584;">${req.collaborator} <span style="font-size: 0.6rem; color: #888;">[${(req.store || 'PHO').toUpperCase()}]</span></strong>
+                                    <div style="font-size: 0.62rem; color: #778ca3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${req.date} • ${req.type}: "${req.description || ''}"</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                                ${statusBadge}
+                                ${isManagerUser ? `<button onclick="decideJustification('${req.id}', ${!isApproved})" style="background: none; border: none; font-size: 0.6rem; color: #888; text-decoration: underline; cursor: pointer; padding: 0;">Alterar</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    card.style.cssText = 'background: #ffffff; border: 1.5px solid #FFE7D1; border-radius: 18px; padding: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); font-size: 0.75rem;';
+                    let statusBadge = '<span style="background: #FFF3CD; color: #856404; padding: 3px 9px; border-radius: 8px; font-weight: 800;">Aguardando Análise</span>';
+
+                    let proofHtml = '';
+                    if (req.proofUrl) {
+                        proofHtml = `
+                            <div style="margin-top: 8px;">
+                                <span style="font-size: 0.65rem; color: #888; font-weight: 700; display: block; margin-bottom: 4px;">Comprovante / Atestado Anexado:</span>
+                                <img src="${req.proofUrl}" alt="Comprovante" onclick="window.open('${req.proofUrl}', '_blank')" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 10px; border: 1px solid #ddd; cursor: pointer; background: #fafafa;">
+                            </div>
+                        `;
+                    }
+
+                    let actionsHtml = '';
+                    if (isManagerUser) {
+                        actionsHtml = `
+                            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                                <button onclick="decideJustification('${req.id}', true)" style="flex: 1; padding: 10px; background: #27ae60; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 0.72rem; cursor: pointer;">
+                                    <i class="fa-solid fa-check"></i> Aceitar
+                                </button>
+                                <button onclick="decideJustification('${req.id}', false)" style="flex: 1; padding: 10px; background: #e74c3c; color: #fff; border: none; border-radius: 10px; font-weight: 800; font-size: 0.72rem; cursor: pointer;">
+                                    <i class="fa-solid fa-xmark"></i> Recusar
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <strong style="font-size: 0.9rem; color: #2D2319;">${req.collaborator} <span style="font-size: 0.65rem; color: #FF6F00;">[${(req.store || 'PHO').toUpperCase()}]</span></strong>
+                            ${statusBadge}
+                        </div>
+                        <div style="color: #666; margin-bottom: 4px;">📅 Data: <strong>${req.date}</strong> | Motivo: <strong>${req.type}</strong></div>
+                        <div style="background: #FFF9F2; border: 1px solid #FFE4CC; border-radius: 10px; padding: 9px; color: #2D2319; margin-bottom: 4px;">"${req.description}"</div>
+                        ${proofHtml}
+                        ${req.decidedBy ? `<div style="font-size: 0.65rem; color: #888; margin-top: 6px;">Decidido por: <strong>${req.decidedBy}</strong> em ${new Date(req.decidedAt).toLocaleString('pt-BR')}</div>` : ''}
+                        ${actionsHtml}
+                    `;
+                }
+                list.appendChild(card);
+            });
+
+            if (countRendered === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #888; font-size: 0.8rem; padding: 2rem;">Nenhuma solicitação de justificativa para sua loja.</p>';
+            }
+        } catch (e) {
+            console.error(e);
+            list.innerHTML = '<p style="text-align: center; color: red;">Erro ao carregar justificativas.</p>';
+        }
+    };
+
+    window.decideJustification = async (id, isApproved) => {
+        const snap = await database.ref(`justificationRequests/${id}`).get();
+        if (!snap.exists()) return;
+        const req = snap.val();
+
+        const decisionText = isApproved ? 'approved' : 'rejected';
+        const nowIso = new Date().toISOString();
+
+        if (!confirm(`Deseja realmente ${isApproved ? 'ACEITAR' : 'RECUSAR'} a justificativa de ${req.collaborator}?`)) {
+            return;
+        }
+
+        const updates = {};
+        updates[`justificationRequests/${id}/decision`] = decisionText;
+        updates[`justificationRequests/${id}/status`] = decisionText;
+        updates[`justificationRequests/${id}/decidedBy`] = currentUserName;
+        updates[`justificationRequests/${id}/decidedAt`] = nowIso;
+        updates[`justificationRequests/${id}/alertDismissed`] = false;
+
+        // Se aceito, libera no nó de justificativas da data
+        if (isApproved) {
+            updates[`justifications/${req.date}/${req.userKey}`] = {
+                status: 'approved',
+                reason: req.description,
+                timestamp: nowIso
+            };
+        }
+
+        await database.ref().update(updates);
+        alert(`Justificativa ${isApproved ? 'ACEITA' : 'RECUSADA'} com sucesso! O aviso aparecerá no topo do GS.`);
+        loadPendingJustifications();
+        renderGSJustificationsAlerts();
+    };
+
+    // Renderiza o aviso em vermelho no topo do GS com botão de apagar filtrado pela loja
+    const renderGSJustificationsAlerts = async () => {
+        const alertBox = document.getElementById('gs-justifications-alert-container');
+        if (!alertBox) return;
+
+        try {
+            const snap = await database.ref('justificationRequests').get();
+            alertBox.innerHTML = '';
+
+            if (!snap.exists()) {
+                alertBox.style.display = 'none';
+                return;
+            }
+
+            const isSupervisor = ['Paulo', 'Keliane', 'Ducielma'].includes(currentUserName);
+            const managerStore = storeMapping.pinheiro.map(n => n.toLowerCase()).includes(currentUserName.toLowerCase()) ? 'pinheiro' : 'bacabal';
+
+            const activeAlerts = [];
+            snap.forEach(c => {
+                const item = { id: c.key, ...c.val() };
+                if ((item.decision === 'approved' || item.decision === 'rejected') && !item.alertDismissed) {
+                    const itemRequesterKey = (item.userKey || item.collaborator || '').toLowerCase();
+                    const itemStore = storeMapping.pinheiro.map(n => n.toLowerCase()).includes(itemRequesterKey) ? 'pinheiro' : 'bacabal';
+
+                    if (isSupervisor || itemStore === managerStore) {
+                        activeAlerts.push(item);
+                    }
+                }
+            });
+
+            if (activeAlerts.length === 0) {
+                alertBox.style.display = 'none';
+                return;
+            }
+
+            activeAlerts.reverse();
+            alertBox.style.display = 'flex';
+
+            activeAlerts.forEach(alertItem => {
+                const isAppr = alertItem.decision === 'approved';
+                const pill = document.createElement('div');
+                pill.style.cssText = `
+                    background: linear-gradient(135deg, #d63031 0%, #b71540 100%);
+                    color: #ffffff;
+                    border-radius: 16px;
+                    padding: 10px 14px;
+                    box-shadow: 0 4px 14px rgba(214, 48, 49, 0.35);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 10px;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                `;
+
+                const statusLabel = isAppr ? 'APROVADA' : 'RECUSADA';
+
+                pill.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; line-height: 1.25;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem; color: #ffdd59; flex-shrink: 0;"></i>
+                        <div>
+                            <strong style="font-size: 0.78rem; display: block; text-transform: uppercase;">JUSTIFICATIVA ${statusLabel}: ${alertItem.collaborator}</strong>
+                            <span style="font-size: 0.65rem; opacity: 0.9;">Motivo: ${alertItem.type} • Decidido por: ${alertItem.decidedBy || 'Gerente'}</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
+                        <button type="button" onclick="viewJustificationSituation('${alertItem.id}')" style="background: rgba(255,255,255,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 10px; padding: 6px 10px; font-weight: 800; font-size: 0.68rem; cursor: pointer; white-space: nowrap;">
+                            <i class="fa-solid fa-eye" style="margin-right: 4px;"></i> Ver Situação
+                        </button>
+                        <button type="button" onclick="dismissGSJustificationAlert('${alertItem.id}')" style="background: rgba(255,255,255,0.22); color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 10px; padding: 6px 10px; font-weight: 800; font-size: 0.68rem; cursor: pointer; white-space: nowrap;">
+                            <i class="fa-solid fa-trash-can" style="margin-right: 4px;"></i> Apagar
+                        </button>
+                    </div>
+                `;
+                alertBox.appendChild(pill);
+            });
+        } catch (e) {
+            console.error("Erro ao renderizar avisos de justificativa no GS:", e);
+            alertBox.style.display = 'none';
+        }
+    };
+
+    window.dismissGSJustificationAlert = async (id) => {
+        try {
+            await database.ref(`justificationRequests/${id}/alertDismissed`).set(true);
+            renderGSJustificationsAlerts();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    window.viewJustificationSituation = async (id) => {
+        const bubble = document.getElementById('gs-ai-chat-bubble');
+        if (bubble) {
+            bubble.style.whiteSpace = 'normal';
+            bubble.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="color: #ff6b00; margin-right: 6px;"></i> Carregando situação da justificativa na IA...';
+            bubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        try {
+            const snap = await database.ref(`justificationRequests/${id}`).get();
+            if (!snap.exists()) {
+                if (bubble) bubble.innerHTML = '⚠️ Justificativa não encontrada no banco de dados.';
+                return;
+            }
+            const data = snap.val();
+
+            const isAppr = data.decision === 'approved' || data.status === 'approved';
+            const statusLabel = isAppr ? '✅ APROVADA' : (data.decision === 'rejected' || data.status === 'rejected' ? '❌ RECUSADA' : '⏳ PENDENTE');
+            const statusColor = isAppr ? '#27ae60' : '#e74c3c';
+            const statusBg = isAppr ? '#EAFDF1' : '#FADBD8';
+
+            const proofImgHtml = data.proofUrl
+                ? `<div style="margin-top: 10px; background: #ffffff; border: 1px solid #FFE7D1; border-radius: 12px; padding: 10px; text-align: center;">
+                        <span style="font-size: 0.7rem; font-weight: 800; color: #8C7561; display: block; margin-bottom: 6px;">FOTO DO COMPROVANTE / ATESTADO:</span>
+                        <img src="${data.proofUrl}" alt="Comprovante" onclick="window.open('${data.proofUrl}', '_blank')" style="max-width: 100%; max-height: 220px; object-fit: contain; border-radius: 10px; border: 1.5px solid #FF6F00; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.12);">
+                        <span style="display: block; font-size: 0.65rem; color: #FF6F00; font-weight: 700; margin-top: 4px;">(Toque na imagem para abrir em tamanho real)</span>
+                   </div>`
+                : `<div style="margin-top: 8px; font-size: 0.72rem; color: #8C7561; font-style: italic;">Nenhum comprovante/foto anexado.</div>`;
+
+            const fullTextHtml = `
+                <div style="line-height: 1.45;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1.5px solid #FFE4CC; padding-bottom: 6px;">
+                        <div>
+                            <strong style="font-size: 0.95rem; color: #2D2319;">${data.collaborator || 'Colaborador'}</strong>
+                            <span style="font-size: 0.68rem; color: #FF6F00; font-weight: 800; display: block;">Unidade: ${(data.store || 'Pinheiro').toUpperCase()}</span>
+                        </div>
+                        <span style="background: ${statusBg}; color: ${statusColor}; font-weight: 900; font-size: 0.72rem; padding: 3px 8px; border-radius: 8px;">${statusLabel}</span>
+                    </div>
+
+                    <div style="font-size: 0.75rem; color: #614D3C; margin-bottom: 8px;">
+                        <div>📅 <strong>Data da Ocorrência:</strong> ${data.date || '--/--/----'}</div>
+                        <div>📌 <strong>Motivo Informado:</strong> ${data.type || 'Não informado'}</div>
+                        ${data.decidedBy ? `<div>⚖️ <strong>Decisão por:</strong> ${data.decidedBy} em ${new Date(data.decidedAt || data.timestamp).toLocaleString('pt-BR')}</div>` : ''}
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #FFE4CC; border-radius: 12px; padding: 10px; margin-bottom: 8px;">
+                        <strong style="color: #FF6F00; font-size: 0.72rem; display: block; margin-bottom: 3px; text-transform: uppercase;">Descrição da Justificativa:</strong>
+                        <span style="color: #2D2319; font-size: 0.82rem; font-weight: 600;">"${data.description || 'Sem descrição informada.'}"</span>
+                    </div>
+
+                    ${proofImgHtml}
+                </div>
+            `;
+
+            if (bubble) {
+                bubble.style.whiteSpace = 'normal';
+                bubble.innerHTML = fullTextHtml;
+                bubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        } catch (err) {
+            console.error("Erro ao carregar justificativa na IA:", err);
+            if (bubble) bubble.innerHTML = '❌ Ocorreu um erro ao carregar os dados da justificativa.';
+        }
+    };
+
+    // Gestão Individual de Jornadas, Intervalos e Folgas no GS
+    const loadSchedulesManagementPage = async () => {
+        showPage('schedulesManagementPage');
+        const container = document.getElementById('schedules-collab-list');
+        container.innerHTML = '<p style="text-align: center; color: #888;">Carregando...</p>';
+
+        try {
+            const snap = await database.ref('employeeSchedules').get();
+            const customs = snap.exists() ? snap.val() : {};
+            container.innerHTML = '';
+
+            for (const name of allCollaborators) {
+                const uKey = name.toLowerCase();
+                const config = await getEmployeeScheduleConfig(name);
+                const custom = customs[uKey] || {};
+
+                const card = document.createElement('div');
+                card.style.cssText = 'background: #ffffff; border: 1.5px solid #FFE7D1; border-radius: 16px; padding: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.05); font-size: 0.75rem;';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="font-size: 0.95rem; color: #2D2319;">${name}</strong>
+                        <span style="font-size: 0.65rem; background: #F5EEF8; color: #8E44AD; padding: 3px 8px; border-radius: 8px; font-weight: 800;">${config.roleName}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                        <div>
+                            <label style="display: block; font-size: 0.65rem; color: #666; font-weight: 700; margin-bottom: 2px;">Intervalo Almoço (minutos)</label>
+                            <input type="number" id="sched-lunch-${uKey}" class="data-input" value="${config.lunchMinutes}" style="padding: 6px 10px; font-size: 0.75rem; background: #FFF9F2;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.65rem; color: #666; font-weight: 700; margin-bottom: 2px;">Folga Fixa Semanal</label>
+                            <select id="sched-dayoff-${uKey}" class="data-input" style="padding: 6px 10px; font-size: 0.75rem; background: #FFF9F2;">
+                                <option value="none" ${config.fixedDayOff === null || config.fixedDayOff === 'none' ? 'selected' : ''}>Nenhuma / Escala</option>
+                                <option value="1" ${config.fixedDayOff == 1 ? 'selected' : ''}>Segunda-feira</option>
+                                <option value="2" ${config.fixedDayOff == 2 ? 'selected' : ''}>Terça-feira</option>
+                                <option value="3" ${config.fixedDayOff == 3 ? 'selected' : ''}>Quarta-feira</option>
+                                <option value="4" ${config.fixedDayOff == 4 ? 'selected' : ''}>Quinta-feira</option>
+                                <option value="5" ${config.fixedDayOff == 5 ? 'selected' : ''}>Sexta-feira</option>
+                                <option value="6" ${config.fixedDayOff == 6 ? 'selected' : ''}>Sábado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="saveSingleEmployeeSchedule('${uKey}', '${name}')" style="width: 100%; padding: 8px; background: #9b59b6; color: #fff; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.7rem;">
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar Jornada de ${name}
+                    </button>
+                `;
+                container.appendChild(card);
+            }
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p style="text-align: center; color: red;">Erro ao carregar jornadas.</p>';
+        }
+    };
+
+    window.saveSingleEmployeeSchedule = async (uKey, name) => {
+        const lunch = parseInt(document.getElementById(`sched-lunch-${uKey}`).value, 10) || 90;
+        const dayOff = document.getElementById(`sched-dayoff-${uKey}`).value;
+
+        try {
+            await database.ref(`employeeSchedules/${uKey}`).update({
+                lunchMinutes: lunch,
+                fixedDayOff: dayOff === 'none' ? null : parseInt(dayOff, 10),
+                updatedBy: currentUserName,
+                updatedAt: new Date().toISOString()
+            });
+            alert(`Jornada e folga de ${name} salvas com sucesso!`);
+        } catch (e) {
+            alert('Erro ao salvar jornada.');
+        }
+    };
+
+    // Dispara registro fotográfico com geolocalização e histórico detalhado
+    const captureAndUploadPonto = () => {
+        const video = document.getElementById('ponto-video');
+        const canvas = document.getElementById('ponto-canvas');
+        const statusEl = document.getElementById('ponto-status-message');
+        const captureButton = document.getElementById('capture-ponto-btn');
+
+        captureButton.disabled = true;
+        captureButton.style.opacity = '0.5';
+        captureButton.style.cursor = 'not-allowed';
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        statusEl.textContent = 'Processando foto e localização...';
+
+        canvas.toBlob(async (blob) => {
+            if (!blob) {
+                statusEl.textContent = 'Erro ao capturar imagem.';
+                captureButton.disabled = false;
+                captureButton.style.opacity = '1';
+                captureButton.style.cursor = 'pointer';
+                return;
+            }
+
+            try {
+                const userKey = currentUserName.toLowerCase();
+                const filePath = `${userKey}/${new Date().getTime()}.jpeg`;
+
+                const { data: uploadData, error: uploadError } = await supabaseClient
+                    .storage
+                    .from('ponto-pictures')
+                    .upload(filePath, blob);
+
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = supabaseClient
+                    .storage
+                    .from('ponto-pictures')
+                    .getPublicUrl(filePath);
+
+                const imageUrl = urlData.publicUrl;
+
+                if (!currentPontoAction) {
+                    throw new Error('Ação de ponto indefinida.');
+                }
+
+                const pontoType = currentPontoAction.replace('registrar_', '');
+                let city = storeMapping.pinheiro.includes(currentUserName) ? 'Pinheiro' : 'Bacabal';
+                const todayString = getTodayDateString();
+
+                if (pontoType === 'saida') {
+                    await calculateAndSaveOvertime(todayString);
+                }
+
+                const historyPontoData = {
+                    collaborator: currentUserName,
+                    city: city,
+                    timestamp: new Date().toISOString(),
+                    photoURL: imageUrl,
+                    type: pontoType,
+                    locationText: currentUserLocationText || 'Loja do Hunter',
+                    locationCoords: currentUserLocationCoords || null
+                };
+
+                const dailyPontoData = {
+                    timestamp: historyPontoData.timestamp,
+                    photoURL: imageUrl,
+                    locationCoords: currentUserLocationCoords || null
+                };
+
+                const updates = {};
+                updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData;
+                updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData;
+
+                await database.ref().update(updates);
+
+                statusEl.textContent = 'Ponto registrado com sucesso!';
+                currentPontoAction = null;
+                setTimeout(() => {
+                    stopPontoCamera();
+                    showPage(lastPageBeforePonto || 'collaboratorPage');
+                    checkPontoStatusAndDisplayWarnings();
+                    captureButton.disabled = false;
+                    captureButton.style.opacity = '1';
+                    captureButton.style.cursor = 'pointer';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Erro no upload do ponto:", error);
+                statusEl.textContent = 'Erro ao enviar ponto. Tente novamente.';
+                captureButton.disabled = false;
+                captureButton.style.opacity = '1';
+                captureButton.style.cursor = 'pointer';
+            }
+        }, 'image/jpeg', 0.8);
+    };
+
+    // Listeners do card moderno de ponto
+    document.addEventListener('DOMContentLoaded', () => {
+        const mainActionBtn = document.getElementById('ponto-main-action-btn');
+        if (mainActionBtn) {
+            mainActionBtn.onclick = () => {
+                lastPageBeforePonto = 'collaboratorPage';
+                handlePontoLogic();
+            };
+        }
+
+        const openJustifyBtn = document.getElementById('ponto-open-justification-btn');
+        if (openJustifyBtn) {
+            openJustifyBtn.onclick = openPontoJustificationModal;
+        }
+
+        const submitJustifyBtn = document.getElementById('ponto-submit-justification-btn');
+        if (submitJustifyBtn) {
+            submitJustifyBtn.onclick = submitPontoJustification;
+        }
+
+        const cancelJustifyBtn = document.getElementById('ponto-cancel-justification-btn');
+        if (cancelJustifyBtn) {
+            cancelJustifyBtn.onclick = () => {
+                const m = document.getElementById('ponto-justification-modal');
+                if (m) {
+                    m.style.setProperty('display', 'none', 'important');
+                    m.classList.remove('visible');
+                }
+            };
+        }
+
+        const openJustApprovalBtn = document.getElementById('open-justifications-approval-btn');
+        if (openJustApprovalBtn) {
+            openJustApprovalBtn.onclick = () => {
+                previousJustificationPage = 'gsPage';
+                loadPendingJustifications();
+            };
+        }
+
+        const managerJustAppBtn = document.getElementById('open-manager-justifications-app-btn');
+        if (managerJustAppBtn) {
+            managerJustAppBtn.onclick = (e) => {
+                e.preventDefault();
+                previousJustificationPage = 'collaboratorPage';
+                loadPendingJustifications();
+            };
+        }
+
+        const proofUploadBtn = document.getElementById('ponto-proof-upload-btn');
+        const proofFileInput = document.getElementById('ponto-proof-file-input');
+        const proofFileName = document.getElementById('ponto-proof-file-name');
+        if (proofUploadBtn && proofFileInput) {
+            proofUploadBtn.onclick = () => proofFileInput.click();
+            proofFileInput.onchange = (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    if (proofFileName) proofFileName.textContent = `✓ Anexado: ${e.target.files[0].name}`;
+                }
+            };
+        }
+
+        const backJustBtn = document.getElementById('back-to-gs-from-justifications');
+        if (backJustBtn) {
+            backJustBtn.onclick = () => showPage(previousJustificationPage || 'collaboratorPage');
+        }
+
+        const openSchedBtn = document.getElementById('open-schedules-management-btn');
+        if (openSchedBtn) {
+            openSchedBtn.onclick = loadSchedulesManagementPage;
+        }
+
+        const backSchedBtn = document.getElementById('back-to-gs-from-schedules');
+        if (backSchedBtn) {
+            backSchedBtn.onclick = () => showPage('gsPage');
+        }
+    });
 
         const awardAchievement = async (userKey, achievementId) => {
         const achievementRef = database.ref(`userProfiles/${userKey}/achievements/${achievementId}`);
@@ -14377,126 +15446,30 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
     };
 
-    const captureAndUploadPonto = () => {
-        const video = document.getElementById('ponto-video');
-        const canvas = document.getElementById('ponto-canvas');
-        const statusEl = document.getElementById('ponto-status-message');
-        const captureButton = document.getElementById('capture-ponto-btn');
 
-        captureButton.disabled = true;
-        captureButton.style.opacity = '0.5';
-        captureButton.style.cursor = 'not-allowed';
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        statusEl.textContent = 'Processando foto...';
-
-        canvas.toBlob(async (blob) => {
-            if (!blob) {
-                statusEl.textContent = 'Erro ao capturar imagem.';
-                captureButton.disabled = false;
-                captureButton.style.opacity = '1';
-                captureButton.style.cursor = 'pointer';
-                return;
-            }
-
-            statusEl.textContent = 'Enviando foto...';
-            
-            try {
-                const userKey = currentUserName.toLowerCase();
-                // 1. Define o caminho do arquivo no Supabase Storage
-                const filePath = `${userKey}/${new Date().getTime()}.jpeg`;
-
-                // 2. Faz o upload da imagem para o bucket 'ponto-pictures'
-                const { data: uploadData, error: uploadError } = await supabaseClient
-                    .storage
-                    .from('ponto-pictures') // NOME DO SEU BUCKET DE PONTO
-                    .upload(filePath, blob);
-
-                if (uploadError) throw uploadError;
-
-                // 3. Pega a URL pública da imagem enviada
-                const { data: urlData } = supabaseClient
-                    .storage
-                    .from('ponto-pictures')
-                    .getPublicUrl(filePath);
-
-                const imageUrl = urlData.publicUrl;
-
-                statusEl.textContent = 'Finalizando registro...';
-
-                if (!currentPontoAction) {
-                    throw new Error('Ação de ponto indefinida.');
-                }
-
-                const pontoType = currentPontoAction.replace('registrar_', '');
-                let city = 'N/A';
-                if (storeMapping.pinheiro.includes(currentUserName)) city = 'Pinheiro';
-                else if (storeMapping.bacabal.includes(currentUserName)) city = 'Bacabal';
-                
-                const todayString = getTodayDateString();
-                if (pontoType === 'saida') {
-                    await calculateAndSaveOvertime(todayString);
-                }
-
-                const historyPontoData = {
-                    collaborator: currentUserName,
-                    city: city,
-                    timestamp: new Date().toISOString(),
-                    photoURL: imageUrl,
-                    type: pontoType
-                };
-
-                const dailyPontoData = {
-                    timestamp: historyPontoData.timestamp,
-                    photoURL: imageUrl
-                };
-
-                const updates = {};
-                updates[`pontosDoDia/${todayString}/${currentUserName}/${pontoType}`] = dailyPontoData;
-                updates[`pontos/${currentUserName}/${database.ref().push().key}`] = historyPontoData;
-
-                await database.ref().update(updates);
-
-                statusEl.textContent = 'Ponto registrado com sucesso!';
-                currentPontoAction = null;
-                setTimeout(() => {
-                    stopPontoCamera();
-                    showPage(lastPageBeforePonto || 'collaboratorPage');
-                    checkPontoStatusAndDisplayWarnings();
-                    captureButton.disabled = false;
-                    captureButton.style.opacity = '1';
-                    captureButton.style.cursor = 'pointer';
-                }, 2000);
-
-            } catch (error) {
-                console.error("Erro no processo de upload do ponto:", error);
-                statusEl.textContent = 'Erro ao enviar foto. Tente novamente.';
-                captureButton.disabled = false;
-                captureButton.style.opacity = '1';
-                captureButton.style.cursor = 'pointer';
-            }
-
-        }, 'image/jpeg', 0.8);
-    };
 
         const showPontoVerificationList = () => {
         const listContainer = document.getElementById('ponto-employee-list');
         listContainer.innerHTML = '';
-        
-        // CORREÇÃO: Garante que o container tenha um alinhamento central
         listContainer.style.alignItems = 'center';
 
         const grid = document.createElement('div');
         grid.className = 'collaborator-actions-grid';
 
-        allUsers.forEach(name => {
+        const isSupervisor = ['Paulo', 'Keliane', 'Ducielma'].includes(currentUserName);
+        const managerStore = storeMapping.pinheiro.map(n => n.toLowerCase()).includes(currentUserName.toLowerCase()) ? 'pinheiro' : 'bacabal';
+
+        // Filtra colaboradores de acordo com a unidade do gerente logado (PHO ou BAC)
+        const employeesToShow = isSupervisor 
+            ? allUsers 
+            : allCollaborators.filter(name => {
+                const isPinheiro = storeMapping.pinheiro.map(n => n.toLowerCase()).includes(name.toLowerCase());
+                return managerStore === 'pinheiro' ? isPinheiro : !isPinheiro;
+            });
+
+        employeesToShow.forEach(name => {
             const button = document.createElement('button');
-            // Usar 'action-button' é o correto, mas precisamos de um span para o texto
             button.className = 'action-button';
-            // O botão da grade agora precisa de um ícone e um span para o layout funcionar
             button.innerHTML = `<i class="fa-solid fa-user" style="font-size: 2rem; margin-bottom: 0.5rem;"></i><span>${name}</span>`;
             button.addEventListener('click', () => showPontoHistory(name));
             grid.appendChild(button);
@@ -14576,48 +15549,281 @@ async function calculateAndDisplayStoreServiceRanking() {
             });
     };
 
-    const showPontoHistory = (name) => {
-        const historyContainer = document.getElementById('ponto-history-container');
-        document.getElementById('ponto-history-title').textContent = `Histórico de ${name}`;
-        historyContainer.innerHTML = '<p>Carregando histórico...</p>';
-        showPage('pontoHistoryPage');
+    window.deletePontoRecord = (key, employeeName) => {
+        if (confirm('Deseja excluir este registro do histórico de ponto?')) {
+            database.ref(`pontos/${employeeName}/${key}`).remove().then(() => {
+                showPontoHistory(employeeName);
+            });
+        }
+    };
 
-        database.ref(`pontos/${name}`).orderByChild('timestamp').limitToLast(50).once('value', snapshot => {
-            historyContainer.innerHTML = '';
-            if (!snapshot.exists()) {
-                historyContainer.innerHTML = '<p>Nenhum registro de ponto encontrado.</p>';
+    window.decideJustificationFromHistory = async (id, name, isApproved) => {
+        try {
+            const snap = await database.ref(`justificationRequests/${id}`).get();
+            if (!snap.exists()) {
+                alert('Justificativa não encontrada.');
+                return;
+            }
+            const req = snap.val();
+
+            if (!confirm(`Deseja realmente ${isApproved ? 'ACEITAR' : 'RECUSAR'} a justificativa de ${name} no GS?${!isApproved ? '\n\nAo recusar, uma falta será registrada automaticamente no histórico.' : ''}`)) {
                 return;
             }
 
+            const decisionText = isApproved ? 'approved' : 'rejected';
+            const nowIso = new Date().toISOString();
+
+            const updates = {};
+            updates[`justificationRequests/${id}/decision`] = decisionText;
+            updates[`justificationRequests/${id}/status`] = decisionText;
+            updates[`justificationRequests/${id}/decidedBy`] = currentUserName || 'GS';
+            updates[`justificationRequests/${id}/decidedAt`] = nowIso;
+            updates[`justificationRequests/${id}/alertDismissed`] = false;
+
+            if (isApproved) {
+                updates[`justifications/${req.date}/${name.toLowerCase()}`] = {
+                    status: 'approved',
+                    reason: req.description,
+                    timestamp: nowIso
+                };
+            } else {
+                const newFaltaKey = database.ref(`pontos/${name}`).push().key;
+                updates[`pontos/${name}/${newFaltaKey}`] = {
+                    collaborator: name,
+                    city: storeMapping.pinheiro.includes(name) ? 'Pinheiro' : 'Bacabal',
+                    timestamp: new Date().toISOString(),
+                    type: 'falta',
+                    reason: `Falta Registrada (Justificativa Recusada pelo GS - ${req.type}): ${req.description}`,
+                    decidedBy: currentUserName || 'GS'
+                };
+            }
+
+            await database.ref().update(updates);
+            alert(`Justificativa ${isApproved ? 'ACEITA' : 'RECUSADA'} pelo GS com sucesso!${!isApproved ? ' Falta lançada no histórico.' : ''}`);
+            showPontoHistory(name);
+        } catch (e) {
+            console.error("Erro ao decidir justificativa pelo histórico:", e);
+            alert('Erro ao processar decisão da justificativa.');
+        }
+    };
+
+    const showPontoHistory = (name) => {
+        const historyContainer = document.getElementById('ponto-history-container');
+        document.getElementById('ponto-history-title').textContent = `Histórico de ${name}`;
+        historyContainer.innerHTML = '<p style="text-align:center; padding:1.5rem; color:#888;">Carregando dados completos de ponto e justificativas...</p>';
+        showPage('pontoHistoryPage');
+
+        Promise.all([
+            database.ref(`pontos/${name}`).orderByChild('timestamp').limitToLast(120).once('value'),
+            database.ref('justificationRequests').once('value')
+        ]).then(([snapshot, justSnap]) => {
+            historyContainer.innerHTML = '';
+
             const records = [];
-            snapshot.forEach(child => {
-                // Modificado para guardar a chave junto com o registro
-                records.push({ key: child.key, record: child.val() });
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    records.push({ key: child.key, record: child.val() });
+                });
+            }
+
+            // 1. CÁLCULO DE HORAS TRABALHADAS, DIAS TRABALHADOS E FALTAS
+            const dayPunches = {};
+            const uniqueWorkDates = new Set();
+            let totalFaltas = 0;
+
+            records.forEach(item => {
+                const r = item.record;
+                if (!r || !r.timestamp) return;
+
+                if (r.type === 'falta') {
+                    totalFaltas++;
+                    return;
+                }
+
+                const d = new Date(r.timestamp);
+                const dateKey = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+                uniqueWorkDates.add(dateKey);
+
+                if (!dayPunches[dateKey]) dayPunches[dateKey] = {};
+                dayPunches[dateKey][r.type] = new Date(r.timestamp).getTime();
             });
 
-            // Inverte para mostrar o mais recente primeiro
-            records.reverse().forEach(async (recordWithKey) => { // Mudou para receber o objeto com a chave
+            let totalWorkedMs = 0;
+            Object.values(dayPunches).forEach(punches => {
+                if (punches.entrada && punches.saida && punches.saida > punches.entrada) {
+                    let dayMs = punches.saida - punches.entrada;
+                    if (punches.saida_almoco && punches.volta_almoco && punches.volta_almoco > punches.saida_almoco) {
+                        dayMs -= (punches.volta_almoco - punches.saida_almoco);
+                    }
+                    totalWorkedMs += Math.max(0, dayMs);
+                } else if (punches.entrada && punches.saida_almoco && punches.saida_almoco > punches.entrada) {
+                    totalWorkedMs += (punches.saida_almoco - punches.entrada);
+                }
+            });
+
+            const totalHours = Math.floor(totalWorkedMs / (1000 * 60 * 60));
+            const totalMinutes = Math.floor((totalWorkedMs / (1000 * 60)) % 60);
+            const formattedTotalHours = `${totalHours}h ${totalMinutes.toString().padStart(2, '0')}min`;
+            const totalDiasTrabalhados = uniqueWorkDates.size;
+
+            // 2. FILTRAR JUSTIFICATIVAS DO USUÁRIO
+            const userJustifications = [];
+            if (justSnap.exists()) {
+                justSnap.forEach(child => {
+                    const j = { id: child.key, ...child.val() };
+                    const reqUserKey = (j.userKey || j.collaborator || '').toLowerCase();
+                    if (reqUserKey === name.toLowerCase()) {
+                        userJustifications.push(j);
+                    }
+                });
+                userJustifications.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+            }
+
+            // 3. RENDERIZAÇÃO DO CARD DE RESUMO NO TOPO
+            const summaryBox = document.createElement('div');
+            summaryBox.style.cssText = 'width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;';
+            summaryBox.innerHTML = `
+                <div style="background: #ffffff; border: 1.5px solid #FFE7D1; border-radius: 16px; padding: 12px 6px; text-align: center; box-shadow: 0 4px 14px rgba(255,111,0,0.06);">
+                    <span style="font-size: 0.62rem; font-weight: 800; color: #8C7561; text-transform: uppercase; display: block;">Horas Trab.</span>
+                    <strong style="font-size: 1.05rem; font-weight: 900; color: #FF6F00; display: block; margin-top: 2px;">${formattedTotalHours}</strong>
+                </div>
+                <div style="background: #ffffff; border: 1.5px solid #FFE7D1; border-radius: 16px; padding: 12px 6px; text-align: center; box-shadow: 0 4px 14px rgba(255,111,0,0.06);">
+                    <span style="font-size: 0.62rem; font-weight: 800; color: #8C7561; text-transform: uppercase; display: block;">Dias Trab.</span>
+                    <strong style="font-size: 1.05rem; font-weight: 900; color: #2ecc71; display: block; margin-top: 2px;">${totalDiasTrabalhados} dias</strong>
+                </div>
+                <div style="background: #ffffff; border: 1.5px solid #FFE7D1; border-radius: 16px; padding: 12px 6px; text-align: center; box-shadow: 0 4px 14px rgba(255,111,0,0.06);">
+                    <span style="font-size: 0.62rem; font-weight: 800; color: #8C7561; text-transform: uppercase; display: block;">Faltas</span>
+                    <strong style="font-size: 1.05rem; font-weight: 900; color: #e74c3c; display: block; margin-top: 2px;">${totalFaltas}</strong>
+                </div>
+            `;
+            historyContainer.appendChild(summaryBox);
+
+            // 4. RENDERIZAÇÃO DA SEÇÃO DE JUSTIFICATIVAS SEPARADAS COM BOTÕES ACEITAR OU RECUSAR GS
+            if (userJustifications.length > 0) {
+                const justSection = document.createElement('div');
+                justSection.style.cssText = 'width: 100%; background: #ffffff; border: 1.5px solid #FFE7D1; border-radius: 18px; padding: 14px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 10px;';
+                justSection.innerHTML = `
+                    <div style="font-size: 0.75rem; font-weight: 900; color: #FF6F00; text-transform: uppercase; letter-spacing: 0.6px; border-bottom: 1.5px solid #FFE4CC; padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="fa-solid fa-clipboard-check" style="margin-right: 5px;"></i> Justificativas Enviadas ao GS</span>
+                        <span style="background: #FFF1E2; color: #FF6F00; font-size: 0.65rem; padding: 2px 7px; border-radius: 8px;">${userJustifications.length}</span>
+                    </div>
+                `;
+
+                userJustifications.forEach(req => {
+                    const justItem = document.createElement('div');
+                    const isApproved = req.decision === 'approved' || req.status === 'approved';
+                    const isRejected = req.decision === 'rejected' || req.status === 'rejected';
+                    const isDecided = isApproved || isRejected;
+
+                    if (isDecided) {
+                        justItem.style.cssText = 'background: #f1f2f6; border: 1px solid #dcdde1; border-radius: 12px; padding: 6px 10px; font-size: 0.65rem; line-height: 1.3; opacity: 0.85; margin-bottom: 4px;';
+                        const badgeHtml = isApproved
+                            ? '<span style="background: #e2e8f0; color: #27ae60; font-weight: 800; font-size: 0.6rem; padding: 2px 6px; border-radius: 6px;">✅ Aceita GS</span>'
+                            : '<span style="background: #e2e8f0; color: #c0392b; font-weight: 800; font-size: 0.6rem; padding: 2px 6px; border-radius: 6px;">❌ Recusada (Falta)</span>';
+
+                        const thumbImgHtml = req.proofUrl
+                            ? `<img src="${req.proofUrl}" alt="Atestado" onclick="window.open('${req.proofUrl}', '_blank')" style="width: 32px; height: 32px; object-fit: cover; border-radius: 6px; border: 1px solid #bbb; cursor: pointer; flex-shrink: 0;" title="Ver comprovante">`
+                            : '';
+
+                        justItem.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px;">
+                                <div style="display: flex; align-items: center; gap: 7px; overflow: hidden;">
+                                    ${thumbImgHtml}
+                                    <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        <strong style="color: #4b6584; font-size: 0.7rem;">${req.date || '--/--'} (${req.type || 'Justificativa'})</strong>
+                                        <div style="color: #778ca3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.62rem;">"${req.description || ''}"</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                                    ${badgeHtml}
+                                    <button onclick="decideJustificationFromHistory('${req.id}', '${name}', ${!isApproved})" style="background: none; border: none; font-size: 0.6rem; color: #888; text-decoration: underline; cursor: pointer; padding: 0;">Alterar</button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        justItem.style.cssText = 'background: #FFF9F2; border: 1.5px solid #FFD4AA; border-radius: 14px; padding: 12px; font-size: 0.74rem; line-height: 1.4;';
+                        const badgeHtml = '<span style="background: #FFF3CD; color: #856404; font-weight: 800; font-size: 0.65rem; padding: 2px 7px; border-radius: 6px;">Pendente GS</span>';
+
+                        const proofHtml = req.proofUrl
+                            ? `<div style="margin-top: 8px; text-align: center;">
+                                 <img src="${req.proofUrl}" alt="Atestado" onclick="window.open('${req.proofUrl}', '_blank')" style="max-width: 100%; max-height: 160px; object-fit: contain; border-radius: 10px; border: 1.5px solid #FF6F00; cursor: pointer; background: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                                 <span style="display: block; font-size: 0.62rem; color: #FF6F00; font-weight: 700; margin-top: 2px;">(Toque para ver atestado/comprovante)</span>
+                               </div>`
+                            : `<div style="margin-top: 4px; font-size: 0.65rem; color: #888; font-style: italic;">Sem comprovante anexado.</div>`;
+
+                        justItem.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <strong style="color: #2D2319;">Data: ${req.date || '--/--/----'}</strong>
+                                ${badgeHtml}
+                            </div>
+                            <div style="color: #614D3C; margin-bottom: 4px;"><strong>Motivo:</strong> ${req.type || 'Não informado'}</div>
+                            <div style="background: #ffffff; border: 1px solid #FFE4CC; border-radius: 10px; padding: 8px; color: #2D2319; font-weight: 600; margin-bottom: 4px;">
+                                "${req.description || 'Sem descrição.'}"
+                            </div>
+                            ${proofHtml}
+                            ${req.decidedBy ? `<div style="font-size: 0.62rem; color: #8C7561; margin-top: 5px;">Decisão tomada por: <strong>${req.decidedBy}</strong></div>` : ''}
+                            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                                <button onclick="decideJustificationFromHistory('${req.id}', '${name}', true)" style="flex: 1; padding: 8px; background: #27ae60; color: #ffffff; border: none; border-radius: 10px; font-weight: 800; font-size: 0.72rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 6px rgba(39, 174, 96, 0.2);">
+                                    <i class="fa-solid fa-check"></i> Aceitar GS
+                                </button>
+                                <button onclick="decideJustificationFromHistory('${req.id}', '${name}', false)" style="flex: 1; padding: 8px; background: #e74c3c; color: #ffffff; border: none; border-radius: 10px; font-weight: 800; font-size: 0.72rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 6px rgba(231, 76, 60, 0.2);">
+                                    <i class="fa-solid fa-xmark"></i> Recusar GS
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    justSection.appendChild(justItem);
+                });
+
+                historyContainer.appendChild(justSection);
+            }
+
+            // 5. RENDERIZAÇÃO DOS PONTOS BATIDOS
+            if (records.length === 0) {
+                const emptyNotice = document.createElement('div');
+                emptyNotice.style.cssText = 'text-align: center; padding: 2rem; color: #888; font-size: 0.8rem;';
+                emptyNotice.textContent = 'Nenhum registro de ponto encontrado para este colaborador.';
+                historyContainer.appendChild(emptyNotice);
+                return;
+            }
+
+            records.reverse().forEach(async (recordWithKey) => {
                 const { key, record } = recordWithKey;
                 const card = document.createElement('div');
                 card.className = 'ponto-history-card';
+                card.style.position = 'relative';
                 const date = new Date(record.timestamp);
                 const recordDateString = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
                 let justificationHtml = '';
                 const justificationSnap = await database.ref(`justifications/${recordDateString}/${name.toLowerCase()}`).get();
                 if (justificationSnap.exists()) {
-                    justificationHtml = `<div class="ponto-history-justification"><strong>Justificativa:</strong> ${justificationSnap.val().reason}</div>`;
+                    justificationHtml = `<div class="ponto-history-justification"><strong>Justificativa Homologada:</strong> ${justificationSnap.val().reason}</div>`;
                 }
 
-                // Botão de deletar que será adicionado ao final do card
                 const deleteButtonHtml = `
                     <button class="delete-button-small" data-record-key="${key}" data-employee-name="${name}" style="margin-left: auto;">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 `;
 
+                const typeNames = {
+                    'entrada': 'Entrada',
+                    'saida_almoco': 'Saída Almoço',
+                    'volta_almoco': 'Retorno Almoço',
+                    'saida': 'Saída Final'
+                };
+                const displayType = typeNames[record.type] || record.type || 'Ponto';
+
+                let locHtml = '';
+                if (record.locationCoords) {
+                    locHtml = `<p style="font-size: 0.7rem; color: #ff8533;">📍 ${record.locationCoords.latitude.toFixed(4)}, ${record.locationCoords.longitude.toFixed(4)}</p>`;
+                } else if (record.locationText) {
+                    locHtml = `<p style="font-size: 0.7rem; color: #ff8533;">📍 ${record.locationText}</p>`;
+                }
+
                 if (record.type === 'falta') {
-                    // --- RENDERIZA O CARD DE FALTA ---
                     card.classList.add('absence-record');
                     card.innerHTML = `
                         <div class="ponto-history-absence-icon">
@@ -14626,25 +15832,28 @@ async function calculateAndDisplayStoreServiceRanking() {
                         <div class="ponto-history-details">
                             <p><strong>${record.reason}</strong></p>
                             <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
-                            <p><strong>Hora da Ocorrência:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
+                            <p><strong>Hora:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
                         </div>
                         ${justificationHtml}
                         ${deleteButtonHtml}
                     `;
                 } else {
-                    // --- RENDERIZA O CARD DE PONTO NORMAL ---
                     card.innerHTML = `
                         <img src="${record.photoURL}" class="ponto-history-photo" alt="Foto do ponto">
                         <div class="ponto-history-details">
-                            <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')}</p>
-                            <p><strong>Hora:</strong> ${date.toLocaleTimeString('pt-BR')}</p>
-                            <p><strong>Cidade:</strong> ${record.city}</p>
+                            <p><strong style="color: #ff8533; font-size: 0.95rem;">${displayType}</strong></p>
+                            <p><strong>Data:</strong> ${date.toLocaleDateString('pt-BR')} às ${date.toLocaleTimeString('pt-BR')}</p>
+                            <p><strong>Unidade:</strong> ${record.city}</p>
+                            ${locHtml}
                         </div>
-                         ${deleteButtonHtml}
+                        ${deleteButtonHtml}
                     `;
                 }
                 historyContainer.appendChild(card);
             });
+        }).catch(err => {
+            console.error("Erro ao carregar histórico de ponto:", err);
+            historyContainer.innerHTML = '<p style="text-align: center; color: red;">Erro ao carregar histórico.</p>';
         });
     };
 
@@ -16278,17 +17487,20 @@ async function calculateAndDisplayStoreServiceRanking() {
             updateDailyGoalPanel(userKey);
         }
 
-        const isProfileOwner = (localStorage.getItem('loggedInUser') === userName);
-        const isAdminProfile = newAdmins.includes(userName);
+        const loggedUserRaw = localStorage.getItem('loggedInUser') || '';
+        const isProfileOwner = (loggedUserRaw.trim().toLowerCase() === userName.trim().toLowerCase());
+        const isAdminProfile = newAdmins.some(a => a.toLowerCase() === userKey);
         const isCollaboratorProfile = !isAdminProfile;
-        const isManager = managers.includes(userName);
-        const isStoreManager = storeManagers.includes(userName);
-        const isSecurity = ['Jose', 'Leonardo'].includes(userName);
+        const isManager = managers.some(m => m.toLowerCase() === userKey);
+        const isStoreManager = storeManagers.some(m => m.toLowerCase() === userKey);
+        const isSecurity = ['jose', 'leonardo'].includes(userKey);
 
         const gsBtnInProfile = document.getElementById('open-gs-from-profile-btn');
         const metasBtn = document.getElementById('view-metas-btn');
         const achievementsSection = document.getElementById('achievements-section');
         const pontoBtn = document.getElementById('bater-ponto-btn');
+        const pontoCard = document.getElementById('collaborator-ponto-card');
+        const managerJustificationsBtn = document.getElementById('open-manager-justifications-app-btn');
         const pontoNotificationArea = document.getElementById('ponto-notification-area');
         const pontoCountdownTimer = document.getElementById('ponto-countdown-timer');
         const pontoLiveCountdown = document.getElementById('ponto-live-countdown');
@@ -16296,22 +17508,34 @@ async function calculateAndDisplayStoreServiceRanking() {
         const passBtn = document.getElementById('change-password-btn');
         const salesData = document.getElementById('individual-sales-data');
 
-        [gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown, storyBtn, passBtn, salesData].forEach(el => {
+        [gsBtnInProfile, metasBtn, achievementsSection, pontoBtn, pontoCard, managerJustificationsBtn, pontoNotificationArea, pontoCountdownTimer, pontoLiveCountdown, storyBtn, passBtn, salesData].forEach(el => {
             if (el) el.style.display = 'none';
         });
         
         if (isAdminProfile && gsBtnInProfile) {
-                        gsBtnInProfile.style.display = 'flex';
-                    }
+            gsBtnInProfile.style.display = 'flex';
+        }
 
-                    const launchSalesBtn = document.getElementById('manager-launch-sales-btn');
-                    if (launchSalesBtn) launchSalesBtn.style.display = isStoreManager ? 'flex' : 'none';
+        const launchSalesBtn = document.getElementById('manager-launch-sales-btn');
+        if (launchSalesBtn) launchSalesBtn.style.display = isStoreManager ? 'flex' : 'none';
 
-                    // Exibir Entrada/Nota somente para gerentes
-                    const entradaNotaBtn = document.getElementById('open-entrada-nota-btn');
-                    if (entradaNotaBtn) entradaNotaBtn.style.display = isManager ? 'flex' : 'none';
-                    
-                    if (isCollaboratorProfile) {
+        // Botão exclusivo de Aprovar Justificativas no perfil do Gerente
+        if (managerJustificationsBtn) {
+            managerJustificationsBtn.style.display = isManager ? 'flex' : 'none';
+        }
+
+        // Exibir Entrada/Nota somente para gerentes
+        const entradaNotaBtn = document.getElementById('open-entrada-nota-btn');
+        if (entradaNotaBtn) entradaNotaBtn.style.display = isManager ? 'flex' : 'none';
+        
+        const stopCountdownTimer = () => {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+        };
+
+        if (isCollaboratorProfile) {
             if (!isSecurity) {
                 if (metasBtn) metasBtn.style.display = 'flex';
                 if (achievementsSection) achievementsSection.style.display = 'block';
@@ -16323,21 +17547,19 @@ async function calculateAndDisplayStoreServiceRanking() {
             loadPersonalSalesHistoryChart();
             displayAchievements(userKey);
             
-            const showPontoElements = isProfileOwner;
-            if (pontoBtn) pontoBtn.style.display = showPontoElements ? 'flex' : 'none';
-            if (pontoNotificationArea) pontoNotificationArea.style.display = showPontoElements ? 'block' : 'none';
-            if (pontoCountdownTimer) pontoCountdownTimer.style.display = showPontoElements ? 'block' : 'none';
-            if (pontoLiveCountdown) pontoLiveCountdown.style.display = showPontoElements ? 'block' : 'none';
-
-            if (showPontoElements) {
+            // O card e botão de ponto ficam visíveis para o dono da conta ou quando acessado pelo GS
+            if (pontoBtn) pontoBtn.style.display = 'flex';
+            if (pontoNotificationArea) pontoNotificationArea.style.display = 'block';
+            checkPontoStatusAndDisplayWarnings();
+        } else {
+            // Administradores também podem visualizar e registrar ponto próprio
+            if (isProfileOwner) {
+                if (pontoBtn) pontoBtn.style.display = 'flex';
                 checkPontoStatusAndDisplayWarnings();
             } else {
                 stopCountdownTimer();
                 if (pontoLiveCountdown) pontoLiveCountdown.innerHTML = '';
             }
-        } else {
-            stopCountdownTimer();
-            if (pontoLiveCountdown) pontoLiveCountdown.innerHTML = '';
         }
 
         applyVisibilitySettings();
@@ -16721,7 +17943,55 @@ async function calculateAndDisplayStoreServiceRanking() {
                 safeAddListener('clear-ia-logs-btn', 'click', clearAllIALogs);
                 safeAddListener('open-depuracao-ponto-btn', 'click', () => {
                     lastPageBeforePonto = 'gsPage';
-                    handlePontoLogic(true);
+                    const video = document.getElementById('ponto-video');
+                    const canvas = document.getElementById('ponto-canvas');
+                    const captureBtn = document.getElementById('capture-ponto-btn');
+                    const statusEl = document.getElementById('ponto-status-message');
+
+                    currentPontoAction = 'registrar_entrada';
+                    showPage('pontoPage');
+
+                    if (captureBtn) {
+                        captureBtn.disabled = true;
+                        captureBtn.style.opacity = '0.5';
+                    }
+                    if (statusEl) statusEl.textContent = 'Iniciando câmera...';
+
+                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+                            .then(stream => {
+                                cameraStream = stream;
+                                if (video) {
+                                    video.srcObject = stream;
+                                    video.play().catch(() => {});
+                                    video.onloadeddata = () => {
+                                        if (statusEl) statusEl.textContent = 'Câmera pronta! [Modo Depuração]';
+                                        if (captureBtn) {
+                                            captureBtn.disabled = false;
+                                            captureBtn.style.opacity = '1';
+                                        }
+                                    };
+                                }
+                            })
+                            .catch(err => {
+                                console.warn("Câmera indisponível no navegador:", err);
+                                if (statusEl) statusEl.textContent = 'Câmera não permitida ou indisponível.';
+                                if (captureBtn) {
+                                    captureBtn.disabled = false;
+                                    captureBtn.style.opacity = '1';
+                                }
+                            });
+                    } else {
+                        if (statusEl) statusEl.textContent = 'Navegador sem suporte a câmera.';
+                        if (captureBtn) {
+                            captureBtn.disabled = false;
+                            captureBtn.style.opacity = '1';
+                        }
+                    }
+                });
+
+                safeAddListener('open-depuracao-justificar-btn', 'click', () => {
+                    openDepurarJustificarModal();
                 });
                 
                 safeAddListener('open-supabase-management-btn', 'click', () => {
@@ -17019,15 +18289,50 @@ async function calculateAndDisplayStoreServiceRanking() {
             };
 
             document.getElementById('open-gs-from-profile-btn').addEventListener('click', async () => {
+                setupGSPageListeners();
+
+                const depPontoBtn = document.getElementById('open-depuracao-ponto-btn');
+                if (depPontoBtn) {
+                    depPontoBtn.onclick = () => {
+                        lastPageBeforePonto = 'gsPage';
+                        currentPontoAction = 'registrar_entrada';
+                        initPontoCamera();
+                    };
+                }
+
+                const depJustBtn = document.getElementById('open-depuracao-justificar-btn');
+                if (depJustBtn) {
+                    depJustBtn.onclick = () => {
+                        openDepurarJustificarModal();
+                    };
+                }
+
+                const depCloseX = document.getElementById('depurar-justificar-close-x');
+                if (depCloseX) depCloseX.onclick = closeDepurarJustificarModal;
+
+                const depSetLateBtn = document.getElementById('depurar-justificar-set-late-btn');
+                if (depSetLateBtn) depSetLateBtn.onclick = () => setEmployeeLateDebug(false);
+
+                const depResetBtn = document.getElementById('depurar-justificar-reset-btn');
+                if (depResetBtn) depResetBtn.onclick = () => setEmployeeLateDebug(true);
+
+                const depOpenFormBtn = document.getElementById('depurar-justificar-open-form-btn');
+                if (depOpenFormBtn) {
+                    depOpenFormBtn.onclick = () => {
+                        closeDepurarJustificarModal();
+                        openPontoJustificationModal();
+                    };
+                }
+
                 loadDashboardData();
                 loadManagerNotifications();
                 loadMaintenanceModeStatus();
                 markNotificationsAsRead();
+                await renderGSJustificationsAlerts();
                 await updateSystemStatusUI();
                 await applyGsVisibilityPreferences();
                 setupIAHunterGSListeners();
 
-                setupGSPageListeners();
                 loadVisibilitySettings();
 
                 // Garante que o input do GS mostre o valor atual do juros
@@ -20415,8 +21720,14 @@ window.openIAHunterPage = () => {
                     return;
                 }
 
+                if (actionType === 'simular_atraso_menu') {
+                    openDepurarJustificarModal();
+                    bubble.innerHTML = `⏱️ <strong>Depuração de Atraso e Justificativa aberta!</strong>\n\nVocê também pode digitar diretamente para mim no campo de texto:\n• <em>"deixar mainara atrasada"</em>\n• <em>"simular atraso eliseu"</em>\n• <em>"tirar atraso da mainara"</em>\n• <em>"abrir tela de justificativa"</em>`;
+                    return;
+                }
+
                 if (actionType === 'ajuda_comandos') {
-                    bubble.innerHTML = `💡 <strong>Você pode falar comigo de forma simples e natural!</strong>\n\nVeja exemplos do que você pode digitar:\n\n• <strong>Mudar meta:</strong> <em>"mudar meta da mainara para 50000"</em>\n• <strong>Dar bônus:</strong> <em>"dar bonus de 150 pro eliseu"</em>\n• <strong>Lançar venda hoje:</strong> <em>"lancar venda de 2000 pra aline"</em>\n• <strong>Meta de serviço:</strong> <em>"meta servico eliseu 500"</em>\n• <strong>Meta de acessório:</strong> <em>"meta acessorio pablo 800"</em>\n• <strong>Aumentar meta de hoje:</strong> <em>"aumentar meta em 25%"</em>\n• <strong>Mudar juros paymobi:</strong> <em>"juros paymobi 8.5%"</em>\n• <strong>Modo Manutenção:</strong> <em>"ligar manutencao"</em> ou <em>"desligar manutencao"</em>\n• <strong>Tema de Natal:</strong> <em>"ligar natal"</em> ou <em>"desligar natal"</em>\n• <strong>Limpar ponto:</strong> <em>"limpar ponto do demilson"</em>\n• <strong>Resetar CDC:</strong> <em>"resetar cdc do eliseu"</em>\n• <strong>Limpar avisos de ponto:</strong> <em>"limpar notificacoes"</em>\n\n🔒 <em>Fique tranquilo: eu sempre vou te perguntar se é isso mesmo antes de fazer qualquer alteração!</em>`;
+                    bubble.innerHTML = `💡 <strong>Você pode falar comigo de forma simples e natural!</strong>\n\nVeja exemplos do que você pode digitar:\n\n• <strong>Simular atraso (Depuração):</strong> <em>"deixar mainara atrasada"</em> ou <em>"simular atraso eliseu"</em>\n• <strong>Remover atraso simulado:</strong> <em>"tirar atraso da mainara"</em> ou <em>"remover atraso eliseu"</em>\n• <strong>Abrir tela de justificar:</strong> <em>"abrir justificativa"</em> ou <em>"depurar justificativa"</em>\n• <strong>Mudar meta:</strong> <em>"mudar meta da mainara para 50000"</em>\n• <strong>Dar bônus:</strong> <em>"dar bonus de 150 pro eliseu"</em>\n• <strong>Lançar venda hoje:</strong> <em>"lancar venda de 2000 pra aline"</em>\n• <strong>Meta de serviço:</strong> <em>"meta servico eliseu 500"</em>\n• <strong>Meta de acessório:</strong> <em>"meta acessorio pablo 800"</em>\n• <strong>Aumentar meta de hoje:</strong> <em>"aumentar meta em 25%"</em>\n• <strong>Mudar juros paymobi:</strong> <em>"juros paymobi 8.5%"</em>\n• <strong>Modo Manutenção:</strong> <em>"ligar manutencao"</em> ou <em>"desligar manutencao"</em>\n• <strong>Tema de Natal:</strong> <em>"ligar natal"</em> ou <em>"desligar natal"</em>\n• <strong>Limpar ponto:</strong> <em>"limpar ponto do demilson"</em>\n• <strong>Resetar CDC:</strong> <em>"resetar cdc do eliseu"</em>\n• <strong>Limpar avisos de ponto:</strong> <em>"limpar notificacoes"</em>\n\n🔒 <em>Fique tranquilo: eu sempre vou te perguntar se é isso mesmo antes de fazer qualquer alteração!</em>`;
                     return;
                 }
 
@@ -20433,6 +21744,50 @@ window.openIAHunterPage = () => {
                     const parsedNumber = parseSmartNumber(q);
                     const matchedUser = allUsers.find(u => q.includes(u.toLowerCase()));
                     const targetKey = matchedUser ? matchedUser.toLowerCase() : null;
+
+                    // Comandos de voz/texto para Depuração de Atraso e Justificativa via IA Hunter GS
+                    if (q.includes('abrir justificativa') || q.includes('tela justificativa') || q.includes('depurar justificativa') || q.includes('formulario justificativa')) {
+                        openDepurarJustificarModal();
+                        bubble.innerHTML = `✅ <strong>Pronto!</strong> Abri a tela de depuração de justificativa para você escolher o funcionário ou testar o formulário.`;
+                        return;
+                    }
+
+                    if (q.includes('atras') && (q.includes('tirar') || q.includes('remover') || q.includes('limpar') || q.includes('cancelar') || q.includes('desativar'))) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `De qual funcionário você quer remover o atraso simulado? (ex: <em>"tirar atraso da mainara"</em>).`;
+                            return;
+                        }
+                        const todayString = getTodayDateString();
+                        requestIAAdminConfirmation(`Remover o atraso simulado de <strong>${matchedUser}</strong> e liberar o ponto dele ao normal?`, async () => {
+                            await database.ref(`simulatedLateUsers/${todayString}/${targetKey}`).remove();
+                            if (currentUserName && currentUserName.toLowerCase() === targetKey) {
+                                checkPontoStatusAndDisplayWarnings();
+                            }
+                            bubble.innerHTML = `✅ <strong>Atraso removido!</strong> O status de <strong>${matchedUser}</strong> voltou ao normal.`;
+                        });
+                        return;
+                    }
+
+                    if ((q.includes('atras') && (q.includes('deixar') || q.includes('simular') || q.includes('colocar') || q.includes('forcar') || q.includes('ativar'))) || (q.includes('solicitar justificativa') || q.includes('pedir justificativa'))) {
+                        if (!matchedUser) {
+                            bubble.innerHTML = `Qual funcionário você quer deixar atrasado para ele solicitar justificativa? (ex: <em>"deixar mainara atrasada"</em> ou <em>"simular atraso do eliseu"</em>).`;
+                            return;
+                        }
+                        const todayString = getTodayDateString();
+                        requestIAAdminConfirmation(`Deixar <strong>${matchedUser}</strong> com ocorrência de atraso ativa para ele solicitar justificativa no painel dele?`, async () => {
+                            await database.ref(`simulatedLateUsers/${todayString}/${targetKey}`).set({
+                                forcedLate: true,
+                                appliedBy: currentUserName || 'IA Hunter GS',
+                                appliedAt: new Date().toISOString()
+                            });
+                            await database.ref(`justifications/${todayString}/${targetKey}`).remove();
+                            if (currentUserName && currentUserName.toLowerCase() === targetKey) {
+                                checkPontoStatusAndDisplayWarnings();
+                            }
+                            bubble.innerHTML = `✅ <strong>Ocorrência aplicada!</strong> O colaborador <strong>${matchedUser}</strong> agora está com atraso simulado ativo.<br><br>Quando ele entrar no perfil dele, verá o ponto bloqueado com o aviso e o botão <strong>"Justificar"</strong> para ele enviar o pedido.`;
+                        });
+                        return;
+                    }
 
                     if (q.includes('manutencao')) {
                         const enable = q.includes('ligar') || q.includes('ativar') || q.includes('sim');
