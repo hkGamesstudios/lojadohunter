@@ -1080,7 +1080,7 @@
         /* o comportamento base de todas as páginas sobrepostas. */
         /* =================================================================== */
         /* --- Tela do Colaborador (e outras páginas internas) --- */
-        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page, #logs-management-page, #hide-gs-page, #ia-logs-page, #users-management-page {
+        #collaborator-page, #metas-config-page, #gs-page, #metas-display-page, #send-device-page, #brand-devices-page, #device-detail-page, #manager-sales-panel-page, #closing-page, #correction-page, #os-form-page, #request-stock-page, #recibos-page, #quiz-page, #quiz-management-page, #crediario-calculator-page, #site-calculator-page, #loja-calculator-page, #mt-display-page, #mt-management-page, #ponto-verification-page, #holidays-management-page, #sundays-management-page, #ponto-history-page, #justifications-approval-page, #schedules-management-page, #day-off-management-page, #overtime-management-page, #device-search-overlay, #avisos-management-page, #feedback-page, #debug-page, #stock-requests-page, #recibos-submissions-page, #quiz-submissions-page, #feedback-submissions-page, #cash-management-page, #store-cash-management-page, #story-creation-page, #chat-page, #chat-conversation-page, #ranks-management-page, #manual-sale-page, #telemarketing-selection-page, #telemarketing-list-page, #telemarketing-admin-page, #telemarketing-stats-page, #daily-increase-management-page, #entrada-nota-page, #venda-remota-cash-management-page, #bonus-management-page, #ia-hunter-page, #logs-management-page, #hide-gs-page, #ia-logs-page, #users-management-page {
             position: fixed;
             top: 0;
             left: 0;
@@ -6056,12 +6056,12 @@ Transporte - R$ 5,00"></textarea></div>
     </div>
 
     <!-- TELA DE APROVAÇÃO DE JUSTIFICATIVAS DO GERENTE & GS -->
-    <div id="justifications-approval-page" style="display: none;">
-        <div class="collaborator-header">
-            <button id="back-to-gs-from-justifications" class="back-button"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
-            <h2>Aprovar Justificativas</h2>
+    <div id="justifications-approval-page" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; flex-direction: column; justify-content: flex-start; overflow-y: auto; overflow-x: hidden; background: #FFFDF9; color: #2D2319;">
+        <div class="collaborator-header" style="background: linear-gradient(135deg, #e67e22 0%, #d35400 100%) !important; width: 100%; min-height: 65px; display: flex; align-items: center; justify-content: center; position: relative; padding: 1rem; flex-shrink: 0; border-bottom: none; box-shadow: 0 4px 15px rgba(230, 126, 34, 0.25);">
+            <button id="back-to-gs-from-justifications" class="back-button" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); z-index: 10; color: #fff !important; background: rgba(255,255,255,0.22); border-radius: 20px; padding: 6px 14px;"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+            <h2 style="margin: 0; padding: 0 60px; font-size: 1.25rem; white-space: nowrap; text-align: center; color: #ffffff !important; font-weight: 800;">Aprovar Justificativas</h2>
         </div>
-        <div class="collaborator-content" style="align-items: stretch; gap: 10px; padding: 1.2rem 1rem 3rem 1rem; width: 100%; max-width: 450px; margin: 0 auto;">
+        <div class="collaborator-content" style="width: 100%; max-width: 450px; margin: 0 auto; padding: 1.2rem 1rem 3.5rem 1rem; align-items: stretch; gap: 12px; flex-direction: column; box-sizing: border-box;">
             <div id="justifications-pending-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                 <p style="text-align: center; color: #888;">Carregando justificativas...</p>
             </div>
@@ -13161,12 +13161,8 @@ async function calculateAndDisplayServiceRanking() {
         }
     };
 
-    // Folgas fixas semanais por colaborador (0=Domingo, 1=Segunda, 2=Terça, 3=Quarta, 4=Quinta, 5=Sexta, 6=Sábado)
-    const predefinedFixedDaysOff = {
-        'mainara': 2, // Terça-feira
-        'pablo': 3,   // Quarta-feira
-        'mikael': 4   // Quinta-feira
-    };
+    // Folgas fixas automáticas removidas para evitar bloqueios indevidos de funcionários
+    const predefinedFixedDaysOff = {};
 
     let currentUserLocationCoords = null;
     let currentUserLocationText = 'Localização: Carregando...';
@@ -13255,27 +13251,32 @@ async function calculateAndDisplayServiceRanking() {
             return { action: 'missed_entrada', punchName: 'Entrada', status: 'late', message: 'Horário limite de ENTRADA excedido (Atraso detectado).', nextActionTime: null, schedule };
         }
 
-        // 1. Folga fixa por perfil (ex: Mainara=Terça, Pablo=Quarta, Mikael=Quinta)
-        if (schedule.fixedDayOff !== null && schedule.fixedDayOff !== undefined && schedule.fixedDayOff !== 'none') {
-            if (dayOfWeek === parseInt(schedule.fixedDayOff, 10)) {
-                return { action: null, status: 'day_off', message: 'Hoje é sua folga semanal programada.', nextActionTime: null, schedule };
+        const hasAnyPunch = !!(dailyPontoData && (dailyPontoData.entrada || dailyPontoData.saida_almoco || dailyPontoData.volta_almoco || dailyPontoData.saida));
+
+        // Se o colaborador já possui batida hoje, continua o fluxo normal do dia (nunca trava como folga)
+        if (!hasAnyPunch) {
+            // 1. Folga fixa por perfil (se configurada manualmente no GS)
+            if (schedule.fixedDayOff !== null && schedule.fixedDayOff !== undefined && schedule.fixedDayOff !== 'none') {
+                if (dayOfWeek === parseInt(schedule.fixedDayOff, 10)) {
+                    return { action: 'registrar_entrada', punchName: 'Entrada', status: 'pending', message: 'Folga semanal programada (liberado para bater se estiver trabalhando).', nextActionTime: null, schedule };
+                }
             }
-        }
 
-        // 2. Folga avulsa agendada
-        if (dayOffSnap.exists()) {
-            return { action: null, status: 'day_off', message: 'Hoje é sua folga cadastrada.', nextActionTime: null, schedule };
-        }
+            // 2. Folga avulsa agendada
+            if (dayOffSnap.exists()) {
+                return { action: 'registrar_entrada', punchName: 'Entrada', status: 'pending', message: 'Folga cadastrada (liberado para bater se estiver trabalhando).', nextActionTime: null, schedule };
+            }
 
-        // 3. Feriado geral
-        if (holidaySnap.hasChild(todayString)) {
-            return { action: null, status: 'holiday', message: 'Hoje é feriado. Ponto desativado.', nextActionTime: null, schedule };
-        }
+            // 3. Feriado geral
+            if (holidaySnap.hasChild(todayString)) {
+                return { action: 'registrar_entrada', punchName: 'Entrada', status: 'pending', message: 'Feriado (liberado para bater se a loja abrir).', nextActionTime: null, schedule };
+            }
 
-        // 4. Domingo
-        const isWorkingSunday = sundaySnap.hasChild(todayString);
-        if (dayOfWeek === 0 && !isWorkingSunday) {
-            return { action: null, status: 'closed', message: 'Domingo - Loja fechada.', nextActionTime: null, schedule };
+            // 4. Domingo
+            const isWorkingSunday = sundaySnap.hasChild(todayString);
+            if (dayOfWeek === 0 && !isWorkingSunday) {
+                return { action: null, status: 'closed', message: 'Domingo - Loja fechada.', nextActionTime: null, schedule };
+            }
         }
 
         // Failsafe de data do registro
@@ -13539,7 +13540,14 @@ async function calculateAndDisplayServiceRanking() {
             }
 
             if (nextAction.status === 'day_off' || nextAction.status === 'holiday' || nextAction.status === 'closed') {
-                alert(nextAction.message);
+                if (confirm(`${nextAction.message}\n\nVocê veio trabalhar hoje e deseja bater o ponto normalmente?`)) {
+                    if (!dailyPontoData.entrada) currentPontoAction = 'registrar_entrada';
+                    else if (!dailyPontoData.saida_almoco) currentPontoAction = 'registrar_saida_almoco';
+                    else if (!dailyPontoData.volta_almoco) currentPontoAction = 'registrar_volta_almoco';
+                    else if (!dailyPontoData.saida) currentPontoAction = 'registrar_saida';
+                    initPontoCamera();
+                    return;
+                }
                 return;
             }
 
